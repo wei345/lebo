@@ -2,11 +2,13 @@
 
 ### 环境要求
 
-* Java 1.6 以上。 - [JDK 1.6u45](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR)
-* Maven 3.0.3 以上。 - [Maven 3.0.5](http://apache.etoak.com/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.zip)
+* Java 1.6 以上。 - [JDK 1.6u45下载](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR)
+* Maven 3.0.3 以上。 - [Maven 3.0.5下载](http://apache.etoak.com/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.zip)
 * [MongoDB](http://www.mongodb.org/downloads) 2.4.4
 
-在Windows上，Maven本地仓库默认地址为：
+#### Windows设置Maven仓库路径
+
+在Windows XP上，Maven本地仓库默认为：
 
     C:/Documents and Settings/用户名/.m2/repository
 
@@ -76,7 +78,7 @@
 
 要停止lebo，按Ctrl + C。
 
-上面只是快速启动，看看效果，开发时在IDE中启动，方便调试。
+上面演示了在命令行中快速启动。开发时通常在IDE中启动，方便调试。
 
 ## 开发
 
@@ -87,7 +89,7 @@
     cd lebo
     mvn eclipse:eclipse
 
-会下载所有依赖包的源码，方便开发。完成后会生成eclipse项目文件，eclipse可直接导入lebo目录。
+会下载所有依赖包的源码，方便查阅。完成后会生成eclipse项目文件，eclipse可直接导入lebo目录。
 
 #### IDEA
 
@@ -95,4 +97,4 @@ IDEA原生支持Maven，可直接导入。
 
 ### 启动
 
-启动com.lebo.QuickStartServer，可以debug方式启动。
+在IDE中，启动com.lebo.QuickStartServer，可以debug方式启动。
