@@ -4,7 +4,7 @@
 
 * Java 1.6 以上。 - [JDK 1.6u45下载](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR)
 * Maven 3.0.3 以上。 - [Maven 3.0.5下载](http://apache.etoak.com/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.zip)
-* [MongoDB](http://www.mongodb.org/downloads) 2.4.4
+* MongoDB 2.4.4。 - [MongoDB下载](http://www.mongodb.org/downloads)
 
 #### Windows设置Maven仓库路径
 
