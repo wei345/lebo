@@ -47,13 +47,13 @@
     2013-07-01 23:54:42.427:INFO:oejs.AbstractConnector:Started SelectChannelConnector@0.0.0.0:8080
     [INFO] Started Jetty Server
 
-浏览器访问http://localhost:8080/api，会看到
+浏览器访问http://localhost:8080/api.json，会看到
 
     {"error":{"message":"Unauthorized","code":10401}}
 
 用HTTP客户端工具，如火狐扩展HttpRequester，发送：
 
-    POST http://localhost:8080/api/v1/login?provider=weibo&uid=1774156407&token=2.00vHLEwBz7QwTCbafc736d580QUCCY
+    POST http://localhost:8080/api/v1/login.json?provider=weibo&uid=1774156407&token=2.00vHLEwBz7QwTCbafc736d580QUCCY
 
 会看到：
 
@@ -61,7 +61,7 @@
 
 发送：
 
-    GET http://localhost:8080/api
+    GET http://localhost:8080/api.json
 
 会看到：
 

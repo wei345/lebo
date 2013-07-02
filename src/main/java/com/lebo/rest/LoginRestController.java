@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author: Wei Liu
  * Date: 13-6-27
  * Time: PM6:02
  */
 @Controller
-@RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1")
 public class LoginRestController {
 
     private Logger logger = LoggerFactory.getLogger(LoginRestController.class);

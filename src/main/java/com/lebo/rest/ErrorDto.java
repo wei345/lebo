@@ -1,5 +1,7 @@
 package com.lebo.rest;
 
+import org.springside.modules.mapper.JsonMapper;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,9 @@ public class  ErrorDto {
     public static final ErrorDto UNAUTHORIZED = new ErrorDto("Unauthorized", 10401);
     public static final ErrorDto NOT_FOUND = new ErrorDto("Not found", 10404);
     public static final ErrorDto UNKNOWN_ERROR = new ErrorDto("Unknown error", 10500);
+
+    private static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
+    private String json;
 
     private Map<String, Object> error = new HashMap<String, Object>();
 
@@ -32,5 +37,13 @@ public class  ErrorDto {
 
     public Map<String, Object> getError() {
         return error;
+    }
+
+    @Override
+    public String toString() {
+        if(json == null){
+            json = jsonMapper.toJson(this);
+        }
+        return json;
     }
 }

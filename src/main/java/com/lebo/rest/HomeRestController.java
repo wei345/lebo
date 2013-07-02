@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Time: AM11:23
  */
 @Controller
-@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api")
 public class HomeRestController {
     @RequestMapping(value="")
     @ResponseBody
