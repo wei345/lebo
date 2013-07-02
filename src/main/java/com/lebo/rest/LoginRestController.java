@@ -24,7 +24,7 @@ public class LoginRestController {
     private Logger logger = LoggerFactory.getLogger(LoginRestController.class);
 
     //TODO 可通过grant登录
-    @RequestMapping(value = "oauth_login", method = RequestMethod.POST)
+    @RequestMapping(value = "oauthLogin", method = RequestMethod.POST)
     @ResponseBody
     public Object oauthLogin(@Valid ShiroOauthRealm.OauthToken oauthToken) {
 
