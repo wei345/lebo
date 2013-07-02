@@ -1,12 +1,10 @@
-## 开始
-
-### 环境要求
+## 环境
 
 * Java 1.6 以上。 - [JDK 1.6u45下载](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR)
 * Maven 3.0.3 以上。 - [Maven 3.0.5下载](http://apache.etoak.com/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.zip)
 * MongoDB 2.4.4。 - [MongoDB下载](http://www.mongodb.org/downloads)
 
-#### Windows设置Maven仓库路径
+### Windows设置Maven仓库路径
 
 在Windows XP上，Maven本地仓库默认为：
 
@@ -22,6 +20,8 @@
 
     <localRepository>D:\maven_repository</localRepository>
 
+## 开始
+
 ### SpringSide
 
 执行下面命令从源码构建并安装SpringSide4，初次执行需要下载不少依赖，耐心等待。
@@ -34,7 +34,7 @@
 
 看到“BUILD SUCCESS”，说明SpringSide4安装成功。
 
-### lebo
+### Lebo
 
 执行下面命令克隆lebo --> 下载依赖 --> 编译 --> 启动，lebo启动时会连接MongoDB 127.0.0.1:27017，连不上会报错。
 
@@ -67,7 +67,7 @@
 
     It works
 
-进入MongoDB shell
+进入MongoDB shell，
 
     use test
     db.openUser.count()    #输出 1
