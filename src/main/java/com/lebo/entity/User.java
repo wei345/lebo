@@ -36,7 +36,6 @@ public class User extends IdEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    @NotBlank
 	public String getName() {
 		return name;
 	}
@@ -45,6 +44,7 @@ public class User extends IdEntity {
 		this.name = name;
 	}
 
+    @NotBlank
     public String getScreenName() {
         return screenName;
     }

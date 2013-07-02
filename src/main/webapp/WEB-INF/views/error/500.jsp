@@ -1,33 +1,36 @@
 <%@ page contentType="text/html;charset=UTF-8" isErrorPage="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="org.slf4j.Logger,org.slf4j.LoggerFactory" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="org.slf4j.Logger" %>
 <%@ page import="com.lebo.rest.ErrorDto" %>
-<%response.setStatus(200);%><%
-	Throwable ex = null;
-	if (exception != null)
-		ex = exception;
-	if (request.getAttribute("javax.servlet.error.exception") != null)
-		ex = (Throwable) request.getAttribute("javax.servlet.error.exception");
+<%response.setStatus(200);%>
+<%
+    Throwable ex = null;
+    if (exception != null)
+        ex = exception;
+    if (request.getAttribute("javax.servlet.error.exception") != null)
+        ex = (Throwable) request.getAttribute("javax.servlet.error.exception");
 
-	//记录日志
-	Logger logger = LoggerFactory.getLogger("500.jsp");
-	logger.error(ex.getMessage(), ex);
-%><%
-if(((String)request.getAttribute("org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping")).endsWith(".json")) {
-    response.getWriter().write(ErrorDto.UNKNOWN_ERROR.toString());
-} else { %>
-
-
+    //记录日志
+    Logger logger = LoggerFactory.getLogger("500.jsp");
+    logger.error(ex.getMessage(), ex);
+%>
+<%
+    String uri = (String)request.getAttribute("javax.servlet.forward.request_uri");
+    if(uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {
+        response.getWriter().write(new ErrorDto(ex.getMessage()).toJson());
+    } else {
+%>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title>500 - 系统内部错误</title>
+    <title>500 - 系统内部错误</title>
 </head>
 
 <body>
-	<h2>500 - 系统发生内部错误.</h2>
-	<p><a href="<c:url value="/"/>">返回首页</a></p>
+<h2>500 - 系统发生内部错误.</h2>
+<p><a href="<c:url value="/"/>">返回首页</a></p>
 </body>
 </html>
 <% } %>

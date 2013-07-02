@@ -16,7 +16,7 @@ import java.util.Map;
  * Time: PM12:09
  */
 @Component
-public class WeiboLogin extends OauthLogin {
+public class WeiboOauth {
 
     public static final String PROVIDER = "weibo";
 
@@ -65,9 +65,7 @@ public class WeiboLogin extends OauthLogin {
 
         Assert.notNull(user, "Not found user with id " + openUser.getLocalUserId() + ", data error!");
 
-        ShiroUser shiroUser = new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), PROVIDER, uid, token);
-
-        return shiroUser;
+        return new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), PROVIDER, uid, token);
     }
 
     private String getUid(String token) {

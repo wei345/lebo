@@ -14,11 +14,16 @@ import java.io.PrintWriter;
  * Time: PM7:12
  */
 public class WebApiUtils {
-    static private JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
 
     public static void sendUnauthorized(ServletRequest request, ServletResponse response) throws IOException{
         PrintWriter out = response.getWriter();
-        out.write(jsonMapper.toJson(ErrorDto.UNAUTHORIZED));
+        out.write(ErrorDto.UNAUTHORIZED.toJson());
+        out.flush();
+    }
+
+    public static void sendForbidden(ServletRequest request, ServletResponse response) throws IOException{
+        PrintWriter out = response.getWriter();
+        out.write(ErrorDto.FORBIDDEN.toJson());
         out.flush();
     }
 }

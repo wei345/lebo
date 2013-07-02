@@ -33,7 +33,7 @@
                 /login = authc
                 /logout = logout
                 /static/** = anon
-                /api/*/login = anon
+                /api/*/oauth_login = anon
                 /api/** = api
                 /admin/** = roles[admin]
                 /** = user
