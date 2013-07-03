@@ -1,7 +1,8 @@
-package com.lebo.service.lebo;
+package com.lebo.service.status;
 
 import com.google.common.collect.Maps;
 import com.lebo.SpringContextTestCase;
+import com.lebo.entity.Status;
 import com.mongodb.gridfs.GridFSFile;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -22,12 +24,15 @@ import static org.junit.Assert.assertTrue;
  * Date: 13-7-2
  * Time: PM4:46
  */
-public class LeboServiceTest extends SpringContextTestCase{
+public class StatusServiceTest extends SpringContextTestCase{
     @Autowired
     private GridFsTemplate gridFsTemplate;
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private StatusService statusService;
 
     @Test
     public void store() throws IOException {
@@ -46,5 +51,14 @@ public class LeboServiceTest extends SpringContextTestCase{
 
         gridFsTemplate.delete(new Query(new Criteria("_id").is(file.get("_id"))));
         assertTrue(fileCount == mongoTemplate.getCollection("fs.files").count());
+    }
+
+    @Test
+    public void update() throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource("application.properties");
+        assertTrue(classPathResource.exists());
+        Status status = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", classPathResource.getFile());
+        assertNotNull(status);
+
     }
 }

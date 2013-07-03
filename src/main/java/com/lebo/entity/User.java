@@ -28,6 +28,12 @@ public class User extends IdEntity {
     private String profileImageUrl;
     private Date creationDate;
 
+    public User(){}
+
+    public User(String id){
+        this.id = id;
+    }
+
     public String getProfileImageUrl() {
         return profileImageUrl;
     }

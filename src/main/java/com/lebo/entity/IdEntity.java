@@ -1,9 +1,8 @@
 package com.lebo.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 /**
  * 统一定义id的entity基类.
@@ -15,7 +14,7 @@ import javax.persistence.MappedSuperclass;
  */
 //JPA 基类的标识
 @MappedSuperclass
-public abstract class IdEntity {
+public abstract class IdEntity implements Serializable {
 
 	protected String id;
 
