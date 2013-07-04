@@ -14,9 +14,9 @@ import java.util.Date;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "status_not_duplication", def = "{'user': 1, 'text': 1, 'media': 1}", unique = true, dropDups = true)
+    @CompoundIndex(name = "status_not_duplication", def = "{'user': 1, 'text': 1, 'media': 1}", unique = true, dropDups = true)
 })
-public class Status extends IdEntity {
+public class Tweet extends IdEntity {
     private Date createdAt;
     private String text;
     @DBRef

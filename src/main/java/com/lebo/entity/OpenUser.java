@@ -11,17 +11,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 @CompoundIndexes({
-    @CompoundIndex(name = "platform_uid", def = "{'platform': 1, 'uid': 1}", unique = true)
+    @CompoundIndex(name = "openUser", def = "{'provider': 1, 'uid': 1}", unique = true)
 })
 public class OpenUser extends IdEntity{
 
-    private String provider; // 开放平台，例如weibo表示新浪微博
-    private String uid;     // 用户在特定开放平台中的id
-    private String screenName; // 用户在特定开放平台中的screen name
+    private String provider;
+    private String uid;
+    private String screenName;
     private String name;
     private String profileUrl;
     private String profileImageUrl;
-    private String localUserId; // 乐播用户id
+    private String localUserId;
 
     public String getProvider() {
         return provider;

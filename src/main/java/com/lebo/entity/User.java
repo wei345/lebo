@@ -26,7 +26,9 @@ public class User extends IdEntity {
     private String screenName;
 	private String name;
     private String profileImageUrl;
-    private Date creationDate;
+    private Date createdAt;
+    private String email;
+    private Date lastSignInAt;
 
     public User(){}
 
@@ -61,15 +63,31 @@ public class User extends IdEntity {
 
     // 设定JSON序列化时的日期格式
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
-    public Date getCreationDate() {
-        return creationDate;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-	@Override
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Date getLastSignInAt() {
+        return lastSignInAt;
+    }
+
+    public void setLastSignInAt(Date lastSignInAt) {
+        this.lastSignInAt = lastSignInAt;
+    }
+
+    @Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}

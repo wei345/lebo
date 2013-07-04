@@ -1,6 +1,6 @@
 package com.lebo.repository;
 
-import com.lebo.entity.Status;
+import com.lebo.entity.Tweet;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -8,5 +8,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Date: 13-7-3
  * Time: PM5:15
  */
-public interface StatusDao extends MongoRepository<Status, String> {
+public interface TweetDao extends MongoRepository<Tweet, String> {
+
 }

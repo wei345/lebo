@@ -52,7 +52,7 @@ public class WeiboOauth {
             user.setScreenName(openUser.getScreenName());
             user.setName(openUser.getName());
             user.setProfileImageUrl(openUser.getProfileImageUrl());
-            user.setCreationDate(new Date());
+            user.setCreatedAt(new Date());
             user = accountService.saveUser(user);
 
             openUser.setLocalUserId(user.getId());

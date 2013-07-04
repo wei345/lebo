@@ -1,10 +1,10 @@
 package com.lebo.service.status;
 
 import com.lebo.entity.FsFiles;
-import com.lebo.entity.Status;
+import com.lebo.entity.Tweet;
 import com.lebo.entity.User;
 import com.lebo.repository.FsFilesDao;
-import com.lebo.repository.StatusDao;
+import com.lebo.repository.TweetDao;
 import com.mongodb.CommandResult;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.lang3.StringUtils;
@@ -31,11 +31,11 @@ public class StatusService {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private StatusDao statusDao;
+    private TweetDao tweetDao;
     @Autowired
     private FsFilesDao fsFilesDao;
 
-    public Status update(String userId, String text, File media) throws IOException {
+    public Tweet update(String userId, String text, File media) throws IOException {
         String fileId;
         String md5 = Encodes.encodeHex(Digests.md5(new FileInputStream(media)));
         FsFiles fsFiles = fsFilesDao.findByMd5(md5);
@@ -48,19 +48,19 @@ public class StatusService {
             fileId = fsFiles.getId().toString();
         }
 
-        Status status = new Status();
-        status.setUser(new User(userId));
-        status.setCreatedAt(new Date());
-        status.setText(text);
-        status.setMedia(new FsFiles(fileId));
+        Tweet tweet = new Tweet();
+        tweet.setUser(new User(userId));
+        tweet.setCreatedAt(new Date());
+        tweet.setText(text);
+        tweet.setMedia(new FsFiles(fileId));
 
-        status = statusDao.save(status);
+        tweet = tweetDao.save(tweet);
 
         CommandResult commandResult = mongoTemplate.executeCommand("{ getLastError : 1 }");
         Object code = commandResult.get("code");
         if (code != null) {
             throw new RuntimeException(commandResult.get("err").toString());
         }
-        return status;
+        return tweet;
     }
 }

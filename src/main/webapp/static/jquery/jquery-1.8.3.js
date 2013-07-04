@@ -7653,7 +7653,7 @@ jQuery.extend({
 			// Deferreds
 			deferred = jQuery.Deferred(),
 			completeDeferred = jQuery.Callbacks( "once memory" ),
-			// Status-dependent callbacks
+			// Tweet-dependent callbacks
 			statusCode = s.statusCode || {},
 			// Headers (they are sent all at once)
 			requestHeaders = {},
@@ -7805,7 +7805,7 @@ jQuery.extend({
 				deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
 			}
 
-			// Status-dependent callbacks
+			// Tweet-dependent callbacks
 			jqXHR.statusCode( statusCode );
 			statusCode = undefined;
 
@@ -7832,7 +7832,7 @@ jQuery.extend({
 		jqXHR.error = jqXHR.fail;
 		jqXHR.complete = completeDeferred.add;
 
-		// Status-dependent callbacks
+		// Tweet-dependent callbacks
 		jqXHR.statusCode = function( map ) {
 			if ( map ) {
 				var tmp;
