@@ -57,7 +57,7 @@ public class StatusServiceTest extends SpringContextTestCase{
     public void update() throws IOException {
         ClassPathResource classPathResource = new ClassPathResource("application.properties");
         assertTrue(classPathResource.exists());
-        Tweet tweet = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", classPathResource.getFile());
+        Tweet tweet = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", classPathResource.getInputStream(), classPathResource.contentLength(), classPathResource.getFilename());
         assertNotNull(tweet);
 
     }

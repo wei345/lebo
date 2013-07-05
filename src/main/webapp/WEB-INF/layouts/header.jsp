@@ -4,6 +4,6 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <div id="header">
 	<div id="title">
-	    <h1>乐播</h1>
+	    <h1>乐播<small><sitemesh:title/></small></h1>
 	</div>
 </div>
