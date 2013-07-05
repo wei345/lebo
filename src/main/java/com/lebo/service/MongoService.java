@@ -1,6 +1,7 @@
 package com.lebo.service;
 
-import com.mongodb.CommandResult;
+import com.lebo.repository.MongoErrorCode;
+import com.mongodb.MongoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -13,11 +14,16 @@ public abstract class MongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-    protected void checkMongoError(){
-        CommandResult commandResult = mongoTemplate.executeCommand("{ getLastError : 1 }");
-        Object code = commandResult.get("code");
-        if (code != null) {
-            throw new RuntimeException(commandResult.get("err").toString());
+    protected void checkMongoError() {
+        try {
+            mongoTemplate.executeCommand("{ getLastError : 1 }").throwOnError();
+        } catch (MongoException e) {
+            switch (e.getCode()) {
+                case MongoErrorCode.DUPLICATE_KEY_ERROR:
+                    throw new DuplicateException(e);
+                default:
+                    throw e;
+            }
         }
     }
 

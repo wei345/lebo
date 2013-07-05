@@ -20,6 +20,7 @@ public class  ErrorDto {
     public static final ErrorDto UNAUTHORIZED = new ErrorDto("Unauthorized", 10401);
     public static final ErrorDto FORBIDDEN = new ErrorDto("Forbidden", 10403);
     public static final ErrorDto NOT_FOUND = new ErrorDto("Not Found", 10404);
+    public static final ErrorDto DUPLICATE = new ErrorDto("Duplicate", 10427);
     public static final ErrorDto INTERNAL_SERVER_ERROR = new ErrorDto("Internal Server Error", 10500);
 
     private static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
