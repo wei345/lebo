@@ -1,63 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
-	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-    xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
-		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
-		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
-		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+
+
+
+
 		http://www.springframework.org/schema/data/mongo
         http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd"
-	default-lazy-init="true">
+       default-lazy-init="true">
 
-	<description>Spring公共配置 </description>
+    <description>Spring公共配置</description>
 
-	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
-	<context:component-scan base-package="com.lebo">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-	</context:component-scan>
+    <!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+    <context:component-scan base-package="com.lebo">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
-	<!-- JSR303 Validator定义 -->
- 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+    <!-- JSR303 Validator定义 -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <!-- Activate Spring Data MongoDB repository support -->
-     <mongo:repositories base-package="com.lebo.repository" />
+    <mongo:repositories base-package="com.lebo.repository"/>
 
     <!-- MongoDB -->
-    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.dbname}" host="${mongo.host}" port="${mongo.port}" />
+    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.dbname}" host="${mongo.host}" port="${mongo.port}"/>
 
-    <mongo:mapping-converter id="mongoConverter" />
+    <mongo:mapping-converter id="mongoConverter"/>
 
     <bean id="noClassFieldMongoConverter" class="com.lebo.repository.NoClassFieldMappingMongoConverterFactoryBean">
-        <property name="converter" ref="mongoConverter" />
+        <property name="converter" ref="mongoConverter"/>
     </bean>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
         <constructor-arg name="mongoConverter" ref="noClassFieldMongoConverter"/>
     </bean>
 
     <bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
-        <constructor-arg ref="mongoDbFactory" />
-        <constructor-arg ref="mongoConverter" />
+        <constructor-arg ref="mongoDbFactory"/>
+        <constructor-arg ref="mongoConverter"/>
     </bean>
 
-	<!-- production环境 -->
- 	<beans profile="production">
- 		<context:property-placeholder ignore-unresolvable="true"
-			location="classpath*:/application.properties" />	
-	</beans>
-	
-	<!-- local development环境 -->
-	<beans profile="development">
-		<context:property-placeholder ignore-resource-not-found="true"
-			location="classpath*:/application.properties,
-          			  classpath*:/application.development.properties" />
-	</beans>
+    <!-- production环境 -->
+    <beans profile="production">
+        <context:property-placeholder ignore-unresolvable="true"
+                                      location="classpath*:/application.properties"/>
+    </beans>
+
+    <!-- local development环境 -->
+    <beans profile="development">
+        <context:property-placeholder ignore-resource-not-found="true"
+                                      location="classpath*:/application.properties,
+          			  classpath*:/application.development.properties"/>
+    </beans>
 
 </beans>

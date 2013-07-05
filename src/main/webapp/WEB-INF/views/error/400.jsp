@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.lebo.rest.ErrorDto" %>
 <%response.setStatus(200);%><%
-    String uri = (String)request.getAttribute("javax.servlet.forward.request_uri");
-    if(uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {
+    String uri = (String) request.getAttribute("javax.servlet.forward.request_uri");
+    if (uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {
         response.getWriter().write(ErrorDto.BAD_REQUEST.toJson());
     } else { %>
 
@@ -15,6 +15,7 @@
 
 <body>
 <h2>400 - 错误的请求.</h2>
+
 <p><a href="<c:url value="/"/>">返回首页</a></p>
 </body>
 </html>

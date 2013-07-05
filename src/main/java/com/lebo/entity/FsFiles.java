@@ -21,9 +21,10 @@ public class FsFiles extends IdEntity {
     private List<String> aliases;
     private Metadata metadata;
 
-    public FsFiles(){}
+    public FsFiles() {
+    }
 
-    public FsFiles(String id){
+    public FsFiles(String id) {
         this.id = id;
     }
 

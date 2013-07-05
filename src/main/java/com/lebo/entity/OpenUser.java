@@ -11,9 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 @CompoundIndexes({
-    @CompoundIndex(name = "openUser_unique", def = "{'provider': 1, 'uid': 1}", unique = true)
+        @CompoundIndex(name = "openUser_unique", def = "{'provider': 1, 'uid': 1}", unique = true)
 })
-public class OpenUser extends IdEntity{
+public class OpenUser extends IdEntity {
 
     private String provider;
     private String uid;

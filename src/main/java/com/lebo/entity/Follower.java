@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 @CompoundIndexes({
-    @CompoundIndex(name = "user_follower_unique", def = "{'userId': 1, 'followerId': 1}", unique = true)
+        @CompoundIndex(name = "user_follower_unique", def = "{'userId': 1, 'followerId': 1}", unique = true)
 })
 public class Follower extends IdEntity {
     private String userId;

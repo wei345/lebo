@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -34,7 +36,7 @@ public class StatusService extends MongoService {
     private FsFilesDao fsFilesDao;
 
     public Tweet update(String userId, String text, InputStream media, Long mediaSizeInByte, String mediaName) throws IOException {
-        if(!media.markSupported()){
+        if (!media.markSupported()) {
             media = new ByteArrayInputStream(IOUtils.toByteArray(media));
         }
 

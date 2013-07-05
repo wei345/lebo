@@ -2,7 +2,6 @@ package com.lebo.rest;
 
 import com.lebo.service.account.ShiroUser;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.web.util.WebUtils;
 
 /**
  * @author: Wei Liu
@@ -10,7 +9,7 @@ import org.apache.shiro.web.util.WebUtils;
  * Time: PM1:34
  */
 public class ControllerUtils {
-    public static String getCurrentUserId(){
+    public static String getCurrentUserId() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
         return user.id;
     }

@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomeController {
     @RequestMapping(value = "restclient", method = RequestMethod.GET)
-    public String restClient(){
+    public String restClient() {
         return "restclient";
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
-    public String login(){
+    public String login() {
         return "login";
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
  * Date: 13-6-24
  * Time: PM3:55
  */
-@ContextConfiguration(locations = { "/applicationContext.xml" })
+@ContextConfiguration(locations = {"/applicationContext.xml"})
 @ActiveProfiles("development")
 public class SpringContextTestCase extends AbstractJUnit4SpringContextTests {
 }

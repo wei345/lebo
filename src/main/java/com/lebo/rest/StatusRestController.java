@@ -32,9 +32,9 @@ public class StatusRestController {
 
             return statusService.update(ControllerUtils.getCurrentUserId(), text, media.getInputStream(), media.getSize(), media.getName());
 
-        } catch (DuplicateException e){
+        } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.info("发布Tweet失败", e);
             return new ErrorDto(e.getMessage());
         }

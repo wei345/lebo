@@ -14,16 +14,16 @@ import static com.mongodb.util.MyAsserts.assertTrue;
 public class Test {
 
     @org.junit.Test
-    public void test(){
+    public void test() {
         String mongoDbId = "51d415ce1a88bbf2750b0daa";
         byte[] bytes = Encodes.decodeHex(mongoDbId);
         String base62Str = Encodes.encodeBase62(bytes);
 
-        BigInteger bigi =  Base62.decode(base62Str);
+        BigInteger bigi = Base62.decode(base62Str);
         byte[] bytes2 = bigi.toByteArray();
 
         assertTrue(bytes.length == bytes2.length);
-        for(int i = 0; i < bytes.length; i++){
+        for (int i = 0; i < bytes.length; i++) {
             assertTrue(bytes[i] == bytes2[i]);
         }
 
@@ -39,7 +39,7 @@ class Base62 {
     /**
      * Encodes a number using Base62 encoding.
      *
-     * @param  number a positive integer
+     * @param number a positive integer
      * @return a Base62 string
      * @throws IllegalArgumentException if <code>number</code> is a negative integer
      */
@@ -64,7 +64,7 @@ class Base62 {
     /**
      * Decodes a string using Base62 encoding.
      *
-     * @param  string a Base62 string
+     * @param string a Base62 string
      * @return a positive integer
      * @throws IllegalArgumentException if <code>string</code> is empty
      */

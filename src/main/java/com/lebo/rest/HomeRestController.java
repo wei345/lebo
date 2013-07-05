@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,15 +12,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/api")
 public class HomeRestController {
-    @RequestMapping(value="")
+    @RequestMapping(value = "")
     @ResponseBody
-    public Object index(){
+    public Object index() {
         return "It works";
     }
 
-    @RequestMapping(value="**")
+    @RequestMapping(value = "**")
     @ResponseBody
-    public Object notFound(){
+    public Object notFound() {
         return ErrorDto.NOT_FOUND;
     }
 }

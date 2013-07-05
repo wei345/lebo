@@ -19,7 +19,7 @@ public class UserDaoTest extends SpringContextTestCase {
     UserDao userDao;
 
     @Test
-    public void get(){
+    public void get() {
         String id = "51c809301a884410d5ce6964";
         User user2 = userDao.findOne(id);
         assertEquals(id, user2.getId());

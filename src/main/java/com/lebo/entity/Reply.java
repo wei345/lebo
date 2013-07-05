@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Time: PM4:34
  */
 @Document
-public class Reply extends Tweet{
+public class Reply extends Tweet {
     private String tweetId;
 
     public String getTweetId() {

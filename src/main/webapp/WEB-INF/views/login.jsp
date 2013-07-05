@@ -18,22 +18,22 @@
 
 <script>
 
-function login(){
-    $.ajax({
-        type: 'post',
-        url: '${ctx}/api/v1/oauthLogin',
-        dataType: 'json',
-        data: 'provider=weibo&uid=1774156407&token=2.00vHLEwBz7QwTCbafc736d580QUCCY',
-        success: function(data){
-            if(data.error){
-                $('#result').html('登录失败');
-            }else{
-                $('#result').html('登录成功');
+    function login() {
+        $.ajax({
+            type: 'post',
+            url: '${ctx}/api/v1/oauthLogin',
+            dataType: 'json',
+            data: 'provider=weibo&uid=1774156407&token=2.00vHLEwBz7QwTCbafc736d580QUCCY',
+            success: function (data) {
+                if (data.error) {
+                    $('#result').html('登录失败');
+                } else {
+                    $('#result').html('登录成功');
+                }
+            },
+            error: function () {
+                $('#result').html('登录出错');
             }
-        },
-        error: function(){
-            $('#result').html('登录出错');
-        }
-    });
-}
+        });
+    }
 </script>

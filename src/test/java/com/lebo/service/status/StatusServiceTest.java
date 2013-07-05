@@ -15,16 +15,14 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author: Wei Liu
  * Date: 13-7-2
  * Time: PM4:46
  */
-public class StatusServiceTest extends SpringContextTestCase{
+public class StatusServiceTest extends SpringContextTestCase {
     @Autowired
     private GridFsTemplate gridFsTemplate;
 
@@ -41,7 +39,7 @@ public class StatusServiceTest extends SpringContextTestCase{
 
         long fileCount = mongoTemplate.getCollection("fs.files").count();
         Map meta = Maps.newHashMap();
-        meta.put("a",1);
+        meta.put("a", 1);
         meta.put("b", "abc");
 
         GridFSFile file = gridFsTemplate.store(classPathResource.getInputStream(), classPathResource.getFilename(), "xml", meta);

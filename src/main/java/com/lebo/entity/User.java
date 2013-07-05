@@ -1,38 +1,28 @@
 package com.lebo.entity;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableList;
-import org.springframework.data.annotation.Reference;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 @Document
 public class User extends IdEntity {
 
     @Indexed(unique = true)
     private String screenName;
-	private String name;
+    private String name;
     private String profileImageUrl;
     private Date createdAt;
     private String email;
     private Date lastSignInAt;
 
-    public User(){}
+    public User() {
+    }
 
-    public User(String id){
+    public User(String id) {
         this.id = id;
     }
 
@@ -44,13 +34,13 @@ public class User extends IdEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @NotBlank
     public String getScreenName() {
@@ -88,7 +78,7 @@ public class User extends IdEntity {
     }
 
     @Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

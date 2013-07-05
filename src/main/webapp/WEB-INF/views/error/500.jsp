@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" isErrorPage="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="org.slf4j.LoggerFactory" %>
-<%@ page import="org.slf4j.Logger" %>
 <%@ page import="com.lebo.rest.ErrorDto" %>
+<%@ page import="org.slf4j.Logger" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
 <%response.setStatus(200);%>
 <%
     Throwable ex = null;
@@ -16,8 +16,8 @@
     logger.error(ex.getMessage(), ex);
 %>
 <%
-    String uri = (String)request.getAttribute("javax.servlet.forward.request_uri");
-    if(uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {
+    String uri = (String) request.getAttribute("javax.servlet.forward.request_uri");
+    if (uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {
         response.getWriter().write(new ErrorDto(ex.getMessage()).toJson());
     } else {
 %>
@@ -30,6 +30,7 @@
 
 <body>
 <h2>500 - 系统发生内部错误.</h2>
+
 <p><a href="<c:url value="/"/>">返回首页</a></p>
 </body>
 </html>
