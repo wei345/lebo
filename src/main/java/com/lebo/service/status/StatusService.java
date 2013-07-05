@@ -5,17 +5,18 @@ import com.lebo.entity.Tweet;
 import com.lebo.entity.User;
 import com.lebo.repository.FsFilesDao;
 import com.lebo.repository.TweetDao;
-import com.mongodb.CommandResult;
+import com.lebo.service.MongoService;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -24,12 +25,10 @@ import java.util.Date;
  * Time: PM4:32
  */
 @Service
-public class StatusService {
+public class StatusService extends MongoService {
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
-    @Autowired
-    private MongoTemplate mongoTemplate;
     @Autowired
     private TweetDao tweetDao;
     @Autowired
@@ -56,11 +55,8 @@ public class StatusService {
 
         tweet = tweetDao.save(tweet);
 
-        CommandResult commandResult = mongoTemplate.executeCommand("{ getLastError : 1 }");
-        Object code = commandResult.get("code");
-        if (code != null) {
-            throw new RuntimeException(commandResult.get("err").toString());
-        }
+        checkMongoError();
+
         return tweet;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Document
 @CompoundIndexes({
-    @CompoundIndex(name = "status_not_duplication", def = "{'user': 1, 'text': 1, 'media': 1}", unique = true, dropDups = true)
+    @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'media': 1}", unique = true, dropDups = true)
 })
 public class Tweet extends IdEntity {
     private Date createdAt;
@@ -29,6 +29,10 @@ public class Tweet extends IdEntity {
     @DBRef
     private User user;
     private GeoLocation geoLocation;
+
+    private boolean isRetweet;
+    @DBRef
+    private Tweet originTweet;
 
     public Date getCreatedAt() {
         return createdAt;
@@ -108,5 +112,21 @@ public class Tweet extends IdEntity {
 
     public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
+    }
+
+    public boolean isRetweet() {
+        return isRetweet;
+    }
+
+    public void setRetweet(boolean retweet) {
+        isRetweet = retweet;
+    }
+
+    public Tweet getOriginTweet() {
+        return originTweet;
+    }
+
+    public void setOriginTweet(Tweet originTweet) {
+        this.originTweet = originTweet;
     }
 }
