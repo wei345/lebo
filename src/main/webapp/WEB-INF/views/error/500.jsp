@@ -18,7 +18,7 @@
 <%
     String uri = (String) request.getAttribute("javax.servlet.forward.request_uri");
     if (uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {
-        response.getWriter().write(new ErrorDto(ex.getMessage()).toJson());
+        response.getWriter().write(ErrorDto.newInternalServerError(ex.getMessage()).toJson());
     } else {
 %>
 

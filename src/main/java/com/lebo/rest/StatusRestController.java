@@ -49,7 +49,7 @@ public class StatusRestController {
             return ErrorDto.DUPLICATE;
         } catch (Exception e) {
             logger.info("发布Tweet失败", e);
-            return new ErrorDto(e.getMessage());
+            return ErrorDto.newInternalServerError(e.getMessage());
         }
     }
 
@@ -111,6 +111,6 @@ public class StatusRestController {
     @ResponseBody
     public Object userTimeline(@Valid TimelineParam param) {
         param.setUserId(ShiroUtils.getCurrentUserId());
-        return statusService.homeTimeline(param);
+        return statusService.userTimeline(param);
     }
 }

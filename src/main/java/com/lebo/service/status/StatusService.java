@@ -6,7 +6,6 @@ import com.lebo.repository.TweetDao;
 import com.lebo.service.GridFsService;
 import com.lebo.service.MongoService;
 import com.lebo.service.TimelineParam;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -49,13 +48,13 @@ public class StatusService extends MongoService {
         return tweet;
     }
 
-    public List homeTimeline(TimelineParam param) {
+    public List userTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
 
         if (param.canIgnoreIdCondition()) {
             return tweetDao.findByUserId(param.getUserId(), param).getContent();
         } else {
-            return tweetDao.findByUserIdAndIdLessThanEquals(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
+            return tweetDao.userTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
         }
     }
 

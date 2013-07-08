@@ -35,36 +35,13 @@ public class TweetDaoTest extends SpringContextTestCase {
     @Test
     public void findByUserIdAndIdLessThanEquals() {
         Pageable pageRequest = new PageRequest(0, 2, new Sort(new Sort.Order(Sort.Direction.DESC, "_id")));
-        Page<Tweet> page = tweetDao.findByUserIdAndIdLessThanEquals("51da5bd71a881f1acdcb6308",
-                "51da68381a88c135cf1f39de","000000000000000000000000", pageRequest);
+        Page<Tweet> page = tweetDao.userTimeline("51da5bd71a881f1acdcb6308",
+                "51da68381a88c135cf1f39de", "000000000000000000000000", pageRequest);
 
         assertTrue(page.hasNextPage());
         assertEquals(2, page.getTotalPages());
         //验证ID顺序
         assertTrue(page.getContent().get(0).getId().compareTo(page.getContent().get(1).getId()) > 0);
     }
-
-    /*@Test
-    public void findByScreenName() {
-        Pageable pageRequest = new PageRequest(0, 2, new Sort(new Sort.Order(Sort.Direction.ASC, "_id")));
-        Page<Tweet> page = tweetDao.findByScreenName("51da5bd71a881f1acdcb6308", pageRequest);
-        assertTrue(page.hasNextPage());
-        assertEquals(2, page.getTotalPages());
-
-        //验证ID顺序
-        assertTrue(page.getContent().get(0).getId().compareTo(page.getContent().get(1).getId()) < 0);
-    }
-
-    @Test
-    public void findByScreenNameAndIdLessThanEquals() {
-        Pageable pageRequest = new PageRequest(0, 2, new Sort(new Sort.Order(Sort.Direction.DESC, "_id")));
-        Page<Tweet> page = tweetDao.findByUserIdAndIdLessThanEquals("51da5bd71a881f1acdcb6308",
-                "51da68381a88c135cf1f39de", pageRequest);
-
-        assertTrue(page.hasNextPage());
-        assertEquals(2, page.getTotalPages());
-        //验证ID顺序
-        assertTrue(page.getContent().get(0).getId().compareTo(page.getContent().get(1).getId()) > 0);
-    }*/
 
 }

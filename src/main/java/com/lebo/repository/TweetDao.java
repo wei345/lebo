@@ -15,9 +15,8 @@ import java.util.List;
  * Time: PM5:15
  */
 public interface TweetDao extends MongoRepository<Tweet, String> {
-    @Query(value = "{ userId : ?0 }")
     Page<Tweet> findByUserId(String userId, Pageable pageable);
 
     @Query(value = "{ userId : ?0 , _id : { $lte : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
-    Page<Tweet> findByUserIdAndIdLessThanEquals(String userId, String maxId, String sinceId, Pageable pageable);
+    Page<Tweet> userTimeline(String userId, String maxId, String sinceId, Pageable pageable);
 }
