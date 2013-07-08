@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
+import javax.activation.FileTypeMap;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -53,10 +55,13 @@ public class StatusServiceTest extends SpringContextTestCase {
 
     @Test
     public void update() throws IOException {
-        ClassPathResource classPathResource = new ClassPathResource("application.properties");
+        ClassPathResource classPathResource = new ClassPathResource("applicationContext.xml");
         assertTrue(classPathResource.exists());
-        Tweet tweet = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", classPathResource.getInputStream(), classPathResource.contentLength(), classPathResource.getFilename());
-        assertNotNull(tweet);
 
+        String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(classPathResource.getFile());
+        Tweet tweet = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", classPathResource.getInputStream(),
+                classPathResource.contentLength(), contentType, classPathResource.getFilename());
+
+        assertNotNull(tweet);
     }
 }

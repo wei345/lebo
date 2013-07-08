@@ -30,7 +30,8 @@ public class StatusRestController {
     public Object update(@RequestParam(value = "media") MultipartFile media, @RequestParam(value = "text") String text) {
         try {
 
-            return statusService.update(ControllerUtils.getCurrentUserId(), text, media.getInputStream(), media.getSize(), media.getName());
+            return statusService.update(ControllerUtils.getCurrentUserId(), text, media.getInputStream(),
+                    media.getSize(), media.getContentType(), media.getOriginalFilename());
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;

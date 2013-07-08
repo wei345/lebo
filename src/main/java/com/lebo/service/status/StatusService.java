@@ -8,7 +8,6 @@ import com.lebo.repository.TweetDao;
 import com.lebo.service.MongoService;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class StatusService extends MongoService {
     @Autowired
     private FsFilesDao fsFilesDao;
 
-    public Tweet update(String userId, String text, InputStream media, Long mediaSizeInByte, String mediaName) throws IOException {
+    public Tweet update(String userId, String text, InputStream media, Long mediaSizeInByte, String contentType, String filename) throws IOException {
         if (!media.markSupported()) {
             media = new ByteArrayInputStream(IOUtils.toByteArray(media));
         }
@@ -46,9 +45,8 @@ public class StatusService extends MongoService {
         FsFiles fsFiles = fsFilesDao.findByMd5(md5);
 
         if (fsFiles == null) {
-            String mediaType = StringUtils.substringAfterLast(mediaName, ".");
             media.reset();
-            GridFSFile gridFSFile = gridFsTemplate.store(media, mediaName, mediaType);
+            GridFSFile gridFSFile = gridFsTemplate.store(media, filename, contentType);
             fileId = gridFSFile.getId().toString();
             checkMongoError();
         } else {
