@@ -63,4 +63,32 @@ public class ShiroUser implements Serializable {
             return false;
         return true;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }

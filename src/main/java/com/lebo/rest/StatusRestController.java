@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author: Wei Liu
  * Date: 13-7-3
@@ -27,11 +30,17 @@ public class StatusRestController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
-    public Object update(@RequestParam(value = "media") MultipartFile media, @RequestParam(value = "text") String text) {
+    public Object update(@RequestParam(value = "video") MultipartFile video,
+                         @RequestParam(value = "image") MultipartFile image,
+                         @RequestParam(value = "text") String text) {
         try {
 
-            return statusService.update(ControllerUtils.getCurrentUserId(), text, media.getInputStream(),
-                    media.getSize(), media.getContentType(), media.getOriginalFilename());
+            List<StatusService.File> files = Arrays.asList(
+                    new StatusService.File(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
+                    new StatusService.File(image.getInputStream(), image.getOriginalFilename(), image.getContentType())
+            );
+
+            return statusService.update(ControllerUtils.getCurrentUserId(), text, files);
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;

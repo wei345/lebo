@@ -10,14 +10,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Time: PM2:25
  */
 @Controller
+@RequestMapping
 public class HomeController {
-    @RequestMapping(value = "restclient", method = RequestMethod.GET)
-    public String restClient() {
-        return "restclient";
+    @RequestMapping(method = RequestMethod.GET)
+    public String index() {
+        return "index";
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login() {
         return "login";
+    }
+
+    @RequestMapping(value = "restclient", method = RequestMethod.GET)
+    public String restClient() {
+        return "restclient";
     }
 }

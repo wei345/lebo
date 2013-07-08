@@ -12,23 +12,25 @@
 </script>
 --%>
 
-<button id="btn-login" onclick="login()">登录</button>
+<form id="loginForm" onsubmit="login();return false;">
+    <input type="text" name="token" value="2.00vHLEwBz7QwTCbafc736d580QUCCY" placeholder="新浪token"/>
+    <button id="btn-login" type="submit">登录</button>
+</form>
 
 <div id="result"></div>
 
 <script>
-
     function login() {
         $.ajax({
             type: 'post',
             url: '${ctx}/api/v1/oauthLogin',
             dataType: 'json',
-            data: 'provider=weibo&uid=1774156407&token=2.00vHLEwBz7QwTCbafc736d580QUCCY',
+            data: 'provider=weibo&token=' + $('#loginForm')[0].token.value,
             success: function (data) {
                 if (data.error) {
                     $('#result').html('登录失败');
                 } else {
-                    $('#result').html('登录成功');
+                    window.location = '${ctx}/';
                 }
             },
             error: function () {

@@ -14,7 +14,7 @@ public abstract class MongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-    protected void checkMongoError() {
+    protected void throwOnMongoError() {
         try {
             mongoTemplate.executeCommand("{ getLastError : 1 }").throwOnError();
         } catch (MongoException e) {

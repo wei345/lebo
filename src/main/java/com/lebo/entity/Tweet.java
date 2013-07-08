@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -14,25 +15,34 @@ import java.util.Date;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'media': 1}", unique = true, dropDups = true)
+        @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'media': 1}", unique = true)
 })
 public class Tweet extends IdEntity {
+    private String userId;
     private Date createdAt;
     private String text;
-    @DBRef
-    private FsFiles media;
-    private String source;
     private boolean isTruncated;
-    private boolean isRetweeted;
-    private int retweetCount;
-    private int favoriteCount;
-    @DBRef
-    private User user;
+
+    //引用文件id，可以存视频、图片、或其他上传的文件
+    private List<String> files;
+
+    //该Tweet来源，如：手机客户端、网页版
+    private String source;
     private GeoLocation geoLocation;
 
-    private boolean isRetweet;
-    @DBRef
-    private Tweet originTweet;
+    private int favoriteCount;
+    private int retweetCount;
+
+    private boolean isRetweeted;
+    private String originTweetId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -50,12 +60,20 @@ public class Tweet extends IdEntity {
         this.text = text;
     }
 
-    public FsFiles getMedia() {
-        return media;
+    public boolean isTruncated() {
+        return isTruncated;
     }
 
-    public void setMedia(FsFiles media) {
-        this.media = media;
+    public void setTruncated(boolean truncated) {
+        isTruncated = truncated;
+    }
+
+    public List<String> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<String> files) {
+        this.files = files;
     }
 
     public String getSource() {
@@ -66,28 +84,12 @@ public class Tweet extends IdEntity {
         this.source = source;
     }
 
-    public boolean isTruncated() {
-        return isTruncated;
+    public GeoLocation getGeoLocation() {
+        return geoLocation;
     }
 
-    public void setTruncated(boolean truncated) {
-        isTruncated = truncated;
-    }
-
-    public boolean isRetweeted() {
-        return isRetweeted;
-    }
-
-    public void setRetweeted(boolean retweeted) {
-        isRetweeted = retweeted;
-    }
-
-    public int getRetweetCount() {
-        return retweetCount;
-    }
-
-    public void setRetweetCount(int retweetCount) {
-        this.retweetCount = retweetCount;
+    public void setGeoLocation(GeoLocation geoLocation) {
+        this.geoLocation = geoLocation;
     }
 
     public int getFavoriteCount() {
@@ -98,35 +100,27 @@ public class Tweet extends IdEntity {
         this.favoriteCount = favoriteCount;
     }
 
-    public User getUser() {
-        return user;
+    public int getRetweetCount() {
+        return retweetCount;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setRetweetCount(int retweetCount) {
+        this.retweetCount = retweetCount;
     }
 
-    public GeoLocation getGeoLocation() {
-        return geoLocation;
+    public boolean isRetweeted() {
+        return isRetweeted;
     }
 
-    public void setGeoLocation(GeoLocation geoLocation) {
-        this.geoLocation = geoLocation;
+    public void setRetweeted(boolean retweeted) {
+        isRetweeted = retweeted;
     }
 
-    public boolean isRetweet() {
-        return isRetweet;
+    public String getOriginTweetId() {
+        return originTweetId;
     }
 
-    public void setRetweet(boolean retweet) {
-        isRetweet = retweet;
-    }
-
-    public Tweet getOriginTweet() {
-        return originTweet;
-    }
-
-    public void setOriginTweet(Tweet originTweet) {
-        this.originTweet = originTweet;
+    public void setOriginTweetId(String originTweetId) {
+        this.originTweetId = originTweetId;
     }
 }

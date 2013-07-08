@@ -1,23 +1,21 @@
 package com.lebo.service.status;
 
-import com.lebo.entity.FsFiles;
+import com.google.common.collect.Lists;
 import com.lebo.entity.Tweet;
-import com.lebo.entity.User;
-import com.lebo.repository.FsFilesDao;
 import com.lebo.repository.TweetDao;
+import com.lebo.service.GridFsService;
 import com.lebo.service.MongoService;
-import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
-import org.springside.modules.security.utils.Digests;
-import org.springside.modules.utils.Encodes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -28,41 +26,41 @@ import java.util.Date;
 public class StatusService extends MongoService {
 
     @Autowired
-    private GridFsTemplate gridFsTemplate;
-    @Autowired
     private TweetDao tweetDao;
     @Autowired
-    private FsFilesDao fsFilesDao;
+    private GridFsService gridFsService;
 
-    public Tweet update(String userId, String text, InputStream media, Long mediaSizeInByte, String contentType, String filename) throws IOException {
-        if (!media.markSupported()) {
-            media = new ByteArrayInputStream(IOUtils.toByteArray(media));
-        }
 
-        String fileId;
-        media.mark(Integer.MAX_VALUE);
-        String md5 = Encodes.encodeHex(Digests.md5(media));
-        FsFiles fsFiles = fsFilesDao.findByMd5(md5);
-
-        if (fsFiles == null) {
-            media.reset();
-            GridFSFile gridFSFile = gridFsTemplate.store(media, filename, contentType);
-            fileId = gridFSFile.getId().toString();
-            checkMongoError();
-        } else {
-            fileId = fsFiles.getId().toString();
+    public Tweet update(String userId, String text, List<File> files) throws IOException {
+        List<String> fileIds = Lists.newArrayList();
+        for(File file : files){
+            fileIds.add(gridFsService.save(file.content, file.filename, file.contentType));
         }
 
         Tweet tweet = new Tweet();
-        tweet.setUser(new User(userId));
+        tweet.setUserId(userId);
         tweet.setCreatedAt(new Date());
         tweet.setText(text);
-        tweet.setMedia(new FsFiles(fileId));
-
+        tweet.setFiles(fileIds);
         tweet = tweetDao.save(tweet);
+        throwOnMongoError();
 
-        checkMongoError();
-
+        for(String id: fileIds){
+            gridFsService.increaseReferrerCount(id);
+        }
         return tweet;
+    }
+
+    public static class File {
+        InputStream content;
+        String filename;
+        String contentType;
+        Long size;
+
+        public File(InputStream content, String filename, String contentType) {
+            this.content = content;
+            this.filename = filename;
+            this.contentType = contentType;
+        }
     }
 }
