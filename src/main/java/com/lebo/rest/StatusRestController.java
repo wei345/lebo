@@ -1,6 +1,8 @@
 package com.lebo.rest;
 
 import com.lebo.service.DuplicateException;
+import com.lebo.service.TimelineParam;
+import com.lebo.service.account.ShiroUtils;
 import com.lebo.service.status.StatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +43,7 @@ public class StatusRestController {
                     new StatusService.File(image.getInputStream(), image.getOriginalFilename(), image.getContentType())
             );
 
-            return statusService.update(ControllerUtils.getCurrentUserId(), text, files);
+            return statusService.update(ShiroUtils.getCurrentUserId(), text, files);
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
@@ -48,6 +51,66 @@ public class StatusRestController {
             logger.info("发布Tweet失败", e);
             return new ErrorDto(e.getMessage());
         }
+    }
 
+    /**
+     * <h2>Twitter</h2>
+     * <p>
+     * Returns a collection of the most recent Tweets and retweets posted by
+     * the authenticating user and the users they follow. The home timeline
+     * is central to how most users interact with the Twitter service.
+     * </p>
+     * <p>
+     * Up to 800 Tweets are obtainable on the home timeline. It is more
+     * volatile for users that follow many users or follow users who tweet
+     * frequently.
+     * </p>
+     * <p>
+     * https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+     * </p>
+     */
+    @RequestMapping(value = "home_timeline", method = RequestMethod.GET)
+    public Object homeTimeline() {
+        return null;
+    }
+
+    /**
+     * <h2>Twitter</h2>
+     * <p>
+     * Returns a collection of the most recent Tweets posted by the user
+     * indicated by the screen_name or user_id parameters.
+     * </p>
+     * <p>
+     * User timelines belonging to protected users may only be requested
+     * when the authenticated user either "owns" the timeline or is an
+     * approved follower of the owner.
+     * </p>
+     * <p>
+     * The timeline returned is the equivalent of the one seen when you
+     * view a user's profile on twitter.com.
+     * </p>
+     * <p>
+     * This method can only return up to 3,200 of a user's most recent
+     * Tweets. Native retweets of other statuses by the user is included
+     * in this total, regardless of whether include_rts is set to false
+     * when requesting this resource.
+     * </p>
+     * <p>
+     * https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
+     * </p>
+     *
+     * <h2>新浪</h2>
+     * <p>
+     * 获取某个用户最新发表的微博列表
+     * </p>
+     * <p>
+     * http://open.weibo.com/wiki/2/statuses/user_timeline
+     * </p>
+     */
+    @RequestMapping(value = "user_timeline", method = RequestMethod.GET)
+    @ResponseBody
+    public Object userTimeline(@Valid TimelineParam param) {
+        param.setUserId(ShiroUtils.getCurrentUserId());
+        return statusService.homeTimeline(param);
     }
 }

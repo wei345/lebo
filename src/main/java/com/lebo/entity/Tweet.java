@@ -2,6 +2,8 @@ package com.lebo.entity;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,10 +17,12 @@ import java.util.List;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'media': 1}", unique = true)
+        @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'files': 1}", unique = true)
 })
 public class Tweet extends IdEntity {
+    @Indexed
     private String userId;
+    @Indexed(direction = IndexDirection.DESCENDING)
     private Date createdAt;
     private String text;
     private boolean isTruncated;
@@ -30,10 +34,13 @@ public class Tweet extends IdEntity {
     private String source;
     private GeoLocation geoLocation;
 
+    @Indexed
     private int favoriteCount;
+    @Indexed
     private int retweetCount;
 
     private boolean isRetweeted;
+    @Indexed
     private String originTweetId;
 
     public String getUserId() {
