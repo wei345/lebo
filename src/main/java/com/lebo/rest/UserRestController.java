@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * Users.
+ * 用户可以修改screenName，关注和粉丝不变。
+ *
  * @author: Wei Liu
  * Date: 13-7-9
  * Time: AM10:32

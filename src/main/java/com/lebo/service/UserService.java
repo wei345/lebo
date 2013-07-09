@@ -25,4 +25,8 @@ public class UserService {
     public User getUser(String id){
         return userDao.findOne(id);
     }
+
+    public User getUserByScreenName(String screenName){
+       return userDao.findByScreenName(screenName);
+    }
 }

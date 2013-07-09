@@ -10,4 +10,6 @@ public interface UserDao extends MongoRepository<User, String> {
 
     @Query(value = "{}")
     Page<User> searchUser(String q, Pageable pageable);
+
+    User findByScreenName(String screenName);
 }

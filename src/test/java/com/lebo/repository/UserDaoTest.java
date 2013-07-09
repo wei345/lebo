@@ -6,7 +6,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springside.modules.test.category.UnStable;
 
+import static com.mongodb.util.MyAsserts.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author: Wei Liu
@@ -24,5 +27,19 @@ public class UserDaoTest extends SpringContextTestCase implements UnStable {
         String id = "51c809301a884410d5ce6964";
         User user = userDao.findOne(id);
         assertEquals(id, user.getId());
+    }
+
+    @Test
+    public void findByScreenName(){
+        User user = userDao.findByScreenName("法图_麦");
+        assertNotNull(user);
+        assertEquals("法图_麦", user.getScreenName());
+    }
+
+    @Test
+    public void exists(){
+        assertTrue(userDao.exists("51dbbc141a887f15c8b6f04c"));
+        assertTrue(userDao.exists("51dbb3e21a887f15c8b6f042"));
+        assertFalse(userDao.exists("123456789012345678901234"));
     }
 }
