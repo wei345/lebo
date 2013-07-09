@@ -21,9 +21,4 @@ public class HomeController {
     public String login() {
         return "login";
     }
-
-    @RequestMapping(value = "restclient", method = RequestMethod.GET)
-    public String restClient() {
-        return "restclient";
-    }
 }

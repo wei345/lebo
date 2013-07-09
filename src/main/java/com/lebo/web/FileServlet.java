@@ -31,11 +31,11 @@ import java.util.zip.GZIPOutputStream;
  *
  * @author calvin
  */
-public class StaticContentServlet extends HttpServlet {
+public class FileServlet extends HttpServlet {
 
     private static final long serialVersionUID = -1855617048198368534L;
 
-    private Logger logger = LoggerFactory.getLogger(StaticContentServlet.class);
+    private Logger logger = LoggerFactory.getLogger(FileServlet.class);
 
     /**
      * 需要被Gzip压缩的Mime类型.

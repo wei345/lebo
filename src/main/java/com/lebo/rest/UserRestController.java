@@ -3,6 +3,7 @@ package com.lebo.rest;
 import com.lebo.service.SearchParam;
 import com.lebo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Date: 13-7-9
  * Time: AM10:32
  */
+@Controller
 @RequestMapping(value = "/api/v1/users")
-public class UserController {
+public class UserRestController {
     @Autowired
     private UserService userService;
 

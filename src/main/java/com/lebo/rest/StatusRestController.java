@@ -8,7 +8,7 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.TimelineParam;
 import com.lebo.service.UserService;
 import com.lebo.service.account.ShiroUtils;
-import com.lebo.service.status.StatusService;
+import com.lebo.service.StatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

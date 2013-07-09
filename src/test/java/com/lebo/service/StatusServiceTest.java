@@ -1,8 +1,9 @@
-package com.lebo.service.status;
+package com.lebo.service;
 
 import com.google.common.collect.Maps;
 import com.lebo.SpringContextTestCase;
 import com.lebo.entity.Tweet;
+import com.lebo.service.StatusService;
 import com.mongodb.gridfs.GridFSFile;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

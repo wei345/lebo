@@ -1,4 +1,4 @@
-package com.lebo.service.status;
+package com.lebo.service;
 
 import com.google.common.collect.Lists;
 import com.lebo.entity.Tweet;
