@@ -14,6 +14,14 @@ public abstract class MongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
 
+    /**
+     * 执行MongoDB的<code>getLastError</code>命令，如果发现错误状态则抛出异常。
+     *
+     * @see com.mongodb.CommandResult#throwOnError()
+     *
+     * @throws DuplicateException 当违反唯一约束时
+     * @throws MongoException 当其他错误状态时
+     */
     protected void throwOnMongoError() {
         try {
             mongoTemplate.executeCommand("{ getLastError : 1 }").throwOnError();
