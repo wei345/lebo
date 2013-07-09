@@ -1,6 +1,6 @@
 package com.lebo.service;
 
-import com.lebo.repository.MongoErrorCode;
+import com.lebo.repository.MongoConstant;
 import com.mongodb.MongoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,17 +17,16 @@ public abstract class MongoService {
     /**
      * 执行MongoDB的<code>getLastError</code>命令，如果发现错误状态则抛出异常。
      *
-     * @see com.mongodb.CommandResult#throwOnError()
-     *
      * @throws DuplicateException 当违反唯一约束时
-     * @throws MongoException 当其他错误状态时
+     * @throws MongoException     当其他错误状态时
+     * @see com.mongodb.CommandResult#throwOnError()
      */
     protected void throwOnMongoError() {
         try {
             mongoTemplate.executeCommand("{ getLastError : 1 }").throwOnError();
         } catch (MongoException e) {
             switch (e.getCode()) {
-                case MongoErrorCode.DUPLICATE_KEY_ERROR:
+                case MongoConstant.MONGO_ERROR_CODE_DUPLICATE_KEY:
                     throw new DuplicateException(e);
                 default:
                     throw e;
