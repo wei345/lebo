@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -15,8 +16,11 @@ import java.util.Date;
 public class Account extends IdEntity {
     // 性别 -1 未知，0 女，1 男
     private int gender = -1;
+    @Indexed(unique = true)
+    private String email;
     private String userId;
     private Date createdAt;
+    private Date lastSignInAt;
 
     public int getGender() {
         return gender;
@@ -40,5 +44,21 @@ public class Account extends IdEntity {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Date getLastSignInAt() {
+        return lastSignInAt;
+    }
+
+    public void setLastSignInAt(Date lastSignInAt) {
+        this.lastSignInAt = lastSignInAt;
     }
 }

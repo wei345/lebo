@@ -8,16 +8,30 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
+/**
+ * <h2>User</h2>
+ *
+ * <p>
+ * 字段描述见Twitter: https://dev.twitter.com/docs/platform-objects/users
+ * </p>
+ * <p>
+ * 新浪：http://open.weibo.com/wiki/%E5%B8%B8%E8%A7%81%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84#.E7.94.A8.E6.88.B7.EF.BC.88user.EF.BC.89
+ * </p>
+ * @author Wei Liu
+ */
 @Document
 public class User extends IdEntity {
-
     @Indexed(unique = true)
     private String screenName;
+    @Indexed
     private String name;
+    // The user-defined describing their account.
+    private String description;
     private String profileImageUrl;
     private Date createdAt;
-    private String email;
-    private Date lastSignInAt;
+    private Boolean verified;
+    private String location;
+    private String timeZone;
 
     public User() {
     }
@@ -61,20 +75,36 @@ public class User extends IdEntity {
         this.createdAt = createdAt;
     }
 
-    public String getEmail() {
-        return email;
+    public String getDescription() {
+        return description;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Date getLastSignInAt() {
-        return lastSignInAt;
+    public Boolean getVerified() {
+        return verified;
     }
 
-    public void setLastSignInAt(Date lastSignInAt) {
-        this.lastSignInAt = lastSignInAt;
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
     }
 
     @Override

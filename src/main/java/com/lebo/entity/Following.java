@@ -2,6 +2,7 @@ package com.lebo.entity;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -17,7 +18,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 })
 public class Following extends IdEntity {
     private String userId;
+    @Indexed
     private String followingId;
+
+    public Following() {
+    }
+
+    public Following(String userId, String followingId) {
+        this.userId = userId;
+        this.followingId = followingId;
+    }
 
     public String getUserId() {
         return userId;

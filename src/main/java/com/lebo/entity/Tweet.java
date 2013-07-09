@@ -4,7 +4,6 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -25,7 +24,7 @@ public class Tweet extends IdEntity {
     @Indexed(direction = IndexDirection.DESCENDING)
     private Date createdAt;
     private String text;
-    private boolean isTruncated;
+    private boolean truncated;
 
     //引用文件id，可以存视频、图片、或其他上传的文件
     private List<String> files;
@@ -39,7 +38,7 @@ public class Tweet extends IdEntity {
     @Indexed
     private int retweetCount;
 
-    private boolean isRetweeted;
+    private boolean retweeted;
     @Indexed
     private String originTweetId;
 
@@ -67,13 +66,6 @@ public class Tweet extends IdEntity {
         this.text = text;
     }
 
-    public boolean isTruncated() {
-        return isTruncated;
-    }
-
-    public void setTruncated(boolean truncated) {
-        isTruncated = truncated;
-    }
 
     public List<String> getFiles() {
         return files;
@@ -115,19 +107,27 @@ public class Tweet extends IdEntity {
         this.retweetCount = retweetCount;
     }
 
-    public boolean isRetweeted() {
-        return isRetweeted;
-    }
-
-    public void setRetweeted(boolean retweeted) {
-        isRetweeted = retweeted;
-    }
-
     public String getOriginTweetId() {
         return originTweetId;
     }
 
     public void setOriginTweetId(String originTweetId) {
         this.originTweetId = originTweetId;
+    }
+
+    public boolean isTruncated() {
+        return truncated;
+    }
+
+    public void setTruncated(boolean truncated) {
+        this.truncated = truncated;
+    }
+    //TODO 检查数据库字段，应该是retweeted，而不是isRetweeted
+    public boolean isRetweeted() {
+        return retweeted;
+    }
+
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
     }
 }
