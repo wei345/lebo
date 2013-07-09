@@ -35,6 +35,7 @@
                 /static/** = anon
                 /restclient = anon
                 /api/*/oauthLogin = anon
+                /api/*/oauthLogin.json = anon
                 /api/** = api
                 /admin/** = roles[admin]
                 /** = user
