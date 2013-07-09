@@ -107,7 +107,7 @@ public class StatusRestController {
      * http://open.weibo.com/wiki/2/statuses/user_timeline
      * </p>
      */
-    @RequestMapping(value = "user_timeline", method = RequestMethod.GET)
+    @RequestMapping(value = "userTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object userTimeline(@Valid TimelineParam param) {
         param.setUserId(ShiroUtils.getCurrentUserId());

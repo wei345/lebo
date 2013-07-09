@@ -15,9 +15,12 @@ import java.io.Serializable;
  * Time: PM4:46
  */
 public class PaginationParam implements Pageable, Serializable {
-    private int count;
+    public static final int DEFAULT_COUNT = 20;
+
+    private int count = DEFAULT_COUNT;
     private String maxId;
     private String sinceId;
+    private Sort sort;
 
     public static final Sort DEFAULT_SORT = new Sort(new Sort.Order(Sort.Direction.DESC, "_id"));
 
@@ -61,6 +64,10 @@ public class PaginationParam implements Pageable, Serializable {
         this.sinceId = sinceId;
     }
 
+    public void setSort(Sort sort) {
+        this.sort = sort;
+    }
+
     @Override
     public int getPageNumber() {
         return 0;
@@ -78,6 +85,6 @@ public class PaginationParam implements Pageable, Serializable {
 
     @Override
     public Sort getSort() {
-        return DEFAULT_SORT;
+        return (sort == null ? DEFAULT_SORT : sort);
     }
 }

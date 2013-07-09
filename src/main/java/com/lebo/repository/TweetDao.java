@@ -17,6 +17,6 @@ import java.util.List;
 public interface TweetDao extends MongoRepository<Tweet, String> {
     Page<Tweet> findByUserId(String userId, Pageable pageable);
 
-    @Query(value = "{ userId : ?0 , _id : { $lte : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
+    @Query(value = "{ userId : ?0 , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
     Page<Tweet> userTimeline(String userId, String maxId, String sinceId, Pageable pageable);
 }
