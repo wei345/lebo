@@ -51,8 +51,8 @@ public class FriendshipRestController {
      * <p/>
      * https://dev.twitter.com/docs/api/1.1/post/friendships/create
      *
-     * @param userId     The screen name of the user for whom to befriend
-     * @param screenName The ID of the user for whom to befriend.
+     * @param userId     The ID of the user for whom to befriend.
+     * @param screenName The screen name of the user for whom to befriend
      * @param follow     Enable notifications for the target user.
      */
     //TODO 发送通知给被follow的用户
@@ -60,8 +60,7 @@ public class FriendshipRestController {
     @ResponseBody
     public Object create(@RequestParam(value = "userId", required = false) String userId,
                          @RequestParam(value = "screenName", required = false) String screenName,
-                         @RequestParam(value = "follow", required = false) String follow
-    ) {
+                         @RequestParam(value = "follow", required = false) String follow) {
         try {
             userId = accountService.getUserId(userId, screenName);
             friendshipService.follow(accountService.getCurrentUserId(), userId);

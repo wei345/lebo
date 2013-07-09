@@ -48,8 +48,7 @@ public class StatusRestController {
 
             List<StatusService.File> files = Arrays.asList(
                     new StatusService.File(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
-                    new StatusService.File(image.getInputStream(), image.getOriginalFilename(), image.getContentType())
-            );
+                    new StatusService.File(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
 
             return statusService.update(accountService.getCurrentUserId(), text, files);
 
