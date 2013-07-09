@@ -40,7 +40,7 @@ public class ShiroOauthRealm extends AuthorizingRealm implements ApplicationCont
                 return null;
             }
         } catch (Exception e) {
-            logger.info("登录失败", e);
+            logger.info("登录失败 - " + authcToken + " - " + e.getMessage());
             return null;
         }
     }
@@ -119,6 +119,16 @@ public class ShiroOauthRealm extends AuthorizingRealm implements ApplicationCont
 
         public void setUid(String uid) {
             this.uid = uid;
+        }
+
+        @Override
+        public String toString() {
+            return "OauthToken{" +
+                    "provider='" + provider + '\'' +
+                    ", grant='" + grant + '\'' +
+                    ", token='" + token + '\'' +
+                    ", uid='" + uid + '\'' +
+                    "} " + super.toString();
         }
     }
 }
