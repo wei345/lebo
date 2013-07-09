@@ -26,10 +26,10 @@ import java.util.zip.GZIPOutputStream;
  * 可使用org.springside.examples.showcase.cache包下的Ehcache或本地Map缓存静态内容基本信息(未演示).
  * <p/>
  * 演示访问地址为：
- * static-content?contentPath=static/images/logo.jpg
- * static-content?contentPath=static/images/logo.jpg&download=true
+ * files/51da628f1a8899f9665a6778
+ * files/51da628f1a8899f9665a6778?download=true
  *
- * @author calvin
+ * @author Wei Liu
  */
 public class FileServlet extends HttpServlet {
 

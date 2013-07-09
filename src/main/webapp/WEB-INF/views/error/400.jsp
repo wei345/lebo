@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" isErrorPage="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.lebo.rest.dto.ErrorDto" %>
 <%response.setStatus(200);%><%
     String uri = (String) request.getAttribute("javax.servlet.forward.request_uri");
     if (uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {

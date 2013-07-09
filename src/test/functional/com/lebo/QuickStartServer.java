@@ -6,7 +6,7 @@ import org.springside.modules.test.jetty.JettyFactory;
 /**
  * 使用Jetty运行调试Web应用, 在Console输入回车快速重新加载应用.
  *
- * @author calvin
+ * @author Wei Liu
  */
 public class QuickStartServer {
 
