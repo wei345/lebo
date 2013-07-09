@@ -4,6 +4,7 @@ import com.lebo.SpringContextTestCase;
 import com.lebo.entity.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springside.modules.test.category.UnStable;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +13,7 @@ import static org.junit.Assert.assertEquals;
  * Date: 13-6-24
  * Time: PM4:17
  */
-public class UserDaoTest extends SpringContextTestCase {
+public class UserDaoTest extends SpringContextTestCase implements UnStable {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -21,7 +22,7 @@ public class UserDaoTest extends SpringContextTestCase {
     @Test
     public void get() {
         String id = "51c809301a884410d5ce6964";
-        User user2 = userDao.findOne(id);
-        assertEquals(id, user2.getId());
+        User user = userDao.findOne(id);
+        assertEquals(id, user.getId());
     }
 }

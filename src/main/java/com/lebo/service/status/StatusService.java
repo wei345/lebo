@@ -48,7 +48,7 @@ public class StatusService extends MongoService {
         return tweet;
     }
 
-    public List userTimeline(TimelineParam param) {
+    public List<Tweet> userTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
 
         if (param.canIgnoreIdCondition()) {

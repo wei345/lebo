@@ -1,7 +1,12 @@
 package com.lebo.rest;
 
+import com.google.common.collect.Lists;
+import com.lebo.entity.Tweet;
+import com.lebo.rest.dto.ErrorDto;
+import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.TimelineParam;
+import com.lebo.service.UserService;
 import com.lebo.service.account.ShiroUtils;
 import com.lebo.service.status.StatusService;
 import org.slf4j.Logger;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springside.modules.mapper.BeanMapper;
 
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -28,6 +34,9 @@ import java.util.List;
 public class StatusRestController {
     @Autowired
     private StatusService statusService;
+
+    @Autowired
+    private UserService userService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
@@ -111,6 +120,15 @@ public class StatusRestController {
     @ResponseBody
     public Object userTimeline(@Valid TimelineParam param) {
         param.setUserId(ShiroUtils.getCurrentUserId());
-        return statusService.userTimeline(param);
+        List<Tweet> tweetList = statusService.userTimeline(param);
+
+        List<StatusDto> dtoList = Lists.newArrayList();
+        for(Tweet tweet : tweetList){
+           StatusDto dto = BeanMapper.map(tweet, StatusDto.class);
+            dto.setUser(userService.getUser(tweet.getUserId()));
+            dtoList.add(dto);
+        }
+
+        return dtoList;
     }
 }

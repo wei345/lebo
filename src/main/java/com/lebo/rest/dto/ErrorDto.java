@@ -1,4 +1,4 @@
-package com.lebo.rest;
+package com.lebo.rest.dto;
 
 import org.springside.modules.mapper.JsonMapper;
 

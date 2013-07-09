@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springside.modules.test.category.UnStable;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -17,7 +18,7 @@ import static junit.framework.Assert.assertTrue;
  * Date: 13-7-8
  * Time: PM5:44
  */
-public class TweetDaoTest extends SpringContextTestCase {
+public class TweetDaoTest extends SpringContextTestCase implements UnStable {
     @Autowired
     private TweetDao tweetDao;
 

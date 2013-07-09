@@ -1,6 +1,6 @@
 package com.lebo.service.account;
 
-import com.lebo.rest.ErrorDto;
+import com.lebo.rest.dto.ErrorDto;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

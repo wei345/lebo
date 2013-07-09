@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.ShiroOauthRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
