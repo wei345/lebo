@@ -5,10 +5,9 @@ import com.lebo.entity.Tweet;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
-import com.lebo.service.TimelineParam;
-import com.lebo.service.UserService;
-import com.lebo.service.account.ShiroUtils;
 import com.lebo.service.StatusService;
+import com.lebo.service.TimelineParam;
+import com.lebo.service.account.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class StatusRestController {
     private StatusService statusService;
 
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
@@ -52,7 +51,7 @@ public class StatusRestController {
                     new StatusService.File(image.getInputStream(), image.getOriginalFilename(), image.getContentType())
             );
 
-            return statusService.update(ShiroUtils.getCurrentUserId(), text, files);
+            return statusService.update(accountService.getCurrentUserId(), text, files);
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
@@ -107,7 +106,7 @@ public class StatusRestController {
      * <p>
      * https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
      * </p>
-     *
+     * <p/>
      * <h2>新浪</h2>
      * <p>
      * 获取某个用户最新发表的微博列表
@@ -119,13 +118,13 @@ public class StatusRestController {
     @RequestMapping(value = "userTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object userTimeline(@Valid TimelineParam param) {
-        param.setUserId(ShiroUtils.getCurrentUserId());
+        param.setUserId(accountService.getCurrentUserId());
         List<Tweet> tweetList = statusService.userTimeline(param);
 
         List<StatusDto> dtoList = Lists.newArrayList();
-        for(Tweet tweet : tweetList){
-           StatusDto dto = BeanMapper.map(tweet, StatusDto.class);
-            dto.setUser(userService.getUser(tweet.getUserId()));
+        for (Tweet tweet : tweetList) {
+            StatusDto dto = BeanMapper.map(tweet, StatusDto.class);
+            dto.setUser(accountService.getUser(tweet.getUserId()));
             dtoList.add(dto);
         }
 

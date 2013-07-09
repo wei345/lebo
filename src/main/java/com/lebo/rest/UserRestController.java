@@ -1,7 +1,7 @@
 package com.lebo.rest;
 
 import com.lebo.service.SearchParam;
-import com.lebo.service.UserService;
+import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/api/v1/users")
 public class UserRestController {
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody
-    public Object search(SearchParam param){
-        return userService.searchUser(param);
+    public Object search(SearchParam param) {
+        return accountService.searchUser(param);
     }
 }

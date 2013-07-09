@@ -6,8 +6,7 @@ import com.lebo.rest.dto.UserDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.ServiceException;
-import com.lebo.service.UserService;
-import com.lebo.service.account.ShiroUtils;
+import com.lebo.service.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,7 +31,7 @@ public class FriendshipRestController {
     private FriendshipService friendshipService;
 
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     /**
      * <h2>Twitter</h2>
@@ -69,7 +68,7 @@ public class FriendshipRestController {
         }
 
         if (StringUtils.isBlank(userId)) {
-            User user = userService.getUserByScreenName(screenName);
+            User user = accountService.getUserByScreenName(screenName);
             if (user == null) {
                 return ErrorDto.newBadRequestError("Not Found " + screenName);
             }
@@ -77,16 +76,22 @@ public class FriendshipRestController {
         }
 
         try {
-            friendshipService.follow(ShiroUtils.getCurrentUserId(), userId);
-        } catch (DuplicateException e){
+            friendshipService.follow(accountService.getCurrentUserId(), userId);
+        } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
-        }catch (ServiceException e) {
+        } catch (ServiceException e) {
             return ErrorDto.newBadRequestError(e.getMessage());
         }
 
-        User user = userService.getUser(userId);
+        User user = accountService.getUser(userId);
         UserDto dto = BeanMapper.map(user, UserDto.class);
         dto.setFollowing(true);
         return dto;
+    }
+
+    @RequestMapping(value = "destroy", method = RequestMethod.POST)
+    @ResponseBody
+    public Object destroy() {
+        return null;
     }
 }

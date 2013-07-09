@@ -4,6 +4,7 @@ import com.lebo.entity.OpenUser;
 import com.lebo.entity.User;
 import com.lebo.repository.OpenUserDao;
 import com.lebo.repository.UserDao;
+import com.lebo.service.SearchParam;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springside.modules.utils.DateProvider;
 
+import java.util.List;
+
 /**
  * 用户管理类.
  *
- * @author liuwei
+ * @author Wei Liu
  */
 // Spring Service Bean的标识.
 @Component
@@ -27,6 +30,15 @@ public class AccountService {
     private UserDao userDao;
     private OpenUserDao openUserDao;
     private DateProvider dateProvider = DateProvider.DEFAULT;
+
+
+    public List searchUser(SearchParam param){
+        return userDao.searchUser(param.getQ(), param).getContent();
+    }
+
+    public User getUserByScreenName(String screenName){
+        return userDao.findByScreenName(screenName);
+    }
 
     public User getUser(String id) {
         return userDao.findOne(id);
@@ -52,6 +64,11 @@ public class AccountService {
     private String getCurrentUserName() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
         return user.name;
+    }
+
+    public static String getCurrentUserId() {
+        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+        return user.id;
     }
 
     @Autowired
