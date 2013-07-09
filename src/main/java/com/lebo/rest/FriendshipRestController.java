@@ -7,7 +7,6 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,19 +62,8 @@ public class FriendshipRestController {
                          @RequestParam(value = "screenName", required = false) String screenName,
                          @RequestParam(value = "follow", required = false) String follow
     ) {
-        if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
-            return ErrorDto.newBadRequestError("Providing either screen_name or user_id is required.");
-        }
-
-        if (StringUtils.isBlank(userId)) {
-            User user = accountService.getUserByScreenName(screenName);
-            if (user == null) {
-                return ErrorDto.newBadRequestError("Not Found " + screenName);
-            }
-            userId = user.getId();
-        }
-
         try {
+            userId = accountService.getUserId(userId, screenName);
             friendshipService.follow(accountService.getCurrentUserId(), userId);
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
@@ -89,9 +77,35 @@ public class FriendshipRestController {
         return dto;
     }
 
+    /**
+     * <h2>Twitter</h2>
+     * <p>
+     * Allows the authenticating user to unfollow the user specified in the ID parameter.
+     * </p>
+     * <p>
+     * Returns the unfollowed user in the requested format when successful. Returns a string
+     * describing the failure condition when unsuccessful.
+     * </p>
+     * <p>
+     * Actions taken in this method are asynchronous and changes will be eventually consistent.
+     * </p>
+     * <p>
+     * https://dev.twitter.com/docs/api/1.1/post/friendships/destroy
+     * </p>
+     */
     @RequestMapping(value = "destroy", method = RequestMethod.POST)
     @ResponseBody
-    public Object destroy() {
-        return null;
+    public Object destroy(@RequestParam(value = "userId", required = false) String userId,
+                          @RequestParam(value = "screenName", required = false) String screenName) {
+        userId = accountService.getUserId(userId, screenName);
+
+        try {
+            friendshipService.unfollow(accountService.getCurrentUserId(), userId);
+        } catch (ServiceException e) {
+            return ErrorDto.newBadRequestError(e.getMessage());
+        }
+
+        User user = accountService.getUser(userId);
+        return BeanMapper.map(user, UserDto.class);
     }
 }

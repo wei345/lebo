@@ -5,6 +5,8 @@ import com.lebo.entity.User;
 import com.lebo.repository.OpenUserDao;
 import com.lebo.repository.UserDao;
 import com.lebo.service.SearchParam;
+import com.lebo.service.ServiceException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import java.util.List;
  */
 // Spring Service Bean的标识.
 @Component
+//TODO Transactional对Mongo没有作用，移除？
 @Transactional(readOnly = true)
 public class AccountService {
 
@@ -32,11 +35,11 @@ public class AccountService {
     private DateProvider dateProvider = DateProvider.DEFAULT;
 
 
-    public List searchUser(SearchParam param){
+    public List searchUser(SearchParam param) {
         return userDao.searchUser(param.getQ(), param).getContent();
     }
 
-    public User getUserByScreenName(String screenName){
+    public User getUserByScreenName(String screenName) {
         return userDao.findByScreenName(screenName);
     }
 
@@ -59,6 +62,28 @@ public class AccountService {
     }
 
     /**
+     * 接收userId和screenName，二者至少一个不为空，返回userId。
+     *
+     * @throws  IllegalArgumentException 当userId和screenName都为空
+     * @throws  ServiceException 当根据screenName未找到User时
+     */
+    public String getUserId(String userId, String screenName) {
+        if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
+            throw new IllegalArgumentException("Providing either screenName or userId is required.");
+        }
+
+        if (!StringUtils.isBlank(userId)) {
+            return userId;
+        } else {
+            User user = getUserByScreenName(screenName);
+            if (user == null) {
+                throw new ServiceException("Not Found " + screenName);
+            }
+            return user.getId();
+        }
+    }
+
+    /**
      * 取出Shiro中的当前用户LoginName.
      */
     private String getCurrentUserName() {
@@ -66,7 +91,7 @@ public class AccountService {
         return user.name;
     }
 
-    public static String getCurrentUserId() {
+    public String getCurrentUserId() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
         return user.id;
     }

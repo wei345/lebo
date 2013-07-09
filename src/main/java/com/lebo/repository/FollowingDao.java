@@ -9,4 +9,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Time: PM4:56
  */
 public interface FollowingDao extends MongoRepository<Following, String> {
+
+    Following findByUserIdAndFollowingId(String userId, String followingId);
 }

@@ -22,6 +22,9 @@ public class FriendshipService extends MongoService{
 
     /**
      * userId关注followingId。
+     *
+     * @throws ServiceException
+     * @throws com.mongodb.MongoException
      */
     public void follow(String userId, String followingId) {
         Assert.hasText(userId);
@@ -36,5 +39,19 @@ public class FriendshipService extends MongoService{
         }else{
             throw new ServiceException(String.format("%s or %s is not exists.", userId, followingId));
         }
+    }
+
+    /**
+     * @throws ServiceException 当未关注时
+     */
+    public void unfollow(String userId, String followingId){
+        Assert.hasText(userId);
+        Assert.hasText(followingId);
+
+        Following following = followingDao.findByUserIdAndFollowingId(userId, followingId);
+        if(following == null){
+            throw new ServiceException("Not following");
+        }
+        followingDao.delete(following);
     }
 }
