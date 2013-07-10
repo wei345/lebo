@@ -31,6 +31,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/api/v1/statuses")
 public class StatusRestController {
+    public static final int ONE_M_BYTE = 1024 * 1024;
     @Autowired
     private StatusService statusService;
 
@@ -45,6 +46,10 @@ public class StatusRestController {
                          @RequestParam(value = "image") MultipartFile image,
                          @RequestParam(value = "text") String text) {
         try {
+
+            if(video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE){
+                return ErrorDto.newBadRequestError(" Upload Single file size cannot be greater than 1 M byte.");
+            }
 
             List<StatusService.File> files = Arrays.asList(
                     new StatusService.File(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
