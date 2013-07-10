@@ -2,8 +2,7 @@ package com.lebo.service;
 
 import com.google.common.collect.Maps;
 import com.lebo.SpringContextTestCase;
-import com.lebo.entity.Tweet;
-import com.lebo.service.StatusService;
+import com.lebo.entity.Post;
 import com.mongodb.gridfs.GridFSFile;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 import javax.activation.FileTypeMap;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -62,8 +60,8 @@ public class StatusServiceTest extends SpringContextTestCase {
 
         String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(classPathResource.getFile());
         StatusService.File file = new StatusService.File(classPathResource.getInputStream(), classPathResource.getFilename(), contentType);
-        Tweet tweet = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(file) );
+        Post post = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(file) );
 
-        assertNotNull(tweet);
+        assertNotNull(post);
     }
 }

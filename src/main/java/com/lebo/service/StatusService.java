@@ -2,12 +2,9 @@ package com.lebo.service;
 
 import com.google.common.collect.Lists;
 import com.lebo.entity.Following;
-import com.lebo.entity.Tweet;
+import com.lebo.entity.Post;
 import com.lebo.repository.FollowingDao;
-import com.lebo.repository.TweetDao;
-import com.lebo.service.GridFsService;
-import com.lebo.service.MongoService;
-import com.lebo.service.TimelineParam;
+import com.lebo.repository.PostDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -29,41 +26,41 @@ public class StatusService extends MongoService {
     @Autowired
     private FollowingDao followingDao;
     @Autowired
-    private TweetDao tweetDao;
+    private PostDao postDao;
     @Autowired
     private GridFsService gridFsService;
 
-    public Tweet update(String userId, String text, List<File> files) throws IOException {
+    public Post update(String userId, String text, List<File> files) throws IOException {
         List<String> fileIds = Lists.newArrayList();
         for (File file : files) {
             fileIds.add(gridFsService.save(file.content, file.filename, file.contentType));
         }
 
-        Tweet tweet = new Tweet();
-        tweet.setUserId(userId);
-        tweet.setCreatedAt(new Date());
-        tweet.setText(text);
-        tweet.setFiles(fileIds);
-        tweet = tweetDao.save(tweet);
+        Post post = new Post();
+        post.setUserId(userId);
+        post.setCreatedAt(new Date());
+        post.setText(text);
+        post.setFiles(fileIds);
+        post = postDao.save(post);
         throwOnMongoError();
 
         for (String id : fileIds) {
             gridFsService.increaseReferrerCount(id);
         }
-        return tweet;
+        return post;
     }
 
-    public List<Tweet> userTimeline(TimelineParam param) {
+    public List<Post> userTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
 
         if (param.canIgnoreIdCondition()) {
-            return tweetDao.findByUserId(param.getUserId(), param).getContent();
+            return postDao.findByUserId(param.getUserId(), param).getContent();
         } else {
-            return tweetDao.userTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
+            return postDao.userTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
         }
     }
 
-    public List<Tweet> homeTimeline(TimelineParam param){
+    public List<Post> homeTimeline(TimelineParam param){
         Assert.hasText(param.getUserId(), "The userId can not be null");
         List<Following> followingList = followingDao.findByUserId(param.getUserId());
 
@@ -74,7 +71,7 @@ public class StatusService extends MongoService {
 
         followingIdList.add(param.getUserId());
 
-        return tweetDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
+        return postDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
     /**

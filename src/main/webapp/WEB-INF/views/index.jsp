@@ -6,14 +6,14 @@
     <li class="active"><a href="#home">主页</a></li>
     <li><a href="#discover">发现</a></li>
     <li><a href="#me">我</a></li>
-    <li><a href="#tweet">发布新视频</a></li>
+    <li><a href="#post">发布新视频</a></li>
 </ul>
 
 <div class="tab-content">
     <div class="tab-pane active" id="home">...</div>
     <div class="tab-pane" id="discover">...</div>
     <div class="tab-pane" id="me"></div>
-    <div class="tab-pane" id="tweet">
+    <div class="tab-pane" id="post">
         <form id="updateStatusForm" action="${ctx}/api/v1/statuses/update" method="post" enctype="multipart/form-data">
             <fieldset>
                 <legend>发布</legend>
@@ -37,7 +37,7 @@
     });
 
     $(function () {
-        $('#myTab a[href="#tweet"]').tab('show');
+        $('#myTab a[href="#post"]').tab('show');
     });
 
     $('#myTab a').on('shown', function (e) {
@@ -71,10 +71,10 @@
             success: function(tweets){
                 var html = '';
                 for(var i = 0; i < tweets.length; i++){
-                    var tweet = tweets[i];
-                    var videoSrc = '${ctx}/files/' + tweet.files[0];
+                    var post = tweets[i];
+                    var videoSrc = '${ctx}/files/' + post.files[0];
                     html += '<video src="'+ videoSrc +'" controls="controls" autoplay="autoplay">您的浏览器不支持 video 标签。</video>';
-                    html += '<div class="text">'+ tweet.text +'</div>';
+                    html += '<div class="text">'+ post.text +'</div>';
                 }
                 $('#me').append(html);
                 data.me.maxId = tweets[tweets.length - 1].id;

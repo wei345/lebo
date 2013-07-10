@@ -1,7 +1,7 @@
 package com.lebo.rest;
 
 import com.google.common.collect.Lists;
-import com.lebo.entity.Tweet;
+import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
@@ -85,9 +85,9 @@ public class StatusRestController {
     @ResponseBody
     public Object homeTimeline(@Valid TimelineParam param) {
         param.setUserId(accountService.getCurrentUserId());
-        List<Tweet> tweetList = statusService.homeTimeline(param);
+        List<Post> postList = statusService.homeTimeline(param);
 
-        return toStatusDtoList(tweetList, param);
+        return toStatusDtoList(postList, param);
     }
 
     /**
@@ -127,9 +127,9 @@ public class StatusRestController {
     @ResponseBody
     public Object userTimeline(@Valid TimelineParam param) {
         param.setUserId(accountService.getCurrentUserId());
-        List<Tweet> tweetList = statusService.userTimeline(param);
+        List<Post> postList = statusService.userTimeline(param);
 
-        return toStatusDtoList(tweetList, param);
+        return toStatusDtoList(postList, param);
     }
 
     /**
@@ -137,11 +137,11 @@ public class StatusRestController {
      *
      * @param param 填充StatusDao选项
      */
-    private List<StatusDto> toStatusDtoList(List<Tweet> tweetList, TimelineParam param){
+    private List<StatusDto> toStatusDtoList(List<Post> postList, TimelineParam param){
         List<StatusDto> dtoList = Lists.newArrayList();
-        for (Tweet tweet : tweetList) {
-            StatusDto dto = BeanMapper.map(tweet, StatusDto.class);
-            dto.setUser(accountService.getUser(tweet.getUserId()));
+        for (Post post : postList) {
+            StatusDto dto = BeanMapper.map(post, StatusDto.class);
+            dto.setUser(accountService.getUser(post.getUserId()));
             dtoList.add(dto);
         }
         return dtoList;

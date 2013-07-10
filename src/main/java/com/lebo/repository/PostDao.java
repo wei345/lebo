@@ -1,7 +1,6 @@
 package com.lebo.repository;
 
-import com.lebo.entity.Tweet;
-import org.bson.types.ObjectId;
+import com.lebo.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -14,12 +13,12 @@ import java.util.List;
  * Date: 13-7-3
  * Time: PM5:15
  */
-public interface TweetDao extends MongoRepository<Tweet, String> {
-    Page<Tweet> findByUserId(String userId, Pageable pageable);
+public interface PostDao extends MongoRepository<Post, String> {
+    Page<Post> findByUserId(String userId, Pageable pageable);
 
     @Query(value = "{ userId : ?0 , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
-    Page<Tweet> userTimeline(String userId, String maxId, String sinceId, Pageable pageable);
+    Page<Post> userTimeline(String userId, String maxId, String sinceId, Pageable pageable);
 
     @Query(value = "{ userId : { $in : ?0 } , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
-    Page<Tweet> homeTimeline(List<String> userId, String maxId, String sinceId, Pageable pageable);
+    Page<Post> homeTimeline(List<String> userId, String maxId, String sinceId, Pageable pageable);
 }

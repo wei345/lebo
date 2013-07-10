@@ -18,20 +18,16 @@ public class StatusDto {
     private User user;
     private Date createdAt;
     private String text;
-    private boolean isTruncated;
-
+    private Boolean truncated;
     //引用文件id，可以存视频、图片、或其他上传的文件
     private List<String> files;
-
     //该Tweet来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
-
-    private int favoriteCount;
-    private int retweetCount;
-
-    private boolean isRetweeted;
-    private String originTweetId;
+    private Integer favouritesCount;
+    private Integer repostsCount;
+    private Boolean reposted;
+    private String originPostId;
 
     public String getId() {
         return id;
@@ -65,14 +61,6 @@ public class StatusDto {
         this.text = text;
     }
 
-    public boolean isTruncated() {
-        return isTruncated;
-    }
-
-    public void setTruncated(boolean truncated) {
-        isTruncated = truncated;
-    }
-
     public List<String> getFiles() {
         return files;
     }
@@ -97,35 +85,43 @@ public class StatusDto {
         this.geoLocation = geoLocation;
     }
 
-    public int getFavoriteCount() {
-        return favoriteCount;
+    public Boolean getTruncated() {
+        return truncated;
     }
 
-    public void setFavoriteCount(int favoriteCount) {
-        this.favoriteCount = favoriteCount;
+    public void setTruncated(Boolean truncated) {
+        this.truncated = truncated;
     }
 
-    public int getRetweetCount() {
-        return retweetCount;
+    public Integer getFavouritesCount() {
+        return favouritesCount;
     }
 
-    public void setRetweetCount(int retweetCount) {
-        this.retweetCount = retweetCount;
+    public void setFavouritesCount(Integer favouritesCount) {
+        this.favouritesCount = favouritesCount;
     }
 
-    public boolean isRetweeted() {
-        return isRetweeted;
+    public Integer getRepostsCount() {
+        return repostsCount;
     }
 
-    public void setRetweeted(boolean retweeted) {
-        isRetweeted = retweeted;
+    public void setRepostsCount(Integer repostsCount) {
+        this.repostsCount = repostsCount;
     }
 
-    public String getOriginTweetId() {
-        return originTweetId;
+    public Boolean getReposted() {
+        return reposted;
     }
 
-    public void setOriginTweetId(String originTweetId) {
-        this.originTweetId = originTweetId;
+    public void setReposted(Boolean reposted) {
+        this.reposted = reposted;
+    }
+
+    public String getOriginPostId() {
+        return originPostId;
+    }
+
+    public void setOriginPostId(String originPostId) {
+        this.originPostId = originPostId;
     }
 }

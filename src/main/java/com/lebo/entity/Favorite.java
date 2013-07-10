@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 })
 public class Favorite extends IdEntity {
     private String userId;
-    private String tweetId;
+    private String postId;
 
     public String getUserId() {
         return userId;
@@ -27,11 +27,11 @@ public class Favorite extends IdEntity {
         this.userId = userId;
     }
 
-    public String getTweetId() {
-        return tweetId;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setTweetId(String tweetId) {
-        this.tweetId = tweetId;
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }
