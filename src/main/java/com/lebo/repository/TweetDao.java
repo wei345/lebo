@@ -19,4 +19,7 @@ public interface TweetDao extends MongoRepository<Tweet, String> {
 
     @Query(value = "{ userId : ?0 , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
     Page<Tweet> userTimeline(String userId, String maxId, String sinceId, Pageable pageable);
+
+    @Query(value = "{ userId : { $in : ?0 } , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
+    Page<Tweet> homeTimeline(List<String> userId, String maxId, String sinceId, Pageable pageable);
 }

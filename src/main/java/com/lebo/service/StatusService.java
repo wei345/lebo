@@ -1,7 +1,9 @@
 package com.lebo.service;
 
 import com.google.common.collect.Lists;
+import com.lebo.entity.Following;
 import com.lebo.entity.Tweet;
+import com.lebo.repository.FollowingDao;
 import com.lebo.repository.TweetDao;
 import com.lebo.service.GridFsService;
 import com.lebo.service.MongoService;
@@ -12,6 +14,7 @@ import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +26,8 @@ import java.util.List;
 @Service
 public class StatusService extends MongoService {
 
+    @Autowired
+    private FollowingDao followingDao;
     @Autowired
     private TweetDao tweetDao;
     @Autowired
@@ -56,6 +61,20 @@ public class StatusService extends MongoService {
         } else {
             return tweetDao.userTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
         }
+    }
+
+    public List<Tweet> homeTimeline(TimelineParam param){
+        Assert.hasText(param.getUserId(), "The userId can not be null");
+        List<Following> followingList = followingDao.findByUserId(param.getUserId());
+
+        List<String> followingIdList = new ArrayList<String>(followingList.size() + 1);
+        for(Following following : followingList){
+            followingIdList.add(following.getFollowingId());
+        }
+
+        followingIdList.add(param.getUserId());
+
+        return tweetDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
     /**

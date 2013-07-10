@@ -81,9 +81,13 @@ public class StatusRestController {
      * https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
      * </p>
      */
-    @RequestMapping(value = "home_timeline", method = RequestMethod.GET)
-    public Object homeTimeline() {
-        return null;
+    @RequestMapping(value = "homeTimeline", method = RequestMethod.GET)
+    @ResponseBody
+    public Object homeTimeline(@Valid TimelineParam param) {
+        param.setUserId(accountService.getCurrentUserId());
+        List<Tweet> tweetList = statusService.homeTimeline(param);
+
+        return toStatusDtoList(tweetList, param);
     }
 
     /**
@@ -125,13 +129,21 @@ public class StatusRestController {
         param.setUserId(accountService.getCurrentUserId());
         List<Tweet> tweetList = statusService.userTimeline(param);
 
+        return toStatusDtoList(tweetList, param);
+    }
+
+    /**
+     * 一个StatusDto表示一个Tweet，并带有更多信息。
+     *
+     * @param param 填充StatusDao选项
+     */
+    private List<StatusDto> toStatusDtoList(List<Tweet> tweetList, TimelineParam param){
         List<StatusDto> dtoList = Lists.newArrayList();
         for (Tweet tweet : tweetList) {
             StatusDto dto = BeanMapper.map(tweet, StatusDto.class);
             dto.setUser(accountService.getUser(tweet.getUserId()));
             dtoList.add(dto);
         }
-
         return dtoList;
     }
 }
