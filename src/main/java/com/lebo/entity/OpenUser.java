@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Date: 13-7-1
  * Time: AM11:46
  */
+//TODO OpenUser嵌入到User里
 @Document
 @CompoundIndexes({
         @CompoundIndex(name = "openUser_unique", def = "{'provider': 1, 'uid': 1}", unique = true)
