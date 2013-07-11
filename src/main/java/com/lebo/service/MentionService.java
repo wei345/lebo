@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,13 +21,14 @@ public class MentionService {
     @Autowired
     private UserDao userDao;
 
-    private Pattern mentionPattern = Pattern.compile("@[^@\\s]+");
+    private Pattern mentionPattern = Pattern.compile("@([^@\\s]+)");
+    private Pattern tagPattern = Pattern.compile("#([^#\\s]+)#");
 
-    public List<String> mentionUserIds(String text){
-        List<String> userIds = new ArrayList<String>();
+    public LinkedHashSet<String> mentionUserIds(String text){
+        LinkedHashSet<String> userIds = new LinkedHashSet<String>();
 
-        List<String> nameList = mentionNames(text);
-        for (String screenName : nameList) {
+        LinkedHashSet<String> names = mentionNames(text);
+        for (String screenName : names) {
             User user = userDao.findByScreenName(screenName);
             if(user != null){
                 userIds.add(user.getId());
@@ -35,12 +37,21 @@ public class MentionService {
         return userIds;
     }
 
-    List<String> mentionNames(String text) {
+    LinkedHashSet<String> mentionNames(String text) {
         Matcher m = mentionPattern.matcher(text);
-        List<String> names = new ArrayList<String>();
+        LinkedHashSet<String> names = new LinkedHashSet<String>();
         while (m.find()) {
-            names.add(m.group(0).substring(1));
+            names.add(m.group(1));
         }
         return names;
+    }
+
+    public LinkedHashSet<String> findTags(String text){
+        Matcher m = tagPattern.matcher(text);
+        LinkedHashSet<String> tags = new LinkedHashSet<String>();
+        while (m.find()) {
+            tags.add(m.group(1));
+        }
+        return tags;
     }
 }

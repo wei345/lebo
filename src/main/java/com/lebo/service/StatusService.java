@@ -44,6 +44,7 @@ public class StatusService extends MongoService {
         post.setCreatedAt(new Date());
         post.setText(text);
         post.setMentions(mentionService.mentionUserIds(text));
+        post.setTags(mentionService.findTags(text));
         post.setFiles(fileIds);
         post = postDao.save(post);
         throwOnMongoError();

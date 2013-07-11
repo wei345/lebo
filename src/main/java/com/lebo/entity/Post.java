@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -31,7 +32,8 @@ public class Post extends IdEntity {
     @Indexed
     private String originPostId;
     @Indexed
-    private List<String> mentions;
+    private LinkedHashSet<String> mentions;
+    private LinkedHashSet<String> tags;
 
     public String getUserId() {
         return userId;
@@ -99,11 +101,19 @@ public class Post extends IdEntity {
         this.originPostId = originPostId;
     }
 
-    public List<String> getMentions() {
+    public LinkedHashSet<String> getMentions() {
         return mentions;
     }
 
-    public void setMentions(List<String> mentions) {
+    public void setMentions(LinkedHashSet<String> mentions) {
         this.mentions = mentions;
+    }
+
+    public LinkedHashSet<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(LinkedHashSet<String> tags) {
+        this.tags = tags;
     }
 }

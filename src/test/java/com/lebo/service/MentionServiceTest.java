@@ -4,6 +4,9 @@ import com.lebo.SpringContextTestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -18,15 +21,27 @@ public class MentionServiceTest extends SpringContextTestCase{
 
     @Test
     public void mentionNames(){
-        List<String> nameList = mentionService.mentionNames("@@abc@@ @@def");
-        assertEquals(2, nameList.size());
-        assertTrue(nameList.contains("abc"));
-        assertTrue(nameList.contains("def"));
+        LinkedHashSet<String> names = mentionService.mentionNames("@@abc@@ @@def");
+        assertEquals(2, names.size());
+        assertTrue(names.contains("abc"));
+        assertTrue(names.contains("def"));
 
-        nameList = mentionService.mentionNames("@abc@bcd @efghijk");
-        assertEquals(3, nameList.size());
-        assertTrue(nameList.contains("abc"));
-        assertTrue(nameList.contains("bcd"));
-        assertTrue(nameList.contains("efghijk"));
+        names = mentionService.mentionNames("@abc@bcd @efghijk");
+        assertEquals(3, names.size());
+        assertTrue(names.contains("abc"));
+        assertTrue(names.contains("bcd"));
+        assertTrue(names.contains("efghijk"));
+    }
+
+    @Test
+    public void findTags(){
+        LinkedHashSet<String> tags = mentionService.findTags("##a#b#c##d##");
+        assertEquals(3, tags.size());
+        assertTrue(tags.contains("a"));
+        assertTrue(tags.contains("c"));
+        assertTrue(tags.contains("d"));
+
+        tags = mentionService.findTags("#### ## ####");
+        assertEquals(0, tags.size());
     }
 }
