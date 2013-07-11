@@ -133,8 +133,17 @@ public class StatusRestController {
         return toStatusDtoList(postList, param);
     }
 
+    @RequestMapping(value = "mentionsTimeline", method = RequestMethod.GET)
+    @ResponseBody
+    public Object mentionsTimeline(@Valid TimelineParam param){
+        param.setUserId(accountService.getCurrentUserId());
+        List<Post> postList = statusService.mentionsTimeline(param);
+
+        return toStatusDtoList(postList, param);
+    }
+
     /**
-     * 一个StatusDto表示一个Tweet，并带有更多信息。
+     * 一个StatusDto表示一个Post，并带有更多信息。
      *
      * @param param 填充StatusDao选项
      */

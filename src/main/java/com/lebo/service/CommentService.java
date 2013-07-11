@@ -22,6 +22,8 @@ public class CommentService extends MongoService {
     private CommentDao commentDao;
     @Autowired
     private GridFsService gridFsService;
+    @Autowired
+    private MentionService mentionService;
 
     public Comment create(String userId, String text, List<FileInfo> files, String postId) throws IOException {
         List<String> fileIds = Lists.newArrayList();
@@ -33,6 +35,7 @@ public class CommentService extends MongoService {
         comment.setUserId(userId);
         comment.setCreatedAt(new Date());
         comment.setText(text);
+        comment.setMentions(mentionService.mentionUserIds(text));
         comment.setFiles(fileIds);
         comment.setPostId(postId);
         comment = commentDao.save(comment);

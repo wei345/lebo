@@ -30,6 +30,8 @@ public class Post extends IdEntity {
     private GeoLocation geoLocation;
     @Indexed
     private String originPostId;
+    @Indexed
+    private List<String> mentions;
 
     public String getUserId() {
         return userId;
@@ -95,5 +97,13 @@ public class Post extends IdEntity {
 
     public void setOriginPostId(String originPostId) {
         this.originPostId = originPostId;
+    }
+
+    public List<String> getMentions() {
+        return mentions;
+    }
+
+    public void setMentions(List<String> mentions) {
+        this.mentions = mentions;
     }
 }

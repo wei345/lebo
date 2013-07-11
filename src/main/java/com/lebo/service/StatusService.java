@@ -30,6 +30,8 @@ public class StatusService extends MongoService {
     private PostDao postDao;
     @Autowired
     private GridFsService gridFsService;
+    @Autowired
+    private MentionService mentionService;
 
     public Post update(String userId, String text, List<FileInfo> fileInfos) throws IOException {
         List<String> fileIds = Lists.newArrayList();
@@ -41,6 +43,7 @@ public class StatusService extends MongoService {
         post.setUserId(userId);
         post.setCreatedAt(new Date());
         post.setText(text);
+        post.setMentions(mentionService.mentionUserIds(text));
         post.setFiles(fileIds);
         post = postDao.save(post);
         throwOnMongoError();
@@ -73,5 +76,10 @@ public class StatusService extends MongoService {
         followingIdList.add(param.getUserId());
 
         return postDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
+    }
+
+    public List<Post> mentionsTimeline(TimelineParam param){
+        Assert.hasText(param.getUserId(), "The userId can not be null");
+        return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(),param.getSinceId(),param).getContent();
     }
 }

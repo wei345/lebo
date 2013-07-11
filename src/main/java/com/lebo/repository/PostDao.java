@@ -21,4 +21,7 @@ public interface PostDao extends MongoRepository<Post, String> {
 
     @Query(value = "{ userId : { $in : ?0 } , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
     Page<Post> homeTimeline(List<String> userId, String maxId, String sinceId, Pageable pageable);
+
+    @Query(value = "{ mentions : ?0 , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
+    Page<Post> mentionsTimeline(String userId, String maxId, String sinceId, Pageable pageable);
 }

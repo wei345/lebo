@@ -24,6 +24,14 @@
     </tr>
     <tr>
         <td>
+            <tags:link url="${ctx}/docs/api/v1/get/statuses/mentionsTimeline" text="GET ${ctx}/api/v1/statuses/mentionsTimeline" />
+        </td>
+        <td>
+            提到我时间线
+        </td>
+    </tr>
+    <tr>
+        <td>
             <tags:link url="${ctx}/docs/api/v1/post/statuses/update" text="POST ${ctx}/api/v1/statuses/update" />
         </td>
         <td>

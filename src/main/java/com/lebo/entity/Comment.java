@@ -24,6 +24,8 @@ public class Comment extends IdEntity {
     private String source;
     private GeoLocation geoLocation;
     private String postId;
+    @Indexed
+    private List<String> mentions;
 
     public String getPostId() {
         return postId;
@@ -87,5 +89,13 @@ public class Comment extends IdEntity {
 
     public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
+    }
+
+    public List<String> getMentions() {
+        return mentions;
+    }
+
+    public void setMentions(List<String> mentions) {
+        this.mentions = mentions;
     }
 }
