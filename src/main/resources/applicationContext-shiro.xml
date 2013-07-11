@@ -33,6 +33,7 @@
                 /login = authc
                 /logout = logout
                 /static/** = anon
+                /favicon.ico = anon
                 /restclient = anon
                 /api/*/oauthLogin = anon
                 /api/*/oauthLogin.json = anon

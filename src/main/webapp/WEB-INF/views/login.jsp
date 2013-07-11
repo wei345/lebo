@@ -14,6 +14,7 @@
 
 <form id="loginForm" onsubmit="login();return false;">
     <input type="text" name="token" placeholder="新浪token" style="width: 24em;"/>
+
     <div class="btn-group" style="vertical-align: top;">
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
             <sapn id="token-name">选择</sapn>
@@ -58,7 +59,7 @@
         });
     }
 
-    function useToken(token, btn){
+    function useToken(token, btn) {
         $('input[name=token]').val(token);
         $('#token-name').html(btn.innerHTML);
     }
