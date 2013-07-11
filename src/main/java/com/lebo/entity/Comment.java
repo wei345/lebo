@@ -23,9 +23,6 @@ public class Comment extends IdEntity {
     //来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
-    @Indexed
-    private String originPostId;
-
     private String postId;
 
     public String getPostId() {
@@ -90,13 +87,5 @@ public class Comment extends IdEntity {
 
     public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
-    }
-
-    public String getOriginPostId() {
-        return originPostId;
-    }
-
-    public void setOriginPostId(String originPostId) {
-        this.originPostId = originPostId;
     }
 }

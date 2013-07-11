@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * <h2>User</h2>
- *
+ * <p/>
  * 字段描述见Twitter: https://dev.twitter.com/docs/platform-objects/users
  *
  * @author: Wei Liu

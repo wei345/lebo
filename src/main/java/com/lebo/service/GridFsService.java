@@ -1,10 +1,12 @@
 package com.lebo.service;
 
-import com.mongodb.*;
+import com.lebo.service.param.FileInfo;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,7 +17,6 @@ import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -51,68 +52,33 @@ public class GridFsService extends MongoService {
         }
     }
 
-    public ContentInfo getContentInfo(String id){
+    public FileInfo getFileInfo(String id) {
         GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
 
-        GridFsService.ContentInfo contentInfo = new GridFsService.ContentInfo();
-        contentInfo.content = file.getInputStream();
-        contentInfo.fileName = file.getFilename();
-        contentInfo.length = (int) file.getLength();
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setContent(file.getInputStream());
+        fileInfo.setFilename(file.getFilename());
+        fileInfo.setLength((int) file.getLength());
 
-        contentInfo.lastModified = file.getUploadDate().getTime();
-        contentInfo.etag = "W/\"" + contentInfo.lastModified + "\"";
+        fileInfo.setLastModified(file.getUploadDate().getTime());
+        fileInfo.setEtag("W/\"" + fileInfo.getLastModified() + "\"");
 
-        contentInfo.mimeType = file.getContentType();
-        return contentInfo;
+        fileInfo.setMimeType(file.getContentType());
+        return fileInfo;
     }
 
-    public void increaseReferrerCount(String id){
-        DBCollection collection =  mongoTemplate.getCollection(GRID_FS_FILES_COLLECTION_NAME);
+    public void increaseReferrerCount(String id) {
+        DBCollection collection = mongoTemplate.getCollection(GRID_FS_FILES_COLLECTION_NAME);
         DBObject q = new BasicDBObject("_id", new ObjectId(id));
         DBObject o = new BasicDBObject("$inc", new BasicDBObject("referrerCount", 1));
         collection.update(q, o);
     }
 
-    public void decreaseReferrerCount(String id){
-        DBCollection collection =  mongoTemplate.getCollection(GRID_FS_FILES_COLLECTION_NAME);
+    public void decreaseReferrerCount(String id) {
+        DBCollection collection = mongoTemplate.getCollection(GRID_FS_FILES_COLLECTION_NAME);
         DBObject q = new BasicDBObject("_id", new ObjectId(id));
         DBObject o = new BasicDBObject("$inc", new BasicDBObject("referrerCount", -1));
         collection.update(q, o);
     }
 
-    /**
-     * 定义Content的基本信息.
-     */
-    public static class ContentInfo {
-        protected InputStream content;
-        protected String fileName;
-        protected int length;
-        protected String mimeType;
-        protected long lastModified;
-        protected String etag;
-
-        public InputStream getContent() {
-            return content;
-        }
-
-        public String getFileName() {
-            return fileName;
-        }
-
-        public int getLength() {
-            return length;
-        }
-
-        public String getMimeType() {
-            return mimeType;
-        }
-
-        public long getLastModified() {
-            return lastModified;
-        }
-
-        public String getEtag() {
-            return etag;
-        }
-    }
 }

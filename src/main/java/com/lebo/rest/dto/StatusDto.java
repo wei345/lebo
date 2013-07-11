@@ -2,8 +2,6 @@ package com.lebo.rest.dto;
 
 import com.lebo.entity.GeoLocation;
 import com.lebo.entity.User;
-import org.springframework.data.mongodb.core.index.IndexDirection;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
 import java.util.List;

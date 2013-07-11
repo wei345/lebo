@@ -64,8 +64,8 @@ public class AccountService {
     /**
      * 接收userId和screenName，二者至少一个不为空，返回userId。
      *
-     * @throws  IllegalArgumentException 当userId和screenName都为空
-     * @throws  ServiceException 当根据screenName未找到User时
+     * @throws IllegalArgumentException 当userId和screenName都为空
+     * @throws ServiceException         当根据screenName未找到User时
      */
     public String getUserId(String userId, String screenName) {
         if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {

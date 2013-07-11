@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
  * Time: PM4:51
  */
 @Service
-public class FriendshipService extends MongoService{
+public class FriendshipService extends MongoService {
     @Autowired
     private FollowingDao followingDao;
 
@@ -29,14 +29,14 @@ public class FriendshipService extends MongoService{
     public void follow(String userId, String followingId) {
         Assert.hasText(userId);
         Assert.hasText(followingId);
-        if(userId.equalsIgnoreCase(followingId)){
+        if (userId.equalsIgnoreCase(followingId)) {
             throw new ServiceException("You can not follow yourself.");
         }
 
-        if(userDao.exists(userId) && userDao.exists(followingId)){
+        if (userDao.exists(userId) && userDao.exists(followingId)) {
             followingDao.save(new Following(userId, followingId));
             throwOnMongoError();
-        }else{
+        } else {
             throw new ServiceException(String.format("%s or %s is not exists.", userId, followingId));
         }
     }
@@ -44,12 +44,12 @@ public class FriendshipService extends MongoService{
     /**
      * @throws ServiceException 当未关注时
      */
-    public void unfollow(String userId, String followingId){
+    public void unfollow(String userId, String followingId) {
         Assert.hasText(userId);
         Assert.hasText(followingId);
 
         Following following = followingDao.findByUserIdAndFollowingId(userId, followingId);
-        if(following == null){
+        if (following == null) {
             throw new ServiceException("Not following");
         }
         followingDao.delete(following);

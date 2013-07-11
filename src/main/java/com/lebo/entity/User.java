@@ -10,13 +10,14 @@ import java.util.Date;
 
 /**
  * <h2>User</h2>
- *
+ * <p/>
  * <p>
  * 字段描述见Twitter: https://dev.twitter.com/docs/platform-objects/users
  * </p>
  * <p>
  * 新浪：http://open.weibo.com/wiki/%E5%B8%B8%E8%A7%81%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84#.E7.94.A8.E6.88.B7.EF.BC.88user.EF.BC.89
  * </p>
+ *
  * @author Wei Liu
  */
 @Document

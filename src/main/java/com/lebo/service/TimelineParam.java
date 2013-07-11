@@ -5,7 +5,7 @@ package com.lebo.service;
  * Date: 13-7-8
  * Time: PM4:46
  */
-public class TimelineParam extends PaginationParam  {
+public class TimelineParam extends PaginationParam {
     private String userId;
     private boolean trimUser = false;
     private boolean includeRts = true;

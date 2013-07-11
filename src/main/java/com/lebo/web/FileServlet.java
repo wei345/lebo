@@ -1,6 +1,7 @@
 package com.lebo.web;
 
 import com.lebo.service.GridFsService;
+import com.lebo.service.param.FileInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,9 +61,9 @@ public class FileServlet extends HttpServlet {
         String fileId = request.getPathInfo().substring(1);
 
         //获取请求内容的基本信息.
-        GridFsService.ContentInfo contentInfo;
+        FileInfo contentInfo;
         try {
-            contentInfo = gridFsService.getContentInfo(fileId);
+            contentInfo = gridFsService.getFileInfo(fileId);
         } catch (Exception e) {
             logger.info("从MongoDB读取文件失败 - fileId : " + fileId + " - " + e.getMessage());
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -85,7 +86,7 @@ public class FileServlet extends HttpServlet {
 
         //设置弹出下载文件请求窗口的Header
         if (request.getParameter("download") != null) {
-            Servlets.setFileDownloadHeader(response, contentInfo.getFileName());
+            Servlets.setFileDownloadHeader(response, contentInfo.getFilename());
         }
 
         boolean needGzip;

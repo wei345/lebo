@@ -29,11 +29,11 @@ public class ErrorDto {
     public ErrorDto() {
     }
 
-    public static ErrorDto newBadRequestError(String message){
+    public static ErrorDto newBadRequestError(String message) {
         return new ErrorDto(message, 10400);
     }
 
-    public static ErrorDto newInternalServerError(String message){
+    public static ErrorDto newInternalServerError(String message) {
         return new ErrorDto(message, 10500);
     }
 

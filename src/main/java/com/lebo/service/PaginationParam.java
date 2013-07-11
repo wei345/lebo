@@ -27,7 +27,7 @@ public class PaginationParam implements Pageable, Serializable {
     /**
      * 当maxId和sinceId都为空时，返回true，否则返回false
      */
-    public boolean canIgnoreIdCondition(){
+    public boolean canIgnoreIdCondition() {
         return (StringUtils.isBlank(maxId) && StringUtils.isBlank(sinceId));
     }
 

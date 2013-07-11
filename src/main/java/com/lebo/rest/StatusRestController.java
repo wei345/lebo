@@ -8,6 +8,7 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.TimelineParam;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.param.FileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,20 +48,20 @@ public class StatusRestController {
                          @RequestParam(value = "text") String text) {
         try {
 
-            if(video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE){
+            if (video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE) {
                 return ErrorDto.newBadRequestError(" Upload Single file size cannot be greater than 1 M byte.");
             }
 
-            List<StatusService.File> files = Arrays.asList(
-                    new StatusService.File(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
-                    new StatusService.File(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
+            List<FileInfo> fileInfos = Arrays.asList(
+                    new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
+                    new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
 
-            return statusService.update(accountService.getCurrentUserId(), text, files);
+            return statusService.update(accountService.getCurrentUserId(), text, fileInfos);
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
         } catch (Exception e) {
-            logger.info("发布Tweet失败", e);
+            logger.info("发布Post失败", e);
             return ErrorDto.newInternalServerError(e.getMessage());
         }
     }
@@ -137,7 +138,7 @@ public class StatusRestController {
      *
      * @param param 填充StatusDao选项
      */
-    private List<StatusDto> toStatusDtoList(List<Post> postList, TimelineParam param){
+    private List<StatusDto> toStatusDtoList(List<Post> postList, TimelineParam param) {
         List<StatusDto> dtoList = Lists.newArrayList();
         for (Post post : postList) {
             StatusDto dto = BeanMapper.map(post, StatusDto.class);

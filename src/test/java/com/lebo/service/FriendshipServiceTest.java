@@ -14,7 +14,7 @@ public class FriendshipServiceTest extends SpringContextTestCase {
     private FriendshipService friendshipService;
 
     @Test
-    public void  unfollow(){
+    public void unfollow() {
         friendshipService.unfollow("51da5bd71a881f1acdcb6308", "51dbb3e21a887f15c8b6f042");
     }
 }
