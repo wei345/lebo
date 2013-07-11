@@ -39,7 +39,6 @@ public class HomeRestController {
         oauthToken.setRememberMe(true);
         try {
             currentUser.login(oauthToken);
-            //TODO 记录登录时间
             return SecurityUtils.getSubject().getPrincipal();
         } catch (Exception e) {
             logger.info("登录失败", e);

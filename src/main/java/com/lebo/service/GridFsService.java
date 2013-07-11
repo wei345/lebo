@@ -27,7 +27,7 @@ import java.io.InputStream;
  * Time: AM11:28
  */
 @Service
-public class GridFsService extends MongoService {
+public class GridFsService extends AbstractMongoService {
     @Autowired
     private GridFsTemplate gridFsTemplate;
 

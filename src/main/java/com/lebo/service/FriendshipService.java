@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
  * Time: PM4:51
  */
 @Service
-public class FriendshipService extends MongoService {
+public class FriendshipService extends AbstractMongoService {
     @Autowired
     private FollowingDao followingDao;
 

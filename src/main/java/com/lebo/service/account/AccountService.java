@@ -1,16 +1,20 @@
 package com.lebo.service.account;
 
-import com.lebo.entity.OpenUser;
 import com.lebo.entity.User;
-import com.lebo.repository.OpenUserDao;
 import com.lebo.repository.UserDao;
-import com.lebo.service.param.SearchParam;
+import com.lebo.service.AbstractMongoService;
 import com.lebo.service.ServiceException;
+import com.lebo.service.param.SearchParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springside.modules.utils.DateProvider;
@@ -22,17 +26,15 @@ import java.util.List;
  *
  * @author Wei Liu
  */
-// Spring Service Bean的标识.
 @Component
-//TODO Transactional对Mongo没有作用，移除？
-@Transactional(readOnly = true)
-public class AccountService {
+public class AccountService extends AbstractMongoService{
 
     private static Logger logger = LoggerFactory.getLogger(AccountService.class);
 
     private UserDao userDao;
-    private OpenUserDao openUserDao;
     private DateProvider dateProvider = DateProvider.DEFAULT;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
 
     public List searchUser(SearchParam param) {
@@ -47,18 +49,10 @@ public class AccountService {
         return userDao.findOne(id);
     }
 
-    public OpenUser findOpenUserByProviderUid(String provider, String uid) {
-        return openUserDao.findByProviderAndUid(provider, uid);
-    }
-
-    @Transactional(readOnly = false)
     public User saveUser(User user) {
-        return userDao.save(user);
-    }
-
-    @Transactional(readOnly = false)
-    public OpenUser saveOpenUser(OpenUser openUser) {
-        return openUserDao.save(openUser);
+        user = userDao.save(user);
+        throwOnMongoError();
+        return user;
     }
 
     /**
@@ -96,14 +90,18 @@ public class AccountService {
         return user.id;
     }
 
-    @Autowired
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
+    public User findByOAuthId(String oAuthId) {
+        return userDao.findByOAuthIds(oAuthId);
+    }
+
+    public void updateLastSignInAt(User user) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(user.getId()))),
+                new Update().set(User.USER_LAST_SIGN_IN_AT_KEY, dateProvider.getDate()), User.class);
     }
 
     @Autowired
-    public void setOpenUserDao(OpenUserDao openUserDao) {
-        this.openUserDao = openUserDao;
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     public void setDateProvider(DateProvider dateProvider) {

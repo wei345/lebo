@@ -22,7 +22,7 @@ import java.util.List;
  * Time: PM4:32
  */
 @Service
-public class StatusService extends MongoService {
+public class StatusService extends AbstractMongoService {
 
     @Autowired
     private FollowingDao followingDao;
@@ -79,8 +79,8 @@ public class StatusService extends MongoService {
         return postDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
-    public List<Post> mentionsTimeline(TimelineParam param){
+    public List<Post> mentionsTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
-        return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(),param.getSinceId(),param).getContent();
+        return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 }

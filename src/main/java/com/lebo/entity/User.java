@@ -1,12 +1,12 @@
 package com.lebo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 
 /**
  * <h2>User</h2>
@@ -33,6 +33,15 @@ public class User extends IdEntity {
     private Boolean verified;
     private String location;
     private String timeZone;
+    // --- 下面是用户隐私数据 --- //
+    @Indexed
+    private LinkedHashSet<String> oAuthIds;
+    // 性别 -1 未知，0 女，1 男
+    private int gender = -1;
+    @Indexed
+    private String email;
+    private Date lastSignInAt;
+    public static final String USER_LAST_SIGN_IN_AT_KEY = "lastSignInAt";
 
     public User() {
     }
@@ -108,8 +117,50 @@ public class User extends IdEntity {
         this.timeZone = timeZone;
     }
 
+    public LinkedHashSet<String> getoAuthIds() {
+        return oAuthIds;
+    }
+
+    public void setoAuthIds(LinkedHashSet<String> oAuthIds) {
+        this.oAuthIds = oAuthIds;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Date getLastSignInAt() {
+        return lastSignInAt;
+    }
+
+    public void setLastSignInAt(Date lastSignInAt) {
+        this.lastSignInAt = lastSignInAt;
+    }
+
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "User{" +
+                "screenName='" + screenName + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", createdAt=" + createdAt +
+                ", verified=" + verified +
+                ", location='" + location + '\'' +
+                ", timeZone='" + timeZone + '\'' +
+                ", oAuthIds=" + oAuthIds +
+                "} " + super.toString();
     }
 }

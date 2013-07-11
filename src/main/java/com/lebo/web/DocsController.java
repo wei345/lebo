@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 public class DocsController {
 
     @RequestMapping(value = "api/v1", method = RequestMethod.GET)
-    public String index(){
+    public String index() {
         return "docs/api/v1/index";
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
-    public String defaultView(HttpServletRequest request){
+    public String defaultView(HttpServletRequest request) {
         return request.getRequestURI().substring(1);
     }
 }

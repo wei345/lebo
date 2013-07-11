@@ -3,24 +3,24 @@ package com.lebo.service;
 import com.lebo.SpringContextTestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedHashSet;
-import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author: Wei Liu
  * Date: 13-7-11
  * Time: PM6:39
  */
-public class MentionServiceTest extends SpringContextTestCase{
+public class MentionServiceTest extends SpringContextTestCase {
 
     @Autowired
     private MentionService mentionService;
 
     @Test
-    public void mentionNames(){
+    public void mentionNames() {
         LinkedHashSet<String> names = mentionService.mentionNames("@@abc@@ @@def");
         assertEquals(2, names.size());
         assertTrue(names.contains("abc"));
@@ -34,7 +34,7 @@ public class MentionServiceTest extends SpringContextTestCase{
     }
 
     @Test
-    public void findTags(){
+    public void findTags() {
         LinkedHashSet<String> tags = mentionService.findTags("##a#b#c##d##");
         assertEquals(3, tags.size());
         assertTrue(tags.contains("a"));

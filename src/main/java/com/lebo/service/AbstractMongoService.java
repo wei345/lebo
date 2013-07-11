@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * Date: 13-7-4
  * Time: PM9:01
  */
-public abstract class MongoService {
+public abstract class AbstractMongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
 

@@ -5,9 +5,7 @@ import com.lebo.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,13 +22,13 @@ public class MentionService {
     private Pattern mentionPattern = Pattern.compile("@([^@\\s]+)");
     private Pattern tagPattern = Pattern.compile("#([^#\\s]+)#");
 
-    public LinkedHashSet<String> mentionUserIds(String text){
+    public LinkedHashSet<String> mentionUserIds(String text) {
         LinkedHashSet<String> userIds = new LinkedHashSet<String>();
 
         LinkedHashSet<String> names = mentionNames(text);
         for (String screenName : names) {
             User user = userDao.findByScreenName(screenName);
-            if(user != null){
+            if (user != null) {
                 userIds.add(user.getId());
             }
         }
@@ -46,7 +44,7 @@ public class MentionService {
         return names;
     }
 
-    public LinkedHashSet<String> findTags(String text){
+    public LinkedHashSet<String> findTags(String text) {
         Matcher m = tagPattern.matcher(text);
         LinkedHashSet<String> tags = new LinkedHashSet<String>();
         while (m.find()) {

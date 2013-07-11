@@ -6,9 +6,9 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
-import com.lebo.service.param.TimelineParam;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
+import com.lebo.service.param.TimelineParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,7 @@ public class StatusRestController {
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
+    //TODO 检查Post.text长度
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public Object update(@RequestParam(value = "video") MultipartFile video,

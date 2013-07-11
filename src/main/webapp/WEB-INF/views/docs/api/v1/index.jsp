@@ -4,7 +4,9 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <style>
-    .td1 { width: 25em; }
+    .td1 {
+        width: 25em;
+    }
 </style>
 
 <h3>REST API V1</h3>
@@ -13,7 +15,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/v1/get/statuses/homeTimeline" text="GET statuses/homeTimeline" />
+            <tags:link url="${ctx}/docs/api/v1/get/statuses/homeTimeline" text="GET statuses/homeTimeline"/>
         </td>
         <td>
             主页时间线
@@ -21,7 +23,7 @@
     </tr>
     <tr>
         <td>
-            <tags:link url="${ctx}/docs/api/v1/get/statuses/userTimeline" text="GET statuses/userTimeline" />
+            <tags:link url="${ctx}/docs/api/v1/get/statuses/userTimeline" text="GET statuses/userTimeline"/>
         </td>
         <td>
             用户时间线
@@ -29,7 +31,7 @@
     </tr>
     <tr>
         <td>
-            <tags:link url="${ctx}/docs/api/v1/get/statuses/mentionsTimeline" text="GET statuses/mentionsTimeline" />
+            <tags:link url="${ctx}/docs/api/v1/get/statuses/mentionsTimeline" text="GET statuses/mentionsTimeline"/>
         </td>
         <td>
             提到我时间线
@@ -37,7 +39,7 @@
     </tr>
     <tr>
         <td>
-            <tags:link url="${ctx}/docs/api/v1/post/statuses/update" text="POST statuses/update" />
+            <tags:link url="${ctx}/docs/api/v1/post/statuses/update" text="POST statuses/update"/>
         </td>
         <td>
             发布视频
@@ -49,7 +51,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/v1/post/comments/create" text="POST comments/create" />
+            <tags:link url="${ctx}/docs/api/v1/post/comments/create" text="POST comments/create"/>
         </td>
         <td>
             发布评论
@@ -61,7 +63,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/v1/post/friendships/create" text="POST friendships/create" />
+            <tags:link url="${ctx}/docs/api/v1/post/friendships/create" text="POST friendships/create"/>
         </td>
         <td>
             关注
@@ -69,7 +71,7 @@
     </tr>
     <tr>
         <td>
-            <tags:link url="${ctx}/docs/api/v1/post/friendships/destroy" text="POST friendships/destory" />
+            <tags:link url="${ctx}/docs/api/v1/post/friendships/destroy" text="POST friendships/destory"/>
         </td>
         <td>
             取消关注
@@ -80,5 +82,6 @@
 <hr/>
 
 <p>
-    使用<a href="http://www.google.com/intl/zh-CN/chrome/browser/">谷歌浏览器</a>和<a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JSONView扩展</a>看JSON很棒。
+    使用<a href="http://www.google.com/intl/zh-CN/chrome/browser/">谷歌浏览器</a>和<a
+        href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JSONView扩展</a>看JSON很棒。
 </p>

@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <ul>
-    <li><tags:link url="${ctx}/docs/api/v1" text="REST API V1" /></li>
+    <li><tags:link url="${ctx}/docs/api/v1" text="REST API V1"/></li>
 </ul>
 
 

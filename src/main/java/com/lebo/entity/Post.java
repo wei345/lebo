@@ -33,6 +33,7 @@ public class Post extends IdEntity {
     private String originPostId;
     @Indexed
     private LinkedHashSet<String> mentions;
+    @Indexed
     private LinkedHashSet<String> tags;
 
     public String getUserId() {

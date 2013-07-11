@@ -1,5 +1,6 @@
 package com.lebo.service.account;
 
+import com.mongodb.MongoException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -39,6 +40,9 @@ public class ShiroOauthRealm extends AuthorizingRealm implements ApplicationCont
                 //不支持的登录类型
                 return null;
             }
+        } catch (MongoException e) {
+            logger.warn("登录失败 - " + authcToken + " - " + e.getMessage(), e);
+            return null;
         } catch (Exception e) {
             logger.info("登录失败 - " + authcToken + " - " + e.getMessage());
             return null;

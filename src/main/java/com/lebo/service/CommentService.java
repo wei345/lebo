@@ -17,7 +17,7 @@ import java.util.List;
  * Time: AM8:31
  */
 @Service
-public class CommentService extends MongoService {
+public class CommentService extends AbstractMongoService {
     @Autowired
     private CommentDao commentDao;
     @Autowired
