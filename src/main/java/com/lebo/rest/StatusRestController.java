@@ -6,7 +6,7 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
-import com.lebo.service.TimelineParam;
+import com.lebo.service.param.TimelineParam;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
 import org.slf4j.Logger;

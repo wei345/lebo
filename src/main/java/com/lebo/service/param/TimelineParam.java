@@ -1,4 +1,4 @@
-package com.lebo.service;
+package com.lebo.service.param;
 
 /**
  * @author: Wei Liu

@@ -4,7 +4,7 @@ import com.lebo.entity.OpenUser;
 import com.lebo.entity.User;
 import com.lebo.repository.OpenUserDao;
 import com.lebo.repository.UserDao;
-import com.lebo.service.SearchParam;
+import com.lebo.service.param.SearchParam;
 import com.lebo.service.ServiceException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;

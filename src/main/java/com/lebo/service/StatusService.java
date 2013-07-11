@@ -6,6 +6,7 @@ import com.lebo.entity.Post;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.PostDao;
 import com.lebo.service.param.FileInfo;
+import com.lebo.service.param.TimelineParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

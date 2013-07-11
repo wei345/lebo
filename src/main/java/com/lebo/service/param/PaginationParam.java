@@ -1,4 +1,4 @@
-package com.lebo.service;
+package com.lebo.service.param;
 
 import com.lebo.repository.MongoConstant;
 import org.apache.commons.lang3.StringUtils;
