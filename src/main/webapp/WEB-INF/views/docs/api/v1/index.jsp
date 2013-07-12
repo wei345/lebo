@@ -11,6 +11,33 @@
 
 <h3>REST API V1</h3>
 
+<strong>概述</strong>
+<ul>
+    <li>
+        <a href="${ctx}/docs/api/v1/overview">API概述</a>
+    </li>
+</ul>
+
+<strong>登录</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/v1/post/oauthLogin" text="POST oauthLogin"/>
+        </td>
+        <td>
+            OAuth登录
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/v1/post/logout" text="POST logout"/>
+        </td>
+        <td>
+            登出
+        </td>
+    </tr>
+</table>
+
 <strong>时间线</strong>
 <table class="table table-hover">
     <tr>
