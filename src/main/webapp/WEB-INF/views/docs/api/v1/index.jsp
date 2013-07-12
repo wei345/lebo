@@ -126,6 +126,18 @@
     </tr>
 </table>
 
+<strong>搜索</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/v1/get/search/posts" text="GET search/posts"/>
+        </td>
+        <td>
+            搜索Posts
+        </td>
+    </tr>
+</table>
+
 <hr/>
 
 <p>

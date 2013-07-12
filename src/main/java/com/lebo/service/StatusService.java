@@ -8,6 +8,7 @@ import com.lebo.repository.PostDao;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
+import com.lebo.service.param.SearchParam;
 import com.lebo.service.param.TimelineParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -140,9 +141,21 @@ public class StatusService extends AbstractMongoService {
         return dto;
     }
 
+    public List<StatusDto> toStatusDtoList(List<Post> posts){
+        List<StatusDto> dtoList = Lists.newArrayList();
+        for (Post post : posts) {
+            dtoList.add(toStatusDto(post));
+        }
+        return dtoList;
+    }
+
     public void increaseRepostsCount(String postId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(postId)),
                 new Update().inc(Post.REPOSTS_COUNT_KEY, 1),
                 Post.class);
+    }
+
+    public List<Post> searchPosts(SearchParam param){
+        return postDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 }

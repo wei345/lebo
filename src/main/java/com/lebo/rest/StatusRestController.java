@@ -91,7 +91,7 @@ public class StatusRestController {
         param.setUserId(accountService.getCurrentUserId());
         List<Post> postList = statusService.homeTimeline(param);
 
-        return toStatusDtoList(postList, param);
+        return statusService.toStatusDtoList(postList);
     }
 
     /**
@@ -133,7 +133,7 @@ public class StatusRestController {
         param.setUserId(accountService.getCurrentUserId());
         List<Post> postList = statusService.userTimeline(param);
 
-        return toStatusDtoList(postList, param);
+        return statusService.toStatusDtoList(postList);
     }
 
     @RequestMapping(value = "mentionsTimeline", method = RequestMethod.GET)
@@ -142,20 +142,7 @@ public class StatusRestController {
         param.setUserId(accountService.getCurrentUserId());
         List<Post> postList = statusService.mentionsTimeline(param);
 
-        return toStatusDtoList(postList, param);
-    }
-
-    /**
-     * 一个StatusDto表示一个Post，并带有更多信息。
-     *
-     * @param param 填充StatusDao选项
-     */
-    private List<StatusDto> toStatusDtoList(List<Post> postList, TimelineParam param) {
-        List<StatusDto> dtoList = Lists.newArrayList();
-        for (Post post : postList) {
-            dtoList.add(statusService.toStatusDto(post));
-        }
-        return dtoList;
+        return statusService.toStatusDtoList(postList);
     }
 
     /**
