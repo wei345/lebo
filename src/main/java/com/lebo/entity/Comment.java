@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Document
 public class Comment extends IdEntity {
+    public static final String POST_ID_KEY = "postId";
     @Indexed
     private String userId;
     private Date createdAt;

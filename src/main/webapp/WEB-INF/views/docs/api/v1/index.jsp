@@ -79,6 +79,18 @@
     </tr>
 </table>
 
+<strong>收藏</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/v1/post/favorites/create" text="POST favorites/create"/>
+        </td>
+        <td>
+            收藏
+        </td>
+    </tr>
+</table>
+
 <hr/>
 
 <p>

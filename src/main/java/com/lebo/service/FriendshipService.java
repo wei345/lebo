@@ -4,6 +4,8 @@ import com.lebo.entity.Following;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -53,5 +55,17 @@ public class FriendshipService extends AbstractMongoService {
             throw new ServiceException("Not following");
         }
         followingDao.delete(following);
+    }
+
+    public boolean isFollowing(String userId, String followingId){
+        return followingDao.findByUserIdAndFollowingId(userId, followingId) != null;
+    }
+
+    public int countFollowers(String userId){
+       return (int)mongoTemplate.count(new Query(new Criteria(Following.FOLLOWING_ID_KEY).is(userId)), Following.class);
+    }
+
+    public int countFollowings(String userId){
+        return (int)mongoTemplate.count(new Query(new Criteria(Following.USER_ID_KEY).is(userId)), Following.class);
     }
 }

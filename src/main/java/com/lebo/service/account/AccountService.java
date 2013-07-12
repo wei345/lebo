@@ -2,8 +2,11 @@ package com.lebo.service.account;
 
 import com.lebo.entity.User;
 import com.lebo.repository.UserDao;
+import com.lebo.rest.dto.UserDto;
 import com.lebo.service.AbstractMongoService;
+import com.lebo.service.FriendshipService;
 import com.lebo.service.ServiceException;
+import com.lebo.service.StatusService;
 import com.lebo.service.param.SearchParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -16,7 +19,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.utils.DateProvider;
 
 import java.util.List;
@@ -27,7 +30,7 @@ import java.util.List;
  * @author Wei Liu
  */
 @Component
-public class AccountService extends AbstractMongoService{
+public class AccountService extends AbstractMongoService {
 
     private static Logger logger = LoggerFactory.getLogger(AccountService.class);
 
@@ -35,6 +38,10 @@ public class AccountService extends AbstractMongoService{
     private DateProvider dateProvider = DateProvider.DEFAULT;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private StatusService statusService;
+    @Autowired
+    private FriendshipService friendshipService;
 
 
     public List searchUser(SearchParam param) {
@@ -97,6 +104,18 @@ public class AccountService extends AbstractMongoService{
     public void updateLastSignInAt(User user) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(user.getId()))),
                 new Update().set(User.USER_LAST_SIGN_IN_AT_KEY, dateProvider.getDate()), User.class);
+    }
+
+    public UserDto toBigDto(User user) {
+        UserDto dto = BeanMapper.map(user, UserDto.class);
+
+        dto.setStatusesCount(statusService.countUserStatus(user.getId()));
+        if (!getCurrentUserId().equals(user.getId())) {
+            dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), user.getId()));
+        }
+        dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
+        dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
+        return dto;
     }
 
     @Autowired

@@ -65,4 +65,10 @@ public class StatusServiceTest extends SpringContextTestCase {
 
         assertNotNull(post);
     }
+
+    @Test
+    public void countUserStatus(){
+        int count = statusService.countUserStatus("51def1e61a883914869e46f3");
+        System.out.println(count);
+    }
 }

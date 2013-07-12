@@ -110,6 +110,8 @@ public class FileServlet extends HttpServlet {
         //高效读取文件内容并输出,然后关闭input file
         IOUtils.copy(contentInfo.getContent(), output);
         output.flush();
+
+        gridFsService.increaseViewCount(fileId);
     }
 
     /**

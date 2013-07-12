@@ -13,11 +13,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "user_favorite_unique", def = "{'userId': 1, 'tweetId': 1}", unique = true)
+        @CompoundIndex(name = "user_favorite_unique", def = "{'userId': 1, 'postId': 1}", unique = true)
 })
 public class Favorite extends IdEntity {
+    public static final String USER_ID_KEY = "userId";
+    public static final String POST_ID_KEY = "postId";
+
     private String userId;
     private String postId;
+
+    public  Favorite(){}
+
+    public Favorite(String userId, String postId){
+        this.userId = userId;
+        this.postId = postId;
+    }
 
     public String getUserId() {
         return userId;

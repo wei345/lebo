@@ -5,6 +5,8 @@ import com.lebo.entity.Comment;
 import com.lebo.repository.CommentDao;
 import com.lebo.service.param.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -42,8 +44,12 @@ public class CommentService extends AbstractMongoService {
         throwOnMongoError();
 
         for (String id : fileIds) {
-            gridFsService.increaseReferrerCount(id);
+            gridFsService.increaseViewCount(id);
         }
         return comment;
+    }
+
+    public int countPostComments(String postId){
+        return (int)mongoTemplate.count(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)), Comment.class);
     }
 }

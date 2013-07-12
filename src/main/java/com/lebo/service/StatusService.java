@@ -5,11 +5,16 @@ import com.lebo.entity.Following;
 import com.lebo.entity.Post;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.PostDao;
+import com.lebo.rest.dto.StatusDto;
+import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.TimelineParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springside.modules.mapper.BeanMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,11 +37,21 @@ public class StatusService extends AbstractMongoService {
     private GridFsService gridFsService;
     @Autowired
     private MentionService mentionService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private FavoriteService favoriteService;
 
     public Post update(String userId, String text, List<FileInfo> fileInfos) throws IOException {
         List<String> fileIds = Lists.newArrayList();
-        for (FileInfo fileInfo : fileInfos) {
-            fileIds.add(gridFsService.save(fileInfo.getContent(), fileInfo.getFilename(), fileInfo.getMimeType()));
+        try {
+            for (FileInfo fileInfo : fileInfos) {
+                fileIds.add(gridFsService.save(fileInfo.getContent(), fileInfo.getFilename(), fileInfo.getMimeType()));
+            }
+        } catch (Exception e) {
+            for(String fileId : fileIds){
+                gridFsService.delete(fileId);
+            }
         }
 
         Post post = new Post();
@@ -50,7 +65,7 @@ public class StatusService extends AbstractMongoService {
         throwOnMongoError();
 
         for (String id : fileIds) {
-            gridFsService.increaseReferrerCount(id);
+            gridFsService.increaseViewCount(id);
         }
         return post;
     }
@@ -82,5 +97,25 @@ public class StatusService extends AbstractMongoService {
     public List<Post> mentionsTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
         return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
+    }
+
+    public Post findPost(String id) {
+        return postDao.findOne(id);
+    }
+
+    public int countUserStatus(String userId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Post.POST_USER_ID_KEY).is(userId)), Post.class);
+    }
+
+    public StatusDto toBigDto(Post post) {
+        String userId = accountService.getCurrentUserId();
+        StatusDto dto = BeanMapper.map(post, StatusDto.class);
+
+        dto.setUser(accountService.toBigDto(accountService.getUser(post.getUserId())));
+
+        dto.setFavorited(favoriteService.isFavorited(userId, post.getId()));
+
+        dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
+        return dto;
     }
 }

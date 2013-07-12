@@ -19,6 +19,7 @@ import java.util.List;
         @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'files': 1}", unique = true)
 })
 public class Post extends IdEntity {
+    public static final String POST_USER_ID_KEY = "userId";
     @Indexed
     private String userId;
     private Date createdAt;

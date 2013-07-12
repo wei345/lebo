@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springside.modules.mapper.BeanMapper;
 
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -151,9 +150,7 @@ public class StatusRestController {
     private List<StatusDto> toStatusDtoList(List<Post> postList, TimelineParam param) {
         List<StatusDto> dtoList = Lists.newArrayList();
         for (Post post : postList) {
-            StatusDto dto = BeanMapper.map(post, StatusDto.class);
-            dto.setUser(accountService.getUser(post.getUserId()));
-            dtoList.add(dto);
+            dtoList.add(statusService.toBigDto(post));
         }
         return dtoList;
     }

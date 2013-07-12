@@ -48,7 +48,8 @@ public class GridFsService extends AbstractMongoService {
             throwOnMongoError();
             return gridFSFile.getId().toString();
         } else {
-            return file.getId().toString();
+            // 不存储同样文件
+            throw new DuplicateException(String.format("File[filename=%s, contentType=%s] already exists.", filename, contentType));
         }
     }
 
@@ -67,18 +68,14 @@ public class GridFsService extends AbstractMongoService {
         return fileInfo;
     }
 
-    public void increaseReferrerCount(String id) {
+    public void increaseViewCount(String id) {
         DBCollection collection = mongoTemplate.getCollection(GRID_FS_FILES_COLLECTION_NAME);
         DBObject q = new BasicDBObject("_id", new ObjectId(id));
-        DBObject o = new BasicDBObject("$inc", new BasicDBObject("referrerCount", 1));
+        DBObject o = new BasicDBObject("$inc", new BasicDBObject("viewCount", 1));
         collection.update(q, o);
     }
 
-    public void decreaseReferrerCount(String id) {
-        DBCollection collection = mongoTemplate.getCollection(GRID_FS_FILES_COLLECTION_NAME);
-        DBObject q = new BasicDBObject("_id", new ObjectId(id));
-        DBObject o = new BasicDBObject("$inc", new BasicDBObject("referrerCount", -1));
-        collection.update(q, o);
+    public void delete(String id){
+        gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id))));
     }
-
 }

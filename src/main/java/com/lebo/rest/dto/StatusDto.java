@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class StatusDto {
     private String id;
-    private User user;
+    private UserDto user;
     private Date createdAt;
     private String text;
     private Boolean truncated;
@@ -22,9 +22,11 @@ public class StatusDto {
     //该Tweet来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
+    private Boolean favorited;
     private Integer favouritesCount;
     private Integer repostsCount;
     private Boolean reposted;
+    private Integer commentsCount;
     private String originPostId;
 
     public String getId() {
@@ -35,11 +37,11 @@ public class StatusDto {
         this.id = id;
     }
 
-    public User getUser() {
+    public UserDto getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDto user) {
         this.user = user;
     }
 
@@ -121,5 +123,21 @@ public class StatusDto {
 
     public void setOriginPostId(String originPostId) {
         this.originPostId = originPostId;
+    }
+
+    public Boolean getFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(Boolean favorited) {
+        this.favorited = favorited;
+    }
+
+    public Integer getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(Integer commentsCount) {
+        this.commentsCount = commentsCount;
     }
 }
