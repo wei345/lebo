@@ -19,9 +19,10 @@ import java.util.List;
         @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'files': 1}", unique = true)
 })
 public class Post extends IdEntity {
-    public static final String POST_USER_ID_KEY = "userId";
+
     @Indexed
     private String userId;
+    public static final String POST_USER_ID_KEY = "userId";
     private Date createdAt;
     private String text;
     private boolean truncated;
@@ -32,10 +33,14 @@ public class Post extends IdEntity {
     private GeoLocation geoLocation;
     @Indexed
     private String originPostId;
+    public static final String ORIGIN_POST_ID_KEY = "originPostId";
     @Indexed
     private LinkedHashSet<String> mentions;
     @Indexed
     private LinkedHashSet<String> tags;
+
+    private Integer repostsCount;
+    public static final String REPOSTS_COUNT_KEY = "repostsCount";
 
     public String getUserId() {
         return userId;
@@ -117,5 +122,13 @@ public class Post extends IdEntity {
 
     public void setTags(LinkedHashSet<String> tags) {
         this.tags = tags;
+    }
+
+    public Integer getRepostsCount() {
+        return repostsCount;
+    }
+
+    public void setRepostsCount(Integer repostsCount) {
+        this.repostsCount = repostsCount;
     }
 }

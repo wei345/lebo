@@ -45,6 +45,14 @@
             发布视频
         </td>
     </tr>
+    <tr>
+        <td>
+            <tags:link url="${ctx}/docs/api/v1/post/statuses/repost" text="POST statuses/repost"/>
+        </td>
+        <td>
+            转发视频
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>

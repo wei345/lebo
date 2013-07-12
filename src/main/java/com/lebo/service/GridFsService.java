@@ -75,7 +75,7 @@ public class GridFsService extends AbstractMongoService {
         collection.update(q, o);
     }
 
-    public void delete(String id){
+    public void delete(String id) {
         gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id))));
     }
 }

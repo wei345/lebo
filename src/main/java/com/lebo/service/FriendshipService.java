@@ -57,15 +57,15 @@ public class FriendshipService extends AbstractMongoService {
         followingDao.delete(following);
     }
 
-    public boolean isFollowing(String userId, String followingId){
+    public boolean isFollowing(String userId, String followingId) {
         return followingDao.findByUserIdAndFollowingId(userId, followingId) != null;
     }
 
-    public int countFollowers(String userId){
-       return (int)mongoTemplate.count(new Query(new Criteria(Following.FOLLOWING_ID_KEY).is(userId)), Following.class);
+    public int countFollowers(String userId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Following.FOLLOWING_ID_KEY).is(userId)), Following.class);
     }
 
-    public int countFollowings(String userId){
-        return (int)mongoTemplate.count(new Query(new Criteria(Following.USER_ID_KEY).is(userId)), Following.class);
+    public int countFollowings(String userId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Following.USER_ID_KEY).is(userId)), Following.class);
     }
 }

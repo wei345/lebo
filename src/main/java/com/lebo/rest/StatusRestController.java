@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,11 +42,13 @@ public class StatusRestController {
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
     //TODO 检查Post.text长度
+    //TODO 保存source
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public Object update(@RequestParam(value = "video") MultipartFile video,
                          @RequestParam(value = "image") MultipartFile image,
-                         @RequestParam(value = "text") String text) {
+                         @RequestParam(value = "text") String text,
+                         @RequestParam(value = "source", required = false) String source) {
         try {
 
             if (video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE) {
@@ -56,7 +59,7 @@ public class StatusRestController {
                     new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
                     new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
 
-            return statusService.update(accountService.getCurrentUserId(), text, fileInfos);
+            return statusService.update(accountService.getCurrentUserId(), text, fileInfos, null, source);
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
@@ -135,7 +138,7 @@ public class StatusRestController {
 
     @RequestMapping(value = "mentionsTimeline", method = RequestMethod.GET)
     @ResponseBody
-    public Object mentionsTimeline(@Valid TimelineParam param){
+    public Object mentionsTimeline(@Valid TimelineParam param) {
         param.setUserId(accountService.getCurrentUserId());
         List<Post> postList = statusService.mentionsTimeline(param);
 
@@ -150,8 +153,47 @@ public class StatusRestController {
     private List<StatusDto> toStatusDtoList(List<Post> postList, TimelineParam param) {
         List<StatusDto> dtoList = Lists.newArrayList();
         for (Post post : postList) {
-            dtoList.add(statusService.toBigDto(post));
+            dtoList.add(statusService.toStatusDto(post));
         }
         return dtoList;
+    }
+
+    /**
+     * 转发一条微博
+     *
+     * @param id   要转发的微博ID。
+     * @param text 添加的转发文本，必须做URLencode，内容不超过140个汉字
+     * @return
+     */
+    @RequestMapping(value = "repost", method = RequestMethod.POST)
+    @ResponseBody
+    private Object repost(@RequestParam("id") String id,
+                          @RequestParam(value = "text", required = false) String text,
+                          @RequestParam(value = "source", required = false) String source) {
+        try {
+            Post post = statusService.findPost(id);
+            if (post == null) {
+                return ErrorDto.newBadRequestError("The parameter id [" + id + "] is invalid.");
+            }
+
+            String originId = (post.getOriginPostId() == null ? id : post.getOriginPostId());
+
+            post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
+
+            statusService.increaseRepostsCount(originId);
+
+            if (!id.equals(originId)) {
+                statusService.increaseRepostsCount(id);
+            }
+
+            return statusService.toStatusDto(post);
+
+        } catch (DuplicateException e) {
+            return ErrorDto.DUPLICATE;
+        } catch (Exception e) {
+            logger.info("转发Post失败", e);
+            return ErrorDto.newBadRequestError(e.getMessage());
+        }
+
     }
 }

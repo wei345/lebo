@@ -12,6 +12,7 @@ import com.lebo.service.param.TimelineParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
@@ -28,6 +29,7 @@ import java.util.List;
  */
 @Service
 public class StatusService extends AbstractMongoService {
+    public static final int MAX_TEXT_LENGTH = 140;
 
     @Autowired
     private FollowingDao followingDao;
@@ -42,7 +44,16 @@ public class StatusService extends AbstractMongoService {
     @Autowired
     private FavoriteService favoriteService;
 
-    public Post update(String userId, String text, List<FileInfo> fileInfos) throws IOException {
+    /**
+     *
+     * @param userId
+     * @param text
+     * @param fileInfos
+     * @param originPostId 若是转发，为原Post ID，否则为null
+     * @return
+     * @throws IOException
+     */
+    public Post update(String userId, String text, List<FileInfo> fileInfos, String originPostId, String source) throws Exception {
         List<String> fileIds = Lists.newArrayList();
         try {
             for (FileInfo fileInfo : fileInfos) {
@@ -52,6 +63,7 @@ public class StatusService extends AbstractMongoService {
             for(String fileId : fileIds){
                 gridFsService.delete(fileId);
             }
+            throw e;
         }
 
         Post post = new Post();
@@ -61,6 +73,9 @@ public class StatusService extends AbstractMongoService {
         post.setMentions(mentionService.mentionUserIds(text));
         post.setTags(mentionService.findTags(text));
         post.setFiles(fileIds);
+        post.setOriginPostId(originPostId);
+        post.setSource(source);
+
         post = postDao.save(post);
         throwOnMongoError();
 
@@ -107,15 +122,27 @@ public class StatusService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.POST_USER_ID_KEY).is(userId)), Post.class);
     }
 
-    public StatusDto toBigDto(Post post) {
+    public StatusDto toStatusDto(Post post) {
         String userId = accountService.getCurrentUserId();
         StatusDto dto = BeanMapper.map(post, StatusDto.class);
 
-        dto.setUser(accountService.toBigDto(accountService.getUser(post.getUserId())));
+        // 嵌入转发的POST
+        if (post.getOriginPostId() != null) {
+            Post originPost = postDao.findOne(post.getOriginPostId());
+            StatusDto originStatusDto = toStatusDto(originPost);
+            dto.setOriginStatus(originStatusDto);
+        }
 
+        dto.setUser(accountService.toUserDto(accountService.getUser(post.getUserId())));
         dto.setFavorited(favoriteService.isFavorited(userId, post.getId()));
-
         dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
+
         return dto;
+    }
+
+    public void increaseRepostsCount(String postId) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(postId)),
+                new Update().inc(Post.REPOSTS_COUNT_KEY, 1),
+                Post.class);
     }
 }

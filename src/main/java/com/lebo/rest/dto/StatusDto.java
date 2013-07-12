@@ -1,7 +1,6 @@
 package com.lebo.rest.dto;
 
 import com.lebo.entity.GeoLocation;
-import com.lebo.entity.User;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +26,7 @@ public class StatusDto {
     private Integer repostsCount;
     private Boolean reposted;
     private Integer commentsCount;
-    private String originPostId;
+    private StatusDto originStatus;
 
     public String getId() {
         return id;
@@ -117,14 +116,6 @@ public class StatusDto {
         this.reposted = reposted;
     }
 
-    public String getOriginPostId() {
-        return originPostId;
-    }
-
-    public void setOriginPostId(String originPostId) {
-        this.originPostId = originPostId;
-    }
-
     public Boolean getFavorited() {
         return favorited;
     }
@@ -139,5 +130,13 @@ public class StatusDto {
 
     public void setCommentsCount(Integer commentsCount) {
         this.commentsCount = commentsCount;
+    }
+
+    public StatusDto getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(StatusDto originStatus) {
+        this.originStatus = originStatus;
     }
 }

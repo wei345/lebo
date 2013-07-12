@@ -38,6 +38,6 @@ public class FavoriteRestController {
 
         favoriteService.create(userId, id);
         Post post = statusService.findPost(id);
-        return statusService.toBigDto(post);
+        return statusService.toStatusDto(post);
     }
 }

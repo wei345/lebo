@@ -49,7 +49,7 @@ public class CommentService extends AbstractMongoService {
         return comment;
     }
 
-    public int countPostComments(String postId){
-        return (int)mongoTemplate.count(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)), Comment.class);
+    public int countPostComments(String postId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)), Comment.class);
     }
 }

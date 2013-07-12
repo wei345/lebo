@@ -22,9 +22,10 @@ public class Favorite extends IdEntity {
     private String userId;
     private String postId;
 
-    public  Favorite(){}
+    public Favorite() {
+    }
 
-    public Favorite(String userId, String postId){
+    public Favorite(String userId, String postId) {
         this.userId = userId;
         this.postId = postId;
     }

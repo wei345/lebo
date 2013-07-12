@@ -106,7 +106,7 @@ public class AccountService extends AbstractMongoService {
                 new Update().set(User.USER_LAST_SIGN_IN_AT_KEY, dateProvider.getDate()), User.class);
     }
 
-    public UserDto toBigDto(User user) {
+    public UserDto toUserDto(User user) {
         UserDto dto = BeanMapper.map(user, UserDto.class);
 
         dto.setStatusesCount(statusService.countUserStatus(user.getId()));

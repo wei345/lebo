@@ -55,13 +55,13 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void update() throws IOException {
+    public void update() throws Exception {
         ClassPathResource classPathResource = new ClassPathResource("applicationContext.xml");
         assertTrue(classPathResource.exists());
 
         String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(classPathResource.getFile());
         FileInfo fileInfo = new FileInfo(classPathResource.getInputStream(), classPathResource.getFilename(), contentType);
-        Post post = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(fileInfo));
+        Post post = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(fileInfo), null, "test");
 
         assertNotNull(post);
     }

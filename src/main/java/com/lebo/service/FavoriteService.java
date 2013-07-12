@@ -13,23 +13,23 @@ import org.springframework.stereotype.Service;
  * Time: PM12:22
  */
 @Service
-public class FavoriteService extends AbstractMongoService{
+public class FavoriteService extends AbstractMongoService {
     @Autowired
     private FavoriteDao favoriteDao;
 
-    public void create(String userId, String postId){
+    public void create(String userId, String postId) {
         favoriteDao.save(new Favorite(userId, postId));
     }
 
-    public boolean isFavorited(String userId, String postId){
+    public boolean isFavorited(String userId, String postId) {
         return favoriteDao.findByUserIdAndPostId(userId, postId) != null;
     }
 
-    public int countUserFavorites(String userId){
-        return (int)mongoTemplate.count(new Query(new Criteria(Favorite.USER_ID_KEY).is(userId)), Favorite.class);
+    public int countUserFavorites(String userId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Favorite.USER_ID_KEY).is(userId)), Favorite.class);
     }
 
-    public int countPostFavorites(String postId){
-        return (int)mongoTemplate.count(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)), Favorite.class);
+    public int countPostFavorites(String postId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)), Favorite.class);
     }
 }

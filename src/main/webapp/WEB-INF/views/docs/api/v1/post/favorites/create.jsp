@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="收藏" method="POST" action="${ctx}/api/v1/favorites/create.json">
-    <tags:field name="id" value="51df969c1a88cb49eec1f5f7" />
+    <tags:field name="id" value="51df969c1a88cb49eec1f5f7"/>
 </tags:form>
 
 <tags:example method="POST" url="http://localhost:8080/api/v1/favorites/create.json?id=51df969c1a88cb49eec1f5f7">
