@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springside.modules.test.category.UnStable;
 
-import java.util.regex.Pattern;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
@@ -49,13 +47,22 @@ public class PostDaoTest extends SpringContextTestCase implements UnStable {
     }
 
     @Test
-    public void search(){
+    public void searchText(){
         SearchParam param = new SearchParam();
-        Page<Post> page = postDao.search("转发",
+        Page<Post> page = postDao.searchText("转发",
                 param.getMaxId(), param.getSinceId(), param);
 
         assertTrue(page.getContent().size() > 0);
         assertTrue(page.getContent().get(0).getText().contains("转发"));
     }
 
+    @Test
+    public void searchTags(){
+        SearchParam param = new SearchParam();
+        Page<Post> page = postDao.searchTags("1",
+                param.getMaxId(), param.getSinceId(), param);
+
+        assertTrue(page.getContent().size() > 0);
+        assertTrue(page.getContent().get(0).getText().contains("1"));
+    }
 }

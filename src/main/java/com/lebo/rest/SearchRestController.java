@@ -24,7 +24,13 @@ public class SearchRestController {
 
     @RequestMapping(value = "posts", method = RequestMethod.GET)
     @ResponseBody
-    public Object posts(@Valid SearchParam param) {
+    public Object searchPosts(@Valid SearchParam param) {
         return statusService.toStatusDtoList(statusService.searchPosts(param));
+    }
+
+    @RequestMapping(value = "tags", method = RequestMethod.GET)
+    @ResponseBody
+    public Object searchTags(@Valid SearchParam param) {
+        return statusService.toStatusDtoList(statusService.searchTags(param));
     }
 }

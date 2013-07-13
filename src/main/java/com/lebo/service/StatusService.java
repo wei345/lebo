@@ -156,6 +156,10 @@ public class StatusService extends AbstractMongoService {
     }
 
     public List<Post> searchPosts(SearchParam param){
-        return postDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
+        return postDao.searchText(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
+    }
+
+    public List<Post> searchTags(SearchParam param){
+        return postDao.searchTags(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 }

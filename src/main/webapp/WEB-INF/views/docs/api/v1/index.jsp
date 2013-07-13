@@ -9,10 +9,9 @@
     }
 </style>
 
-<strong>概述</strong>
 <ul>
     <li>
-        <a href="${ctx}/docs/api/v1/overview">API概述</a>
+        分页
     </li>
 </ul>
 
@@ -132,6 +131,14 @@
         </td>
         <td>
             搜索Posts
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/v1/get/search/tags" text="GET search/tags"/>
+        </td>
+        <td>
+            搜索Tags
         </td>
     </tr>
 </table>
