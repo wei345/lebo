@@ -6,6 +6,7 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
+import com.lebo.service.param.SearchParam;
 import com.lebo.service.param.TimelineParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,6 +180,23 @@ public class StatusRestController {
             logger.info("转发Post失败", e);
             return ErrorDto.newBadRequestError(e.getMessage());
         }
+    }
 
+    /**
+     * <ul><li>以逗号分隔多个短语</li>
+     * <li>一个短语包含一个或多个词，以空格分隔</li>
+     * <li>如果Post.terms出现短语中的每个词，则认为匹配该短语，词顺序无关，忽略大小写</li>
+     * <li>也就是空格相当于AND，逗号相当于OR</li>
+     * <li>查找范围包括：text、expanded_url、display_url、hashtags、screen_name</li>
+     * <li>每个短语1-60字节</li>
+     * <li>不支持短语精确匹配</li>
+     * <li>#hashtag或@mention不会匹配#hashtags或@mentions。</li>
+     * </ul>
+     *
+     */
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    @ResponseBody
+    public Object search(@Valid SearchParam param) {
+        return statusService.toStatusDtoList(statusService.searchPosts(param));
     }
 }

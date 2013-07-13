@@ -22,15 +22,15 @@ public class SearchRestController {
     @Autowired
     private StatusService statusService;
 
-    @RequestMapping(value = "posts", method = RequestMethod.GET)
-    @ResponseBody
-    public Object searchPosts(@Valid SearchParam param) {
-        return statusService.toStatusDtoList(statusService.searchPosts(param));
-    }
-
+    /**
+     * 搜索Post.text中出现的标签，按标签出现次数由大到小排序，返回最多100个标签。
+     *
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "tags", method = RequestMethod.GET)
     @ResponseBody
     public Object searchTags(@Valid SearchParam param) {
-        return statusService.toStatusDtoList(statusService.searchTags(param));
+        return statusService.toStatusDtoList(statusService.findPostsByTag(param));
     }
 }

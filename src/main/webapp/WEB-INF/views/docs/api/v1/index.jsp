@@ -77,6 +77,14 @@
             转发视频
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/v1/get/statuses/search" text="GET statuses/search"/>
+        </td>
+        <td>
+            搜索
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>
@@ -123,16 +131,8 @@
     </tr>
 </table>
 
-<strong>搜索</strong>
+<strong>搜索联想</strong>
 <table class="table table-hover">
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/v1/get/search/posts" text="GET search/posts"/>
-        </td>
-        <td>
-            搜索Posts
-        </td>
-    </tr>
     <tr>
         <td class="td1">
             <tags:link url="${ctx}/docs/api/v1/get/search/tags" text="GET search/tags"/>
@@ -146,6 +146,6 @@
 <hr/>
 
 <p>
-    使用<a href="http://www.google.com/intl/zh-CN/chrome/browser/">谷歌浏览器</a>和<a
+    使用<a href="http://www.google.com/intl/zh-CN/chrome/browser/">谷歌浏览器</a>+<a
         href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JSONView扩展</a>看JSON很棒。
 </p>
