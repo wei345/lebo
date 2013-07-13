@@ -1,9 +1,7 @@
 package com.lebo.rest;
 
-import com.google.common.collect.Lists;
 import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
