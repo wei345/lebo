@@ -13,11 +13,11 @@
 
 <tags:example method="POST" url="/api/v1/oauthLogin.json?provider=weibo&token=2.00vHLEwBz7QwTCbafc736d580QUCCY">
     {
-    "name": "法图_麦",
-    "profileImageUrl": "http://tp4.sinaimg.cn/1774156407/50/5657962784/0",
-    "provider": "weibo",
-    "screenName": "法图_麦",
-    "token": "2.00vHLEwBz7QwTCbafc736d580QUCCY",
-    "uid": "1774156407"
+        "name": "法图_麦",
+        "profileImageUrl": "http://tp4.sinaimg.cn/1774156407/50/5657962784/0",
+        "provider": "weibo",
+        "screenName": "法图_麦",
+        "token": "2.00vHLEwBz7QwTCbafc736d580QUCCY",
+        "uid": "1774156407"
     }
 </tags:example>

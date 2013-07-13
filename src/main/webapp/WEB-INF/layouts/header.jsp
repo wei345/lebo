@@ -5,7 +5,7 @@
 <div id="header">
     <div id="title">
         <h1><a href="${ctx}/">乐播</a>
-            <small><sitemesh:title/></small>
+            <small><sitemesh:title/>${title}</small>
             <shiro:user>
                 <div class="btn-group pull-right">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
