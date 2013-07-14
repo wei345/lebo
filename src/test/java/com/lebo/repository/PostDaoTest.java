@@ -47,7 +47,7 @@ public class PostDaoTest extends SpringContextTestCase implements UnStable {
     }
 
     @Test
-    public void search(){
+    public void search() {
         SearchParam param = new SearchParam();
         Page<Post> page = postDao.search("转发",
                 param.getMaxId(), param.getSinceId(), param);

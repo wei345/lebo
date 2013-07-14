@@ -192,7 +192,6 @@ public class StatusRestController {
      * <li>不支持短语精确匹配</li>
      * <li>#hashtag或@mention不会匹配#hashtags或@mentions。</li>
      * </ul>
-     *
      */
     @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody

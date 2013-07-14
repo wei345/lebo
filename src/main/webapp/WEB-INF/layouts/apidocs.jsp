@@ -43,10 +43,10 @@
 </div>
 <script src="${ctx}/static/bootstrap/2.2.2/js/bootstrap.min.js" type="text/javascript"></script>
 <script>
-    $(document).ready(function() {
-        $('pre code').each(function(i, e) {
+    $(document).ready(function () {
+        $('pre code').each(function (i, e) {
             //去掉各行开头的4个空格
-            if(e.innerHTML.match(/(    .*)+/)){
+            if (e.innerHTML.match(/(    .*)+/)) {
                 e.innerHTML = e.innerHTML.replace(/    (.*)/g, "$1");
             }
             //去掉首尾空行

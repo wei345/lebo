@@ -20,7 +20,10 @@ import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -45,7 +48,6 @@ public class StatusService extends AbstractMongoService {
     private FavoriteService favoriteService;
 
     /**
-     *
      * @param userId
      * @param text
      * @param fileInfos
@@ -60,7 +62,7 @@ public class StatusService extends AbstractMongoService {
                 fileIds.add(gridFsService.save(fileInfo.getContent(), fileInfo.getFilename(), fileInfo.getMimeType()));
             }
         } catch (Exception e) {
-            for(String fileId : fileIds){
+            for (String fileId : fileIds) {
                 gridFsService.delete(fileId);
             }
             throw e;
@@ -138,7 +140,7 @@ public class StatusService extends AbstractMongoService {
         return dto;
     }
 
-    public List<StatusDto> toStatusDtoList(List<Post> posts){
+    public List<StatusDto> toStatusDtoList(List<Post> posts) {
         List<StatusDto> dtoList = Lists.newArrayList();
         for (Post post : posts) {
             dtoList.add(toStatusDto(post));
@@ -152,18 +154,18 @@ public class StatusService extends AbstractMongoService {
                 Post.class);
     }
 
-    public List<Post> searchPosts(SearchParam param){
+    public List<Post> searchPosts(SearchParam param) {
         return postDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
-    public List<Tag> searchTags(String q, int count){
+    public List<Tag> searchTags(String q, int count) {
         List<Tag> allTags = findAllTags();
         List<Tag> result = new ArrayList<Tag>();
 
-        for(Tag tag : allTags){
-            if(tag.getName().contains(q)){
+        for (Tag tag : allTags) {
+            if (tag.getName().contains(q)) {
                 result.add(tag);
-                if(result.size() == count){
+                if (result.size() == count) {
                     break;
                 }
             }
@@ -177,7 +179,7 @@ public class StatusService extends AbstractMongoService {
      * 创建了Post。可能需要统计Tags或更新全文索引。
      */
     // TODO 完成 onPostCreated
-    private void onPostCreated(){
+    private void onPostCreated() {
         //发送JMS消息
         //更新Tags统计数据
     }
@@ -185,14 +187,14 @@ public class StatusService extends AbstractMongoService {
     /**
      * 返回所有Tag，按次数由大到小排序。
      */
-    public List<Tag> findAllTags(){
+    public List<Tag> findAllTags() {
         //TODO 优化findAllTags，读写通过缓存
         //查最近3个月？
         //返回结果带有最后出现日期？
 
         String map = "function(){for(var i in this.tags) emit(this.tags[i], 1)}";
         String reduce = "function(key, emits){total = 0; for(var i in emits) total += emits[i]; return total;}";
-        MapReduceResults<Tag> result =  mongoTemplate.mapReduce(mongoTemplate.getCollectionName(Post.class), map, reduce, Tag.class);
+        MapReduceResults<Tag> result = mongoTemplate.mapReduce(mongoTemplate.getCollectionName(Post.class), map, reduce, Tag.class);
 
         List<Tag> tags = Lists.newArrayList(result.iterator());
         Collections.sort(tags);
@@ -200,7 +202,7 @@ public class StatusService extends AbstractMongoService {
         return tags;
     }
 
-    public static class Tag implements Comparable<Tag>{
+    public static class Tag implements Comparable<Tag> {
         private String _id;
         private Integer value;
 
@@ -208,7 +210,7 @@ public class StatusService extends AbstractMongoService {
             return _id;
         }
 
-        public Integer getCount(){
+        public Integer getCount() {
             return value;
         }
 
