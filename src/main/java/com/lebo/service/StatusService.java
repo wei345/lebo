@@ -3,8 +3,10 @@ package com.lebo.service;
 import com.google.common.collect.Lists;
 import com.lebo.entity.Following;
 import com.lebo.entity.Post;
+import com.lebo.entity.User;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.PostDao;
+import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
@@ -20,10 +22,9 @@ import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: Wei Liu
@@ -38,6 +39,8 @@ public class StatusService extends AbstractMongoService {
     private FollowingDao followingDao;
     @Autowired
     private PostDao postDao;
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private GridFsService gridFsService;
     @Autowired
@@ -72,8 +75,8 @@ public class StatusService extends AbstractMongoService {
         post.setUserId(userId);
         post.setCreatedAt(new Date());
         post.setText(text);
-        post.setMentions(mentionService.mentionUserIds(text));
-        post.setTags(mentionService.findTags(text));
+        post.setUserMentions(mentionUserIds(text));
+        post.setHashtags(findHashtags(text));
         post.setFiles(fileIds);
         post.setOriginPostId(originPostId);
         post.setSource(source);
@@ -158,13 +161,13 @@ public class StatusService extends AbstractMongoService {
         return postDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
-    public List<Tag> searchTags(String q, int count) {
-        List<Tag> allTags = findAllTags();
-        List<Tag> result = new ArrayList<Tag>();
+    public List<Hashtag> searchHashtags(String q, int count) {
+        List<Hashtag> allHashtags = findAllHashtags();
+        List<Hashtag> result = new ArrayList<Hashtag>();
 
-        for (Tag tag : allTags) {
-            if (tag.getName().contains(q)) {
-                result.add(tag);
+        for (Hashtag hashtag : allHashtags) {
+            if (hashtag.getName().contains(q)) {
+                result.add(hashtag);
                 if (result.size() == count) {
                     break;
                 }
@@ -187,22 +190,22 @@ public class StatusService extends AbstractMongoService {
     /**
      * 返回所有Tag，按次数由大到小排序。
      */
-    public List<Tag> findAllTags() {
+    public List<Hashtag> findAllHashtags() {
         //TODO 优化findAllTags，读写通过缓存
         //查最近3个月？
         //返回结果带有最后出现日期？
 
-        String map = "function(){for(var i in this.tags) emit(this.tags[i], 1)}";
+        String map = String.format("function(){for(var i in this.%s) emit(this.%s[i], 1)}", Post.HASHTAGS_KEY, Post.HASHTAGS_KEY);
         String reduce = "function(key, emits){total = 0; for(var i in emits) total += emits[i]; return total;}";
-        MapReduceResults<Tag> result = mongoTemplate.mapReduce(mongoTemplate.getCollectionName(Post.class), map, reduce, Tag.class);
+        MapReduceResults<Hashtag> result = mongoTemplate.mapReduce(mongoTemplate.getCollectionName(Post.class), map, reduce, Hashtag.class);
 
-        List<Tag> tags = Lists.newArrayList(result.iterator());
-        Collections.sort(tags);
+        List<Hashtag> hashtags = Lists.newArrayList(result.iterator());
+        Collections.sort(hashtags);
 
-        return tags;
+        return hashtags;
     }
 
-    public static class Tag implements Comparable<Tag> {
+    public static class Hashtag implements Comparable<Hashtag> {
         private String _id;
         private Integer value;
 
@@ -218,8 +221,42 @@ public class StatusService extends AbstractMongoService {
          * //按value由大到小排序
          */
         @Override
-        public int compareTo(Tag o) {
+        public int compareTo(Hashtag o) {
             return o.value.compareTo(value);
         }
+    }
+
+    private Pattern mentionPattern = Pattern.compile("@([^@\\s]+)");
+    private Pattern tagPattern = Pattern.compile("#([^#\\s]+)#");
+
+    public LinkedHashSet<String> mentionUserIds(String text) {
+        LinkedHashSet<String> userIds = new LinkedHashSet<String>();
+
+        LinkedHashSet<String> names = mentionScreenNames(text);
+        for (String screenName : names) {
+            User user = userDao.findByScreenName(screenName);
+            if (user != null) {
+                userIds.add(user.getId());
+            }
+        }
+        return userIds;
+    }
+
+    LinkedHashSet<String> mentionScreenNames(String text) {
+        Matcher m = mentionPattern.matcher(text);
+        LinkedHashSet<String> names = new LinkedHashSet<String>();
+        while (m.find()) {
+            names.add(m.group(1));
+        }
+        return names;
+    }
+
+    public LinkedHashSet<String> findHashtags(String text) {
+        Matcher m = tagPattern.matcher(text);
+        LinkedHashSet<String> tags = new LinkedHashSet<String>();
+        while (m.find()) {
+            tags.add(m.group(1));
+        }
+        return tags;
     }
 }

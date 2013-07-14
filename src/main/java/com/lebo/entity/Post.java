@@ -33,14 +33,16 @@ public class Post extends IdEntity {
     @Indexed
     private String originPostId;
     public static final String ORIGIN_POST_ID_KEY = "originPostId";
+    //提到的用户的ID
     @Indexed
-    private LinkedHashSet<String> mentions;
-    //TODO 删除tags?
+    private LinkedHashSet<String> userMentions;
+    //TODO 有terms了，删除tags?
     @Indexed
-    private LinkedHashSet<String> tags;
+    private LinkedHashSet<String> hashtags;
+    public static final String HASHTAGS_KEY = "hashtags";
     //存储text分词结果、标签、URL，专用于搜索
     @Indexed
-    private LinkedHashSet<String> terms;
+    private LinkedHashSet<String> searchTerms;
 
     private Integer repostsCount;
     public static final String REPOSTS_COUNT_KEY = "repostsCount";
@@ -111,20 +113,20 @@ public class Post extends IdEntity {
         this.originPostId = originPostId;
     }
 
-    public LinkedHashSet<String> getMentions() {
-        return mentions;
+    public LinkedHashSet<String> getUserMentions() {
+        return userMentions;
     }
 
-    public void setMentions(LinkedHashSet<String> mentions) {
-        this.mentions = mentions;
+    public void setUserMentions(LinkedHashSet<String> userMentions) {
+        this.userMentions = userMentions;
     }
 
-    public LinkedHashSet<String> getTags() {
-        return tags;
+    public LinkedHashSet<String> getHashtags() {
+        return hashtags;
     }
 
-    public void setTags(LinkedHashSet<String> tags) {
-        this.tags = tags;
+    public void setHashtags(LinkedHashSet<String> hashtags) {
+        this.hashtags = hashtags;
     }
 
     public Integer getRepostsCount() {
@@ -135,11 +137,11 @@ public class Post extends IdEntity {
         this.repostsCount = repostsCount;
     }
 
-    public LinkedHashSet<String> getTerms() {
-        return terms;
+    public LinkedHashSet<String> getSearchTerms() {
+        return searchTerms;
     }
 
-    public void setTerms(LinkedHashSet<String> terms) {
-        this.terms = terms;
+    public void setSearchTerms(LinkedHashSet<String> searchTerms) {
+        this.searchTerms = searchTerms;
     }
 }

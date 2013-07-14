@@ -25,7 +25,7 @@ public class CommentService extends AbstractMongoService {
     @Autowired
     private GridFsService gridFsService;
     @Autowired
-    private MentionService mentionService;
+    private StatusService statusService;
 
     public Comment create(String userId, String text, List<FileInfo> files, String postId) throws IOException {
         List<String> fileIds = Lists.newArrayList();
@@ -37,7 +37,7 @@ public class CommentService extends AbstractMongoService {
         comment.setUserId(userId);
         comment.setCreatedAt(new Date());
         comment.setText(text);
-        comment.setMentions(mentionService.mentionUserIds(text));
+        comment.setMentions(statusService.mentionUserIds(text));
         comment.setFiles(fileIds);
         comment.setPostId(postId);
         comment = commentDao.save(comment);

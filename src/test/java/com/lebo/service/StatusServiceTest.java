@@ -16,9 +16,11 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import javax.activation.FileTypeMap;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author: Wei Liu
@@ -74,6 +76,32 @@ public class StatusServiceTest extends SpringContextTestCase {
 
     @Test
     public void findAllTags() {
-        statusService.findAllTags();
+        statusService.findAllHashtags();
+    }
+
+    @Test
+    public void mentionNames() {
+        LinkedHashSet<String> names = statusService.mentionScreenNames("@@abc@@ @@def");
+        assertEquals(2, names.size());
+        assertTrue(names.contains("abc"));
+        assertTrue(names.contains("def"));
+
+        names = statusService.mentionScreenNames("@abc@bcd @efghijk");
+        assertEquals(3, names.size());
+        assertTrue(names.contains("abc"));
+        assertTrue(names.contains("bcd"));
+        assertTrue(names.contains("efghijk"));
+    }
+
+    @Test
+    public void findTags() {
+        LinkedHashSet<String> tags = statusService.findHashtags("##a#b#c##d##");
+        assertEquals(3, tags.size());
+        assertTrue(tags.contains("a"));
+        assertTrue(tags.contains("c"));
+        assertTrue(tags.contains("d"));
+
+        tags = statusService.findHashtags("#### ## ####");
+        assertEquals(0, tags.size());
     }
 }

@@ -147,10 +147,10 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/tags/search" text="GET tags/search"/>
+            <tags:link url="${ctx}/docs/api/1/get/hashtags/search" text="GET hashtags/search"/>
         </td>
         <td>
-            搜索Tags
+            搜索Hashtags
         </td>
     </tr>
 </table>

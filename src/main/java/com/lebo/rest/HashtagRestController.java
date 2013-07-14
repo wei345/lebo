@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Time: PM10:20
  */
 @Controller
-@RequestMapping("/api/1/tags")
-public class TagRestController {
+@RequestMapping("/api/1/hashtags")
+public class HashtagRestController {
 
     @Autowired
     private StatusService statusService;
@@ -28,6 +28,6 @@ public class TagRestController {
     public Object search(@RequestParam("q") String q,
                          @RequestParam(value = "count", defaultValue = "20") int count) {
         if (count > 100) count = 100;
-        return statusService.searchTags(q, count);
+        return statusService.searchHashtags(q, count);
     }
 }
