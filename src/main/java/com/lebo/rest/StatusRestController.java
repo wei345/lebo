@@ -29,7 +29,7 @@ import java.util.List;
  * Time: PM8:35
  */
 @Controller
-@RequestMapping(value = "/api/v1/statuses")
+@RequestMapping(value = "/api/1/statuses")
 public class StatusRestController {
     public static final int ONE_M_BYTE = 1024 * 1024;
     @Autowired

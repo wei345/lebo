@@ -3,13 +3,13 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="关注" method="POST" action="${ctx}/api/v1/friendships/create.json">
+<tags:form name="关注" method="POST" action="${ctx}/api/1/friendships/create.json">
     <p>userId或screenName。</p>
     <tags:field name="screenName" value="法图_麦" optional="true"/>
     <tags:field name="userId" value="51dbb3e21a887f15c8b6f042" optional="true"/>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/v1/friendships/create.json?userId=51dcf1d81a883e712783f124">
+<tags:example method="POST" url="http://localhost:8080/api/1/friendships/create.json?userId=51dcf1d81a883e712783f124">
     {
         id: "51dcf1d81a883e712783f124",
         screenName: "法图_麦",

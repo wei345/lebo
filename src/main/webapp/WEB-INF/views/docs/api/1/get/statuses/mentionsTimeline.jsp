@@ -3,13 +3,13 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="提到我时间线" method="GET" action="${ctx}/api/v1/statuses/mentionsTimeline.json">
+<tags:form name="提到我时间线" method="GET" action="${ctx}/api/1/statuses/mentionsTimeline.json">
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>
 </tags:form>
 
-<tags:example method="GET" url="http://localhost:8080/api/v1/statuses/mentionsTimeline.json">
+<tags:example method="GET" url="http://localhost:8080/api/1/statuses/mentionsTimeline.json">
     [
         {
             id: "51deb74d1a883ab010ebcc2e",

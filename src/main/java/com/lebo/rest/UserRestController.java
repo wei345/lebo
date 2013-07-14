@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Time: AM10:32
  */
 @Controller
-@RequestMapping(value = "/api/v1/users")
+@RequestMapping(value = "/api/1/users")
 public class UserRestController {
     @Autowired
     private AccountService accountService;

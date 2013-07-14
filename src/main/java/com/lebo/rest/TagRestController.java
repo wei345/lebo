@@ -16,8 +16,8 @@ import javax.validation.Valid;
  * Time: PM10:20
  */
 @Controller
-@RequestMapping("/api/v1/search")
-public class SearchRestController {
+@RequestMapping("/api/1/tags")
+public class TagRestController {
 
     @Autowired
     private StatusService statusService;
@@ -28,9 +28,9 @@ public class SearchRestController {
      * @param param
      * @return
      */
-    @RequestMapping(value = "tags", method = RequestMethod.GET)
+    @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody
-    public Object searchTags(@Valid SearchParam param) {
+    public Object search(@Valid SearchParam param) {
         return statusService.toStatusDtoList(statusService.findPostsByTag(param));
     }
 }

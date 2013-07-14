@@ -23,7 +23,7 @@ import org.springside.modules.mapper.BeanMapper;
  * Time: PM4:17
  */
 @Controller
-@RequestMapping("/api/v1/friendships")
+@RequestMapping("/api/1/friendships")
 public class FriendshipRestController {
 
     @Autowired

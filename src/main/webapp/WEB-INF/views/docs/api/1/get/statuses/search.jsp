@@ -3,7 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="搜索" method="GET" action="${ctx}/api/v1/statuses/search.json">
+<tags:form name="搜索" method="GET" action="${ctx}/api/1/statuses/search.json">
     <tags:field name="q" value="转发"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
@@ -11,7 +11,7 @@
 </tags:form>
 
 
-<tags:example method="GET" url="http://localhost:8080/api/v1/statuses/search.json?q=%E8%BD%AC%E5%8F%91">
+<tags:example method="GET" url="http://localhost:8080/api/1/statuses/search.json?q=%E8%BD%AC%E5%8F%91">
     [
         {
             id: "51dfddc31a88464ee138902d",

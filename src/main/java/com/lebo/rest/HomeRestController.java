@@ -24,7 +24,7 @@ public class HomeRestController {
     private Logger logger = LoggerFactory.getLogger(HomeRestController.class);
 
     //TODO 可通过grant登录
-    @RequestMapping(value = "v1/oauthLogin", method = RequestMethod.POST)
+    @RequestMapping(value = "1/oauthLogin", method = RequestMethod.POST)
     @ResponseBody
     public Object oauthLogin(@Valid ShiroOauthRealm.OauthToken oauthToken) {
 
@@ -46,7 +46,7 @@ public class HomeRestController {
         }
     }
 
-    @RequestMapping(value = "v1/logout", method = RequestMethod.POST)
+    @RequestMapping(value = "1/logout", method = RequestMethod.POST)
     @ResponseBody
     public Object logout() {
         Subject currentUser = SecurityUtils.getSubject();

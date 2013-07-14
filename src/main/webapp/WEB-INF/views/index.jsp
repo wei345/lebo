@@ -8,9 +8,9 @@
 </head>
 
 <body>
-    <ul>
-        <li><tags:link url="${ctx}/docs/api/v1" text="REST API V1"/></li>
-    </ul>
+<ul>
+    <li><tags:link url="${ctx}/docs/api/1" text="REST API v1"/></li>
+</ul>
 </body>
 
 

@@ -3,7 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="转发视频" method="POST" action="${ctx}/api/v1/statuses/repost.json">
+<tags:form name="转发视频" method="POST" action="${ctx}/api/1/statuses/repost.json">
     <p>
         原视频：originStatus
     </p>

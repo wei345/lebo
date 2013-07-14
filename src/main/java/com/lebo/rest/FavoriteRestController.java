@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Time: PM12:16
  */
 @Controller
-@RequestMapping("/api/v1/favorites")
+@RequestMapping("/api/1/favorites")
 public class FavoriteRestController {
     @Autowired
     private FavoriteService favoriteService;

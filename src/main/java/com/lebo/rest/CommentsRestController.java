@@ -26,7 +26,7 @@ import java.util.List;
  * Time: AM8:28
  */
 @Controller
-@RequestMapping("/api/v1/comments")
+@RequestMapping("/api/1/comments")
 public class CommentsRestController {
     private Logger logger = LoggerFactory.getLogger(CommentsRestController.class);
 
