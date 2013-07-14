@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<c:set var="title" value="<a style='color:#658A16' href='${ctx}/docs/api/1'>REST API v1</a>"/>
+<c:set var="title" value="<a href='${ctx}/docs/api/1'>REST API v1</a> <a href='${ctx}/docs/api/1/pagination'>分页</a>"/>
 
 <!DOCTYPE html>
 <html>
@@ -27,6 +27,10 @@
     <style>
         pre code {
             background-color: transparent;
+        }
+        #header #title small a {
+            margin-left: 1em;
+            color:#658A16
         }
     </style>
 

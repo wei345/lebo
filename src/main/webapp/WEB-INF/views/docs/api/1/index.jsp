@@ -9,12 +9,6 @@
     }
 </style>
 
-<ul>
-    <li>
-        分页
-    </li>
-</ul>
-
 <strong>登录</strong>
 <table class="table table-hover">
     <tr>
