@@ -6,16 +6,9 @@ package com.lebo.service;
  * Time: PM6:18
  */
 public class DuplicateException extends ServiceException {
-    public DuplicateException() {
-        super();
-    }
 
     public DuplicateException(String message) {
         super(message);
-    }
-
-    public DuplicateException(Throwable cause) {
-        super(cause);
     }
 
     public DuplicateException(String message, Throwable cause) {

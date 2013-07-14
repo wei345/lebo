@@ -4,6 +4,7 @@ import com.lebo.service.param.FileInfo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.MongoException;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
@@ -19,6 +20,8 @@ import org.springside.modules.utils.Encodes;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -33,6 +36,10 @@ public class GridFsService extends AbstractMongoService {
 
     public static final String GRID_FS_FILES_COLLECTION_NAME = "fs.files";
 
+    /**
+     * @throws IOException
+     * @throws DuplicateException 当文件重复时
+     */
     public String save(InputStream in, String filename, String contentType) throws IOException {
         if (!in.markSupported()) {
             in = new ByteArrayInputStream(IOUtils.toByteArray(in));
@@ -77,5 +84,20 @@ public class GridFsService extends AbstractMongoService {
 
     public void delete(String id) {
         gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id))));
+    }
+
+    public List<String> saveFilesSafely(List<FileInfo> fileInfos) {
+        List<String> fileIds = new ArrayList<String>();
+        try {
+            for (FileInfo fileInfo : fileInfos) {
+                fileIds.add(save(fileInfo.getContent(), fileInfo.getFilename(), fileInfo.getMimeType()));
+            }
+            return fileIds;
+        } catch (Exception e) {
+            for (String fileId : fileIds) {
+                delete(fileId);
+            }
+            throw new ServiceException("存储文件失败", e);
+        }
     }
 }

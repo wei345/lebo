@@ -4,6 +4,7 @@ import com.lebo.repository.MongoConstant;
 import com.mongodb.MongoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springside.modules.utils.DateProvider;
 
 /**
  * @author: Wei Liu
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public abstract class AbstractMongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
+    protected DateProvider dateProvider = DateProvider.DEFAULT;
 
     /**
      * 执行MongoDB的<code>getLastError</code>命令，如果发现错误状态则抛出异常。
@@ -27,7 +29,7 @@ public abstract class AbstractMongoService {
         } catch (MongoException e) {
             switch (e.getCode()) {
                 case MongoConstant.MONGO_ERROR_CODE_DUPLICATE_KEY:
-                    throw new DuplicateException(e);
+                    throw new DuplicateException(e.getMessage(), e);
                 default:
                     throw e;
             }

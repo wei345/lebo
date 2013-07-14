@@ -44,8 +44,6 @@ public class StatusService extends AbstractMongoService {
     @Autowired
     private GridFsService gridFsService;
     @Autowired
-    private MentionService mentionService;
-    @Autowired
     private AccountService accountService;
     @Autowired
     private FavoriteService favoriteService;
@@ -59,17 +57,7 @@ public class StatusService extends AbstractMongoService {
      * @throws IOException
      */
     public Post update(String userId, String text, List<FileInfo> fileInfos, String originPostId, String source) throws Exception {
-        List<String> fileIds = Lists.newArrayList();
-        try {
-            for (FileInfo fileInfo : fileInfos) {
-                fileIds.add(gridFsService.save(fileInfo.getContent(), fileInfo.getFilename(), fileInfo.getMimeType()));
-            }
-        } catch (Exception e) {
-            for (String fileId : fileIds) {
-                gridFsService.delete(fileId);
-            }
-            throw e;
-        }
+        List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
 
         Post post = new Post();
         post.setUserId(userId);

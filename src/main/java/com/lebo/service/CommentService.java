@@ -1,6 +1,5 @@
 package com.lebo.service;
 
-import com.google.common.collect.Lists;
 import com.lebo.entity.Comment;
 import com.lebo.repository.CommentDao;
 import com.lebo.service.param.FileInfo;
@@ -27,11 +26,12 @@ public class CommentService extends AbstractMongoService {
     @Autowired
     private StatusService statusService;
 
-    public Comment create(String userId, String text, List<FileInfo> files, String postId) throws IOException {
-        List<String> fileIds = Lists.newArrayList();
-        for (FileInfo file : files) {
-            fileIds.add(gridFsService.save(file.getContent(), file.getFilename(), file.getMimeType()));
-        }
+    /**
+     * @throws com.mongodb.MongoException 当存储数据失败时
+     * @throws DuplicateException 当文件重复时
+     */
+    public Comment create(String userId, String text, List<FileInfo> fileInfos, String postId) {
+        List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
 
         Comment comment = new Comment();
         comment.setUserId(userId);
@@ -43,9 +43,6 @@ public class CommentService extends AbstractMongoService {
         comment = commentDao.save(comment);
         throwOnMongoError();
 
-        for (String id : fileIds) {
-            gridFsService.increaseViewCount(id);
-        }
         return comment;
     }
 

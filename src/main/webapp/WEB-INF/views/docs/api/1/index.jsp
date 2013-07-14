@@ -155,6 +155,18 @@
     </tr>
 </table>
 
+<strong>私信</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/directMessages/new" text="POST directMessages/new"/>
+        </td>
+        <td>
+            发送私信
+        </td>
+    </tr>
+</table>
+
 <hr/>
 
 <p>

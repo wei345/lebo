@@ -64,7 +64,7 @@ public class StatusRestController {
             return ErrorDto.DUPLICATE;
         } catch (Exception e) {
             logger.info("发布Post失败", e);
-            return ErrorDto.newInternalServerError(e.getMessage());
+            return ErrorDto.newBadRequestError(e.getMessage());
         }
     }
 
