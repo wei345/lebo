@@ -27,8 +27,8 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/api/1/comments")
-public class CommentsRestController {
-    private Logger logger = LoggerFactory.getLogger(CommentsRestController.class);
+public class CommentRestController {
+    private Logger logger = LoggerFactory.getLogger(CommentRestController.class);
 
     @Autowired
     private CommentService commentService;
