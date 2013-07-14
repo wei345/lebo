@@ -19,7 +19,6 @@ import java.util.List;
         @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'files': 1}", unique = true)
 })
 public class Post extends IdEntity {
-
     @Indexed
     private String userId;
     public static final String POST_USER_ID_KEY = "userId";
@@ -36,8 +35,12 @@ public class Post extends IdEntity {
     public static final String ORIGIN_POST_ID_KEY = "originPostId";
     @Indexed
     private LinkedHashSet<String> mentions;
+    //TODO 删除tags?
     @Indexed
     private LinkedHashSet<String> tags;
+    //存储text分词结果、标签、URL，专用于搜索
+    @Indexed
+    private LinkedHashSet<String> terms;
 
     private Integer repostsCount;
     public static final String REPOSTS_COUNT_KEY = "repostsCount";
@@ -130,5 +133,13 @@ public class Post extends IdEntity {
 
     public void setRepostsCount(Integer repostsCount) {
         this.repostsCount = repostsCount;
+    }
+
+    public LinkedHashSet<String> getTerms() {
+        return terms;
+    }
+
+    public void setTerms(LinkedHashSet<String> terms) {
+        this.terms = terms;
     }
 }

@@ -11,6 +11,7 @@ import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.SearchParam;
 import com.lebo.service.param.TimelineParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -19,9 +20,7 @@ import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: Wei Liu
@@ -79,10 +78,8 @@ public class StatusService extends AbstractMongoService {
 
         post = postDao.save(post);
         throwOnMongoError();
+        onPostCreated();
 
-        for (String id : fileIds) {
-            gridFsService.increaseViewCount(id);
-        }
         return post;
     }
 
@@ -156,10 +153,71 @@ public class StatusService extends AbstractMongoService {
     }
 
     public List<Post> searchPosts(SearchParam param){
-        return postDao.searchText(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
+        return postDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
-    public List<Post> searchTags(SearchParam param){
-        return postDao.searchTags(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
+    public List<Tag> searchTags(String q, int count){
+        List<Tag> allTags = findAllTags();
+        List<Tag> result = new ArrayList<Tag>();
+
+        for(Tag tag : allTags){
+            if(tag.getName().contains(q)){
+                result.add(tag);
+                if(result.size() == count){
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 创建了Post。可能需要统计Tags或更新全文索引。
+     */
+    // TODO 完成 onPostCreated
+    private void onPostCreated(){
+        //发送JMS消息
+        //更新Tags统计数据
+    }
+
+    /**
+     * 返回所有Tag，按次数由大到小排序。
+     */
+    public List<Tag> findAllTags(){
+        //TODO 优化findAllTags，读写通过缓存
+        //查最近3个月？
+        //返回结果带有最后出现日期？
+
+        String map = "function(){for(var i in this.tags) emit(this.tags[i], 1)}";
+        String reduce = "function(key, emits){total = 0; for(var i in emits) total += emits[i]; return total;}";
+        MapReduceResults<Tag> result =  mongoTemplate.mapReduce(mongoTemplate.getCollectionName(Post.class), map, reduce, Tag.class);
+
+        List<Tag> tags = Lists.newArrayList(result.iterator());
+        Collections.sort(tags);
+
+        return tags;
+    }
+
+    public static class Tag implements Comparable<Tag>{
+        private String _id;
+        private Integer value;
+
+        public String getName() {
+            return _id;
+        }
+
+        public Integer getCount(){
+            return value;
+        }
+
+        /**
+         * //按value由大到小排序
+         */
+        @Override
+        public int compareTo(Tag o) {
+            return o.value.compareTo(value);
+        }
     }
 }

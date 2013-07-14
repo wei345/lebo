@@ -131,11 +131,11 @@
     </tr>
 </table>
 
-<strong>搜索联想</strong>
+<strong>标签</strong>
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/search/tags" text="GET search/tags"/>
+            <tags:link url="${ctx}/docs/api/1/get/tags/search" text="GET tags/search"/>
         </td>
         <td>
             搜索Tags

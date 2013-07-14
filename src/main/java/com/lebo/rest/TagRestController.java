@@ -1,14 +1,12 @@
 package com.lebo.rest;
 
 import com.lebo.service.StatusService;
-import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.validation.Valid;
 
 /**
  * @author: Wei Liu
@@ -24,13 +22,12 @@ public class TagRestController {
 
     /**
      * 搜索Post.text中出现的标签，按标签出现次数由大到小排序，返回最多100个标签。
-     *
-     * @param param
-     * @return
      */
     @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody
-    public Object search(@Valid SearchParam param) {
-        return statusService.toStatusDtoList(statusService.findPostsByTag(param));
+    public Object search(@RequestParam("q") String q,
+                         @RequestParam(value = "count", defaultValue = "20") int count) {
+        if (count > 100) count = 100;
+        return statusService.searchTags(q, count);
     }
 }

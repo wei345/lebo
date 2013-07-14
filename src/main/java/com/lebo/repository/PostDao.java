@@ -27,8 +27,5 @@ public interface PostDao extends MongoRepository<Post, String> {
     Page<Post> mentionsTimeline(String userId, String maxId, String sinceId, Pageable pageable);
 
     @Query(value = "{ text : { $regex : ?0, $options: 'i' } , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
-    Page<Post> searchText(String q, String maxId, String sinceId, Pageable pageable);
-
-    @Query(value = "{ tags : { $regex : ?0, $options: 'i' } , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
-    Page<Post> searchTags(String q, String maxId, String sinceId, Pageable pageable);
+    Page<Post> search(String q, String maxId, String sinceId, Pageable pageable);
 }

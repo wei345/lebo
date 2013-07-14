@@ -71,4 +71,9 @@ public class StatusServiceTest extends SpringContextTestCase {
         int count = statusService.countUserStatus("51def1e61a883914869e46f3");
         System.out.println(count);
     }
+
+    @Test
+    public void findAllTags(){
+        statusService.findAllTags();
+    }
 }
