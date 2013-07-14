@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<c:set var="title" value="<a style='color:#658A16' href='${ctx}/docs/api/v1'>REST API v1</a>"/>
+<c:set var="title" value="<a style='color:#658A16' href='${ctx}/docs/api/1'>REST API v1</a>"/>
 
 <!DOCTYPE html>
 <html>

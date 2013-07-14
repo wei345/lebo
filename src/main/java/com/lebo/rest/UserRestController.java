@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.entity.User;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Users.
@@ -22,9 +26,11 @@ public class UserRestController {
     @Autowired
     private AccountService accountService;
 
+    //TODO 搜索用户，除了名字还查找位置和公司？
     @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody
-    public Object search(SearchParam param) {
-        return accountService.searchUser(param);
+    public Object search(@Valid SearchParam param) {
+        List<User> users = accountService.searchUser(param);
+        return accountService.toUserDtos(users);
     }
 }

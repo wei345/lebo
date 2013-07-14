@@ -99,6 +99,18 @@
     </tr>
 </table>
 
+<strong>用户</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/users/search" text="GET users/search"/>
+        </td>
+        <td>
+            搜索用户
+        </td>
+    </tr>
+</table>
+
 <strong>关系</strong>
 <table class="table table-hover">
     <tr>

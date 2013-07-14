@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.utils.DateProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,8 +45,8 @@ public class AccountService extends AbstractMongoService {
     private FriendshipService friendshipService;
 
 
-    public List searchUser(SearchParam param) {
-        return userDao.searchUser(param.getQ(), param).getContent();
+    public List<User> searchUser(SearchParam param) {
+        return userDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
     public User getUserByScreenName(String screenName) {
@@ -116,6 +117,14 @@ public class AccountService extends AbstractMongoService {
         dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
         return dto;
+    }
+
+    public List<UserDto> toUserDtos(List<User> users) {
+        List<UserDto> dtos = new ArrayList<UserDto>();
+        for (User user : users) {
+            dtos.add(toUserDto(user));
+        }
+        return dtos;
     }
 
     @Autowired
