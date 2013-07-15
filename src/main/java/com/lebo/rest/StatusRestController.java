@@ -7,6 +7,7 @@ import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.SearchParam;
+import com.lebo.service.param.StatusFilterParam;
 import com.lebo.service.param.TimelineParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,9 +194,9 @@ public class StatusRestController {
      * <li>#hashtag或@mention不会匹配#hashtags或@mentions。</li>
      * </ul>
      */
-    @RequestMapping(value = "search", method = RequestMethod.GET)
+    @RequestMapping(value = "filter", method = RequestMethod.GET)
     @ResponseBody
-    public Object search(@Valid SearchParam param) {
+    public Object filter(@Valid StatusFilterParam param) {
         return statusService.toStatusDtoList(statusService.searchPosts(param));
     }
 }

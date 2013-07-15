@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.lebo.SpringContextTestCase;
 import com.lebo.entity.Post;
 import com.lebo.service.param.FileInfo;
+import com.lebo.service.param.StatusFilterParam;
 import com.mongodb.gridfs.GridFSFile;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,10 @@ import javax.activation.FileTypeMap;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author: Wei Liu
@@ -81,12 +82,12 @@ public class StatusServiceTest extends SpringContextTestCase {
 
     @Test
     public void mentionNames() {
-        LinkedHashSet<String> names = statusService.mentionScreenNames("@@abc@@ @@def");
+        LinkedHashSet<String> names = statusService.mentionScreenNames("@@abc@@ @@def", true);
         assertEquals(2, names.size());
         assertTrue(names.contains("abc"));
         assertTrue(names.contains("def"));
 
-        names = statusService.mentionScreenNames("@abc@bcd @efghijk");
+        names = statusService.mentionScreenNames("@abc@bcd @efghijk", true);
         assertEquals(3, names.size());
         assertTrue(names.contains("abc"));
         assertTrue(names.contains("bcd"));
@@ -103,5 +104,34 @@ public class StatusServiceTest extends SpringContextTestCase {
 
         tags = statusService.findHashtags("#### ## ####");
         assertEquals(0, tags.size());
+    }
+
+    @Test
+    public void searchPosts(){
+        StatusFilterParam param = new StatusFilterParam();
+        param.setTrack("杨过,标签1 2");
+        List<Post> posts = statusService.searchPosts(param);
+        assertTrue(posts.size() > 0);
+        assertTrue(posts.get(0).getText().contains("杨过"));
+
+        param.setFollow("51def1ce1a883914869e46f2,51def1e61a883914869e46f3");
+        param.setTrack("@杨过, 标签");
+        posts = statusService.searchPosts(param);
+        assertTrue(posts.size() > 0);
+        assertTrue(posts.get(0).getText().contains("@杨过"));
+
+        param.setFollow("51def1e61a883914869e46f3");
+        param.setTrack("");
+        posts = statusService.searchPosts(param);
+        assertTrue(posts.size() > 0);
+        assertEquals("51def1e61a883914869e46f3", posts.get(0).getUserId());
+    }
+
+    @Test
+    public void isHashtagOrAtSomeone(){
+        assertTrue(statusService.isHashtagOrAtSomeone("@郭靖"));
+        assertFalse(statusService.isHashtagOrAtSomeone("@郭靖@"));
+        assertTrue(statusService.isHashtagOrAtSomeone("#华山论剑#"));
+        assertFalse(statusService.isHashtagOrAtSomeone("#华山论剑"));
     }
 }

@@ -34,6 +34,12 @@
 
 看到“BUILD SUCCESS”，说明SpringSide4安装成功。
 
+### IK Analyzer
+
+    git clone https://github.com/wks/ik-analyzer.git
+    cd ik-analyzer
+    mvn clean install -Dmaven.test.skip=true
+
 ### Lebo
 
 执行下面命令克隆lebo --> 下载依赖 --> 编译 --> 启动，lebo启动时会连接MongoDB 127.0.0.1:27017，连不上会报错。

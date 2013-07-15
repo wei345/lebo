@@ -22,6 +22,9 @@ public class PaginationParam implements Pageable, Serializable {
     private String sinceId;
     private Sort sort;
 
+    /**
+     * 按ID降序
+     */
     public static final Sort DEFAULT_SORT = new Sort(new Sort.Order(Sort.Direction.DESC, "_id"));
 
     /**

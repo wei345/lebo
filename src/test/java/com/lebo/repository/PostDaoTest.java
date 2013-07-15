@@ -46,7 +46,7 @@ public class PostDaoTest extends SpringContextTestCase implements UnStable {
         assertTrue(page.getContent().get(0).getId().compareTo(page.getContent().get(1).getId()) > 0);
     }
 
-    @Test
+    /*@Test
     public void search() {
         SearchParam param = new SearchParam();
         Page<Post> page = postDao.search("转发",
@@ -54,5 +54,5 @@ public class PostDaoTest extends SpringContextTestCase implements UnStable {
 
         assertTrue(page.getContent().size() > 0);
         assertTrue(page.getContent().get(0).getText().contains("转发"));
-    }
+    }*/
 }

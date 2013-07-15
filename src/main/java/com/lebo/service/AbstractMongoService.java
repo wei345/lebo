@@ -4,7 +4,12 @@ import com.lebo.repository.MongoConstant;
 import com.mongodb.MongoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springside.modules.utils.DateProvider;
+import org.springside.modules.utils.Reflections;
+
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -15,6 +20,10 @@ public abstract class AbstractMongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
     protected DateProvider dateProvider = DateProvider.DEFAULT;
+    protected Method orOperator = Reflections.getAccessibleMethod(new Criteria(), "orOperator",
+            new Class[]{Criteria[].class});
+    protected Method andOperator = Reflections.getAccessibleMethod(new Criteria(), "andOperator",
+            new Class[]{Criteria[].class});
 
     /**
      * 执行MongoDB的<code>getLastError</code>命令，如果发现错误状态则抛出异常。
@@ -36,4 +45,23 @@ public abstract class AbstractMongoService {
         }
     }
 
+    protected Criteria orOperator(List<Criteria> criterias) {
+        try {
+            //orOperator是可变参数，只好反射调用。这蛋疼的语法。
+            return (Criteria) orOperator.invoke(
+                    new Criteria(), new Object[]{criterias.toArray(new Criteria[]{})});
+        } catch (Exception e) {
+            throw Reflections.convertReflectionExceptionToUnchecked(e);
+        }
+    }
+
+    protected Criteria andOperator(List<Criteria> criterias) {
+        try {
+            //orOperator是可变参数，只好反射调用。这蛋疼的语法。
+            return (Criteria) andOperator.invoke(
+                    new Criteria(), new Object[]{criterias.toArray(new Criteria[]{})});
+        } catch (Exception e) {
+            throw Reflections.convertReflectionExceptionToUnchecked(e);
+        }
+    }
 }

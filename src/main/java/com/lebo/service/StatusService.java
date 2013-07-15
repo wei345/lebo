@@ -5,13 +5,17 @@ import com.lebo.entity.Following;
 import com.lebo.entity.Post;
 import com.lebo.entity.User;
 import com.lebo.repository.FollowingDao;
+import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
-import com.lebo.service.param.SearchParam;
+import com.lebo.service.param.PaginationParam;
+import com.lebo.service.param.StatusFilterParam;
 import com.lebo.service.param.TimelineParam;
+import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -47,6 +51,9 @@ public class StatusService extends AbstractMongoService {
     private AccountService accountService;
     @Autowired
     private FavoriteService favoriteService;
+    @Autowired
+    private Segmentation segmentation;
+
 
     /**
      * @param userId
@@ -68,6 +75,7 @@ public class StatusService extends AbstractMongoService {
         post.setFiles(fileIds);
         post.setOriginPostId(originPostId);
         post.setSource(source);
+        post.setSearchTerms(buildSearchTerms(post));
 
         post = postDao.save(post);
         throwOnMongoError();
@@ -110,7 +118,7 @@ public class StatusService extends AbstractMongoService {
     }
 
     public int countUserStatus(String userId) {
-        return (int) mongoTemplate.count(new Query(new Criteria(Post.POST_USER_ID_KEY).is(userId)), Post.class);
+        return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
     }
 
     public StatusDto toStatusDto(Post post) {
@@ -145,24 +153,75 @@ public class StatusService extends AbstractMongoService {
                 Post.class);
     }
 
-    public List<Post> searchPosts(SearchParam param) {
-        return postDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
+    public List<Post> searchPosts(StatusFilterParam param) {
+        List<Criteria> criteriaList = new ArrayList<Criteria>(5);
+
+        if (StringUtils.isNotBlank(param.getFollow())) {
+            String[] userIds = param.getFollow().split("\\s*,\\s*");
+            //用户ID之间or关系
+            criteriaList.add(new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds)));
+        }
+
+        if (StringUtils.isNotBlank(param.getTrack())) {
+            String[] phrases = param.getTrack().split("\\s*,\\s*");
+            List<Criteria> criterias = new ArrayList<Criteria>(phrases.length);
+            for (String phrase : phrases) {
+                String[] keywords = phrase.split("\\s+");
+                List<String> keywordList = new ArrayList<String>(keywords.length);
+                for (String keyword : keywords) {
+                    keywordList.add(
+                            isHashtagOrAtSomeone(keyword) ? keyword : keyword.toLowerCase());
+                }
+                //短语中关键词之间是and关系
+                criterias.add(new Criteria(Post.SEARCH_TERMS_KEY).all(keywordList));
+            }
+            //短语之间是or关系
+            if (criterias.size() > 1) {
+                criteriaList.add(orOperator(criterias));
+            } else if (criterias.size() == 1) {
+                criteriaList.add(criterias.get(0));
+            }
+        }
+
+        //分页
+        if (!param.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
+            criteriaList.add(new Criteria("_id").lt(new ObjectId(param.getMaxId())));
+        }
+        if (!param.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
+            criteriaList.add(new Criteria("_id").gt(new ObjectId(param.getSinceId())));
+        }
+
+        Criteria queryCriteria = null;
+        if (criteriaList.size() > 1) {
+            //各条件间是and关系
+            queryCriteria = andOperator(criteriaList);
+        } else if (criteriaList.size() == 1) {
+            queryCriteria = criteriaList.get(0);
+        }
+
+        Query query = new Query();
+        if (queryCriteria != null) {
+            query.addCriteria(queryCriteria);
+        }
+        query.with(PaginationParam.DEFAULT_SORT).limit(param.getCount());
+
+        return mongoTemplate.find(query, Post.class);
     }
 
     public List<Hashtag> searchHashtags(String q, int count) {
         List<Hashtag> allHashtags = findAllHashtags();
-        List<Hashtag> result = new ArrayList<Hashtag>();
+        List<Hashtag> matchedHashtags = new ArrayList<Hashtag>();
 
         for (Hashtag hashtag : allHashtags) {
             if (hashtag.getName().contains(q)) {
-                result.add(hashtag);
-                if (result.size() == count) {
+                matchedHashtags.add(hashtag);
+                if (matchedHashtags.size() == count) {
                     break;
                 }
             }
         }
 
-        return result;
+        return matchedHashtags;
     }
 
 
@@ -214,13 +273,21 @@ public class StatusService extends AbstractMongoService {
         }
     }
 
-    private Pattern mentionPattern = Pattern.compile("@([^@\\s]+)");
-    private Pattern tagPattern = Pattern.compile("#([^#\\s]+)#");
+    private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
+
+    public LinkedHashSet<String> mentionScreenNames(String text, boolean trimAt) {
+        Matcher m = mentionPattern.matcher(text);
+        LinkedHashSet<String> names = new LinkedHashSet<String>();
+        while (m.find()) {
+            names.add(trimAt ? m.group(1) : m.group(0));
+        }
+        return names;
+    }
 
     public LinkedHashSet<String> mentionUserIds(String text) {
         LinkedHashSet<String> userIds = new LinkedHashSet<String>();
 
-        LinkedHashSet<String> names = mentionScreenNames(text);
+        LinkedHashSet<String> names = mentionScreenNames(text, true);
         for (String screenName : names) {
             User user = userDao.findByScreenName(screenName);
             if (user != null) {
@@ -230,21 +297,28 @@ public class StatusService extends AbstractMongoService {
         return userIds;
     }
 
-    LinkedHashSet<String> mentionScreenNames(String text) {
-        Matcher m = mentionPattern.matcher(text);
-        LinkedHashSet<String> names = new LinkedHashSet<String>();
-        while (m.find()) {
-            names.add(m.group(1));
-        }
-        return names;
-    }
+    private Pattern tagPattern = Pattern.compile("#([^#@\\s]+)#");
 
     public LinkedHashSet<String> findHashtags(String text) {
         Matcher m = tagPattern.matcher(text);
         LinkedHashSet<String> tags = new LinkedHashSet<String>();
         while (m.find()) {
-            tags.add(m.group(1));
+            tags.add(m.group(0));
         }
         return tags;
+    }
+
+    private Pattern hashtagOrAtSomeonePattern = Pattern.compile("^#([^#@\\s]+)#|@([^@#\\s]+)$");
+
+    public boolean isHashtagOrAtSomeone(String text) {
+        return hashtagOrAtSomeonePattern.matcher(text).matches();
+    }
+
+    public LinkedHashSet<String> buildSearchTerms(Post post) {
+        LinkedHashSet<String> words = new LinkedHashSet<String>();
+        words.addAll(findHashtags(post.getText()));
+        words.addAll(mentionScreenNames(post.getText(), false));
+        words.addAll(segmentation.findWords(post.getText()));
+        return words;
     }
 }

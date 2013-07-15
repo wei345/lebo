@@ -21,7 +21,7 @@ import java.util.List;
 public class Post extends IdEntity {
     @Indexed
     private String userId;
-    public static final String POST_USER_ID_KEY = "userId";
+    public static final String USER_ID_KEY = "userId";
     private Date createdAt;
     private String text;
     private boolean truncated;
@@ -43,6 +43,7 @@ public class Post extends IdEntity {
     //存储text分词结果、标签、URL，专用于搜索
     @Indexed
     private LinkedHashSet<String> searchTerms;
+    public static final String SEARCH_TERMS_KEY = "searchTerms";
 
     private Integer repostsCount;
     public static final String REPOSTS_COUNT_KEY = "repostsCount";
