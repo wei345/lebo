@@ -26,7 +26,7 @@ public class HomeRestController {
     private Logger logger = LoggerFactory.getLogger(HomeRestController.class);
 
     @Autowired
-    ServletContext context;
+    private ServletContext context;
 
     //TODO 可通过grant登录
     @RequestMapping(value = "1/oauthLogin", method = RequestMethod.POST)
