@@ -32,7 +32,7 @@ public class WeiboOauth {
 
     public ShiroUser getShiroUser(String token) {
         String uid = getUid(token);
-        User user = accountService.findByOAuthId(PROVIDER + "/" + uid);
+        User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
         // 第一次登录，创建用户
         if (user == null) {
@@ -44,7 +44,7 @@ public class WeiboOauth {
             user.setProfileImageUrl((String) userInfo.get("profile_image_url"));
             user.setCreatedAt(new Date());
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
-            oAuthIds.add(PROVIDER + "/" + uid);
+            oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setLastSignInAt(user.getCreatedAt());
             user = accountService.saveUser(user);
@@ -68,5 +68,9 @@ public class WeiboOauth {
             throw new RuntimeException("获取用户信息发生错误");
         }
         return userInfo;
+    }
+
+    String oAuthId(String provider, String uid) {
+        return provider + "/" + uid;
     }
 }

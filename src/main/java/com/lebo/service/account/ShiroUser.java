@@ -36,7 +36,7 @@ public class ShiroUser implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format("%s!!!%s!!!%s", provider, uid, token);
+        return screenName;
     }
 
     /**
