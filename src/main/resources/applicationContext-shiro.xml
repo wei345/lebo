@@ -13,7 +13,7 @@
     </bean>
 
     <!-- 項目自定义的Realm, 所有accountService依赖的dao都需要用depends-on声明 -->
-    <bean id="shiroDbRealm" class="com.lebo.service.account.ShiroOauthRealm">
+    <bean id="shiroDbRealm" class="com.lebo.service.account.ShiroRealm">
         <!--<property name="accountService" ref="accountService"/>-->
     </bean>
 
@@ -34,8 +34,7 @@
                 /logout = logout
                 /static/** = anon
                 /favicon.ico = anon
-                /restclient = anon
-                /api/*/oauthLogin = anon
+                /api/*/login.json = anon
                 /api/*/oauthLogin.json = anon
                 /api/** = api
                 /admin/** = roles[admin]

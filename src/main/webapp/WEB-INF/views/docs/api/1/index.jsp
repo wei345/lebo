@@ -21,6 +21,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/login" text="POST login"/>
+        </td>
+        <td>
+            本地登录
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/logout" text="POST logout"/>
         </td>
         <td>

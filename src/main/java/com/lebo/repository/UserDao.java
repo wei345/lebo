@@ -14,4 +14,6 @@ public interface UserDao extends MongoRepository<User, String> {
     User findByScreenName(String screenName);
 
     User findByOAuthIds(String oAuthId);
+
+    User findByEmail(String email);
 }

@@ -1,8 +1,17 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
+import com.mongodb.MongoException;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
@@ -10,12 +19,16 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
+ * 微博OAuth登录
+ *
  * @author: Wei Liu
- * Date: 13-6-26
- * Time: PM12:09
+ * Date: 13-7-16
+ * Time: PM6:27
  */
-@Component
-public class WeiboOauth {
+@Service
+public class ShiroWeiboLogin extends AbstractShiroLogin {
+
+    private Logger logger = LoggerFactory.getLogger(ShiroWeiboLogin.class);
 
     public static final String PROVIDER = "weibo";
 
@@ -23,6 +36,30 @@ public class WeiboOauth {
     protected AccountService accountService;
 
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
+        OauthToken authcToken = (OauthToken) authenticationToken;
+        try {
+            return new OAuthAuthenticationInfo(getShiroUser(authcToken.getToken()), realmName);
+        } catch (MongoException e) {
+            logger.warn("登录失败 - " + authcToken + " - " + e.getMessage(), e);
+            return null;
+        } catch (Exception e) {
+            logger.info("登录失败 - " + authcToken + " - " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        return null;
+    }
+
+    @Override
+    public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
+        return info != null && info.getPrincipals().getPrimaryPrincipal() != null;
+    }
 
     /*private String weibo_redirect_uri = "/weibo_callback";
 
@@ -72,5 +109,23 @@ public class WeiboOauth {
 
     String oAuthId(String provider, String uid) {
         return provider + "/" + uid;
+    }
+}
+
+class OAuthAuthenticationInfo implements AuthenticationInfo {
+    protected PrincipalCollection principals;
+
+    public OAuthAuthenticationInfo(Object principal, String realmName) {
+        principals = new SimplePrincipalCollection(principal, realmName);
+    }
+
+    @Override
+    public PrincipalCollection getPrincipals() {
+        return principals;
+    }
+
+    @Override
+    public Object getCredentials() {
+        return null;
     }
 }

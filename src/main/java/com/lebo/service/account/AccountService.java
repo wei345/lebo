@@ -35,6 +35,10 @@ public class AccountService extends AbstractMongoService {
 
     private static Logger logger = LoggerFactory.getLogger(AccountService.class);
 
+    public static final String HASH_ALGORITHM = "SHA-1";
+    public static final int HASH_INTERATIONS = 1024;
+    private static final int SALT_SIZE = 8;
+
     private UserDao userDao;
     private DateProvider dateProvider = DateProvider.DEFAULT;
     @Autowired
@@ -125,6 +129,10 @@ public class AccountService extends AbstractMongoService {
             dtos.add(toUserDto(user));
         }
         return dtos;
+    }
+
+    public User findByEmail(String email){
+        return userDao.findByEmail(email);
     }
 
     @Autowired

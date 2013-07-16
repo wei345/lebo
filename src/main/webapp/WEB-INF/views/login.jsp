@@ -43,7 +43,7 @@
     function login() {
         $.ajax({
             type: 'post',
-            url: '${ctx}/api/1/oauthLogin',
+            url: '${ctx}/api/1/oauthLogin.json',
             dataType: 'json',
             data: 'provider=weibo&token=' + $('#loginForm')[0].token.value,
             success: function (data) {
