@@ -16,8 +16,11 @@
 <form id="loginForm" onsubmit="login();return false;">
     <fieldset>
         <legend>OAuth登录</legend>
-
-        <input type="text" name="token" placeholder="新浪token" style="width: 24em;"/>
+        <select name="provider" style="width: 100px;">
+            <option value="weibo">weibo</option>
+            <option value="renren">renren</option>
+        </select>
+        <input type="text" name="token" placeholder="token" style="width: 24em;"/>
 
         <div class="btn-group" style="vertical-align: top;">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -25,20 +28,21 @@
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#" onclick="useToken('2.00vHLEwBz7QwTCbafc736d580QUCCY', this)">法图_麦</a></li>
-                <li><a href="#" onclick="useToken('2.00bZzGiCz7QwTC9b9ef08828Zoj34C', this)">xueer_ZZZ</a></li>
-                <li><a href="#" onclick="useToken('2.00slTkaDz7QwTC3063b7dbf6oBZ8VE', this)">佳爷3291424124</a></li>
-                <li><a href="#" onclick="useToken('2.00F5vUaDz7QwTC5e4c9eaa98mTYulD', this)">Desi_漓沫沫</a></li>
-                <li><a href="#" onclick="useToken('2.00Wo2GnDz7QwTC7613d764f06EDi5E', this)">小萌君sang</a></li>
-                <li><a href="#" onclick="useToken('2.00B4rTGCz7QwTCa6b1957d82XDQ67D', this)">Amy滴柔情老妈</a></li>
-                <li><a href="#" onclick="useToken('2.00Vr4AxBz7QwTCc40e517e230Pa7Jn', this)">Lau-s1r</a></li>
-                <li><a href="#" onclick="useToken('2.00qJrAnDz7QwTC4578c7aefcA7hdwD', this)">家有笨猫咪</a></li>
-                <li><a href="#" onclick="useToken('2.00RopF5Dz7QwTC732d6d7685owDxvB', this)">hyj1013</a></li>
-                <li><a href="#" onclick="useToken('2.00ygOJODz7QwTCbe257cefc20dQLIN', this)">IAM-TB</a></li>
-                <li><a href="#" onclick="useToken('2.00fMQ6LDz7QwTC7890666e3ed3NJYD', this)">手机用户2916958681</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00vHLEwBz7QwTCbafc736d580QUCCY', this)">法图_麦</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00bZzGiCz7QwTC9b9ef08828Zoj34C', this)">xueer_ZZZ</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00slTkaDz7QwTC3063b7dbf6oBZ8VE', this)">佳爷3291424124</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00F5vUaDz7QwTC5e4c9eaa98mTYulD', this)">Desi_漓沫沫</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00Wo2GnDz7QwTC7613d764f06EDi5E', this)">小萌君sang</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00B4rTGCz7QwTCa6b1957d82XDQ67D', this)">Amy滴柔情老妈</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00Vr4AxBz7QwTCc40e517e230Pa7Jn', this)">Lau-s1r</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00qJrAnDz7QwTC4578c7aefcA7hdwD', this)">家有笨猫咪</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00RopF5Dz7QwTC732d6d7685owDxvB', this)">hyj1013</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00ygOJODz7QwTCbe257cefc20dQLIN', this)">IAM-TB</a></li>
+                <li><a href="#" onclick="useToken('weibo', '2.00fMQ6LDz7QwTC7890666e3ed3NJYD', this)">手机用户2916958681</a></li>
+                <li><a href="#" onclick="useToken('renren', '232244|6.480f13a58a6da99eb659bbcfdd9b119d.2592000.1376625600-544808317', this)">renren/刘伟</a></li>
             </ul>
         </div>
-        <button class="btn" type="submit" style="margin-left: 4em; vertical-align: top;">OAuth登录</button>
+        <div><button class="btn" type="reset">Reset</button> <button class="btn" type="submit">OAuth登录</button></div>
     </fieldset>
 </form>
 
@@ -50,7 +54,7 @@
             type: 'post',
             url: '${ctx}/api/1/oauthLogin.json',
             dataType: 'json',
-            data: 'provider=weibo&token=' + $('#loginForm')[0].token.value,
+            data: 'provider='+ $('#loginForm')[0].provider.value +'&token=' + $('#loginForm')[0].token.value,
             success: function (data) {
                 if (data.error) {
                     $('#result').html('登录失败，多试几次');
@@ -64,7 +68,8 @@
         });
     }
 
-    function useToken(token, btn) {
+    function useToken(provider, token, btn) {
+        $('option[value='+ provider +']').attr('selected', 'selected');
         $('input[name=token]').val(token);
         $('#token-name').html(btn.innerHTML);
     }

@@ -5,7 +5,7 @@
 
 <tags:form name="OAuth登录" method="POST" action="${ctx}/api/1/oauthLogin.json">
     <p>
-        在设计上支持多平台OAuth登录，目前只启用了新浪微博。provider值为weibo。
+        provider: weibo, renren
     </p>
     <tags:field name="provider" value="weibo"/>
     <tags:field name="token" value="2.00vHLEwBz7QwTCbafc736d580QUCCY"/>

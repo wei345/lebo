@@ -7,7 +7,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
@@ -20,6 +19,7 @@ import javax.servlet.ServletContext;
 public abstract class AbstractShiroLogin {
     private static final ThreadLocal<AbstractShiroLogin> shiroLogin = new ThreadLocal<AbstractShiroLogin>();
     private static ShiroWeiboLogin shiroWeiboLogin;
+    private static ShiroRenRenLogin shiroRenRenLogin;
     private static ShiroDbLogin shiroDbLogin;
 
     public static OauthToken useOAuthLogin(String provider, String token, ServletContext application) {
@@ -29,6 +29,15 @@ public abstract class AbstractShiroLogin {
                 shiroWeiboLogin = WebApplicationContextUtils.getWebApplicationContext(application).getBean(ShiroWeiboLogin.class);
             }
             shiroLogin.set(shiroWeiboLogin);
+
+            return  new OauthToken(provider, token, true);
+        }
+        //人人网登录
+        else if(ShiroRenRenLogin.PROVIDER.equals(provider)){
+            if (shiroRenRenLogin == null) {
+                shiroRenRenLogin = WebApplicationContextUtils.getWebApplicationContext(application).getBean(ShiroRenRenLogin.class);
+            }
+            shiroLogin.set(shiroRenRenLogin);
 
             return  new OauthToken(provider, token, true);
         }
@@ -66,61 +75,4 @@ public abstract class AbstractShiroLogin {
     public abstract boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info);
 }
 
-class OauthToken extends UsernamePasswordToken {
-    private String provider;
-    private String grant;
-    private String token;
-    private String uid;
 
-    public OauthToken() {
-    }
-
-    public OauthToken(String provider, String token, boolean rememberMe) {
-        this.provider = provider;
-        this.token = token;
-        setRememberMe(rememberMe);
-    }
-
-    @NotBlank
-    public String getProvider() {
-        return provider;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
-    }
-
-    public String getGrant() {
-        return grant;
-    }
-
-    public void setGrant(String grant) {
-        this.grant = grant;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    @Override
-    public String toString() {
-        return "OauthToken{" +
-                "provider='" + provider + '\'' +
-                ", grant='" + grant + '\'' +
-                ", token='" + token + '\'' +
-                ", uid='" + uid + '\'' +
-                "} " + super.toString();
-    }
-}

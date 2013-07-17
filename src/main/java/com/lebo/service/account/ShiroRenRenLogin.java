@@ -11,21 +11,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
- * 微博OAuth登录
- *
  * @author: Wei Liu
- * Date: 13-7-16
- * Time: PM6:27
+ * Date: 13-7-17
+ * Time: PM3:49
  */
 @Service
-public class ShiroWeiboLogin extends AbstractOAuthLogin {
-
+public class ShiroRenRenLogin extends AbstractOAuthLogin {
     private Logger logger = LoggerFactory.getLogger(ShiroWeiboLogin.class);
-
-    public static final String PROVIDER = "weibo";
+    public static String PROVIDER = "renren";
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
@@ -41,26 +38,27 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
         }
     }
 
-    /*private String weibo_redirect_uri = "/weibo_callback";
-
-    public String authorizeUrl(String baseurl) {
-        return String.format("https://api.weibo.com/oauth2/authorize?response_type=code&client_id=%s&redirect_uri=%s", weibo_api_key, baseurl + weibo_redirect_uri);
-    }*/
-
     public ShiroUser getShiroUser(String token) {
-        String uid = getUid(token);
+        Map userInfo = (Map)getUserInfo(token).get("response");
+        String uid = userInfo.get("id").toString();
         User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
         // 第一次登录，创建用户
         if (user == null) {
             user = new User();
-            Map userInfo = getUserInfo(token, uid);
-            user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
+            user.setScreenName(newScreenName((String) userInfo.get("name")));
             user.setName((String) userInfo.get("name"));
-            user.setProfileImageUrl((String) userInfo.get("profile_image_url"));
+
+            List<Map<String, String>> avatar = (List)userInfo.get("avatar");
+            String profileImageUrl = avatar.get(0).get("url");
+            if(avatar.get(1) != null){
+                profileImageUrl = avatar.get(1).get("url");
+            }
+            user.setProfileImageUrl(profileImageUrl);
+
             user.setCreatedAt(new Date());
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
-            oAuthIds.add(oAuthId(PROVIDER, uid));
+            //oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setLastSignInAt(user.getCreatedAt());
             user = accountService.saveUser(user);
@@ -71,20 +69,13 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
         return new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), PROVIDER, uid, token);
     }
 
-    private String getUid(String token) {
-        String url = String.format("https://api.weibo.com/2/account/get_uid.json?access_token=" + token);
-        return restTemplate.getForObject(url, Map.class).get("uid").toString();
-    }
-
-    private Map getUserInfo(String token, String uid) {
-        String url = String.format("https://api.weibo.com/2/users/show.json?uid=%s&access_token=%s", uid, token);
+    Map getUserInfo(String token) {
+        String url = String.format("https://api.renren.com/v2/user/login/get?access_token=%s", token);
         Map userInfo = restTemplate.getForObject(url, Map.class);
 
-        if (userInfo == null || userInfo.get("name") == null) {
+        if (userInfo == null || ((Map)userInfo.get("response")).get("name") == null) {
             throw new RuntimeException("获取用户信息发生错误");
         }
         return userInfo;
     }
 }
-
-
