@@ -119,6 +119,14 @@
             搜索用户
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/users/show" text="GET users/show"/>
+        </td>
+        <td>
+            查看用户
+        </td>
+    </tr>
 </table>
 
 <strong>关系</strong>
