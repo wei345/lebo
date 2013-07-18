@@ -84,6 +84,17 @@ public class StatusService extends AbstractMongoService {
         return post;
     }
 
+    // 用于取消转发
+    public int destroy(String userId, String originId){
+        Post post = postDao.findByUserIdAndOriginPostId(userId, originId);
+        postDao.delete(post.getId());
+        return countRepost(originId);
+    }
+
+    public boolean isRepost(String userId, String postId){
+        return postDao.findByUserIdAndOriginPostId(userId, postId)!=null;
+    }
+
     public List<Post> userTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
 
@@ -128,6 +139,10 @@ public class StatusService extends AbstractMongoService {
 
     public int countUserStatus(String userId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
+    }
+    // 转发数
+    public int countRepost(String originId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(originId)), Post.class);
     }
 
     public StatusDto toStatusDto(Post post) {

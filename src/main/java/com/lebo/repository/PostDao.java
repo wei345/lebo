@@ -16,6 +16,7 @@ import java.util.List;
  */
 public interface PostDao extends MongoRepository<Post, String> {
     Page<Post> findByUserId(String userId, Pageable pageable);
+    Post findByUserIdAndOriginPostId(String userId, String originPostId);
 
     @Query(value = "{ userId : ?0 , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
     Page<Post> userTimeline(String userId, String maxId, String sinceId, Pageable pageable);

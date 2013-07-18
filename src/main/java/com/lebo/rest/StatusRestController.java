@@ -164,16 +164,15 @@ public class StatusRestController {
             }
 
             String originId = (post.getOriginPostId() == null ? id : post.getOriginPostId());
-
-            post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
-
-            statusService.increaseRepostsCount(originId);
-
-            if (!id.equals(originId)) {
-                statusService.increaseRepostsCount(id);
+            // 已经被转发，则为取消转发
+            if(statusService.isRepost(accountService.getCurrentUserId(), originId)){
+                return statusService.destroy(accountService.getCurrentUserId(), originId);
             }
-
-            return statusService.toStatusDto(post);
+            // 没有被转发，为转发
+            else{
+                post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
+                return statusService.countRepost(originId);
+            }
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
