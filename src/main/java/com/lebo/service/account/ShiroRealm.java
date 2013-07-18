@@ -1,16 +1,23 @@
 package com.lebo.service.account;
 
+import com.lebo.entity.User;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 
-public class ShiroRealm extends AuthorizingRealm {
+public class ShiroRealm extends AuthorizingRealm implements ApplicationContextAware{
+    private ApplicationContext applicationContext;
+    private AccountService accountService;
 
     /**
      * 认证回调函数,登录时调用.
@@ -25,7 +32,15 @@ public class ShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return AbstractShiroLogin.getAuthorizationInfo(principals);
+        if(accountService == null){
+            accountService = applicationContext.getBean(AccountService.class);
+        }
+
+        ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+        User user = accountService.getUser(shiroUser.getId());
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        info.addRoles(user.getRoles());
+        return info;
     }
 
     /**
@@ -39,6 +54,11 @@ public class ShiroRealm extends AuthorizingRealm {
                 return AbstractShiroLogin.credentialsMatch(token, info);
             }
         });
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }
 

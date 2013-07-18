@@ -5,8 +5,6 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
@@ -30,16 +28,16 @@ public abstract class AbstractShiroLogin {
             }
             shiroLogin.set(shiroWeiboLogin);
 
-            return  new OauthToken(provider, token, true);
+            return new OauthToken(provider, token, true);
         }
         //人人网登录
-        else if(ShiroRenRenLogin.PROVIDER.equals(provider)){
+        else if (ShiroRenRenLogin.PROVIDER.equals(provider)) {
             if (shiroRenRenLogin == null) {
                 shiroRenRenLogin = WebApplicationContextUtils.getWebApplicationContext(application).getBean(ShiroRenRenLogin.class);
             }
             shiroLogin.set(shiroRenRenLogin);
 
-            return  new OauthToken(provider, token, true);
+            return new OauthToken(provider, token, true);
         }
         //不支持的登录类型
         else {
@@ -60,17 +58,11 @@ public abstract class AbstractShiroLogin {
         return shiroLogin.get().doGetAuthenticationInfo(authenticationToken, realmName);
     }
 
-    public static AuthorizationInfo getAuthorizationInfo(PrincipalCollection principals) {
-        return shiroLogin.get().doGetAuthorizationInfo(principals);
-    }
-
     public static boolean credentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         return shiroLogin.get().doCredentialsMatch(token, info);
     }
 
     protected abstract AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException;
-
-    protected abstract AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals);
 
     public abstract boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info);
 }

@@ -4,9 +4,6 @@ import com.lebo.entity.User;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +29,7 @@ public class ShiroDbLogin extends AbstractShiroLogin {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken, String realmName) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-        User user = accountService.findByEmail(token.getUsername());
+        User user = accountService.findUserByEmail(token.getUsername());
         if (user != null) {
             byte[] salt = Encodes.decodeHex(user.getSalt());
             return new SimpleAuthenticationInfo(
@@ -49,15 +46,6 @@ public class ShiroDbLogin extends AbstractShiroLogin {
         } else {
             return null;
         }
-    }
-
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
-        User user = accountService.getUser(shiroUser.getId());
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        info.addRoles(user.getRoles());
-        return info;
     }
 
     @Override
