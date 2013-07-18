@@ -147,6 +147,22 @@
             取消关注
         </td>
     </tr>
+    <tr>
+        <td>
+            <tags:link url="${ctx}/docs/api/1/get/friendships/showFollows" text="GET friendships/showFollows"/>
+        </td>
+        <td>
+            查看关注
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <tags:link url="${ctx}/docs/api/1/get/friendships/showFans" text="GET friendships/showFans"/>
+        </td>
+        <td>
+            查看粉丝
+        </td>
+    </tr>
 </table>
 
 <strong>收藏</strong>

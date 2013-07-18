@@ -1,6 +1,7 @@
 package com.lebo.repository;
 
 import com.lebo.entity.Following;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
 public interface FollowingDao extends MongoRepository<Following, String> {
 
     Following findByUserIdAndFollowingId(String userId, String followingId);
-
     List<Following> findByUserId(String userId);
+
+    List<Following> findByUserId(String userId, Pageable pageable);
+    List<Following> findByFollowingId(String followingId, Pageable pageable);
 }

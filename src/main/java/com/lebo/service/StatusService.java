@@ -96,6 +96,7 @@ public class StatusService extends AbstractMongoService {
 
     public List<Post> homeTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
+        // 一次取出所有follows？如果数量很多怎么办？少峰 2013.07.18
         List<Following> followingList = followingDao.findByUserId(param.getUserId());
 
         List<String> followingIdList = new ArrayList<String>(followingList.size() + 1);

@@ -1,13 +1,17 @@
 package com.lebo.service;
 
 import com.lebo.entity.Following;
+import com.lebo.entity.User;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.UserDao;
+import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -67,5 +71,13 @@ public class FriendshipService extends AbstractMongoService {
 
     public int countFollowings(String userId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Following.USER_ID_KEY).is(userId)), Following.class);
+    }
+
+    public List<Following> getFollows(String userId, PaginationParam  param){
+        return followingDao.findByUserId(userId, param);
+    }
+
+    public List<Following> getFans(String userId, PaginationParam  param){
+        return followingDao.findByFollowingId(userId, param);
     }
 }
