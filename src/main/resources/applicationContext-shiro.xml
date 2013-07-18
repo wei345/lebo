@@ -13,11 +13,12 @@
     </bean>
 
     <!-- 項目自定义的Realm, 所有accountService依赖的dao都需要用depends-on声明 -->
-    <bean id="shiroDbRealm" class="com.lebo.service.account.ShiroOauthRealm">
+    <bean id="shiroDbRealm" class="com.lebo.service.account.ShiroRealm">
         <!--<property name="accountService" ref="accountService"/>-->
     </bean>
 
     <!-- Shiro Filter -->
+    <bean id="authcFilter" class="com.lebo.service.account.ShiroFormAuthenticationFilter"/>
     <bean id="apiFilter" class="com.lebo.service.account.ShiroApiUserFilter"/>
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
@@ -25,6 +26,7 @@
         <property name="successUrl" value="/"/>
         <property name="filters">
             <util:map>
+                <entry key="authc" value-ref="authcFilter"/>
                 <entry key="api" value-ref="apiFilter"/>
             </util:map>
         </property>
@@ -34,8 +36,7 @@
                 /logout = logout
                 /static/** = anon
                 /favicon.ico = anon
-                /restclient = anon
-                /api/*/oauthLogin = anon
+                /api/*/login.json = anon
                 /api/*/oauthLogin.json = anon
                 /api/** = api
                 /admin/** = roles[admin]

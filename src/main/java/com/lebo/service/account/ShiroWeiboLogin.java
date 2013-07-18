@@ -1,28 +1,45 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import com.mongodb.MongoException;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
+ * 微博OAuth登录
+ *
  * @author: Wei Liu
- * Date: 13-6-26
- * Time: PM12:09
+ * Date: 13-7-16
+ * Time: PM6:27
  */
-@Component
-public class WeiboOauth {
+@Service
+public class ShiroWeiboLogin extends AbstractOAuthLogin {
+
+    private Logger logger = LoggerFactory.getLogger(ShiroWeiboLogin.class);
 
     public static final String PROVIDER = "weibo";
 
-    @Autowired
-    protected AccountService accountService;
-
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
+        OauthToken authcToken = (OauthToken) authenticationToken;
+        try {
+            return new OAuthAuthenticationInfo(getShiroUser(authcToken.getToken()), realmName);
+        } catch (MongoException e) {
+            logger.warn("登录失败 - " + authcToken + " - " + e.getMessage(), e);
+            return null;
+        } catch (Exception e) {
+            logger.info("登录失败 - " + authcToken + " - " + e.getMessage());
+            return null;
+        }
+    }
 
     /*private String weibo_redirect_uri = "/weibo_callback";
 
@@ -32,19 +49,18 @@ public class WeiboOauth {
 
     public ShiroUser getShiroUser(String token) {
         String uid = getUid(token);
-        User user = accountService.findByOAuthId(PROVIDER + "/" + uid);
+        User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
         // 第一次登录，创建用户
         if (user == null) {
             user = new User();
             Map userInfo = getUserInfo(token, uid);
-            // TODO 考虑支持多平台登录，确保screenName唯一
-            user.setScreenName((String) userInfo.get("screen_name"));
+            user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
             user.setName((String) userInfo.get("name"));
             user.setProfileImageUrl((String) userInfo.get("profile_image_url"));
             user.setCreatedAt(new Date());
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
-            oAuthIds.add(PROVIDER + "/" + uid);
+            oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setLastSignInAt(user.getCreatedAt());
             user = accountService.saveUser(user);
@@ -70,3 +86,5 @@ public class WeiboOauth {
         return userInfo;
     }
 }
+
+

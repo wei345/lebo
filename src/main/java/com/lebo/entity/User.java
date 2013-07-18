@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * <h2>User</h2>
@@ -38,10 +39,18 @@ public class User extends IdEntity {
     private LinkedHashSet<String> oAuthIds;
     // 性别 -1 未知，0 女，1 男
     private int gender = -1;
+    //TODO 在设置email时，保证唯一
     @Indexed
     private String email;
     private Date lastSignInAt;
     public static final String USER_LAST_SIGN_IN_AT_KEY = "lastSignInAt";
+
+    // --- 本地用户 --- //
+
+    private String plainPassword;
+    private String password;
+    private String salt;
+    private List<String> roles;
 
     public User() {
     }
@@ -147,6 +156,39 @@ public class User extends IdEntity {
 
     public void setLastSignInAt(Date lastSignInAt) {
         this.lastSignInAt = lastSignInAt;
+    }
+
+
+    public String getPlainPassword() {
+        return plainPassword;
+    }
+
+    public void setPlainPassword(String plainPassword) {
+        this.plainPassword = plainPassword;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     @Override

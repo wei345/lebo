@@ -15,7 +15,7 @@
                     </a>
 
                     <ul class="dropdown-menu">
-                            <%--<li><a href="${ctx}/profile">Edit Profile</a></li>--%>
+                        <li><a href="${ctx}/profile">Edit Profile</a></li>
                         <li><a href="${ctx}/logout">Logout</a></li>
                     </ul>
                 </div>

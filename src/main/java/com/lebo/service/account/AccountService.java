@@ -20,7 +20,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springside.modules.mapper.BeanMapper;
+import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.DateProvider;
+import org.springside.modules.utils.Encodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,10 @@ import java.util.List;
 public class AccountService extends AbstractMongoService {
 
     private static Logger logger = LoggerFactory.getLogger(AccountService.class);
+
+    public static final String HASH_ALGORITHM = "SHA-1";
+    public static final int HASH_INTERATIONS = 1024;
+    private static final int SALT_SIZE = 8;
 
     private UserDao userDao;
     private DateProvider dateProvider = DateProvider.DEFAULT;
@@ -93,6 +99,9 @@ public class AccountService extends AbstractMongoService {
         return user.name;
     }
 
+    /**
+     * 取出Shiro中的当前用户Id.
+     */
     public String getCurrentUserId() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
         return user.id;
@@ -125,6 +134,28 @@ public class AccountService extends AbstractMongoService {
             dtos.add(toUserDto(user));
         }
         return dtos;
+    }
+
+    public User findByEmail(String email){
+        return userDao.findByEmail(email);
+    }
+
+    public void registerUser(User user) {
+        entryptPassword(user);
+        user.setCreatedAt(dateProvider.getDate());
+
+        userDao.save(user);
+    }
+
+    /**
+     * 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash
+     */
+    private void entryptPassword(User user) {
+        byte[] salt = Digests.generateSalt(SALT_SIZE);
+        user.setSalt(Encodes.encodeHex(salt));
+
+        byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, HASH_INTERATIONS);
+        user.setPassword(Encodes.encodeHex(hashPassword));
     }
 
     @Autowired

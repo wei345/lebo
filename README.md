@@ -104,3 +104,8 @@ IDEA原生支持Maven，可直接导入。
 ### 启动
 
 在IDE中，启动com.lebo.QuickStartServer，可以debug方式启动。
+
+### 代码
+
+* 不格式化/src/main/webapp/static
+* 不格式化/src/main/webapp/WEB-INF/tags/textarea.tag
