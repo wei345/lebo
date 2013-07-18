@@ -10,6 +10,7 @@
 <body>
 <ul>
     <li><tags:link url="${ctx}/docs/api/1" text="REST API v1"/></li>
+    <li><tags:link url="${ctx}/admin/user" text="后台"/></li>
 </ul>
 </body>
 

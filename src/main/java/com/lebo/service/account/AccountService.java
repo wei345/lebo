@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -51,11 +52,15 @@ public class AccountService extends AbstractMongoService {
     private FriendshipService friendshipService;
 
 
-    public List<User> searchUser(SearchParam param) {
-        return userDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param).getContent();
+    public Page<User> searchUser(SearchParam param) {
+        if(StringUtils.isBlank(param.getQ())){
+            return userDao.search(".*", param.getMaxId(), param.getSinceId(), param);
+        }
+
+        return userDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param);
     }
 
-    public User getUserByScreenName(String screenName) {
+    public User findUserByScreenName(String screenName) {
         return userDao.findByScreenName(screenName);
     }
 
@@ -64,6 +69,10 @@ public class AccountService extends AbstractMongoService {
     }
 
     public User saveUser(User user) {
+        if (StringUtils.isNotBlank(user.getPlainPassword())) {
+            entryptPassword(user);
+            user.setPlainPassword(null);
+        }
         user = userDao.save(user);
         throwOnMongoError();
         return user;
@@ -83,7 +92,7 @@ public class AccountService extends AbstractMongoService {
         if (!StringUtils.isBlank(userId)) {
             return userId;
         } else {
-            User user = getUserByScreenName(screenName);
+            User user = findUserByScreenName(screenName);
             if (user == null) {
                 throw new ServiceException("Not Found " + screenName);
             }
@@ -136,7 +145,7 @@ public class AccountService extends AbstractMongoService {
         return dtos;
     }
 
-    public User findByEmail(String email){
+    public User findUserByEmail(String email){
         return userDao.findByEmail(email);
     }
 

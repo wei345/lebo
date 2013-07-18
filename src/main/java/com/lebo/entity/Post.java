@@ -2,6 +2,7 @@ package com.lebo.entity;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,6 +30,7 @@ public class Post extends IdEntity {
     private List<String> files;
     //来源，如：手机客户端、网页版
     private String source;
+    @GeoSpatialIndexed
     private GeoLocation geoLocation;
     @Indexed
     private String originPostId;

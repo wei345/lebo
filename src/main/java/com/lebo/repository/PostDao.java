@@ -28,7 +28,4 @@ public interface PostDao extends MongoRepository<Post, String> {
 
     @Query(value = "{ _id : { $in : ?0 } }")
     List<Post> findPosts(List<ObjectId> ids);
-
-//    @Query(value = "{ searchTerms : ?0, _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
-//    Page<Post> search(String q, String maxId, String sinceId, Pageable pageable);
 }

@@ -4,6 +4,7 @@ import com.lebo.entity.User;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +31,7 @@ public class UserRestController {
     @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody
     public Object search(@Valid SearchParam param) {
-        List<User> users = accountService.searchUser(param);
-        return accountService.toUserDtos(users);
+        Page<User> page = accountService.searchUser(param);
+        return accountService.toUserDtos(page.getContent());
     }
 }
