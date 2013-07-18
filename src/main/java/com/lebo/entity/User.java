@@ -2,9 +2,11 @@ package com.lebo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -46,11 +48,12 @@ public class User extends IdEntity {
     public static final String USER_LAST_SIGN_IN_AT_KEY = "lastSignInAt";
 
     // --- 本地用户 --- //
-
+    @Transient
     private String plainPassword;
     private String password;
     private String salt;
-    private List<String> roles;
+    @Indexed
+    private List<String> roles = new ArrayList<String>(1);
 
     public User() {
     }

@@ -46,7 +46,7 @@
 
     <!-- 定义无需Controller的url<->view直接映射 -->
     <mvc:view-controller path="/" view-name="index"/>
-    <mvc:view-controller path="/login" view-name="login"/>
+    <mvc:view-controller path="/login" view-name="account/login"/>
     <mvc:view-controller path="/docs/api/1" view-name="docs/api/1/index"/>
     <mvc:view-controller path="/docs/**"/>
 

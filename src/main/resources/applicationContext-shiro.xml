@@ -40,6 +40,7 @@
                 /api/*/oauthLogin.json = anon
                 /api/** = api
                 /admin/** = roles[admin]
+                /register/** = roles[admin]
                 /** = user
             </value>
         </property>

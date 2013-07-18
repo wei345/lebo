@@ -18,7 +18,7 @@ import javax.validation.Valid;
  * @author Wei Liu
  */
 @Controller
-@RequestMapping(value = "/register")
+@RequestMapping(value = "register")
 public class RegisterController {
 
     @Autowired
@@ -39,10 +39,23 @@ public class RegisterController {
     /**
      * Ajax请求校验loginName是否唯一。
      */
-    @RequestMapping(value = "checkLoginName")
+    @RequestMapping(value = "checkScreenName")
     @ResponseBody
-    public String checkLoginName(@RequestParam("loginName") String loginName) {
-        if (accountService.findByEmail(loginName) == null) {
+    public String checkLoginName(@RequestParam("screenName") String screenName) {
+        if (accountService.findUserByScreenName(screenName) == null) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
+    /**
+     * Ajax请求校验checkEmail是否唯一。
+     */
+    @RequestMapping(value = "checkEmail")
+    @ResponseBody
+    public String checkEmail(@RequestParam("email") String email) {
+        if (accountService.findUserByEmail(email) == null) {
             return "true";
         } else {
             return "false";

@@ -4,7 +4,6 @@ import com.lebo.entity.User;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.hibernate.validator.constraints.NotBlank;
@@ -34,7 +33,7 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
         User user;
         String name = prefix;
         do{
-            user = accountService.getUserByScreenName(name);
+            user = accountService.findUserByScreenName(name);
             if(user == null){
                 break;
             }
@@ -42,11 +41,6 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
         }while(true);
 
         return name;
-    }
-
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return null;
     }
 
     @Override

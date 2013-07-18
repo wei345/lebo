@@ -3,7 +3,9 @@ package com.lebo.web.account;
 import com.lebo.entity.User;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.SearchParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +27,10 @@ public class UserAdminController {
     private AccountService accountService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String list(Model model) {
-        List<User> users = accountService.searchUser(new SearchParam());
-        model.addAttribute("users", users);
+    public String list(SearchParam param, Model model) {
+        Page<User> page = accountService.searchUser(param);
+        model.addAttribute("page", page);
+        model.addAttribute("q", param.getQ());
 
         return "account/adminUserList";
     }
@@ -41,10 +44,11 @@ public class UserAdminController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         accountService.saveUser(user);
-        redirectAttributes.addFlashAttribute("message", "更新用户" + user.getEmail() + "成功");
+        redirectAttributes.addFlashAttribute("message", "更新用户" + user.getScreenName() + "成功");
         return "redirect:/admin/user";
     }
 
+    //TODO 删除用户功能
 	/*@RequestMapping(value = "delete/{id}")
     public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
 		User user = accountService.getUser(id);
