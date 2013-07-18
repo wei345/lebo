@@ -39,8 +39,8 @@
     <!-- 依赖项定义 -->
     <dependencies>
         <dependency>
-            <groupId>ikanalyzer</groupId>
-            <artifactId>ikanalyzer</artifactId>
+            <groupId>org.wltea.ik-analyzer</groupId>
+            <artifactId>ik-analyzer</artifactId>
             <version>3.2.8</version>
         </dependency>
 

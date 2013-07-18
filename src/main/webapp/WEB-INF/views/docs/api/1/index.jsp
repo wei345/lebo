@@ -91,6 +91,14 @@
             发布评论
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/comments/show" text="GET comments/show"/>
+        </td>
+        <td>
+            查看评论
+        </td>
+    </tr>
 </table>
 
 <strong>用户</strong>
@@ -133,6 +141,22 @@
         </td>
         <td>
             收藏
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/favorites/show" text="GET favorites/show"/>
+        </td>
+        <td>
+            查看收藏
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/favorites/toggle" text="POST favorites/toggle"/>
+        </td>
+        <td>
+            收藏切换
         </td>
     </tr>
 </table>

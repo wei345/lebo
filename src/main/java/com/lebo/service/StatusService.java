@@ -116,6 +116,14 @@ public class StatusService extends AbstractMongoService {
     public Post findPost(String id) {
         return postDao.findOne(id);
     }
+    public List<Post> findPosts(List<String> ids){
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        for(int i=0; i<ids.size(); i++){
+            objectIds.add(new ObjectId(ids.get(i)));
+        }
+
+        return postDao.findPosts(objectIds);
+    }
 
     public int countUserStatus(String userId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);

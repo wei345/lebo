@@ -1,6 +1,7 @@
 package com.lebo.repository;
 
 import com.lebo.entity.Post;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -24,6 +25,9 @@ public interface PostDao extends MongoRepository<Post, String> {
 
     @Query(value = "{ userMentions : ?0 , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
     Page<Post> mentionsTimeline(String userId, String maxId, String sinceId, Pageable pageable);
+
+    @Query(value = "{ _id : { $in : ?0 } }")
+    List<Post> findPosts(List<ObjectId> ids);
 
 //    @Query(value = "{ searchTerms : ?0, _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
 //    Page<Post> search(String q, String maxId, String sinceId, Pageable pageable);

@@ -3,6 +3,8 @@ package com.lebo.service;
 import com.lebo.entity.Comment;
 import com.lebo.repository.CommentDao;
 import com.lebo.service.param.FileInfo;
+import com.lebo.service.param.ShowCommentParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -48,5 +50,9 @@ public class CommentService extends AbstractMongoService {
 
     public int countPostComments(String postId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)), Comment.class);
+    }
+    
+    public List<Comment> show(ShowCommentParam param){
+    	return commentDao.findByPostId(param.getPostId(), param);
     }
 }
