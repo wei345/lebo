@@ -3,7 +3,6 @@ package com.lebo.web.account;
 import com.lebo.entity.User;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.SearchParam;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 管理员管理用户的Controller.

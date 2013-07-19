@@ -3,17 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<head>
-    <title>Welcome</title>
-</head>
-
-<body>
 <ul>
-    <li><tags:link url="${ctx}/docs/api/1" text="REST API v1"/></li>
-    <li><tags:link url="${ctx}/admin" text="后台"/></li>
+    <li><a href="${ctx}/admin/user">用户管理</a></li>
+    <li><a href="${ctx}/admin/channels">频道管理</a></li>
 </ul>
-</body>
-
-
-
-
