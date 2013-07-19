@@ -4,23 +4,20 @@ import com.lebo.entity.User;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.*;
-import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.SearchParam;
-import com.mongodb.WriteResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
-import org.springside.modules.cache.memcached.SpyMemcachedClient;
 import org.springframework.web.multipart.MultipartFile;
+import org.springside.modules.cache.memcached.SpyMemcachedClient;
 import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.DateProvider;
@@ -57,12 +54,15 @@ public class AccountService extends AbstractMongoService {
 
     private GridFsService gridFsService;
 
-    public Page<User> searchUser(SearchParam param) {
-        if(StringUtils.isBlank(param.getQ())){
-            return userDao.search(".*", param.getMaxId(), param.getSinceId(), param);
+    public List<User> searchUser(SearchParam param) {
+        Query query = new Query();
+
+        if (!StringUtils.isBlank(param.getQ())) {
+            query.addCriteria(new Criteria(User.SCREEN_NAME_KEY).regex(param.getQ(), "i"));
         }
 
-        return userDao.search(param.getQ(), param.getMaxId(), param.getSinceId(), param);
+        query.with(param);
+        return mongoTemplate.find(query, User.class);
     }
 
     public User findUserByScreenName(String screenName) {
@@ -79,11 +79,11 @@ public class AccountService extends AbstractMongoService {
             entryptPassword(user);
             user.setPlainPassword(null);
         }
-        if(file != null){
+        if (file != null) {
             try {
                 user.setProfileImageUrl(gridFsService.save(file.getInputStream(), file.getOriginalFilename(), file.getContentType()));
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                throw new ServiceException("保存用户头像失败", e);
             }
         }
         user = userDao.save(user);
@@ -145,7 +145,6 @@ public class AccountService extends AbstractMongoService {
         if (!getCurrentUserId().equals(user.getId())) {
             dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), user.getId()));
         }
-        dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
         return dto;
     }
@@ -158,7 +157,7 @@ public class AccountService extends AbstractMongoService {
         return dtos;
     }
 
-    public User findUserByEmail(String email){
+    public User findUserByEmail(String email) {
         return userDao.findByEmail(email);
     }
 
@@ -181,44 +180,44 @@ public class AccountService extends AbstractMongoService {
     }
 
     //增长粉丝计数
-    public void increaseFollowersCount(String userId){
+    public void increaseFollowersCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
                 new Update().inc(User.FOLLOWERS_COUNT_KEY, 1),
                 User.class);
     }
 
     //减少粉丝计数
-    public void decreaseFollowersCount(String userId){
+    public void decreaseFollowersCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
                 new Update().inc(User.FOLLOWERS_COUNT_KEY, -1),
                 User.class);
     }
 
     //增长收藏计数
-    public void increaseFavoritesCount(String userId){
+    public void increaseFavoritesCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.FAVORITES_COUNT, 1),
+                new Update().inc(User.FAVORITES_COUNT_KEY, 1),
                 User.class);
     }
 
     //减少收藏计数
-    public void decreaseFavoritesCount(String userId){
+    public void decreaseFavoritesCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.FAVORITES_COUNT, -1),
+                new Update().inc(User.FAVORITES_COUNT_KEY, -1),
                 User.class);
     }
 
     //增长播放计数
-    public void increasePlaysCount(String userId){
+    public void increasePlaysCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.PLAYS_COUNT, 1),
+                new Update().inc(User.PLAYS_COUNT_KEY, 1),
                 User.class);
     }
 
     //减少播放计数
-    public void decreasePlaysCount(String userId){
+    public void decreasePlaysCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.PLAYS_COUNT, -1),
+                new Update().inc(User.PLAYS_COUNT_KEY, -1),
                 User.class);
     }
 

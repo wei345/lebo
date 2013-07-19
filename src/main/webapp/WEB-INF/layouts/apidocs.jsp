@@ -59,6 +59,9 @@
             hljs.highlightBlock(e);
         });
     });
+    $('input[type=checkbox]').each(function(){
+        $(this).parent('.control-group').find('input').removeAttr('disabled');
+    });
 </script>
 </body>
 </html>

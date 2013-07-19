@@ -34,7 +34,12 @@
     <form id="searchForm" class="form-search pull-left" method="GET" action="">
         <input type="search" class="input-medium search-query" id="q" name="q" value="${q}" placeholder="正则表达式">
         <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=q]').val('')"></span>
-        <input type="text" class="input-mini" name="count" value="${page.size}">条/页
+        orderBy <input type="text" class="input-mini" name="orderBy" value="${orderBy}" placeholder="followersCount/favoritesCount/playsCount">
+        <select class="input-small" name="order">
+            <option ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</option>
+            <option ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</option>
+        </select>
+        <input type="text" class="input-mini" name="size" value="${size}">条/页
         <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
     </form>
 
@@ -43,7 +48,7 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed table-hover">
 		<thead><tr><th>用户名</th><th>邮件地址</th><th>姓名</th><th>注册时间<th>管理</th></tr></thead>
 		<tbody>
-		<c:forEach items="${page.content}" var="user">
+		<c:forEach items="${users}" var="user">
 			<tr>
 				<td><a href="${ctx}/admin/user/update/${user.id}">${user.screenName}</a></td>
 				<td>${user.email}</td>
@@ -56,10 +61,10 @@
 		</c:forEach>
 		</tbody>
 	</table>
-    <c:if test="${empty page.content}">
+    <c:if test="${empty users}">
         <div style="font-style: italic; text-align: center">没有了</div>
     </c:if>
 
-    <tags:pagination page="${page}" paginationSize="${page.size}" />
+    <tags:pagination page="${page}" size="${size}" currentSize="${currentSize}" />
 </body>
 </html>

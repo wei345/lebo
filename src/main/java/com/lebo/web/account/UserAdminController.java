@@ -1,16 +1,20 @@
 package com.lebo.web.account;
 
 import com.lebo.entity.User;
+import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 管理员管理用户的Controller.
@@ -24,11 +28,36 @@ public class UserAdminController {
     @Autowired
     private AccountService accountService;
 
+    //TODO 搜索用户
     @RequestMapping(method = RequestMethod.GET)
-    public String list(SearchParam param, Model model) {
-        Page<User> page = accountService.searchUser(param);
-        model.addAttribute("page", page);
+    public String list(@RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "page", defaultValue = "0") int pageNo,
+                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size,
+                       @RequestParam(value = "orderBy", defaultValue = "_id") String orderBy,
+                       @RequestParam(value = "order", defaultValue = "desc") String order,
+                       Model model) {
+        Sort.Direction direction;
+        if (order.equals("desc")) {
+            direction = Sort.Direction.DESC;
+        } else if (order.equals("asc")) {
+            direction = Sort.Direction.ASC;
+        } else {
+            model.addAttribute("error", String.format("参数order值[%s]无效",order));
+            return "account/adminUserList";
+        }
+
+        //搜索
+        SearchParam param = new SearchParam(q, pageNo, size, direction, orderBy);
+        List<User> users = accountService.searchUser(param);
+
+        model.addAttribute("users", users);
+
         model.addAttribute("q", param.getQ());
+        model.addAttribute("page", param.getPageNumber());
+        model.addAttribute("size", param.getPageSize());
+        model.addAttribute("currentSize", users.size());
+        model.addAttribute("orderBy", orderBy);
+        model.addAttribute("order", order);
 
         return "account/adminUserList";
     }

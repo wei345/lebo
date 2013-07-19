@@ -46,12 +46,12 @@ public class UserDaoTest extends SpringContextTestCase implements UnStable {
         assertFalse(userDao.exists("123456789012345678901234"));
     }
 
-    @Test
-    public void search() {
+    //@Test
+    /*public void search() {
         SearchParam param = new SearchParam();
         List<User> users = userDao.search("麦", param.getMaxId(), param.getSinceId(), param).getContent();
 
         assertTrue(users.size() > 0);
         assertTrue(users.get(0).getScreenName().contains("麦"));
-    }
+    }*/
 }

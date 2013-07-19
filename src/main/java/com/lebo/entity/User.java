@@ -3,6 +3,7 @@ package com.lebo.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class User extends IdEntity {
     @Indexed(unique = true)
     private String screenName;
+    public static final String SCREEN_NAME_KEY = "screenName";
     @Indexed
     private String name;
     // The user-defined describing their account.
@@ -57,12 +59,17 @@ public class User extends IdEntity {
     private List<String> roles = new ArrayList<String>(1);
 
     // --- 统计数据 --- //
+    @Indexed(direction = IndexDirection.DESCENDING)
     private Integer followersCount;
     public static final String FOLLOWERS_COUNT_KEY = "followersCount";
+
+    @Indexed(direction = IndexDirection.DESCENDING)
     private Integer favoritesCount;
-    public static final String FAVORITES_COUNT = "favoritesCount";
+    public static final String FAVORITES_COUNT_KEY = "favoritesCount";
+
+    @Indexed(direction = IndexDirection.DESCENDING)
     private Integer playsCount;
-    public static final String PLAYS_COUNT = "playsCount";
+    public static final String PLAYS_COUNT_KEY = "playsCount";
 
 
     public User() {
