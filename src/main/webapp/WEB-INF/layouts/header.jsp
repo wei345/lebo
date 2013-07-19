@@ -22,4 +22,14 @@
             </shiro:user>
         </h1>
     </div>
+    <c:if test="${success != null}">
+        <div class="alert alert-success controls">
+            <button class="close" data-dismiss="alert">×</button>${success}
+        </div>
+    </c:if>
+    <c:if test="${error != null}">
+        <div class="alert alert-error controls">
+            <button class="close" data-dismiss="alert">×</button>${error}
+        </div>
+    </c:if>
 </div>

@@ -3,6 +3,7 @@
     <excludes>
         <pattern>/static/*</pattern>
         <pattern>/api/*</pattern>
+        <pattern>/admin/channels/preview</pattern>
     </excludes>
 
     <decorator name="apidocs" page="apidocs.jsp">
