@@ -205,16 +205,6 @@ public class StatusService extends AbstractMongoService {
         }
         return dtoList;
     }
-<<<<<<< HEAD
-    /* 所有数量都通过索引查
-    public void increaseRepostsCount(String postId) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(postId)),
-                new Update().inc(Post.REPOSTS_COUNT_KEY, 1),
-                Post.class);
-    }
-    */
-=======
->>>>>>> f8a52dfbbf6cddd000431e4c4f5fd745355684d7
 
     public List<Post> searchPosts(StatusFilterParam param) {
         List<Criteria> criteriaList = new ArrayList<Criteria>(5);

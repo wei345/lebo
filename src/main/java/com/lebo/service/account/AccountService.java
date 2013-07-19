@@ -77,7 +77,7 @@ public class AccountService extends AbstractMongoService {
         }
         if(file != null){
             try {
-                user.setHead(gridFsService.save(file.getInputStream(), file.getOriginalFilename(), file.getContentType()));
+                user.setProfileImageUrl(gridFsService.save(file.getInputStream(), file.getOriginalFilename(), file.getContentType()));
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }

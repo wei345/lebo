@@ -65,10 +65,10 @@ public class UserRestController {
                        @RequestParam(value = "description", required = false) String description) {
         String userId = accountService.getCurrentUserId();
         User user = accountService.getUser(userId);
-        if(screenName != null){
+        if(screenName != null && screenName.length()>0){
             user.setScreenName(screenName);
         }
-        if(description != null){
+        if(description != null && description.length()>0){
             user.setDescription(description);
         }
 

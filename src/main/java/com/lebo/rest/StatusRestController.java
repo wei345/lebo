@@ -117,16 +117,13 @@ public class StatusRestController {
         return statusService.toStatusDtoList(postList);
     }
 
+
     /**
-<<<<<<< HEAD
      * 转发一条微博
-     * @param postId   要转发的微博ID。
-=======
-     * 转发Post
      *
-     * @param id   要转发的微博ID。
->>>>>>> f8a52dfbbf6cddd000431e4c4f5fd745355684d7
+     * @param postId   要转发的微博ID。
      * @param text 添加的转发文本，必须做URLencode，内容不超过140个汉字
+     * @return
      */
     @RequestMapping(value = "repost", method = RequestMethod.POST)
     @ResponseBody
@@ -138,9 +135,7 @@ public class StatusRestController {
             if (post == null) {
                 return ErrorDto.newBadRequestError("The parameter id [" + postId + "] is invalid.");
             }
-            String originId = statusService.getOriginPostId(post);
 
-<<<<<<< HEAD
             String originId = (post.getOriginPostId() == null ? postId : post.getOriginPostId());
             // 已经被转发，则为取消转发
             if(statusService.isRepost(accountService.getCurrentUserId(), originId)){
@@ -155,15 +150,6 @@ public class StatusRestController {
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
         } catch (Exception e) {
-=======
-            //转发
-            if(!statusService.isReposted(accountService.getCurrentUserId(), originId)){
-                post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
-            }
-
-            return statusService.toStatusDto(post);
-        }  catch (Exception e) {
->>>>>>> f8a52dfbbf6cddd000431e4c4f5fd745355684d7
             logger.info("转发Post失败", e);
             return ErrorDto.newBadRequestError(e.getMessage());
         }
