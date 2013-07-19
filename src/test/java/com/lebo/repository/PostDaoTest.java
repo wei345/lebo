@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springside.modules.test.category.UnStable;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -46,13 +47,9 @@ public class PostDaoTest extends SpringContextTestCase implements UnStable {
         assertTrue(page.getContent().get(0).getId().compareTo(page.getContent().get(1).getId()) > 0);
     }
 
-    /*@Test
-    public void search() {
-        SearchParam param = new SearchParam();
-        Page<Post> page = postDao.search("转发",
-                param.getMaxId(), param.getSinceId(), param);
-
-        assertTrue(page.getContent().size() > 0);
-        assertTrue(page.getContent().get(0).getText().contains("转发"));
-    }*/
+    @Test
+    public void findByUserIdAndOriginPostId(){
+        Post post = postDao.findByUserIdAndOriginPostId("51e778ea1a8816dc79e40aaf", "51e3a0ca1a8890916e962c94");
+        assertNotNull(post);
+    }
 }

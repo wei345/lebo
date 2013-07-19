@@ -146,11 +146,10 @@ public class StatusRestController {
     }
 
     /**
-     * 转发一条微博
+     * 转发Post
      *
      * @param id   要转发的微博ID。
      * @param text 添加的转发文本，必须做URLencode，内容不超过140个汉字
-     * @return
      */
     @RequestMapping(value = "repost", method = RequestMethod.POST)
     @ResponseBody
@@ -162,22 +161,15 @@ public class StatusRestController {
             if (post == null) {
                 return ErrorDto.newBadRequestError("The parameter id [" + id + "] is invalid.");
             }
+            String originId = statusService.getOriginPostId(post);
 
-            String originId = (post.getOriginPostId() == null ? id : post.getOriginPostId());
-
-            post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
-
-            statusService.increaseRepostsCount(originId);
-
-            if (!id.equals(originId)) {
-                statusService.increaseRepostsCount(id);
+            //转发
+            if(!statusService.isReposted(accountService.getCurrentUserId(), originId)){
+                post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
             }
 
             return statusService.toStatusDto(post);
-
-        } catch (DuplicateException e) {
-            return ErrorDto.DUPLICATE;
-        } catch (Exception e) {
+        }  catch (Exception e) {
             logger.info("转发Post失败", e);
             return ErrorDto.newBadRequestError(e.getMessage());
         }

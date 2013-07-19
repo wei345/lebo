@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'files': 1}", unique = true)
+        @CompoundIndex(name = "tweet_unique", def = "{'user': 1, 'text': 1, 'files': 1, 'originPostId': 1}", unique = true)
 })
 public class Post extends IdEntity {
     @Indexed
@@ -46,9 +46,6 @@ public class Post extends IdEntity {
     @Indexed
     private LinkedHashSet<String> searchTerms;
     public static final String SEARCH_TERMS_KEY = "searchTerms";
-
-    private Integer repostsCount;
-    public static final String REPOSTS_COUNT_KEY = "repostsCount";
 
     public String getUserId() {
         return userId;
@@ -130,14 +127,6 @@ public class Post extends IdEntity {
 
     public void setHashtags(LinkedHashSet<String> hashtags) {
         this.hashtags = hashtags;
-    }
-
-    public Integer getRepostsCount() {
-        return repostsCount;
-    }
-
-    public void setRepostsCount(Integer repostsCount) {
-        this.repostsCount = repostsCount;
     }
 
     public LinkedHashSet<String> getSearchTerms() {

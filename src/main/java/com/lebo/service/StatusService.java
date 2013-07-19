@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
@@ -117,9 +116,10 @@ public class StatusService extends AbstractMongoService {
     public Post findPost(String id) {
         return postDao.findOne(id);
     }
-    public List<Post> findPosts(List<String> ids){
+
+    public List<Post> findPosts(List<String> ids) {
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        for(int i=0; i<ids.size(); i++){
+        for (int i = 0; i < ids.size(); i++) {
             objectIds.add(new ObjectId(ids.get(i)));
         }
 
@@ -144,8 +144,22 @@ public class StatusService extends AbstractMongoService {
         dto.setUser(accountService.toUserDto(accountService.getUser(post.getUserId())));
         dto.setFavorited(favoriteService.isFavorited(userId, post.getId()));
         dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
+        dto.setReposted(isReposted(accountService.getCurrentUserId(), getOriginPostId(post)));
+        dto.setRepostsCount(countReposts(getOriginPostId(post))); //原始Post转发数
 
         return dto;
+    }
+
+    public String getOriginPostId(Post post) {
+        return post.getOriginPostId() == null ? post.getId() : post.getOriginPostId();
+    }
+
+    public boolean isOriginPost(Post post) {
+        return post.getOriginPostId() == null;
+    }
+
+    public int countReposts(String postId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId)), Post.class);
     }
 
     public List<StatusDto> toStatusDtoList(List<Post> posts) {
@@ -154,12 +168,6 @@ public class StatusService extends AbstractMongoService {
             dtoList.add(toStatusDto(post));
         }
         return dtoList;
-    }
-
-    public void increaseRepostsCount(String postId) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(postId)),
-                new Update().inc(Post.REPOSTS_COUNT_KEY, 1),
-                Post.class);
     }
 
     public List<Post> searchPosts(StatusFilterParam param) {
@@ -329,5 +337,9 @@ public class StatusService extends AbstractMongoService {
         words.addAll(mentionScreenNames(post.getText(), false));
         words.addAll(segmentation.findWords(post.getText()));
         return words;
+    }
+
+    public boolean isReposted(String userId, String postId) {
+        return postDao.findByUserIdAndOriginPostId(userId, postId) != null;
     }
 }
