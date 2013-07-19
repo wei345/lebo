@@ -68,12 +68,12 @@ public class StatusService extends AbstractMongoService {
         Post post = new Post();
         post.setUserId(userId);
         post.setCreatedAt(new Date());
+        post.setSource(source);
         post.setText(text);
         post.setUserMentions(mentionUserIds(text));
         post.setHashtags(findHashtags(text));
         post.setFiles(fileIds);
         post.setOriginPostId(originPostId);
-        post.setSource(source);
         post.setSearchTerms(buildSearchTerms(post));
 
         post = postDao.save(post);
@@ -81,6 +81,17 @@ public class StatusService extends AbstractMongoService {
         onPostCreated();
 
         return post;
+    }
+
+    // 用于取消转发
+    public int destroy(String userId, String originId){
+        Post post = postDao.findByUserIdAndOriginPostId(userId, originId);
+        postDao.delete(post.getId());
+        return countRepost(originId);
+    }
+
+    public boolean isRepost(String userId, String postId){
+        return postDao.findByUserIdAndOriginPostId(userId, postId)!=null;
     }
 
     public List<Post> userTimeline(TimelineParam param) {
@@ -113,6 +124,26 @@ public class StatusService extends AbstractMongoService {
         return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
+    /**
+     * hot列表
+     * @param param
+     * @return
+     */
+    public List<Post> hotTimeline(TimelineParam param) {
+        Assert.hasText(param.getUserId(), "The userId can not be null");
+        // 一次取出所有follows？如果数量很多怎么办？少峰 2013.07.18
+        List<Following> followingList = followingDao.findByUserId(param.getUserId());
+
+        List<String> followingIdList = new ArrayList<String>(followingList.size() + 1);
+        for (Following following : followingList) {
+            followingIdList.add(following.getFollowingId());
+        }
+
+        followingIdList.add(param.getUserId());
+
+        return postDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
+    }
+
     public Post findPost(String id) {
         return postDao.findOne(id);
     }
@@ -129,6 +160,10 @@ public class StatusService extends AbstractMongoService {
     public int countUserStatus(String userId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
     }
+    // 转发数
+    public int countRepost(String originId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(originId)), Post.class);
+    }
 
     public StatusDto toStatusDto(Post post) {
         String userId = accountService.getCurrentUserId();
@@ -139,6 +174,7 @@ public class StatusService extends AbstractMongoService {
             Post originPost = postDao.findOne(post.getOriginPostId());
             StatusDto originStatusDto = toStatusDto(originPost);
             dto.setOriginStatus(originStatusDto);
+            dto.setRepostsCount(countRepost(post.getOriginPostId()));
         }
 
         dto.setUser(accountService.toUserDto(accountService.getUser(post.getUserId())));

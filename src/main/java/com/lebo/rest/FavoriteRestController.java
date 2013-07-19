@@ -55,13 +55,19 @@ public class FavoriteRestController {
     @ResponseBody
     public Object toggle(@RequestParam("postId") String postId) {
         String userId = accountService.getCurrentUserId();
-
-        if (favoriteService.isFavorited(userId, postId)) {
-            favoriteService.destroy(userId, postId);
-        }else{
-            favoriteService.create(userId, postId);
-        }
         Post post = statusService.findPost(postId);
+        if (post == null) {
+            return ErrorDto.newBadRequestError("The parameter id [" + postId + "] is invalid.");
+        }
+
+        String originId = (post.getOriginPostId() == null ? postId : post.getOriginPostId());
+
+        if (favoriteService.isFavorited(userId, originId)) {
+            favoriteService.destroy(userId, originId);
+        }else{
+            favoriteService.create(userId, originId);
+        }
+
         return statusService.toStatusDto(post);
     }
 }

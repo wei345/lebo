@@ -41,7 +41,7 @@ public class UserAdminController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-        accountService.saveUser(user);
+        accountService.saveUser(user, null);
         redirectAttributes.addFlashAttribute("message", "更新用户" + user.getScreenName() + "成功");
         return "redirect:/admin/user";
     }

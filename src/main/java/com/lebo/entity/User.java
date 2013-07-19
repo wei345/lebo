@@ -36,6 +36,7 @@ public class User extends IdEntity {
     private Boolean verified;
     private String location;
     private String timeZone;
+
     // --- 下面是用户隐私数据 --- //
     @Indexed
     private LinkedHashSet<String> oAuthIds;

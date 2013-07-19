@@ -25,7 +25,10 @@ public class Comment extends IdEntity {
     //来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
+    // 被评论的post
     private String postId;
+    // 如果被评论post是转发的，则该评论也要归结到原始post上
+    private String originId;
     @Indexed
     private LinkedHashSet<String> mentions;
 
@@ -99,5 +102,13 @@ public class Comment extends IdEntity {
 
     public void setMentions(LinkedHashSet<String> mentions) {
         this.mentions = mentions;
+    }
+
+    public String getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(String originId) {
+        this.originId = originId;
     }
 }
