@@ -29,4 +29,6 @@ public interface PostDao extends MongoRepository<Post, String> {
 
     @Query(value = "{ _id : { $in : ?0 } }")
     List<Post> findPosts(List<ObjectId> ids);
+
+    Post findByUserIdAndOriginPostId(String userId, String originPostId);
 }
