@@ -36,6 +36,14 @@
         <jdk.version>1.6</jdk.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>spy</id>
+            <name>Spy Repository</name>
+            <url>http://files.couchbase.com/maven2/</url>
+        </repository>
+    </repositories>
+
     <!-- 依赖项定义 -->
     <dependencies>
         <dependency>
