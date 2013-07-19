@@ -6,8 +6,10 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <%
     ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-    String profileImageUrl = user.getProfileImageUrl();
-    request.setAttribute("profileImageUrl", profileImageUrl);
+    if(user != null){
+        String profileImageUrl = user.getProfileImageUrl();
+        request.setAttribute("profileImageUrl", profileImageUrl);
+    }
 %>
 <div id="header">
     <div id="title">
