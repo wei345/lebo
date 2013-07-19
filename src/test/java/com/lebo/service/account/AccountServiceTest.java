@@ -20,4 +20,9 @@ public class AccountServiceTest extends SpringContextTestCase {
         user.setId("51dee0c71a882943dcd7160e");
         accountService.updateLastSignInAt(user);
     }
+
+    @Test
+    public void increaseFollowersCount(){
+        accountService.increaseFollowersCount("51def1ce1a883914869e46f2");
+    }
 }

@@ -4,6 +4,7 @@ import com.lebo.entity.Following;
 import com.lebo.entity.User;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.UserDao;
+import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -25,6 +26,8 @@ public class FriendshipService extends AbstractMongoService {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * userId关注followingId。
@@ -40,25 +43,24 @@ public class FriendshipService extends AbstractMongoService {
         }
 
         if (userDao.exists(userId) && userDao.exists(followingId)) {
+            //关注
             followingDao.save(new Following(userId, followingId));
             throwOnMongoError();
+            accountService.increaseFollowersCount(followingId);
         } else {
             throw new ServiceException(String.format("%s or %s is not exists.", userId, followingId));
         }
     }
 
-    /**
-     * @throws ServiceException 当未关注时
-     */
     public void unfollow(String userId, String followingId) {
         Assert.hasText(userId);
         Assert.hasText(followingId);
 
         Following following = followingDao.findByUserIdAndFollowingId(userId, followingId);
-        if (following == null) {
-            throw new ServiceException("Not following");
+        if (following != null) {
+            followingDao.delete(following);
+            accountService.decreaseFollowersCount(followingId);
         }
-        followingDao.delete(following);
     }
 
     public boolean isFollowing(String userId, String followingId) {

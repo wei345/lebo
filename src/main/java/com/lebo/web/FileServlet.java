@@ -1,6 +1,7 @@
 package com.lebo.web;
 
 import com.lebo.service.GridFsService;
+import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -52,6 +53,7 @@ public class FileServlet extends HttpServlet {
     private ApplicationContext applicationContext;
 
     private GridFsService gridFsService;
+    private AccountService accountService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -138,9 +140,9 @@ public class FileServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
-        //保存applicationContext以备后用，纯演示.
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
         gridFsService = applicationContext.getBean(GridFsService.class);
+        accountService =  applicationContext.getBean(AccountService.class);
     }
 }

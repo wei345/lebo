@@ -45,5 +45,4 @@ public class UserRestController {
         User user = accountService.getUser(id);
         return accountService.toUserDto(user);
     }
-
 }

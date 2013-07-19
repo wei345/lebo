@@ -8,6 +8,7 @@ import com.lebo.service.FriendshipService;
 import com.lebo.service.ServiceException;
 import com.lebo.service.StatusService;
 import com.lebo.service.param.SearchParam;
+import com.mongodb.WriteResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.bson.types.ObjectId;
@@ -20,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
+import org.springside.modules.cache.memcached.SpyMemcachedClient;
 import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.DateProvider;
@@ -50,6 +52,8 @@ public class AccountService extends AbstractMongoService {
     private StatusService statusService;
     @Autowired
     private FriendshipService friendshipService;
+    @Autowired
+    private SpyMemcachedClient spyMemcachedClient;
 
 
     public Page<User> searchUser(SearchParam param) {
@@ -165,6 +169,48 @@ public class AccountService extends AbstractMongoService {
 
         byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, HASH_INTERATIONS);
         user.setPassword(Encodes.encodeHex(hashPassword));
+    }
+
+    //增长粉丝计数
+    public void increaseFollowersCount(String userId){
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().inc(User.FOLLOWERS_COUNT_KEY, 1),
+                User.class);
+    }
+
+    //减少粉丝计数
+    public void decreaseFollowersCount(String userId){
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().inc(User.FOLLOWERS_COUNT_KEY, -1),
+                User.class);
+    }
+
+    //增长收藏计数
+    public void increaseFavoritesCount(String userId){
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().inc(User.FAVORITES_COUNT, 1),
+                User.class);
+    }
+
+    //减少收藏计数
+    public void decreaseFavoritesCount(String userId){
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().inc(User.FAVORITES_COUNT, -1),
+                User.class);
+    }
+
+    //增长播放计数
+    public void increasePlaysCount(String userId){
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().inc(User.PLAYS_COUNT, 1),
+                User.class);
+    }
+
+    //减少播放计数
+    public void decreasePlaysCount(String userId){
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().inc(User.PLAYS_COUNT, -1),
+                User.class);
     }
 
     @Autowired

@@ -40,6 +40,8 @@
         <constructor-arg ref="mongoConverter"/>
     </bean>
 
+    <import resource="applicationContext-memcached.xml"/>
+
     <!-- production环境 -->
     <beans profile="production">
         <context:property-placeholder ignore-unresolvable="true"

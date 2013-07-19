@@ -55,6 +55,15 @@ public class User extends IdEntity {
     @Indexed
     private List<String> roles = new ArrayList<String>(1);
 
+    // --- 统计数据 --- //
+    private Integer followersCount;
+    public static final String FOLLOWERS_COUNT_KEY = "followersCount";
+    private Integer favoritesCount;
+    public static final String FAVORITES_COUNT = "favoritesCount";
+    private Integer playsCount;
+    public static final String PLAYS_COUNT = "playsCount";
+
+
     public User() {
     }
 
@@ -192,6 +201,30 @@ public class User extends IdEntity {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public Integer getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(Integer followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public Integer getFavoritesCount() {
+        return favoritesCount;
+    }
+
+    public void setFavoritesCount(Integer favoritesCount) {
+        this.favoritesCount = favoritesCount;
+    }
+
+    public Integer getPlaysCount() {
+        return playsCount;
+    }
+
+    public void setPlaysCount(Integer playsCount) {
+        this.playsCount = playsCount;
     }
 
     @Override
