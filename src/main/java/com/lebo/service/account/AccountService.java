@@ -3,10 +3,8 @@ package com.lebo.service.account;
 import com.lebo.entity.User;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.UserDto;
-import com.lebo.service.AbstractMongoService;
-import com.lebo.service.FriendshipService;
-import com.lebo.service.ServiceException;
-import com.lebo.service.StatusService;
+import com.lebo.service.*;
+import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.SearchParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -20,11 +18,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.DateProvider;
 import org.springside.modules.utils.Encodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +50,8 @@ public class AccountService extends AbstractMongoService {
     private StatusService statusService;
     @Autowired
     private FriendshipService friendshipService;
-
+    @Autowired
+    private GridFsService gridFsService;
 
     public Page<User> searchUser(SearchParam param) {
         if(StringUtils.isBlank(param.getQ())){
@@ -68,10 +69,18 @@ public class AccountService extends AbstractMongoService {
         return userDao.findOne(id);
     }
 
-    public User saveUser(User user) {
+    public User saveUser(User user, MultipartFile file) {
+
         if (StringUtils.isNotBlank(user.getPlainPassword())) {
             entryptPassword(user);
             user.setPlainPassword(null);
+        }
+        if(file != null){
+            try {
+                user.setHead(gridFsService.save(file.getInputStream(), file.getOriginalFilename(), file.getContentType()));
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
         user = userDao.save(user);
         throwOnMongoError();

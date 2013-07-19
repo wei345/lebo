@@ -127,6 +127,14 @@
             查看用户
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/users/set" text="POST users/set"/>
+        </td>
+        <td>
+            设置用户
+        </td>
+    </tr>
 </table>
 
 <strong>关系</strong>

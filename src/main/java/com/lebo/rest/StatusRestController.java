@@ -95,37 +95,9 @@ public class StatusRestController {
     }
 
     /**
-     * <h2>Twitter</h2>
-     * <p>
-     * Returns a collection of the most recent Tweets posted by the user
-     * indicated by the screen_name or user_id parameters.
-     * </p>
-     * <p>
-     * User timelines belonging to protected users may only be requested
-     * when the authenticated user either "owns" the timeline or is an
-     * approved follower of the owner.
-     * </p>
-     * <p>
-     * The timeline returned is the equivalent of the one seen when you
-     * view a user's profile on twitter.com.
-     * </p>
-     * <p>
-     * This method can only return up to 3,200 of a user's most recent
-     * Tweets. Native retweets of other statuses by the user is included
-     * in this total, regardless of whether include_rts is set to false
-     * when requesting this resource.
-     * </p>
-     * <p>
-     * https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
-     * </p>
-     * <p/>
-     * <h2>新浪</h2>
-     * <p>
-     * 获取某个用户最新发表的微博列表
-     * </p>
-     * <p>
-     * http://open.weibo.com/wiki/2/statuses/user_timeline
-     * </p>
+     * 获取某个用户最新视频列表
+     * @param param
+     * @return
      */
     @RequestMapping(value = "userTimeline", method = RequestMethod.GET)
     @ResponseBody
@@ -147,23 +119,22 @@ public class StatusRestController {
 
     /**
      * 转发一条微博
-     *
-     * @param id   要转发的微博ID。
+     * @param postId   要转发的微博ID。
      * @param text 添加的转发文本，必须做URLencode，内容不超过140个汉字
      * @return
      */
     @RequestMapping(value = "repost", method = RequestMethod.POST)
     @ResponseBody
-    private Object repost(@RequestParam("id") String id,
+    private Object repost(@RequestParam("postId") String postId,
                           @RequestParam(value = "text", required = false) String text,
                           @RequestParam(value = "source", required = false) String source) {
         try {
-            Post post = statusService.findPost(id);
+            Post post = statusService.findPost(postId);
             if (post == null) {
-                return ErrorDto.newBadRequestError("The parameter id [" + id + "] is invalid.");
+                return ErrorDto.newBadRequestError("The parameter id [" + postId + "] is invalid.");
             }
 
-            String originId = (post.getOriginPostId() == null ? id : post.getOriginPostId());
+            String originId = (post.getOriginPostId() == null ? postId : post.getOriginPostId());
             // 已经被转发，则为取消转发
             if(statusService.isRepost(accountService.getCurrentUserId(), originId)){
                 return statusService.destroy(accountService.getCurrentUserId(), originId);

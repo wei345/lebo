@@ -83,20 +83,10 @@ public class FriendshipRestController {
     }
 
     /**
-     * <h2>Twitter</h2>
-     * <p>
-     * Allows the authenticating user to unfollow the user specified in the ID parameter.
-     * </p>
-     * <p>
-     * Returns the unfollowed user in the requested format when successful. Returns a string
-     * describing the failure condition when unsuccessful.
-     * </p>
-     * <p>
-     * Actions taken in this method are asynchronous and changes will be eventually consistent.
-     * </p>
-     * <p>
-     * https://dev.twitter.com/docs/api/1.1/post/friendships/destroy
-     * </p>
+     * 取消关注
+     * @param userId
+     * @param screenName
+     * @return
      */
     @RequestMapping(value = "destroy", method = RequestMethod.POST)
     @ResponseBody

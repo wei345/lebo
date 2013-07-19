@@ -36,6 +36,10 @@ public class User extends IdEntity {
     private Boolean verified;
     private String location;
     private String timeZone;
+
+    // 头像文件id
+    private String head;
+
     // --- 下面是用户隐私数据 --- //
     @Indexed
     private LinkedHashSet<String> oAuthIds;
@@ -192,6 +196,15 @@ public class User extends IdEntity {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+
+    public String getHead() {
+        return head;
+    }
+
+    public void setHead(String head) {
+        this.head = head;
     }
 
     @Override

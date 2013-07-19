@@ -61,7 +61,7 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
             //oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setLastSignInAt(user.getCreatedAt());
-            user = accountService.saveUser(user);
+            user = accountService.saveUser(user, null);
         } else {
             accountService.updateLastSignInAt(user);
         }

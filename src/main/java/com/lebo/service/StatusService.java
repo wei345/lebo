@@ -69,12 +69,12 @@ public class StatusService extends AbstractMongoService {
         Post post = new Post();
         post.setUserId(userId);
         post.setCreatedAt(new Date());
+        post.setSource(source);
         post.setText(text);
         post.setUserMentions(mentionUserIds(text));
         post.setHashtags(findHashtags(text));
         post.setFiles(fileIds);
         post.setOriginPostId(originPostId);
-        post.setSource(source);
         post.setSearchTerms(buildSearchTerms(post));
 
         post = postDao.save(post);
@@ -125,6 +125,26 @@ public class StatusService extends AbstractMongoService {
         return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
+    /**
+     * hot列表
+     * @param param
+     * @return
+     */
+    public List<Post> hotTimeline(TimelineParam param) {
+        Assert.hasText(param.getUserId(), "The userId can not be null");
+        // 一次取出所有follows？如果数量很多怎么办？少峰 2013.07.18
+        List<Following> followingList = followingDao.findByUserId(param.getUserId());
+
+        List<String> followingIdList = new ArrayList<String>(followingList.size() + 1);
+        for (Following following : followingList) {
+            followingIdList.add(following.getFollowingId());
+        }
+
+        followingIdList.add(param.getUserId());
+
+        return postDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
+    }
+
     public Post findPost(String id) {
         return postDao.findOne(id);
     }
@@ -154,6 +174,7 @@ public class StatusService extends AbstractMongoService {
             Post originPost = postDao.findOne(post.getOriginPostId());
             StatusDto originStatusDto = toStatusDto(originPost);
             dto.setOriginStatus(originStatusDto);
+            dto.setRepostsCount(countRepost(post.getOriginPostId()));
         }
 
         dto.setUser(accountService.toUserDto(accountService.getUser(post.getUserId())));
@@ -170,12 +191,13 @@ public class StatusService extends AbstractMongoService {
         }
         return dtoList;
     }
-
+    /* 所有数量都通过索引查
     public void increaseRepostsCount(String postId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(postId)),
                 new Update().inc(Post.REPOSTS_COUNT_KEY, 1),
                 Post.class);
     }
+    */
 
     public List<Post> searchPosts(StatusFilterParam param) {
         List<Criteria> criteriaList = new ArrayList<Criteria>(5);

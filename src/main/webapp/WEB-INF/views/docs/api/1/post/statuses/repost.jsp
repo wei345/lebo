@@ -5,9 +5,9 @@
 
 <tags:form name="转发视频" method="POST" action="${ctx}/api/1/statuses/repost.json">
     <p>
-        原视频：originStatus
+        视频id：postId
     </p>
-    <tags:field name="id" value=""/>
+    <tags:field name="postId" value=""/>
     <tags:field name="text" value="转发"/>
 </tags:form>
 
