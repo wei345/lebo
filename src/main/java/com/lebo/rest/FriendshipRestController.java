@@ -103,33 +103,4 @@ public class FriendshipRestController {
         User user = accountService.getUser(userId);
         return BeanMapper.map(user, UserDto.class);
     }
-
-    // 查看关注
-    @RequestMapping(value = "showFollows", method = RequestMethod.GET)
-    @ResponseBody
-    public Object showFollows(@RequestParam(value = "userId", required = false) String userId,
-                              @Valid PaginationParam param) {
-        List<Following> followings = friendshipService.getFollows(userId, param);
-        List<User> users = new ArrayList<User>();
-        for(int i=0; i<followings.size(); i++){
-            users.add(accountService.getUser(followings.get(i).getFollowingId()));
-        }
-
-        return users;
-    }
-
-    // 查看粉丝
-    @RequestMapping(value = "showFans", method = RequestMethod.GET)
-    @ResponseBody
-    public Object showFans(@RequestParam(value = "userId", required = false) String userId,
-                           @Valid PaginationParam param) {
-
-        List<Following> fans = friendshipService.getFans(userId, param);
-        List<User> users = new ArrayList<User>();
-        for(int i=0; i<fans.size(); i++){
-            users.add(accountService.getUser(fans.get(i).getUserId()));
-        }
-
-        return users;
-    }
 }

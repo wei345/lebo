@@ -177,18 +177,18 @@
     </tr>
     <tr>
         <td>
-            <tags:link url="${ctx}/docs/api/1/get/friendships/showFollows" text="GET friendships/showFollows"/>
+            <tags:link url="${ctx}/docs/api/1/get/friends/list" text="GET friends/list"/>
         </td>
         <td>
-            查看关注
+            返回指定用户关注的人
         </td>
     </tr>
     <tr>
         <td>
-            <tags:link url="${ctx}/docs/api/1/get/friendships/showFans" text="GET friendships/showFans"/>
+            <tags:link url="${ctx}/docs/api/1/get/followers/list" text="GET followers/list"/>
         </td>
         <td>
-            查看粉丝
+            返回指定用户的粉丝
         </td>
     </tr>
 </table>

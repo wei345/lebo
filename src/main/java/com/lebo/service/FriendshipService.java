@@ -75,11 +75,11 @@ public class FriendshipService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Following.USER_ID_KEY).is(userId)), Following.class);
     }
 
-    public List<Following> getFollows(String userId, PaginationParam  param){
+    public List<Following> getFriends(String userId, PaginationParam param){
         return followingDao.findByUserId(userId, param);
     }
 
-    public List<Following> getFans(String userId, PaginationParam  param){
+    public List<Following> getFollowers(String userId, PaginationParam param){
         return followingDao.findByFollowingId(userId, param);
     }
 }
