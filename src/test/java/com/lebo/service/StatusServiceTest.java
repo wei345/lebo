@@ -16,10 +16,8 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 import javax.activation.FileTypeMap;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -133,5 +131,18 @@ public class StatusServiceTest extends SpringContextTestCase {
         assertFalse(statusService.isHashtagOrAtSomeone("@郭靖@"));
         assertTrue(statusService.isHashtagOrAtSomeone("#华山论剑#"));
         assertFalse(statusService.isHashtagOrAtSomeone("#华山论剑"));
+    }
+
+    @Test
+    public void dateFormat(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
+        Date date = new Date(1374466138948L);
+        assertEquals("Mon Jul 22 12:08:58 +0800 2013", dateFormat.format(date));
+
+        dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss ZZZZZ yyyy", Locale.CHINA);
+        assertEquals("星期一 七月 22 12:08:58 +0800 2013", dateFormat.format(date));
+
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ", Locale.CHINA);
+        assertEquals("2013-07-22 12:08:58 +0800", dateFormat.format(date));
     }
 }
