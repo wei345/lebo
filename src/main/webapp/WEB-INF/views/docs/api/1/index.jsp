@@ -141,10 +141,18 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/users/set" text="POST users/set"/>
+            <tags:link url="${ctx}/docs/api/1/post/account/updateProfile" text="POST account/updateProfile"/>
         </td>
         <td>
-            设置用户
+            更新Profile
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/account/checkScreenName" text="POST account/checkScreenName"/>
+        </td>
+        <td>
+            检查screenName是否可用
         </td>
     </tr>
 </table>

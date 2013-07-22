@@ -10,6 +10,7 @@ import org.springside.modules.utils.Reflections;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author: Wei Liu
@@ -20,10 +21,11 @@ public abstract class AbstractMongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
     protected DateProvider dateProvider = DateProvider.DEFAULT;
-    protected Method orOperator = Reflections.getAccessibleMethod(new Criteria(), "orOperator",
+    protected static Method orOperator = Reflections.getAccessibleMethod(new Criteria(), "orOperator",
             new Class[]{Criteria[].class});
-    protected Method andOperator = Reflections.getAccessibleMethod(new Criteria(), "andOperator",
+    protected static Method andOperator = Reflections.getAccessibleMethod(new Criteria(), "andOperator",
             new Class[]{Criteria[].class});
+    protected static Pattern mongoIdPattern = Pattern.compile("^[0-9a-f]{24}$", Pattern.CASE_INSENSITIVE);
 
     /**
      * 执行MongoDB的<code>getLastError</code>命令，如果发现错误状态则抛出异常。
@@ -63,5 +65,12 @@ public abstract class AbstractMongoService {
         } catch (Exception e) {
             throw Reflections.convertReflectionExceptionToUnchecked(e);
         }
+    }
+
+    public static boolean isMongoId(String str){
+        if(str == null) {
+            return false;
+        }
+        return mongoIdPattern.matcher(str).matches();
     }
 }

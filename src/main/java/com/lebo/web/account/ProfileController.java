@@ -35,7 +35,7 @@ public class ProfileController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String update(@Valid @ModelAttribute("user") User user) {
-        accountService.saveUser(user, null);
+        accountService.saveUser(user);
         updateCurrentUserName(user.getName());
         return "redirect:/";
     }

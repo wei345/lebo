@@ -1,12 +1,10 @@
 package com.lebo.web.account;
 
 import com.lebo.entity.User;
-import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,7 +68,7 @@ public class UserAdminController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-        accountService.saveUser(user, null);
+        accountService.saveUser(user);
         redirectAttributes.addFlashAttribute("message", "更新用户" + user.getScreenName() + "成功");
         return "redirect:/admin/user";
     }

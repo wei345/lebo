@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import org.springside.modules.cache.memcached.SpyMemcachedClient;
 import org.springside.modules.mapper.BeanMapper;
@@ -51,7 +52,7 @@ public class AccountService extends AbstractMongoService {
     private FriendshipService friendshipService;
     @Autowired
     private SpyMemcachedClient spyMemcachedClient;
-
+    @Autowired
     private GridFsService gridFsService;
 
     public List<User> searchUser(SearchParam param) {
@@ -73,19 +74,12 @@ public class AccountService extends AbstractMongoService {
         return userDao.findOne(id);
     }
 
-    public User saveUser(User user, MultipartFile file) {
-
+    public User saveUser(User user) {
         if (StringUtils.isNotBlank(user.getPlainPassword())) {
             entryptPassword(user);
             user.setPlainPassword(null);
         }
-        if (file != null) {
-            try {
-                user.setProfileImageUrl(gridFsService.save(file.getInputStream(), file.getOriginalFilename(), file.getContentType()));
-            } catch (IOException e) {
-                throw new ServiceException("保存用户头像失败", e);
-            }
-        }
+
         user = userDao.save(user);
         throwOnMongoError();
         return user;
@@ -146,6 +140,8 @@ public class AccountService extends AbstractMongoService {
             dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), user.getId()));
         }
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
+        dto.setProfileImageUrl(gridFsService.getDisplayUrl(user.getProfileImageUrl()));
+
         return dto;
     }
 
@@ -219,6 +215,19 @@ public class AccountService extends AbstractMongoService {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
                 new Update().inc(User.PLAYS_COUNT_KEY, -1),
                 User.class);
+    }
+
+    /**
+     * 检查对于userId来说，screenName是否可用。
+     */
+    public boolean isScreenNameAvailable(String screenName, String userId){
+        Assert.hasText(screenName);
+
+        Criteria criteria = new Criteria(User.SCREEN_NAME_KEY).is(screenName);
+        if(StringUtils.isNotBlank(userId)){
+            criteria.and("_id").ne(userId);
+        }
+        return mongoTemplate.count(new Query(criteria), User.class) == 0;
     }
 
     @Autowired

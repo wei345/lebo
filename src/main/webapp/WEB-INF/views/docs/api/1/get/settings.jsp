@@ -3,6 +3,9 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
+<p>
+    获取应用设置，包括频道列表、精华内容URL。
+</p>
 <tags:form name="选项" method="GET" action="${ctx}/api/1/settings.json">
 </tags:form>
 

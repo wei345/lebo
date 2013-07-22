@@ -100,4 +100,11 @@ public class GridFsService extends AbstractMongoService {
             throw new ServiceException("存储文件失败", e);
         }
     }
+
+    public String getDisplayUrl(String fileId){
+        if(isMongoId(fileId)){
+            return "/files/" + fileId;
+        }
+        return fileId;
+    }
 }
