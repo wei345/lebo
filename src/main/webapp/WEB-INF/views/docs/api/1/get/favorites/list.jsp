@@ -3,13 +3,13 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="查看收藏" action="${ctx}/api/1/favorites/show.json" method="GET">
+<tags:form name="查看收藏" action="${ctx}/api/1/favorites/list.json" method="GET">
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>
 </tags:form>
 
-<tags:example method="GET" url="http://localhost:8080/api/1/favorites/show.json">
+<tags:example method="GET" url="http://localhost:8080/api/1/favorites/list.json">
     [
         {
             "id": "51e6136ea0eedbd1aad37b71",

@@ -6,7 +6,6 @@ import com.lebo.service.FavoriteService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
-import com.lebo.service.param.ShowCommentParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,15 +44,15 @@ public class FavoriteRestController {
         return statusService.toStatusDto(post);
     }
 
-    @RequestMapping(value = "show", method = RequestMethod.GET)
+    @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
     public Object show(@Valid PaginationParam param) {
-        return favoriteService.show(accountService.getCurrentUserId(), param);
+        return favoriteService.list(accountService.getCurrentUserId(), param);
     }
 
-    @RequestMapping(value = "toggle", method = RequestMethod.POST)
+    @RequestMapping(value = "destroy", method = RequestMethod.POST)
     @ResponseBody
-    public Object toggle(@RequestParam("postId") String postId) {
+    public Object destroy(@RequestParam("postId") String postId) {
         String userId = accountService.getCurrentUserId();
         Post post = statusService.findPost(postId);
         if (post == null) {

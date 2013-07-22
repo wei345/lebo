@@ -177,15 +177,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/favorites/create" text="POST favorites/create"/>
-        </td>
-        <td>
-            收藏
-        </td>
-    </tr>
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/favorites/show" text="GET favorites/show"/>
+            <tags:link url="${ctx}/docs/api/1/post/favorites/list" text="GET favorites/list"/>
         </td>
         <td>
             查看收藏
@@ -193,10 +185,18 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/favorites/toggle" text="POST favorites/toggle"/>
+            <tags:link url="${ctx}/docs/api/1/post/favorites/create" text="POST favorites/create"/>
         </td>
         <td>
-            收藏切换
+            添加收藏
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/favorites/destroy" text="POST favorites/destroy"/>
+        </td>
+        <td>
+            删除收藏
         </td>
     </tr>
 </table>

@@ -29,10 +29,17 @@ public class FavoriteService extends AbstractMongoService {
     private AccountService accountService;
 
     public void create(String userId, String postId) {
-        if(statusService.findPost(postId) == null){
+        Post post = statusService.findPost(postId);
+        if(post == null){
             throw new ServiceException(postId + "不存在");
         }
-        favoriteDao.save(new Favorite(userId, postId));
+
+        String originId = statusService.getOriginPostId(post);
+        if(statusService.findPost(originId) == null){
+            throw new ServiceException("原始Post不存在");
+        }
+
+        favoriteDao.save(new Favorite(userId, originId));
         throwOnMongoError();
         accountService.increaseFavoritesCount(userId);
     }
@@ -58,7 +65,7 @@ public class FavoriteService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)), Favorite.class);
     }
 
-    public List<StatusDto> show(String userId, PaginationParam param) {
+    public List<StatusDto> list(String userId, PaginationParam param) {
         List<Favorite> favorites = favoriteDao.findByUserId(userId, param);
         List<String> ids = new ArrayList<String>();
         for (int i = 0; i < favorites.size(); i++) {
