@@ -28,14 +28,14 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/api/1/directMessages")
-public class DirectMessagesRestController {
+public class DirectMessageRestController {
 
     @Autowired
     private AccountService accountService;
     @Autowired
     private MessageService messageService;
 
-    private Logger logger = LoggerFactory.getLogger(DirectMessagesRestController.class);
+    private Logger logger = LoggerFactory.getLogger(DirectMessageRestController.class);
 
     @RequestMapping(value = "new", method = RequestMethod.POST)
     @ResponseBody
