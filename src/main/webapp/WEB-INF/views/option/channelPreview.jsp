@@ -27,7 +27,7 @@
             <td><span
                     style="background-color: ${channel.backgroundColor}; display: inline-block; width: 1em;">&nbsp;</span>${channel.backgroundColor}
             </td>
-            <td>${channel.content}</td>
+            <td>${channel.contentUrl}</td>
             <td>${channel.enabled ? "启用" : "禁用"}</td>
         </tr>
     </c:forEach>

@@ -114,6 +114,7 @@ public class FileServlet extends HttpServlet {
         output.flush();
 
         gridFsService.increaseViewCount(fileId);
+        //TODO 播放视频传入userId参数，增长用户播放数
     }
 
     /**

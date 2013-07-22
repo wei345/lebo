@@ -30,9 +30,9 @@
             </div>
         </div>
         <div class="control-group">
-            <label for="content" class="control-label">内容:</label>
+            <label for="contentUrl" class="control-label">内容:</label>
             <div class="controls">
-                <input type="text" id="content" name="content" value="${content}" class="input-large required"/>
+                <input type="text" id="contentUrl" name="contentUrl" value="${contentUrl}" class="input-large required"/>
             </div>
         </div>
         <div class="control-group">
@@ -54,8 +54,8 @@
             </div>
         </div>
         <div class="form-actions">
-            <input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;
             <input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
+            <input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;
         </div>
     </fieldset>
 </form>

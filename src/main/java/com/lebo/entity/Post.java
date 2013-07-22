@@ -24,6 +24,8 @@ public class Post extends IdEntity {
     private String userId;
     public static final String USER_ID_KEY = "userId";
     private Date createdAt;
+    public static final String CREATED_AT_KEY = "createdAt";
+
     private String text;
     private boolean truncated;
     //引用文件id，可以存视频、图片、或其他上传的文件

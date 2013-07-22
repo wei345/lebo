@@ -236,6 +236,10 @@ public class StatusService extends AbstractMongoService {
             }
         }
 
+        if(param.getAfter() != null){
+            criteriaList.add(new Criteria(Post.CREATED_AT_KEY).gte(param.getAfter()));
+        }
+
         //分页
         if (!param.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
             criteriaList.add(new Criteria("_id").lt(new ObjectId(param.getMaxId())));

@@ -19,12 +19,16 @@
             </ul>
         </li>
         <li>分页参数：maxId、sinceId、count</li>
+        <li>after: 大于等于该时间之后的status，格式：<code>EEE MMM dd HH:mm:ss ZZZZZ yyyy</code>，如：<code>Mon Jul 22 10:54:31 +0800 2013</code>
+            <p>Java代码：<code>new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH)</code></p>
+        </li>
     </ul>
     <tags:field name="follow" value="" optional="true"/>
     <tags:field name="track" value="杨过 华山论剑,#紫禁之巅# @阿飞" optional="true"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>
+    <tags:field name="after" value="Mon Jul 22 10:54:31 +0800 2013" optional="true"/>
 </tags:form>
 
 

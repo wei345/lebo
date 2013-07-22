@@ -37,6 +37,18 @@
     </tr>
 </table>
 
+<strong>选项</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/options" text="GET options"/>
+        </td>
+        <td>
+            选项 - 频道列表、精华内容URL
+        </td>
+    </tr>
+</table>
+
 <strong>时间线</strong>
 <table class="table table-hover">
     <tr>
