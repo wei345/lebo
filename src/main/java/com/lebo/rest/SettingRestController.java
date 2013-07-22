@@ -1,8 +1,8 @@
 package com.lebo.rest;
 
-import com.lebo.entity.Option;
-import com.lebo.rest.dto.OptionDto;
-import com.lebo.service.OptionService;
+import com.lebo.entity.Setting;
+import com.lebo.rest.dto.SettingDto;
+import com.lebo.service.SettingService;
 import com.lebo.web.ControllerSetup;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -24,26 +24,26 @@ import java.util.List;
  * Time: PM12:36
  */
 @Controller
-@RequestMapping("/api/1/options")
-public class OptionRestController {
+@RequestMapping("/api/1/settings")
+public class SettingRestController {
     @Autowired
-    private OptionService optionService;
+    private SettingService settingService;
 
     @RequestMapping(method =  RequestMethod.GET)
     @ResponseBody
     public Object get(){
-        Option option = optionService.getOption();
-        OptionDto dto = BeanMapper.map(option, OptionDto.class);
+        Setting setting = settingService.getSetting();
+        SettingDto dto = BeanMapper.map(setting, SettingDto.class);
 
         String bestContentUrl = "/api/1/statuses/filter";
 
         List<String> param = new ArrayList<String>();
-        if(StringUtils.isNotBlank(option.getOfficialAccountId())){
-            param.add("follow=" + option.getOfficialAccountId());
+        if(StringUtils.isNotBlank(setting.getOfficialAccountId())){
+            param.add("follow=" + setting.getOfficialAccountId());
         }
 
-        if(option.getBestContentDays() != null){
-            Date date = DateUtils.addDays(new Date(), option.getBestContentDays() * -1);
+        if(setting.getBestContentDays() != null){
+            Date date = DateUtils.addDays(new Date(), setting.getBestContentDays() * -1);
             String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
             param.add("after=" + Encodes.urlEncode(dateStr));
         }

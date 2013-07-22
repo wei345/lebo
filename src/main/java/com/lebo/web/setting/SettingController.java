@@ -1,7 +1,7 @@
-package com.lebo.web.option;
+package com.lebo.web.setting;
 
-import com.lebo.entity.Option;
-import com.lebo.service.OptionService;
+import com.lebo.entity.Setting;
+import com.lebo.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,25 +16,25 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * Time: PM1:43
  */
 @Controller
-@RequestMapping("/admin/options")
-public class OptionController {
+@RequestMapping("/admin/settings")
+public class SettingController {
 
     @Autowired
-    private OptionService optionService;
+    private SettingService settingService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String optionForm(Model model) {
-        Option option = optionService.getOption();
-        model.addAttribute("option", option);
-        return "option/optionForm";
+        Setting setting = settingService.getSetting();
+        model.addAttribute("setting", setting);
+        return "setting/settingForm";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String saveOption(@ModelAttribute("option") Option option,
+    public String saveOption(@ModelAttribute("setting") Setting setting,
                              RedirectAttributes redirectAttributes) {
-        optionService.saveOption(option);
+        settingService.saveOption(setting);
         redirectAttributes.addFlashAttribute("success", "保存成功");
-        return "redirect:/admin/options";
+        return "redirect:/admin/settings";
     }
 
     /**
@@ -42,7 +42,7 @@ public class OptionController {
      * 因为仅update()方法的form中有id属性，因此仅在update时实际执行.
      */
     @ModelAttribute()
-    public void getOption(Model model) {
-        model.addAttribute("option", optionService.getOption());
+    public void getSetting(Model model) {
+        model.addAttribute("setting", settingService.getSetting());
     }
 }

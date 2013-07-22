@@ -1,9 +1,9 @@
-package com.lebo.web.option;
+package com.lebo.web.setting;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.lebo.entity.Option;
+import com.lebo.entity.Setting;
 import com.lebo.service.GridFsService;
-import com.lebo.service.OptionService;
+import com.lebo.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +27,7 @@ import java.util.List;
 @RequestMapping("/admin/channels")
 public class ChannelController {
     @Autowired
-    private OptionService optionService;
+    private SettingService settingService;
 
     @Autowired
     private GridFsService gridFsService;
@@ -36,19 +36,19 @@ public class ChannelController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
-        Option option = optionService.getOption();
-        model.addAttribute("channels", option.getChannels());
+        Setting setting = settingService.getSetting();
+        model.addAttribute("channels", setting.getChannels());
 
         jsonMapper.getMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
-        String json = jsonMapper.toJson(option.getChannels());
+        String json = jsonMapper.toJson(setting.getChannels());
 
         model.addAttribute("channelsJson", json);
-        return "option/channelList";
+        return "setting/channelList";
     }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
     public String form() {
-        return "option/channelForm";
+        return "setting/channelForm";
     }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
@@ -62,35 +62,35 @@ public class ChannelController {
         try {
             String fileId = gridFsService.save(image.getInputStream(), image.getOriginalFilename(), image.getContentType());
 
-            Option.Channel channel = new Option.Channel(name, content, fileId, backgroundColor, enabled);
-            Option option = optionService.getOption();
-            option.getChannels().add(channel);
-            optionService.saveOption(option);
+            Setting.Channel channel = new Setting.Channel(name, content, fileId, backgroundColor, enabled);
+            Setting setting = settingService.getSetting();
+            setting.getChannels().add(channel);
+            settingService.saveOption(setting);
 
             redirectAttributes.addFlashAttribute("success", "已创建 " + name);
             return "redirect:/admin/channels";
         } catch (Exception e) {
             model.addAttribute("error", e);
-            return "option/channelForm";
+            return "setting/channelForm";
         }
     }
 
     @RequestMapping(value = "preview", method = RequestMethod.POST)
     public String preview(@RequestParam("channels") String json, Model model) {
-        List<Option.Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Option.Channel.class));
+        List<Setting.Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Setting.Channel.class));
         model.addAttribute("channels", channels);
 
-        return "option/channelPreview";
+        return "setting/channelPreview";
     }
 
     //TODO 检查频道修改，删除图片
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@RequestParam("channels") String json, RedirectAttributes redirectAttributes) {
-        List<Option.Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Option.Channel.class));
-        Option option = optionService.getOption();
+        List<Setting.Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Setting.Channel.class));
+        Setting setting = settingService.getSetting();
 
         //删除已不用的图片
-        List<String> oldImages = Collections3.extractToList(option.getChannels(), "image");
+        List<String> oldImages = Collections3.extractToList(setting.getChannels(), "image");
         List<String> newImages = Collections3.extractToList(channels, "image");
         for(String fileId : oldImages){
             if(!newImages.contains(fileId)){
@@ -99,8 +99,8 @@ public class ChannelController {
         }
 
         redirectAttributes.addFlashAttribute("success", "保存成功");
-        option.setChannels(channels);
-        optionService.saveOption(option);
+        setting.setChannels(channels);
+        settingService.saveOption(setting);
         return "redirect:/admin/channels";
     }
 }

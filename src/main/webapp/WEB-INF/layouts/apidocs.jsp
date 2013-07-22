@@ -59,8 +59,9 @@
             hljs.highlightBlock(e);
         });
     });
-    $('input[type=checkbox]').each(function(){
-        $(this).parent('.control-group').find('input').removeAttr('disabled');
+    //去掉textarea首尾空格 -- 如果textarea.tag被格式化，那么页面上textarea内容有空格。
+    $('textarea').each(function(){
+        this.innerHTML = $.trim(this.innerHTML);
     });
 </script>
 </body>

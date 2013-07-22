@@ -13,7 +13,7 @@ import java.util.List;
  * Time: PM4:18
  */
 @Document
-public class Option extends IdEntity {
+public class Setting extends IdEntity {
     private List<Channel> channels = new ArrayList<Channel>();
     private String officialAccountId;
     //精华。由乐播官方账号转发，最近多少天的内容

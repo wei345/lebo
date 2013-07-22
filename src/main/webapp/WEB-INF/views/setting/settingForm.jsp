@@ -3,20 +3,20 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<form id="inputForm" action="${ctx}/admin/options" method="post" class="form-horizontal">
+<form id="inputForm" action="${ctx}/admin/settings" method="post" class="form-horizontal">
     <fieldset>
-        <legend><small>选项</small></legend>
+        <legend><small>设置</small></legend>
 
         <div class="control-group">
             <label for="officialAccountId" class="control-label">官方账号ID:</label>
             <div class="controls">
-                <input type="text" id="officialAccountId" name="officialAccountId" value="${option.officialAccountId}" class="input-large required"/>
+                <input type="text" id="officialAccountId" name="officialAccountId" value="${setting.officialAccountId}" class="input-large required"/>
             </div>
         </div>
         <div class="control-group">
             <label for="bestContentDays" class="control-label">"精华"几天内的内容:</label>
             <div class="controls">
-                <input type="text" id="bestContentDays" name="bestContentDays" value="${option.bestContentDays}" class="input-large required"/>
+                <input type="text" id="bestContentDays" name="bestContentDays" value="${setting.bestContentDays}" class="input-large required"/>
             </div>
         </div>
 

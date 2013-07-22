@@ -36,8 +36,8 @@
         <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=q]').val('')"></span>
         orderBy <input type="text" class="input-mini" name="orderBy" value="${orderBy}" placeholder="followersCount/favoritesCount/playsCount">
         <select class="input-small" name="order">
-            <option ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</option>
-            <option ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</option>
+            <setting ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</setting>
+            <setting ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</setting>
         </select>
         <input type="text" class="input-mini" name="size" value="${size}">条/页
         <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>

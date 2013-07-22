@@ -6,5 +6,5 @@
 <ul>
     <li><a href="${ctx}/admin/user">用户管理</a></li>
     <li><a href="${ctx}/admin/channels">频道管理</a></li>
-    <li><a href="${ctx}/admin/options">选项管理</a></li>
+    <li><a href="${ctx}/admin/settings">设置</a></li>
 </ul>

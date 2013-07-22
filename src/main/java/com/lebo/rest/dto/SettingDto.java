@@ -1,6 +1,6 @@
 package com.lebo.rest.dto;
 
-import com.lebo.entity.Option;
+import com.lebo.entity.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,16 @@ import java.util.List;
  * Date: 13-7-22
  * Time: PM12:38
  */
-public class OptionDto {
-    private List<Option.Channel> channels = new ArrayList<Option.Channel>();
+public class SettingDto {
+    private List<Setting.Channel> channels = new ArrayList<Setting.Channel>();
     private String officialAccountId;
     private String bestContentUrl;
 
-    public List<Option.Channel> getChannels() {
+    public List<Setting.Channel> getChannels() {
         return channels;
     }
 
-    public void setChannels(List<Option.Channel> channels) {
+    public void setChannels(List<Setting.Channel> channels) {
         this.channels = channels;
     }
 

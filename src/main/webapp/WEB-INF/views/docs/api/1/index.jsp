@@ -37,14 +37,14 @@
     </tr>
 </table>
 
-<strong>选项</strong>
+<strong>设置</strong>
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/options" text="GET options"/>
+            <tags:link url="${ctx}/docs/api/1/get/settings" text="GET settings"/>
         </td>
         <td>
-            选项 - 频道列表、精华内容URL
+            设置 - 频道列表、精华内容URL
         </td>
     </tr>
 </table>

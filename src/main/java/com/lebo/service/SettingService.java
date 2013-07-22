@@ -1,7 +1,7 @@
 package com.lebo.service;
 
-import com.lebo.entity.Option;
-import com.lebo.repository.OptionDao;
+import com.lebo.entity.Setting;
+import com.lebo.repository.SettingDao;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,34 +14,34 @@ import org.springframework.stereotype.Service;
  * Time: PM5:27
  */
 @Service
-public class OptionService extends AbstractMongoService {
+public class SettingService extends AbstractMongoService {
     @Autowired
-    private OptionDao optionDao;
+    private SettingDao settingDao;
 
-    private Option option;
+    private Setting setting;
 
-    public Option getOption() {
+    public Setting getSetting() {
         //TODO getOption使用缓存，更新时通知所有节点，不要每次都reloadOption
-        /*if (option == null) {
+        /*if (setting == null) {
             reloadOption();
         }
-        return option;*/
+        return setting;*/
 
         return reloadOption();
     }
 
-    public Option saveOption(Option option) {
-        return optionDao.save(option);
+    public Setting saveOption(Setting setting) {
+        return settingDao.save(setting);
     }
 
-    public Option reloadOption() {
+    public Setting reloadOption() {
         PageRequest pageRequest = new PageRequest(0, 1, PaginationParam.DEFAULT_SORT);
-        Page<Option> page = optionDao.findAll(pageRequest);
+        Page<Setting> page = settingDao.findAll(pageRequest);
         if (page.getContent().size() == 0) {
-            option = saveOption(new Option());
+            setting = saveOption(new Setting());
         } else {
-            option = page.getContent().get(0);
+            setting = page.getContent().get(0);
         }
-        return option;
+        return setting;
     }
 }

@@ -1,6 +1,6 @@
 package com.lebo.repository;
 
-import com.lebo.entity.Option;
+import com.lebo.entity.Setting;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -8,6 +8,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Date: 13-7-18
  * Time: PM5:20
  */
-public interface OptionDao extends MongoRepository<Option, String>{
+public interface SettingDao extends MongoRepository<Setting, String>{
 
 }
