@@ -7,6 +7,7 @@ import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -65,7 +66,7 @@ public class FavoriteService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)), Favorite.class);
     }
 
-    public List<StatusDto> list(String userId, PaginationParam param) {
+    public List<StatusDto> list(String userId, PageRequest param) {
         List<Favorite> favorites = favoriteDao.findByUserId(userId, param);
         List<String> ids = new ArrayList<String>();
         for (int i = 0; i < favorites.size(); i++) {

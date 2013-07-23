@@ -1,5 +1,6 @@
 package com.lebo.service;
 
+import com.lebo.rest.dto.ErrorDto;
 import org.springframework.core.NestedRuntimeException;
 
 /**
@@ -13,11 +14,22 @@ public class ServiceException extends NestedRuntimeException {
 
     private static final long serialVersionUID = 3583566093089790852L;
 
+    private ErrorDto errorDto;
+
+    public ServiceException(ErrorDto errorDto){
+        super(errorDto.getError().getMessage());
+        this.errorDto = errorDto;
+    }
+
     public ServiceException(String message) {
         super(message);
     }
 
     public ServiceException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public ErrorDto getErrorDto() {
+        return errorDto;
     }
 }

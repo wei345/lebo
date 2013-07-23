@@ -251,6 +251,14 @@
             取消拉黑，返回被取消拉黑的用户
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/blocks/list" text="GET blocks/list"/>
+        </td>
+        <td>
+            返回被拉黑的用户列表
+        </td>
+    </tr>
 </table>
 
 <strong>私信</strong>

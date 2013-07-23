@@ -1,7 +1,10 @@
 package com.lebo.repository;
 
 import com.lebo.entity.Block;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -11,4 +14,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface BlockDao extends MongoRepository<Block, String> {
     Block findByUserIdAndBlockedId(String userId, String blockedId);
 
+    List<Block> findByUserId(String userId, Pageable pageable);
 }

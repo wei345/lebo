@@ -1,5 +1,6 @@
 package com.lebo.rest.dto;
 
+import com.lebo.service.ServiceException;
 import org.springside.modules.mapper.JsonMapper;
 
 /**
@@ -21,6 +22,8 @@ public class ErrorDto {
     public static final ErrorDto FORBIDDEN = new ErrorDto("Forbidden", 403);
     public static final ErrorDto NOT_FOUND = new ErrorDto("Not Found", 404);
     public static final ErrorDto DUPLICATE = new ErrorDto("Duplicate", 427);
+    public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_BLOCKED = new ErrorDto("不能关注该用户，因为你在对方的黑名单中", 428);
+    public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_BLOCKING = new ErrorDto("不能关注该用户，因为对方在你的黑名单中", 429);
     public static final ErrorDto INTERNAL_SERVER_ERROR = new ErrorDto("Internal Server Error", 500);
 
     private static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
@@ -34,6 +37,14 @@ public class ErrorDto {
 
     public static ErrorDto newBadRequestError(String message) {
         return new ErrorDto(message, 400);
+    }
+
+    public static ErrorDto newBadRequestError(ServiceException e) {
+        if (e.getErrorDto() != null) {
+            return e.getErrorDto();
+        } else {
+            return ErrorDto.newBadRequestError(e.getMessage());
+        }
     }
 
     public static ErrorDto newInternalServerError(String message) {

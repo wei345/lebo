@@ -4,6 +4,7 @@ import com.lebo.entity.Following;
 import com.lebo.entity.User;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.UserDao;
+import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class FriendshipService extends AbstractMongoService {
     private UserDao userDao;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private BlockService blockService;
 
     /**
      * userId关注followingId。
@@ -43,6 +46,14 @@ public class FriendshipService extends AbstractMongoService {
         }
 
         if (userDao.exists(userId) && userDao.exists(followingId)) {
+            if(blockService.isBlocked(followingId, userId)){
+                throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKED);
+            }
+
+            if(blockService.isBlocked(userId, followingId)){
+                throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING);
+            }
+
             //关注
             followingDao.save(new Following(userId, followingId));
             throwOnMongoError();

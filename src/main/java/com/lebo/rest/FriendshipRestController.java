@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import com.lebo.entity.Following;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.UserDto;
@@ -8,7 +7,6 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springside.modules.mapper.BeanMapper;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Friends & Followers
@@ -73,7 +67,7 @@ public class FriendshipRestController {
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;
         } catch (ServiceException e) {
-            return ErrorDto.newBadRequestError(e.getMessage());
+            return ErrorDto.newBadRequestError(e);
         }
 
         User user = accountService.getUser(userId);
@@ -84,6 +78,7 @@ public class FriendshipRestController {
 
     /**
      * 取消关注
+     *
      * @param userId
      * @param screenName
      * @return

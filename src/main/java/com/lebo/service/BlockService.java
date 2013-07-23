@@ -5,7 +5,11 @@ import com.lebo.entity.User;
 import com.lebo.repository.BlockDao;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -45,5 +49,18 @@ public class BlockService {
             blockDao.delete(block);
         }
         return accountService.getUser(blockedId);
+    }
+
+    public List<User> list(String userId, PageRequest pageRequest){
+        List<Block> blocks = blockDao.findByUserId(userId, pageRequest);
+        List<User> users = new ArrayList<User>();
+        for(Block block : blocks){
+            users.add(accountService.getUser(block.getBlockedId()));
+        }
+        return users;
+    }
+
+    public boolean isBlocked(String userId, String blockedId){
+        return blockDao.findByUserIdAndBlockedId(userId, blockedId) != null;
     }
 }

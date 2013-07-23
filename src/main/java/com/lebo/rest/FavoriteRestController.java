@@ -7,13 +7,12 @@ import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.validation.Valid;
 
 /**
  * @author: Wei Liu
@@ -46,27 +45,21 @@ public class FavoriteRestController {
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
-    public Object show(@Valid PaginationParam param) {
-        return favoriteService.list(accountService.getCurrentUserId(), param);
+    public Object list(@RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size,
+                       @RequestParam(value = "page", defaultValue = "0") int page) {
+        return favoriteService.list(accountService.getCurrentUserId(),
+                new PageRequest(page, size, PaginationParam.DEFAULT_SORT));
     }
 
     @RequestMapping(value = "destroy", method = RequestMethod.POST)
     @ResponseBody
     public Object destroy(@RequestParam("postId") String postId) {
-        String userId = accountService.getCurrentUserId();
         Post post = statusService.findPost(postId);
         if (post == null) {
             return ErrorDto.newBadRequestError("The parameter id [" + postId + "] is invalid.");
         }
 
-        String originId = (post.getOriginPostId() == null ? postId : post.getOriginPostId());
-
-        if (favoriteService.isFavorited(userId, originId)) {
-            favoriteService.destroy(userId, originId);
-        }else{
-            favoriteService.create(userId, originId);
-        }
-
+        favoriteService.destroy(accountService.getCurrentUserId(), statusService.getOriginPostId(post));
         return statusService.toStatusDto(post);
     }
 }
