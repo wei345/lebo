@@ -1,6 +1,9 @@
 package com.lebo.web;
 
+import com.lebo.entity.Post;
+import com.lebo.entity.User;
 import com.lebo.service.GridFsService;
+import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
 import org.apache.commons.io.IOUtils;
@@ -54,6 +57,7 @@ public class FileServlet extends HttpServlet {
 
     private GridFsService gridFsService;
     private AccountService accountService;
+    private StatusService statusService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -61,7 +65,7 @@ public class FileServlet extends HttpServlet {
         Assert.isTrue(request.getPathInfo().length() > 1, "Incorrect Request Path");
 
         String fileId = request.getPathInfo().substring(1);
-        String userId = request.getParameter("userId");
+        String postId = request.getParameter("postId");
 
         //获取请求内容的基本信息.
         FileInfo contentInfo;
@@ -115,8 +119,12 @@ public class FileServlet extends HttpServlet {
         output.flush();
 
         gridFsService.increaseViewCount(fileId);
-        if(userId != null){
-            accountService.increasePlaysCount(userId);
+        //增长用户视频被播放次数
+        if(StringUtils.startsWith(contentInfo.getMimeType(), "video/") && postId != null){
+            Post post = statusService.findPost(postId);
+            if(post != null && post.getFiles().contains(fileId)){
+                accountService.increasePlaysCount(post.getUserId());
+            }
         }
     }
 
@@ -148,5 +156,6 @@ public class FileServlet extends HttpServlet {
 
         gridFsService = applicationContext.getBean(GridFsService.class);
         accountService =  applicationContext.getBean(AccountService.class);
+        statusService = applicationContext.getBean(StatusService.class);
     }
 }

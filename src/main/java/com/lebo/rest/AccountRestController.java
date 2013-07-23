@@ -94,6 +94,6 @@ public class AccountRestController {
     private void updateCurrentUser(User user) {
         ShiroUser shiroUser = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
         shiroUser.screenName = user.getScreenName();
-        shiroUser.profileImageUrl = gridFsService.getDisplayUrl(user.getProfileImageUrl());
+        shiroUser.profileImageUrl = gridFsService.getContentUrl(user.getProfileImageUrl(), null);
     }
 }

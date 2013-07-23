@@ -14,6 +14,7 @@ import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.StatusFilterParam;
 import com.lebo.service.param.TimelineParam;
+import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,6 +169,9 @@ public class StatusService extends AbstractMongoService {
             dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
             dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
             dto.setCommentsCount(commentService.countPostComments(post.getId()));
+            for(String fileId : post.getFiles()){
+                dto.getFiles().add(gridFsService.getFileInfoDto(fileId, "?postId=" + post.getId()));
+            }
         }
         // 嵌入转发的POST
         else {
@@ -179,6 +183,7 @@ public class StatusService extends AbstractMongoService {
             dto.setFavouritesCount(originStatusDto.getFavouritesCount());
             dto.setFavorited(originStatusDto.getFavorited());
             dto.setCommentsCount(originStatusDto.getCommentsCount());
+            dto.setFiles(originStatusDto.getFiles());
         }
 
         return dto;

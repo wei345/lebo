@@ -1,13 +1,14 @@
 package com.lebo.service;
 
+import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.param.FileInfo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.MongoException;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -101,10 +102,26 @@ public class GridFsService extends AbstractMongoService {
         }
     }
 
-    public String getDisplayUrl(String fileId){
+    public String getContentUrl(String fileId, String suffix){
         if(isMongoId(fileId)){
-            return "/files/" + fileId;
+            String contentUrl =  "/files/" + fileId;
+            if(StringUtils.isNotBlank(suffix)){
+                contentUrl += suffix;
+            }
+            return contentUrl;
         }
         return fileId;
+    }
+
+    public StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix) {
+        GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
+
+        StatusDto.FileInfoDto dto = new StatusDto.FileInfoDto();
+        dto.setContentType(file.getContentType());
+        dto.setContentUrl(getContentUrl(id, contentUrlSuffix));
+        dto.setLength((int) file.getLength());
+        dto.setFilename(file.getFilename());
+
+        return dto;
     }
 }

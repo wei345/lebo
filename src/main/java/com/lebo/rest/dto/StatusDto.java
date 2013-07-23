@@ -2,6 +2,7 @@ package com.lebo.rest.dto;
 
 import com.lebo.entity.GeoLocation;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class StatusDto {
     private String text;
     private Boolean truncated;
     //引用文件id，可以存视频、图片、或其他上传的文件
-    private List<String> files;
+    private List<FileInfoDto> files = new ArrayList<FileInfoDto>(2);
     //该Tweet来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
@@ -60,11 +61,11 @@ public class StatusDto {
         this.text = text;
     }
 
-    public List<String> getFiles() {
+    public List<FileInfoDto> getFiles() {
         return files;
     }
 
-    public void setFiles(List<String> files) {
+    public void setFiles(List<FileInfoDto> files) {
         this.files = files;
     }
 
@@ -138,5 +139,44 @@ public class StatusDto {
 
     public void setOriginStatus(StatusDto originStatus) {
         this.originStatus = originStatus;
+    }
+
+    public static class FileInfoDto {
+        protected String filename;
+        protected int length;
+        protected String contentType;
+        protected String contentUrl;
+
+        public String getFilename() {
+            return filename;
+        }
+
+        public void setFilename(String filename) {
+            this.filename = filename;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public void setLength(int length) {
+            this.length = length;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public String getContentUrl() {
+            return contentUrl;
+        }
+
+        public void setContentUrl(String contentUrl) {
+            this.contentUrl = contentUrl;
+        }
     }
 }
