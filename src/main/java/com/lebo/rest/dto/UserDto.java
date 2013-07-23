@@ -28,6 +28,8 @@ public class UserDto {
     private Boolean verified;
     private String location;
     private String timeZone;
+    private Integer beFavoritedCount;
+    private Integer bePlayedCount;
 
     public String getId() {
         return id;
@@ -123,5 +125,21 @@ public class UserDto {
 
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
+    }
+
+    public Integer getBeFavoritedCount() {
+        return beFavoritedCount;
+    }
+
+    public void setBeFavoritedCount(Integer beFavoritedCount) {
+        this.beFavoritedCount = beFavoritedCount;
+    }
+
+    public Integer getBePlayedCount() {
+        return bePlayedCount;
+    }
+
+    public void setBePlayedCount(Integer bePlayedCount) {
+        this.bePlayedCount = bePlayedCount;
     }
 }

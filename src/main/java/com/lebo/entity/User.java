@@ -58,19 +58,20 @@ public class User extends IdEntity {
     @Indexed
     private List<String> roles = new ArrayList<String>(1);
 
-    // --- 统计数据 --- //
+    //该用户的粉丝数
     @Indexed(direction = IndexDirection.DESCENDING)
     private Integer followersCount;
     public static final String FOLLOWERS_COUNT_KEY = "followersCount";
 
+    //该用户Posts被收藏的次数
     @Indexed(direction = IndexDirection.DESCENDING)
-    private Integer favoritesCount;
-    public static final String FAVORITES_COUNT_KEY = "favoritesCount";
+    private Integer beFavoritedCount;
+    public static final String BE_FAVORITED_COUNT_KEY = "beFavoritedCount";
 
+    //该用户Posts被播放的次数
     @Indexed(direction = IndexDirection.DESCENDING)
-    private Integer playsCount;
-    public static final String PLAYS_COUNT_KEY = "playsCount";
-
+    private Integer bePlayedCount;
+    public static final String BE_PLAYED_COUNT_KEY = "bePlayedCount";
 
     public User() {
     }
@@ -219,20 +220,20 @@ public class User extends IdEntity {
         this.followersCount = followersCount;
     }
 
-    public Integer getFavoritesCount() {
-        return favoritesCount;
+    public Integer getBeFavoritedCount() {
+        return beFavoritedCount;
     }
 
-    public void setFavoritesCount(Integer favoritesCount) {
-        this.favoritesCount = favoritesCount;
+    public void setBeFavoritedCount(Integer beFavoritedCount) {
+        this.beFavoritedCount = beFavoritedCount;
     }
 
-    public Integer getPlaysCount() {
-        return playsCount;
+    public Integer getBePlayedCount() {
+        return bePlayedCount;
     }
 
-    public void setPlaysCount(Integer playsCount) {
-        this.playsCount = playsCount;
+    public void setBePlayedCount(Integer bePlayedCount) {
+        this.bePlayedCount = bePlayedCount;
     }
 
     @Override

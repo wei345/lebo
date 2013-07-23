@@ -17,14 +17,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import org.springframework.web.multipart.MultipartFile;
 import org.springside.modules.cache.memcached.SpyMemcachedClient;
 import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.DateProvider;
 import org.springside.modules.utils.Encodes;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,14 +106,6 @@ public class AccountService extends AbstractMongoService {
     }
 
     /**
-     * 取出Shiro中的当前用户LoginName.
-     */
-    private String getCurrentUserName() {
-        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-        return user.name;
-    }
-
-    /**
      * 取出Shiro中的当前用户Id.
      */
     public String getCurrentUserId() {
@@ -192,28 +182,21 @@ public class AccountService extends AbstractMongoService {
     //增长收藏计数
     public void increaseFavoritesCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.FAVORITES_COUNT_KEY, 1),
+                new Update().inc(User.BE_FAVORITED_COUNT_KEY, 1),
                 User.class);
     }
 
     //减少收藏计数
     public void decreaseFavoritesCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.FAVORITES_COUNT_KEY, -1),
+                new Update().inc(User.BE_FAVORITED_COUNT_KEY, -1),
                 User.class);
     }
 
     //增长播放计数
     public void increasePlaysCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.PLAYS_COUNT_KEY, 1),
-                User.class);
-    }
-
-    //减少播放计数
-    public void decreasePlaysCount(String userId) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.PLAYS_COUNT_KEY, -1),
+                new Update().inc(User.BE_PLAYED_COUNT_KEY, 1),
                 User.class);
     }
 

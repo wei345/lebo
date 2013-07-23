@@ -119,37 +119,30 @@ public class StatusRestController {
 
 
     /**
-     * 转发一条微博
+     * 转发Post
      *
-     * @param postId   要转发的微博ID。
+     * @param id   要转发的微博ID。
      * @param text 添加的转发文本，必须做URLencode，内容不超过140个汉字
-     * @return
      */
     @RequestMapping(value = "repost", method = RequestMethod.POST)
     @ResponseBody
-    private Object repost(@RequestParam("postId") String postId,
+    private Object repost(@RequestParam("id") String id,
                           @RequestParam(value = "text", required = false) String text,
                           @RequestParam(value = "source", required = false) String source) {
         try {
-            Post post = statusService.findPost(postId);
+            Post post = statusService.findPost(id);
             if (post == null) {
-                return ErrorDto.newBadRequestError("The parameter id [" + postId + "] is invalid.");
+                return ErrorDto.newBadRequestError("The parameter id [" + id + "] is invalid.");
             }
+            String originId = statusService.getOriginPostId(post);
 
-            String originId = (post.getOriginPostId() == null ? postId : post.getOriginPostId());
-            // 已经被转发，则为取消转发
-            if(statusService.isRepost(accountService.getCurrentUserId(), originId)){
-                return statusService.destroy(accountService.getCurrentUserId(), originId);
-            }
-            // 没有被转发，为转发
-            else{
+            //转发
+            if(!statusService.isReposted(accountService.getCurrentUserId(), originId)){
                 post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
-                return statusService.countRepost(originId);
             }
 
-        } catch (DuplicateException e) {
-            return ErrorDto.DUPLICATE;
-        } catch (Exception e) {
+            return statusService.toStatusDto(post);
+        }  catch (Exception e) {
             logger.info("转发Post失败", e);
             return ErrorDto.newBadRequestError(e.getMessage());
         }

@@ -52,6 +52,8 @@ public class StatusService extends AbstractMongoService {
     private FavoriteService favoriteService;
     @Autowired
     private Segmentation segmentation;
+    @Autowired
+    private CommentService commentService;
 
 
     /**
@@ -83,15 +85,8 @@ public class StatusService extends AbstractMongoService {
         return post;
     }
 
-    // 用于取消转发
-    public int destroy(String userId, String originId){
-        Post post = postDao.findByUserIdAndOriginPostId(userId, originId);
-        postDao.delete(post.getId());
-        return countRepost(originId);
-    }
-
-    public boolean isRepost(String userId, String postId){
-        return postDao.findByUserIdAndOriginPostId(userId, postId)!=null;
+    public boolean isRepost(String userId, String postId) {
+        return postDao.findByUserIdAndOriginPostId(userId, postId) != null;
     }
 
     public List<Post> userTimeline(TimelineParam param) {
@@ -126,6 +121,7 @@ public class StatusService extends AbstractMongoService {
 
     /**
      * hot列表
+     *
      * @param param
      * @return
      */
@@ -160,28 +156,30 @@ public class StatusService extends AbstractMongoService {
     public int countUserStatus(String userId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
     }
-    // 转发数
-    public int countRepost(String originId) {
-        return (int) mongoTemplate.count(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(originId)), Post.class);
-    }
 
     public StatusDto toStatusDto(Post post) {
-        String userId = accountService.getCurrentUserId();
         StatusDto dto = BeanMapper.map(post, StatusDto.class);
+        dto.setUser(accountService.toUserDto(accountService.getUser(post.getUserId())));
 
+        //该Post为原始Post，非转发
+        if (post.getOriginPostId() == null) {
+            dto.setRepostsCount(countReposts(post.getId()));
+            dto.setReposted(isReposted(accountService.getCurrentUserId(), post.getId()));
+            dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
+            dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
+            dto.setCommentsCount(commentService.countPostComments(post.getId()));
+        }
         // 嵌入转发的POST
-        if (post.getOriginPostId() != null) {
+        else {
             Post originPost = postDao.findOne(post.getOriginPostId());
             StatusDto originStatusDto = toStatusDto(originPost);
             dto.setOriginStatus(originStatusDto);
-            dto.setRepostsCount(countRepost(post.getOriginPostId()));
+            dto.setRepostsCount(originStatusDto.getRepostsCount());
+            dto.setReposted(originStatusDto.getReposted());
+            dto.setFavouritesCount(originStatusDto.getFavouritesCount());
+            dto.setFavorited(originStatusDto.getFavorited());
+            dto.setCommentsCount(originStatusDto.getCommentsCount());
         }
-
-        dto.setUser(accountService.toUserDto(accountService.getUser(post.getUserId())));
-        dto.setFavorited(favoriteService.isFavorited(userId, post.getId()));
-        dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
-        dto.setReposted(isReposted(accountService.getCurrentUserId(), getOriginPostId(post)));
-        dto.setRepostsCount(countReposts(getOriginPostId(post))); //原始Post转发数
 
         return dto;
     }
@@ -236,7 +234,7 @@ public class StatusService extends AbstractMongoService {
             }
         }
 
-        if(param.getAfter() != null){
+        if (param.getAfter() != null) {
             criteriaList.add(new Criteria(Post.CREATED_AT_KEY).gte(param.getAfter()));
         }
 

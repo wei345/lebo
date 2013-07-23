@@ -2,14 +2,9 @@ package com.lebo.rest;
 
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.service.GridFsService;
-import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.account.ShiroUser;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.SearchParam;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -17,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -57,8 +50,8 @@ public class UserRestController {
             return ErrorDto.newBadRequestError(String.format("参数order值[%s]无效", order));
         }
 
-        if (User.FOLLOWERS_COUNT_KEY.equals(orderBy) || User.FAVORITES_COUNT_KEY.equals(orderBy) ||
-                User.PLAYS_COUNT_KEY.equals(orderBy) || "_id".equals(orderBy)) {
+        if (User.FOLLOWERS_COUNT_KEY.equals(orderBy) || User.BE_FAVORITED_COUNT_KEY.equals(orderBy) ||
+                User.BE_PLAYED_COUNT_KEY.equals(orderBy) || "_id".equals(orderBy)) {
             //搜索
             SearchParam param = new SearchParam(q, pageNo, size, direction, orderBy);
             List<User> users = accountService.searchUser(param);

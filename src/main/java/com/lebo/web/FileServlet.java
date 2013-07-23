@@ -61,6 +61,7 @@ public class FileServlet extends HttpServlet {
         Assert.isTrue(request.getPathInfo().length() > 1, "Incorrect Request Path");
 
         String fileId = request.getPathInfo().substring(1);
+        String userId = request.getParameter("userId");
 
         //获取请求内容的基本信息.
         FileInfo contentInfo;
@@ -114,7 +115,9 @@ public class FileServlet extends HttpServlet {
         output.flush();
 
         gridFsService.increaseViewCount(fileId);
-        //TODO 播放视频传入userId参数，增长用户播放数
+        if(userId != null){
+            accountService.increasePlaysCount(userId);
+        }
     }
 
     /**
