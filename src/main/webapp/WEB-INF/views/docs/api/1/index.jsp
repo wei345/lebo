@@ -233,6 +233,26 @@
     </tr>
 </table>
 
+<strong>拉黑</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/blocks/create" text="POST blocks/create"/>
+        </td>
+        <td>
+            拉黑，返回被拉黑的用户
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/blocks/destroy" text="POST blocks/destroy"/>
+        </td>
+        <td>
+            取消拉黑，返回被取消拉黑的用户
+        </td>
+    </tr>
+</table>
+
 <strong>私信</strong>
 <table class="table table-hover">
     <tr>

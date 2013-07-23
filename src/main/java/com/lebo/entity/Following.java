@@ -20,7 +20,7 @@ public class Following extends IdEntity {
     public static final String USER_ID_KEY = "userId";
     public static final String FOLLOWING_ID_KEY = "followingId";
 
-    // a关注b， a为userId，b为followingID
+    // a关注b， a为userId，b为followingId
     private String userId;
     @Indexed
     private String followingId;
