@@ -17,8 +17,8 @@
     <fieldset>
         <legend>OAuth登录</legend>
         <select name="provider" style="width: 100px;">
-            <setting value="weibo">weibo</setting>
-            <setting value="renren">renren</setting>
+            <option value="weibo">weibo</option>
+            <option value="renren">renren</option>
         </select>
         <input type="text" name="token" placeholder="token" style="width: 24em;"/>
 
@@ -69,7 +69,7 @@
     }
 
     function useToken(provider, token, btn) {
-        $('setting[value='+ provider +']').attr('selected', 'selected');
+        $('option[value='+ provider +']').attr('selected', 'selected');
         $('input[name=token]').val(token);
         $('#token-name').html(btn.innerHTML);
     }
