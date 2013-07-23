@@ -169,9 +169,12 @@ public class StatusService extends AbstractMongoService {
             dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
             dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
             dto.setCommentsCount(commentService.countPostComments(post.getId()));
+
+            List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
             for(String fileId : post.getFiles()){
-                dto.getFiles().add(gridFsService.getFileInfoDto(fileId, "?postId=" + post.getId()));
+                fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?postId=" + post.getId()));
             }
+            dto.setFiles(fileInfoDtos);
         }
         // 嵌入转发的POST
         else {

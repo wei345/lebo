@@ -59,7 +59,8 @@ public class StatusRestController {
                     new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
                     new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
 
-            return statusService.update(accountService.getCurrentUserId(), text, fileInfos, null, source);
+            Post post = statusService.update(accountService.getCurrentUserId(), text, fileInfos, null, source);
+            return statusService.toStatusDto(post);
 
         } catch (DuplicateException e) {
             return ErrorDto.DUPLICATE;

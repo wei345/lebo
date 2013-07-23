@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springside.modules.security.utils.Digests;
@@ -36,6 +37,8 @@ public class GridFsService extends AbstractMongoService {
     private GridFsTemplate gridFsTemplate;
 
     public static final String GRID_FS_FILES_COLLECTION_NAME = "fs.files";
+    public static final String MD5_KEY = "md5";
+    public static final String REFERRER_COUNT_KEY = "referrersCount";
 
     /**
      * @throws IOException
@@ -48,17 +51,28 @@ public class GridFsService extends AbstractMongoService {
 
         in.mark(Integer.MAX_VALUE);
         String md5 = Encodes.encodeHex(Digests.md5(in));
-        GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("md5").is(md5)));
+        GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where(MD5_KEY).is(md5)));
 
         if (file == null) {
             in.reset();
             GridFSFile gridFSFile = gridFsTemplate.store(in, filename, contentType);
             throwOnMongoError();
+            increaseReferrerCount(gridFSFile.getId().toString());
             return gridFSFile.getId().toString();
         } else {
-            // 不存储同样文件
-            throw new DuplicateException(String.format("File[filename=%s, contentType=%s] already exists.", filename, contentType));
+            increaseReferrerCount(file.getId().toString());
+            return file.getId().toString();
         }
+    }
+
+    public void increaseReferrerCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
+                new Update().inc(REFERRER_COUNT_KEY, 1), GRID_FS_FILES_COLLECTION_NAME);
+    }
+
+    public void decreaseReferrerCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
+                new Update().inc(REFERRER_COUNT_KEY, -1), GRID_FS_FILES_COLLECTION_NAME);
     }
 
     public FileInfo getFileInfo(String id) {
@@ -84,7 +98,8 @@ public class GridFsService extends AbstractMongoService {
     }
 
     public void delete(String id) {
-        gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id))));
+        decreaseReferrerCount(id);
+        gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id)).and(REFERRER_COUNT_KEY).is(0)));
     }
 
     public List<String> saveFilesSafely(List<FileInfo> fileInfos) {
@@ -102,10 +117,10 @@ public class GridFsService extends AbstractMongoService {
         }
     }
 
-    public String getContentUrl(String fileId, String suffix){
-        if(isMongoId(fileId)){
-            String contentUrl =  "/files/" + fileId;
-            if(StringUtils.isNotBlank(suffix)){
+    public String getContentUrl(String fileId, String suffix) {
+        if (isMongoId(fileId)) {
+            String contentUrl = "/files/" + fileId;
+            if (StringUtils.isNotBlank(suffix)) {
                 contentUrl += suffix;
             }
             return contentUrl;
