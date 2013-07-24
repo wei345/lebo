@@ -7,8 +7,8 @@
     <p>
         视频id：postId
     </p>
-    <tags:field name="postId" value=""/>
-    <tags:field name="text" value="转发"/>
+    <tags:field name="id" value=""/>
+    <tags:field name="text" value="转发" optional="true"/>
 </tags:form>
 
 <tags:example method="POST" url="">

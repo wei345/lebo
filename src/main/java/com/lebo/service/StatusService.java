@@ -333,6 +333,9 @@ public class StatusService extends AbstractMongoService {
     private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
 
     public LinkedHashSet<String> mentionScreenNames(String text, boolean trimAt) {
+        if(StringUtils.isBlank(text)){
+            return new LinkedHashSet<String>(1);
+        }
         Matcher m = mentionPattern.matcher(text);
         LinkedHashSet<String> names = new LinkedHashSet<String>();
         while (m.find()) {
@@ -357,6 +360,9 @@ public class StatusService extends AbstractMongoService {
     private Pattern tagPattern = Pattern.compile("#([^#@\\s]+)#");
 
     public LinkedHashSet<String> findHashtags(String text) {
+        if(StringUtils.isBlank(text)){
+            return new LinkedHashSet<String>(1);
+        }
         Matcher m = tagPattern.matcher(text);
         LinkedHashSet<String> tags = new LinkedHashSet<String>();
         while (m.find()) {

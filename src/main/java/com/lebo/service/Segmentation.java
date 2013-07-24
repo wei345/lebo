@@ -1,5 +1,6 @@
 package com.lebo.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.wltea.analyzer.IKSegmentation;
 import org.wltea.analyzer.Lexeme;
@@ -20,6 +21,10 @@ public class Segmentation {
      * 返回文本中全部词的集合，英文字母会转为小写。
      */
     public LinkedHashSet findWords(String text) {
+        if(StringUtils.isBlank(text)){
+            return new LinkedHashSet<String>(1);
+        }
+
         LinkedHashSet<String> words = new LinkedHashSet<String>();
 
         IKSegmentation seg = new IKSegmentation(new StringReader(text));
