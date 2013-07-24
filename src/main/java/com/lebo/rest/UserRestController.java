@@ -47,7 +47,7 @@ public class UserRestController {
         } else if (order.equals("asc")) {
             direction = Sort.Direction.ASC;
         } else {
-            return ErrorDto.newBadRequestError(String.format("参数order值[%s]无效", order));
+            return ErrorDto.badRequest(String.format("参数order值[%s]无效", order));
         }
 
         if (User.FOLLOWERS_COUNT_KEY.equals(orderBy) || User.BE_FAVORITED_COUNT_KEY.equals(orderBy) ||
@@ -58,7 +58,7 @@ public class UserRestController {
             return accountService.toUserDtos(users);
 
         } else {
-            return ErrorDto.newBadRequestError(String.format("参数orderBy值[%s]无效", orderBy));
+            return ErrorDto.badRequest(String.format("参数orderBy值[%s]无效", orderBy));
         }
     }
 

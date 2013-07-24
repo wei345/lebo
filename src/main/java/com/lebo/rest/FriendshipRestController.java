@@ -65,9 +65,9 @@ public class FriendshipRestController {
             userId = accountService.getUserId(userId, screenName);
             friendshipService.follow(accountService.getCurrentUserId(), userId);
         } catch (DuplicateException e) {
-            return ErrorDto.DUPLICATE;
+            return ErrorDto.duplicate();
         } catch (ServiceException e) {
-            return ErrorDto.newBadRequestError(e);
+            return ErrorDto.badRequest(e);
         }
 
         User user = accountService.getUser(userId);
@@ -92,7 +92,7 @@ public class FriendshipRestController {
         try {
             friendshipService.unfollow(accountService.getCurrentUserId(), userId);
         } catch (ServiceException e) {
-            return ErrorDto.newBadRequestError(e.getMessage());
+            return ErrorDto.badRequest(e.getMessage());
         }
 
         User user = accountService.getUser(userId);

@@ -288,15 +288,56 @@
 </table>
 
 <strong>error</strong>
+<p><code>200&lt;=HTTP状态码<300为成功，否则失败</code></p>
+<p><code>HTTP状态码>=400并且内容为JSON，是错误对象</code></p>
+<ul>
+    <li>
+        0
+        <ul>
+            <li>是某些客户端默认值，不是服务端返回的，客户端无法连接到服务端时可能会得到这个值</li>
+        </ul>
+    </li>
+    <li>
+        1xx - 消息
+        <ul>
+            <li>不会返回此类状态码</li>
+        </ul>
+    </li>
+    <li>
+        2xx - 成功
+        <ul>
+            <li>除非特别说明，服务端处理成功，响应HTTP状态码<code>200</code></li>
+            <li>极少情况，服务端处理成功，也可能响应2xx(非200)。如果某接口属于这种情况，服务端会协助客户端正确处理，并在接口文档中写清楚</li>
+        </ul>
+    </li>
+    <li>3xx - 重定向
+        <ul>
+            <li>客户端应该支持重定向</li>
+        </ul>
+    </li>
+    <li>4xx -请求错误
+        <ul>
+            <li>如果服务端发生错误，HTTP状态码一定<code>>=400</code></li>
+            <li>如果HTTP状态码>=400，那么一定发生了错误</li>
+            <li>如果HTTP状态码>=400，并且内容是JSON，那么内容<code>一定</code>是错误对象</li>
+        </ul>
+    </li>
+    <li>5xx - 服务器错误</li>
+</ul>
+
 <table class="table table-hover">
     <tr>
-        <th class="input-large">code</th>
-        <th class="input-large">message</th>
+        <th class="input-medium">HTTP状态码</th>
+        <th class="input-medium">code</th>
+        <th class="input-medium">message</th>
         <th>说明</th>
     </tr>
     <tr>
         <td>
             400
+        </td>
+        <td>
+            10400
         </td>
         <td>
             Bad Request
@@ -310,6 +351,9 @@
             401
         </td>
         <td>
+            10401
+        </td>
+        <td>
             Unauthorized
         </td>
         <td>
@@ -319,6 +363,9 @@
     <tr>
         <td>
             403
+        </td>
+        <td>
+            10403
         </td>
         <td>
             Forbidden
@@ -332,6 +379,9 @@
             404
         </td>
         <td>
+            10404
+        </td>
+        <td>
             Not Found
         </td>
         <td>
@@ -340,7 +390,10 @@
     </tr>
     <tr>
         <td>
-            427
+            400
+        </td>
+        <td>
+            10427
         </td>
         <td>
             Duplicate
@@ -351,7 +404,10 @@
     </tr>
     <tr>
         <td>
-            428
+            400
+        </td>
+        <td>
+            10428
         </td>
         <td>
 
@@ -362,7 +418,10 @@
     </tr>
     <tr>
         <td>
-            429
+            400
+        </td>
+        <td>
+            10429
         </td>
         <td>
 
@@ -374,6 +433,9 @@
     <tr>
         <td>
             500
+        </td>
+        <td>
+            10500
         </td>
         <td>
             Internal Server Error

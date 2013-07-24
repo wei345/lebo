@@ -35,15 +35,15 @@ public class AccountRestController {
 
     @RequestMapping(value = "updateProfile", method = RequestMethod.POST)
     @ResponseBody
-    public Object set(@RequestParam(value = "screenName", required = false) String screenName,
-                      @RequestParam(value = "image", required = false) MultipartFile image,
-                      @RequestParam(value = "description", required = false) String description) {
+    public Object updateProfile(@RequestParam(value = "screenName", required = false) String screenName,
+                                @RequestParam(value = "image", required = false) MultipartFile image,
+                                @RequestParam(value = "description", required = false) String description) {
         String userId = accountService.getCurrentUserId();
         User user = accountService.getUser(userId);
 
         if (StringUtils.isNotBlank(screenName)) {
             if (!accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {
-                return ErrorDto.newBadRequestError(String.format("%s 已被占用", screenName));
+                return ErrorDto.badRequest(String.format("%s 已被占用", screenName));
             }
             user.setScreenName(screenName);
         }
@@ -55,7 +55,7 @@ public class AccountRestController {
                 oldImageId = user.getProfileImageUrl();
                 user.setProfileImageUrl(imageId);
             } catch (IOException e) {
-                return ErrorDto.newBadRequestError(new ServiceException("保存图片失败; ", e).getMessage());
+                return ErrorDto.badRequest(new ServiceException("保存图片失败", e).getMessage());
             }
         }
         if (StringUtils.isNotBlank(description)) {
@@ -78,7 +78,7 @@ public class AccountRestController {
     @ResponseBody
     public Object checkScreenName(@RequestParam(value = "screenName") String screenName) {
         if (StringUtils.isBlank(screenName)) {
-            return ErrorDto.newBadRequestError("参数screenName不能为空");
+            return ErrorDto.badRequest("参数screenName不能为空");
         }
 
         if (accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {

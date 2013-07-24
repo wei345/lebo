@@ -18,6 +18,8 @@ public class Setting extends IdEntity {
     private String officialAccountId;
     //精华。由乐播官方账号转发，最近多少天的内容
     private Integer bestContentDays;
+    //热门。按红心数(收藏数)排序，最近2天
+    private String reMen;
 
     public String getOfficialAccountId() {
         return officialAccountId;

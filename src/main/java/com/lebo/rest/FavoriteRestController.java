@@ -35,7 +35,7 @@ public class FavoriteRestController {
         String userId = accountService.getCurrentUserId();
 
         if (favoriteService.isFavorited(userId, id)) {
-            return ErrorDto.newBadRequestError("你已经收藏了");
+            return ErrorDto.badRequest("你已经收藏了");
         }
 
         favoriteService.create(userId, id);
@@ -56,7 +56,7 @@ public class FavoriteRestController {
     public Object destroy(@RequestParam("postId") String postId) {
         Post post = statusService.findPost(postId);
         if (post == null) {
-            return ErrorDto.newBadRequestError("The parameter id [" + postId + "] is invalid.");
+            return ErrorDto.badRequest("参数id [" + postId + "] 无效");
         }
 
         favoriteService.destroy(accountService.getCurrentUserId(), statusService.getOriginPostId(post));

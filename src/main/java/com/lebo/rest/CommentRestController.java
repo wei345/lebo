@@ -48,7 +48,7 @@ public class CommentRestController {
 
             if (video != null && image != null) {
                 if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
-                    return ErrorDto.newBadRequestError(" Upload Single file size cannot be greater than 1 M byte.");
+                    return ErrorDto.badRequest(" Upload Single file size cannot be greater than 1 M byte.");
                 }
                 fileInfos.add(new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()));
                 fileInfos.add(new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
@@ -57,10 +57,10 @@ public class CommentRestController {
             return commentService.create(accountService.getCurrentUserId(), text, fileInfos, postId);
 
         } catch (DuplicateException e) {
-            return ErrorDto.DUPLICATE;
+            return ErrorDto.duplicate();
         } catch (Exception e) {
             logger.info("发布Post失败", e);
-            return ErrorDto.newInternalServerError(e.getMessage());
+            return ErrorDto.internalServerError(e.getMessage());
         }
     }
 

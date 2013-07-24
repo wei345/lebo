@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
-<%response.setStatus(200);%>
+<%response.setStatus(500);%>
 <%
     Throwable ex = null;
     if (exception != null)

@@ -51,7 +51,7 @@ public class StatusRestController {
         try {
 
             if (video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE) {
-                return ErrorDto.newBadRequestError(" Upload Single file size cannot be greater than 1 M byte.");
+                return ErrorDto.badRequest(" Upload Single file size cannot be greater than 1 M byte.");
             }
 
             List<FileInfo> fileInfos = Arrays.asList(
@@ -62,10 +62,10 @@ public class StatusRestController {
             return statusService.toStatusDto(post);
 
         } catch (DuplicateException e) {
-            return ErrorDto.DUPLICATE;
+            return ErrorDto.duplicate();
         } catch (Exception e) {
             logger.info("发布Post失败", e);
-            return ErrorDto.newBadRequestError(e.getMessage());
+            return ErrorDto.badRequest(e.getMessage());
         }
     }
 
@@ -127,13 +127,13 @@ public class StatusRestController {
      */
     @RequestMapping(value = "repost", method = RequestMethod.POST)
     @ResponseBody
-    private Object repost(@RequestParam("id") String id,
+    public Object repost(@RequestParam("id") String id,
                           @RequestParam(value = "text", required = false) String text,
                           @RequestParam(value = "source", required = false) String source) {
         try {
             Post post = statusService.findPost(id);
             if (post == null) {
-                return ErrorDto.newBadRequestError("The parameter id [" + id + "] is invalid.");
+                return ErrorDto.badRequest("The parameter id [" + id + "] is invalid.");
             }
             String originId = statusService.getOriginPostId(post);
 
@@ -145,7 +145,7 @@ public class StatusRestController {
             return statusService.toStatusDto(post);
         } catch (Exception e) {
             logger.info("转发Post失败", e);
-            return ErrorDto.newBadRequestError(e.getMessage());
+            return ErrorDto.badRequest(e.getMessage());
         }
     }
 

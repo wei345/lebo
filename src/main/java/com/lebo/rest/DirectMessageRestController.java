@@ -47,7 +47,7 @@ public class DirectMessageRestController {
                              @RequestParam(value = "source", required = false) String source) {
         try {
             if (StringUtils.isBlank(text) && !(video != null && image != null)) {
-                return ErrorDto.BAD_REQUEST;
+                return ErrorDto.badRequest("参数错误");
             }
 
             userId = accountService.getUserId(userId, screenName);
@@ -55,7 +55,7 @@ public class DirectMessageRestController {
             List<FileInfo> fileInfos = new ArrayList<FileInfo>();
             if (video != null && image != null) {
                 if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
-                    return ErrorDto.newBadRequestError(" Upload Single file size cannot be greater than 1 M byte.");
+                    return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
                 }
                 fileInfos.add(new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()));
                 fileInfos.add(new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
@@ -64,10 +64,10 @@ public class DirectMessageRestController {
             return messageService.newMessage(accountService.getCurrentUserId(), userId, text, fileInfos, source);
 
         } catch (DuplicateException e) {
-            return ErrorDto.DUPLICATE;
+            return ErrorDto.duplicate();
         } catch (Exception e) {
             logger.info("发送私信失败", e);
-            return ErrorDto.newBadRequestError(e.getMessage());
+            return ErrorDto.badRequest(e.getMessage());
         }
     }
 

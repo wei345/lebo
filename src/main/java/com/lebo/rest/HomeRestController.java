@@ -46,7 +46,7 @@ public class HomeRestController {
             return SecurityUtils.getSubject().getPrincipal();
         } catch (Exception e) {
             logger.info("登录失败", e);
-            return ErrorDto.BAD_REQUEST;
+            return ErrorDto.badRequest(e.getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ public class HomeRestController {
             currentUser.logout();
             return principal;
         } else {
-            return ErrorDto.UNAUTHORIZED;
+            return ErrorDto.unauthorized();
         }
     }
 
@@ -79,7 +79,7 @@ public class HomeRestController {
             return SecurityUtils.getSubject().getPrincipal();
         } catch (Exception e) {
             logger.info("登录失败", e);
-            return ErrorDto.newBadRequestError(e.getMessage());
+            return ErrorDto.badRequest(e.getMessage());
         }
     }
 
@@ -92,6 +92,6 @@ public class HomeRestController {
     @RequestMapping(value = "**")
     @ResponseBody
     public Object notFound() {
-        return ErrorDto.NOT_FOUND;
+        return ErrorDto.notFound();
     }
 }
