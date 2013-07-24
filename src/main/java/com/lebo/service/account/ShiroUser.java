@@ -2,6 +2,7 @@ package com.lebo.service.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
+import com.lebo.service.GridFsService;
 
 import java.io.Serializable;
 
@@ -77,7 +78,7 @@ public class ShiroUser implements Serializable {
     }
 
     public String getProfileImageUrl() {
-        return profileImageUrl;
+        return GridFsService.getContentUrl(profileImageUrl, null);
     }
 
     public String getProvider() {

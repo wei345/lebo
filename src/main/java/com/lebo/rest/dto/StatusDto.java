@@ -1,7 +1,5 @@
 package com.lebo.rest.dto;
 
-import com.lebo.entity.GeoLocation;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,17 +14,16 @@ public class StatusDto {
     private UserDto user;
     private Date createdAt;
     private String text;
-    private Boolean truncated;
     //引用文件id，可以存视频、图片、或其他上传的文件
     private List<FileInfoDto> files = new ArrayList<FileInfoDto>(2);
     //该Tweet来源，如：手机客户端、网页版
     private String source;
-    private GeoLocation geoLocation;
     private Boolean favorited;
     private Integer favouritesCount;
     private Integer repostsCount;
     private Boolean reposted;
     private Integer commentsCount;
+    private Integer viewsCount;
     private StatusDto originStatus;
 
     public String getId() {
@@ -77,22 +74,6 @@ public class StatusDto {
         this.source = source;
     }
 
-    public GeoLocation getGeoLocation() {
-        return geoLocation;
-    }
-
-    public void setGeoLocation(GeoLocation geoLocation) {
-        this.geoLocation = geoLocation;
-    }
-
-    public Boolean getTruncated() {
-        return truncated;
-    }
-
-    public void setTruncated(Boolean truncated) {
-        this.truncated = truncated;
-    }
-
     public Integer getFavouritesCount() {
         return favouritesCount;
     }
@@ -139,6 +120,14 @@ public class StatusDto {
 
     public void setOriginStatus(StatusDto originStatus) {
         this.originStatus = originStatus;
+    }
+
+    public Integer getViewsCount() {
+        return viewsCount;
+    }
+
+    public void setViewsCount(Integer viewsCount) {
+        this.viewsCount = viewsCount;
     }
 
     public static class FileInfoDto {

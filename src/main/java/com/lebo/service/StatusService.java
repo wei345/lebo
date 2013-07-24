@@ -14,13 +14,13 @@ import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.StatusFilterParam;
 import com.lebo.service.param.TimelineParam;
-import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
@@ -171,7 +171,7 @@ public class StatusService extends AbstractMongoService {
             dto.setCommentsCount(commentService.countPostComments(post.getId()));
 
             List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
-            for(String fileId : post.getFiles()){
+            for (String fileId : post.getFiles()) {
                 fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?postId=" + post.getId()));
             }
             dto.setFiles(fileInfoDtos);
@@ -387,5 +387,12 @@ public class StatusService extends AbstractMongoService {
 
     public boolean isReposted(String userId, String postId) {
         return postDao.findByUserIdAndOriginPostId(userId, postId) != null;
+    }
+
+    //增长浏览数
+    public void increaseViewsCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
+                new Update().inc(Post.VIEWS_COUNT_KEY, 1),
+                Post.class);
     }
 }

@@ -117,7 +117,7 @@ public class GridFsService extends AbstractMongoService {
         }
     }
 
-    public String getContentUrl(String fileId, String suffix) {
+    public static String getContentUrl(String fileId, String suffix) {
         if (isMongoId(fileId)) {
             String contentUrl = "/files/" + fileId;
             if (StringUtils.isNotBlank(suffix)) {

@@ -49,10 +49,8 @@ public class Post extends IdEntity {
     private LinkedHashSet<String> searchTerms;
     public static final String SEARCH_TERMS_KEY = "searchTerms";
 
-    private Integer favoritesCount;
-    public static final String FAVORITES_COUNT_KEY = "favoritesCount";
-    private Integer repostsCount;
-    public static final String REPOSTS_COUNT_KEY = "repostsCount";
+    private Integer viewsCount;
+    public static final String VIEWS_COUNT_KEY = "viewsCount";
 
     public String getUserId() {
         return userId;
@@ -136,14 +134,6 @@ public class Post extends IdEntity {
         this.hashtags = hashtags;
     }
 
-    public Integer getRepostsCount() {
-        return repostsCount;
-    }
-
-    public void setRepostsCount(Integer repostsCount) {
-        this.repostsCount = repostsCount;
-    }
-
     public LinkedHashSet<String> getSearchTerms() {
         return searchTerms;
     }
@@ -152,11 +142,11 @@ public class Post extends IdEntity {
         this.searchTerms = searchTerms;
     }
 
-    public Integer getFavoritesCount() {
-        return favoritesCount;
+    public Integer getViewsCount() {
+        return viewsCount;
     }
 
-    public void setFavoritesCount(Integer favoritesCount) {
-        this.favoritesCount = favoritesCount;
+    public void setViewsCount(Integer viewsCount) {
+        this.viewsCount = viewsCount;
     }
 }

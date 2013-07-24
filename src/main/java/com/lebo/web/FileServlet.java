@@ -123,6 +123,7 @@ public class FileServlet extends HttpServlet {
         if(StringUtils.startsWith(contentInfo.getMimeType(), "video/") && postId != null){
             Post post = statusService.findPost(postId);
             if(post != null && post.getFiles().contains(fileId)){
+                statusService.increaseViewsCount(postId);
                 accountService.increasePlaysCount(post.getUserId());
             }
         }
