@@ -27,6 +27,6 @@
         location: null,
         timeZone: null,
         beFavoritedCount: null,
-        bePlayedCount: 9
+        viewsCount: 9
     }
 </tags:example>

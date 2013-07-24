@@ -34,7 +34,7 @@
     <form id="searchForm" class="form-search pull-left" method="GET" action="">
         <input type="search" class="input-medium search-query" id="q" name="q" value="${q}" placeholder="正则表达式">
         <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=q]').val('')"></span>
-        orderBy <input type="text" class="input-mini" name="orderBy" value="${orderBy}" placeholder="followersCount/beFavoritedCount/bePlayedCount">
+        orderBy <input type="text" class="input-mini" name="orderBy" value="${orderBy}" placeholder="followersCount/beFavoritedCount/viewsCount">
         <select class="input-small" name="order">
             <setting ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</setting>
             <setting ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</setting>

@@ -70,8 +70,8 @@ public class User extends IdEntity {
 
     //该用户Posts被播放的次数
     @Indexed(direction = IndexDirection.DESCENDING)
-    private Integer bePlayedCount;
-    public static final String BE_PLAYED_COUNT_KEY = "bePlayedCount";
+    private Integer viewsCount;
+    public static final String VIEWS_COUNT_KEY = "viewsCount";
 
     public User() {
     }
@@ -228,12 +228,12 @@ public class User extends IdEntity {
         this.beFavoritedCount = beFavoritedCount;
     }
 
-    public Integer getBePlayedCount() {
-        return bePlayedCount;
+    public Integer getViewsCount() {
+        return viewsCount;
     }
 
-    public void setBePlayedCount(Integer bePlayedCount) {
-        this.bePlayedCount = bePlayedCount;
+    public void setViewsCount(Integer viewsCount) {
+        this.viewsCount = viewsCount;
     }
 
     @Override
