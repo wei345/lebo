@@ -181,12 +181,6 @@ public class StatusService extends AbstractMongoService {
             Post originPost = postDao.findOne(post.getOriginPostId());
             StatusDto originStatusDto = toStatusDto(originPost);
             dto.setOriginStatus(originStatusDto);
-            dto.setRepostsCount(originStatusDto.getRepostsCount());
-            dto.setReposted(originStatusDto.getReposted());
-            dto.setFavouritesCount(originStatusDto.getFavouritesCount());
-            dto.setFavorited(originStatusDto.getFavorited());
-            dto.setCommentsCount(originStatusDto.getCommentsCount());
-            dto.setFiles(originStatusDto.getFiles());
         }
 
         return dto;

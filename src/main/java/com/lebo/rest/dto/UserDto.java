@@ -25,11 +25,8 @@ public class UserDto {
     private Integer friendsCount;
     //TODO 填充全部字段
     private Integer statusesCount;
-    private Boolean verified;
-    private String location;
-    private String timeZone;
     private Integer beFavoritedCount;
-    private Integer bePlayedCount;
+    private Integer viewsCount;
 
     public String getId() {
         return id;
@@ -103,30 +100,6 @@ public class UserDto {
         this.statusesCount = statusesCount;
     }
 
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
-    }
-
     public Integer getBeFavoritedCount() {
         return beFavoritedCount;
     }
@@ -135,11 +108,11 @@ public class UserDto {
         this.beFavoritedCount = beFavoritedCount;
     }
 
-    public Integer getBePlayedCount() {
-        return bePlayedCount;
+    public Integer getViewsCount() {
+        return viewsCount;
     }
 
-    public void setBePlayedCount(Integer bePlayedCount) {
-        this.bePlayedCount = bePlayedCount;
+    public void setViewsCount(Integer viewsCount) {
+        this.viewsCount = viewsCount;
     }
 }

@@ -49,7 +49,7 @@ public class Post extends IdEntity {
     private LinkedHashSet<String> searchTerms;
     public static final String SEARCH_TERMS_KEY = "searchTerms";
 
-    private Integer viewsCount;
+    private Integer viewsCount = 0;
     public static final String VIEWS_COUNT_KEY = "viewsCount";
 
     public String getUserId() {
