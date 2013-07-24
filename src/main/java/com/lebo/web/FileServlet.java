@@ -1,7 +1,6 @@
 package com.lebo.web;
 
 import com.lebo.entity.Post;
-import com.lebo.entity.User;
 import com.lebo.service.GridFsService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
@@ -120,9 +119,9 @@ public class FileServlet extends HttpServlet {
 
         gridFsService.increaseViewCount(fileId);
         //增长用户视频被播放次数
-        if(StringUtils.startsWith(contentInfo.getMimeType(), "video/") && postId != null){
+        if (StringUtils.startsWith(contentInfo.getMimeType(), "video/") && postId != null) {
             Post post = statusService.findPost(postId);
-            if(post != null && post.getFiles().contains(fileId)){
+            if (post != null && post.getFiles().contains(fileId)) {
                 statusService.increaseViewsCount(postId);
                 accountService.increasePlaysCount(post.getUserId());
             }
@@ -156,7 +155,7 @@ public class FileServlet extends HttpServlet {
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
         gridFsService = applicationContext.getBean(GridFsService.class);
-        accountService =  applicationContext.getBean(AccountService.class);
+        accountService = applicationContext.getBean(AccountService.class);
         statusService = applicationContext.getBean(StatusService.class);
     }
 }

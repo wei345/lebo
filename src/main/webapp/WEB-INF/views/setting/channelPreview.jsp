@@ -5,32 +5,33 @@
 
 <c:if test="${channels == null}">
     <div class="alert alert-error controls">
-        <button class="close" data-dismiss="alert">×</button>JSON格式错误
+        <button class="close" data-dismiss="alert">×</button>
+        JSON格式错误
     </div>
 </c:if>
 <c:if test="${channels != null}">
-<table id="contentTable" class="table table-striped table-bordered table-condensed table-hover">
-    <thead>
-    <tr>
-        <th>名称</th>
-        <th>图片</th>
-        <th>背景颜色</th>
-        <th>内容</th>
-        <th>启用/禁用</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach items="${channels}" var="channel">
+    <table id="contentTable" class="table table-striped table-bordered table-condensed table-hover">
+        <thead>
         <tr>
-            <td>${channel.name}</td>
-            <td><img class="input-small" src="${ctx}/files/${channel.image}"/></td>
-            <td><span
-                    style="background-color: ${channel.backgroundColor}; display: inline-block; width: 1em;">&nbsp;</span>${channel.backgroundColor}
-            </td>
-            <td>${channel.contentUrl}</td>
-            <td>${channel.enabled ? "启用" : "禁用"}</td>
+            <th>名称</th>
+            <th>图片</th>
+            <th>背景颜色</th>
+            <th>内容</th>
+            <th>启用/禁用</th>
         </tr>
-    </c:forEach>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        <c:forEach items="${channels}" var="channel">
+            <tr>
+                <td>${channel.name}</td>
+                <td><img class="input-small" src="${ctx}/files/${channel.image}"/></td>
+                <td><span
+                        style="background-color: ${channel.backgroundColor}; display: inline-block; width: 1em;">&nbsp;</span>${channel.backgroundColor}
+                </td>
+                <td>${channel.contentUrl}</td>
+                <td>${channel.enabled ? "启用" : "禁用"}</td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
 </c:if>

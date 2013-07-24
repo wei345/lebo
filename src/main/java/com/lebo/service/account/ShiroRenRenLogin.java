@@ -39,7 +39,7 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
     }
 
     public ShiroUser getShiroUser(String token) {
-        Map userInfo = (Map)getUserInfo(token).get("response");
+        Map userInfo = (Map) getUserInfo(token).get("response");
         String uid = userInfo.get("id").toString();
         User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
@@ -49,9 +49,9 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
             user.setScreenName(newScreenName((String) userInfo.get("name")));
             user.setName((String) userInfo.get("name"));
 
-            List<Map<String, String>> avatar = (List)userInfo.get("avatar");
+            List<Map<String, String>> avatar = (List) userInfo.get("avatar");
             String profileImageUrl = avatar.get(0).get("url");
-            if(avatar.get(1) != null){
+            if (avatar.get(1) != null) {
                 profileImageUrl = avatar.get(1).get("url");
             }
             user.setProfileImageUrl(profileImageUrl);
@@ -73,7 +73,7 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
         String url = String.format("https://api.renren.com/v2/user/login/get?access_token=%s", token);
         Map userInfo = restTemplate.getForObject(url, Map.class);
 
-        if (userInfo == null || ((Map)userInfo.get("response")).get("name") == null) {
+        if (userInfo == null || ((Map) userInfo.get("response")).get("name") == null) {
             throw new RuntimeException("获取用户信息发生错误");
         }
         return userInfo;

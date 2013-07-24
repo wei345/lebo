@@ -2,7 +2,6 @@ package com.lebo.repository;
 
 import com.lebo.SpringContextTestCase;
 import com.lebo.entity.Post;
-import com.lebo.service.param.SearchParam;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,9 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springside.modules.test.category.UnStable;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 /**
  * @author: Wei Liu
@@ -48,7 +45,7 @@ public class PostDaoTest extends SpringContextTestCase implements UnStable {
     }
 
     @Test
-    public void findByUserIdAndOriginPostId(){
+    public void findByUserIdAndOriginPostId() {
         Post post = postDao.findByUserIdAndOriginPostId("51e778ea1a8816dc79e40aaf", "51e3a0ca1a8890916e962c94");
         assertNotNull(post);
     }

@@ -19,7 +19,9 @@
             </ul>
         </li>
         <li>分页参数：maxId、sinceId、count</li>
-        <li>after: 大于等于该时间之后的status，格式：<code>EEE MMM dd HH:mm:ss ZZZZZ yyyy</code>，如：<code>Mon Jul 22 10:54:31 +0800 2013</code>
+        <li>after: 大于等于该时间之后的status，格式：<code>EEE MMM dd HH:mm:ss ZZZZZ yyyy</code>，如：<code>Mon Jul 22 10:54:31 +0800
+            2013</code>
+
             <p>Java代码：<code>new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH)</code></p>
         </li>
     </ul>
@@ -32,7 +34,8 @@
 </tags:form>
 
 
-<tags:example method="GET" url="http://localhost:8080/api/1/statuses/filter.json?track=%E6%9D%A8%E8%BF%87+%E5%8D%8E%E5%B1%B1%E8%AE%BA%E5%89%91%2C%23%E7%B4%AB%E7%A6%81%E4%B9%8B%E5%B7%85%23+%40%E9%98%BF%E9%A3%9E">
+<tags:example method="GET"
+              url="http://localhost:8080/api/1/statuses/filter.json?track=%E6%9D%A8%E8%BF%87+%E5%8D%8E%E5%B1%B1%E8%AE%BA%E5%89%91%2C%23%E7%B4%AB%E7%A6%81%E4%B9%8B%E5%B7%85%23+%40%E9%98%BF%E9%A3%9E">
     [
         {
             id: "51e437711a88da1af1c21c72",

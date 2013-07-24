@@ -15,7 +15,7 @@ public class ControllerSetup {
     /**
      * 格式：EEE MMM dd HH:mm:ss ZZZZZ yyyy
      * 例如：Mon Jul 22 10:54:31 +0800 2013
-     *
+     * <p/>
      * 这是Twitter和新浪微博采用的日期格式。
      */
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT;

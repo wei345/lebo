@@ -105,7 +105,7 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void searchPosts(){
+    public void searchPosts() {
         StatusFilterParam param = new StatusFilterParam();
         param.setTrack("杨过,标签1 2");
         List<Post> posts = statusService.searchPosts(param);
@@ -126,7 +126,7 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void isHashtagOrAtSomeone(){
+    public void isHashtagOrAtSomeone() {
         assertTrue(statusService.isHashtagOrAtSomeone("@郭靖"));
         assertFalse(statusService.isHashtagOrAtSomeone("@郭靖@"));
         assertTrue(statusService.isHashtagOrAtSomeone("#华山论剑#"));
@@ -134,7 +134,7 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void dateFormat(){
+    public void dateFormat() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
         Date date = new Date(1374466138948L);
         assertEquals("Mon Jul 22 12:08:58 +0800 2013", dateFormat.format(date));

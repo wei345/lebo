@@ -14,8 +14,10 @@ import java.util.List;
 public interface FollowingDao extends MongoRepository<Following, String> {
 
     Following findByUserIdAndFollowingId(String userId, String followingId);
+
     List<Following> findByUserId(String userId);
 
     List<Following> findByUserId(String userId, Pageable pageable);
+
     List<Following> findByFollowingId(String followingId, Pageable pageable);
 }

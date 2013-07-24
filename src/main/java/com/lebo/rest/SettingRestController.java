@@ -29,26 +29,26 @@ public class SettingRestController {
     @Autowired
     private SettingService settingService;
 
-    @RequestMapping(method =  RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Object get(){
+    public Object get() {
         Setting setting = settingService.getSetting();
         SettingDto dto = BeanMapper.map(setting, SettingDto.class);
 
         String bestContentUrl = "/api/1/statuses/filter";
 
         List<String> param = new ArrayList<String>();
-        if(StringUtils.isNotBlank(setting.getOfficialAccountId())){
+        if (StringUtils.isNotBlank(setting.getOfficialAccountId())) {
             param.add("follow=" + setting.getOfficialAccountId());
         }
 
-        if(setting.getBestContentDays() != null){
+        if (setting.getBestContentDays() != null) {
             Date date = DateUtils.addDays(new Date(), setting.getBestContentDays() * -1);
             String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
             param.add("after=" + Encodes.urlEncode(dateStr));
         }
 
-        if(param.size() > 0 ){
+        if (param.size() > 0) {
             bestContentUrl += "?" + StringUtils.join(param, "&");
         }
 

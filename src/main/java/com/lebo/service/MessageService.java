@@ -14,7 +14,7 @@ import java.util.List;
  * Time: PM8:00
  */
 @Service
-public class MessageService extends AbstractMongoService{
+public class MessageService extends AbstractMongoService {
 
     @Autowired
     private GridFsService gridFsService;
@@ -22,7 +22,7 @@ public class MessageService extends AbstractMongoService{
     private MessageDao messageDao;
 
     public Message newMessage(String from, String to, String text, List<FileInfo> fileInfos, String source) {
-        List<String> fileIds =gridFsService.saveFilesSafely(fileInfos);
+        List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
 
         Message message = new Message();
         message.setFrom(from);

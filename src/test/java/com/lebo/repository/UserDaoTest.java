@@ -2,12 +2,9 @@ package com.lebo.repository;
 
 import com.lebo.SpringContextTestCase;
 import com.lebo.entity.User;
-import com.lebo.service.param.SearchParam;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springside.modules.test.category.UnStable;
-
-import java.util.List;
 
 import static com.mongodb.util.MyAsserts.assertFalse;
 import static com.mongodb.util.MyAsserts.assertTrue;

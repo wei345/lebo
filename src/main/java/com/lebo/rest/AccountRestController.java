@@ -42,14 +42,14 @@ public class AccountRestController {
         User user = accountService.getUser(userId);
 
         if (StringUtils.isNotBlank(screenName)) {
-            if(!accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())){
+            if (!accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {
                 return ErrorDto.newBadRequestError(String.format("%s 已被占用", screenName));
             }
             user.setScreenName(screenName);
         }
 
         String oldImageId = null;
-        if(image != null && image.getSize() > 0){
+        if (image != null && image.getSize() > 0) {
             try {
                 String imageId = gridFsService.save(image.getInputStream(), image.getOriginalFilename(), image.getContentType());
                 oldImageId = user.getProfileImageUrl();
@@ -64,11 +64,11 @@ public class AccountRestController {
         accountService.saveUser(user);
 
         //删除旧图片
-        if(accountService.isMongoId(oldImageId)){
+        if (accountService.isMongoId(oldImageId)) {
             gridFsService.delete(oldImageId);
         }
         //更新ShiroUser
-        if(oldImageId != null){
+        if (oldImageId != null) {
             updateCurrentUser(user);
         }
         return accountService.toUserDto(user);
@@ -76,14 +76,14 @@ public class AccountRestController {
 
     @RequestMapping(value = "checkScreenName", method = RequestMethod.POST)
     @ResponseBody
-    public Object checkScreenName(@RequestParam(value = "screenName") String screenName){
-        if(StringUtils.isBlank(screenName)){
+    public Object checkScreenName(@RequestParam(value = "screenName") String screenName) {
+        if (StringUtils.isBlank(screenName)) {
             return ErrorDto.newBadRequestError("参数screenName不能为空");
         }
 
-        if(accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())){
+        if (accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {
             return "true";
-        }else{
+        } else {
             return "false";
         }
     }

@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 
-public class ShiroRealm extends AuthorizingRealm implements ApplicationContextAware{
+public class ShiroRealm extends AuthorizingRealm implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private AccountService accountService;
 
@@ -32,7 +32,7 @@ public class ShiroRealm extends AuthorizingRealm implements ApplicationContextAw
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        if(accountService == null){
+        if (accountService == null) {
             accountService = applicationContext.getBean(AccountService.class);
         }
 

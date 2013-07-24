@@ -14,5 +14,6 @@ import java.util.List;
  */
 public interface FavoriteDao extends MongoRepository<Favorite, String> {
     Favorite findByUserIdAndPostId(String userId, String postId);
+
     List<Favorite> findByUserId(String userId, Pageable pageable);
 }

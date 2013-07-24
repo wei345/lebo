@@ -3,7 +3,8 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="更新Profile" method="POST" action="${ctx}/api/1/account/updateProfile.json" enctype="multipart/form-data">
+<tags:form name="更新Profile" method="POST" action="${ctx}/api/1/account/updateProfile.json"
+           enctype="multipart/form-data">
     <tags:field name="image" type="file" optional="true"/>
     <tags:field name="screenName" value="" optional="true"/>
     <tags:field name="description" value="介绍" optional="true"/>

@@ -92,8 +92,8 @@ public class ChannelController {
         //删除已不用的图片
         List<String> oldImages = Collections3.extractToList(setting.getChannels(), "image");
         List<String> newImages = Collections3.extractToList(channels, "image");
-        for(String fileId : oldImages){
-            if(!newImages.contains(fileId)){
+        for (String fileId : oldImages) {
+            if (!newImages.contains(fileId)) {
                 gridFsService.delete(fileId);
             }
         }

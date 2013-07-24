@@ -37,7 +37,7 @@ public class UserRestController {
                          @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size,
                          @RequestParam(value = "orderBy", defaultValue = "_id") String orderBy,
                          @RequestParam(value = "order", defaultValue = "desc") String order) {
-        if(orderBy.equals("id")){
+        if (orderBy.equals("id")) {
             orderBy = "_id";
         }
 

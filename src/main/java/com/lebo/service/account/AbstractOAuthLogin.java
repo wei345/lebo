@@ -29,16 +29,16 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
     /**
      * 返回一个未被占用、唯一的screenName，以给定字符串作为前缀。
      */
-    protected String newScreenName(String prefix){
+    protected String newScreenName(String prefix) {
         User user;
         String name = prefix;
-        do{
+        do {
             user = accountService.findUserByScreenName(name);
-            if(user == null){
+            if (user == null) {
                 break;
             }
             name = prefix + new Date().hashCode();
-        }while(true);
+        } while (true);
 
         return name;
     }

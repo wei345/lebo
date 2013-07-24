@@ -67,8 +67,8 @@ public abstract class AbstractMongoService {
         }
     }
 
-    public static boolean isMongoId(String str){
-        if(str == null) {
+    public static boolean isMongoId(String str) {
+        if (str == null) {
             return false;
         }
         return mongoIdPattern.matcher(str).matches();

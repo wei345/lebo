@@ -43,7 +43,7 @@ public class Setting extends IdEntity {
         this.bestContentDays = bestContentDays;
     }
 
-    public static class Channel{
+    public static class Channel {
         private String name;
         //statuses/filter参数
         private String contentUrl;
@@ -52,7 +52,7 @@ public class Setting extends IdEntity {
         private String backgroundColor;
         private boolean enabled;
 
-        public Channel(){
+        public Channel() {
 
         }
 

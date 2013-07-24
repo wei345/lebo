@@ -27,15 +27,15 @@ public class BlockService {
 
     /**
      * 把指定用户拉黑，如果这两个用户之间存在关注与被关注关系，也会被删除。
-     *
+     * <p/>
      * 返回被拉黑的用户。
      *
-     * @param userId 当前用户ID
+     * @param userId    当前用户ID
      * @param blockedId 被拉入黑名单的用户ID
      */
-    public User block(String userId, String blockedId){
-         Block block = blockDao.findByUserIdAndBlockedId(userId, blockedId);
-        if(block == null){
+    public User block(String userId, String blockedId) {
+        Block block = blockDao.findByUserIdAndBlockedId(userId, blockedId);
+        if (block == null) {
             blockDao.save(new Block(userId, blockedId));
             friendshipService.unfollow(userId, blockedId);
             friendshipService.unfollow(blockedId, userId);
@@ -43,24 +43,24 @@ public class BlockService {
         return accountService.getUser(blockedId);
     }
 
-    public User unblock(String userId, String blockedId){
+    public User unblock(String userId, String blockedId) {
         Block block = blockDao.findByUserIdAndBlockedId(userId, blockedId);
-        if(block != null){
+        if (block != null) {
             blockDao.delete(block);
         }
         return accountService.getUser(blockedId);
     }
 
-    public List<User> list(String userId, PageRequest pageRequest){
+    public List<User> list(String userId, PageRequest pageRequest) {
         List<Block> blocks = blockDao.findByUserId(userId, pageRequest);
         List<User> users = new ArrayList<User>();
-        for(Block block : blocks){
+        for (Block block : blocks) {
             users.add(accountService.getUser(block.getBlockedId()));
         }
         return users;
     }
 
-    public boolean isBlocked(String userId, String blockedId){
+    public boolean isBlocked(String userId, String blockedId) {
         return blockDao.findByUserIdAndBlockedId(userId, blockedId) != null;
     }
 }

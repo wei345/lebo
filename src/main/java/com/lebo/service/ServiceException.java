@@ -16,7 +16,7 @@ public class ServiceException extends NestedRuntimeException {
 
     private ErrorDto errorDto;
 
-    public ServiceException(ErrorDto errorDto){
+    public ServiceException(ErrorDto errorDto) {
         super(errorDto.getError().getMessage());
         this.errorDto = errorDto;
     }

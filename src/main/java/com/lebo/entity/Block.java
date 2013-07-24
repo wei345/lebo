@@ -2,7 +2,6 @@ package com.lebo.entity;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -19,7 +18,8 @@ public class Block extends IdEntity {
     private String userId;
     private String blockedId;
 
-    public Block(){}
+    public Block() {
+    }
 
     public Block(String userId, String blockedId) {
         this.userId = userId;

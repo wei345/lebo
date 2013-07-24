@@ -4,13 +4,11 @@ import com.lebo.entity.Comment;
 import com.lebo.repository.CommentDao;
 import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.ShowCommentParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class CommentService extends AbstractMongoService {
 
     /**
      * @throws com.mongodb.MongoException 当存储数据失败时
-     * @throws DuplicateException 当文件重复时
+     * @throws DuplicateException         当文件重复时
      */
     public Comment create(String userId, String text, List<FileInfo> fileInfos, String postId) {
         List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
@@ -51,8 +49,8 @@ public class CommentService extends AbstractMongoService {
     public int countPostComments(String postId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)), Comment.class);
     }
-    
-    public List<Comment> show(ShowCommentParam param){
-    	return commentDao.findByPostId(param.getPostId(), param);
+
+    public List<Comment> show(ShowCommentParam param) {
+        return commentDao.findByPostId(param.getPostId(), param);
     }
 }

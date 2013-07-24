@@ -6,7 +6,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <%
     ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-    if(user != null){
+    if (user != null) {
         String profileImageUrl = user.getProfileImageUrl();
         request.setAttribute("profileImageUrl", profileImageUrl);
     }
@@ -18,7 +18,8 @@
             <shiro:user>
                 <div class="btn-group pull-right">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="icon-user"><c:if test="${profileImageUrl != null}"><img src="${profileImageUrl}"/></c:if></i>
+                        <i class="icon-user"><c:if test="${profileImageUrl != null}"><img
+                                src="${profileImageUrl}"/></c:if></i>
                         <shiro:principal property="name"/>
                         <span class="caret"></span>
                     </a>
@@ -33,12 +34,14 @@
     </div>
     <c:if test="${success != null}">
         <div class="alert alert-success controls">
-            <button class="close" data-dismiss="alert">×</button>${success}
+            <button class="close" data-dismiss="alert">×</button>
+                ${success}
         </div>
     </c:if>
     <c:if test="${error != null}">
         <div class="alert alert-error controls">
-            <button class="close" data-dismiss="alert">×</button>${error}
+            <button class="close" data-dismiss="alert">×</button>
+                ${error}
         </div>
     </c:if>
 </div>

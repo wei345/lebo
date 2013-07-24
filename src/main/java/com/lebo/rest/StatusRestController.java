@@ -6,7 +6,6 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
-import com.lebo.service.param.SearchParam;
 import com.lebo.service.param.StatusFilterParam;
 import com.lebo.service.param.TimelineParam;
 import org.slf4j.Logger;
@@ -97,6 +96,7 @@ public class StatusRestController {
 
     /**
      * 获取某个用户最新视频列表
+     *
      * @param param
      * @return
      */
@@ -138,12 +138,12 @@ public class StatusRestController {
             String originId = statusService.getOriginPostId(post);
 
             //转发
-            if(!statusService.isReposted(accountService.getCurrentUserId(), originId)){
+            if (!statusService.isReposted(accountService.getCurrentUserId(), originId)) {
                 post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
             }
 
             return statusService.toStatusDto(post);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             logger.info("转发Post失败", e);
             return ErrorDto.newBadRequestError(e.getMessage());
         }

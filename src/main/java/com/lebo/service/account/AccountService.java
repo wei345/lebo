@@ -203,11 +203,11 @@ public class AccountService extends AbstractMongoService {
     /**
      * 检查对于userId来说，screenName是否可用。
      */
-    public boolean isScreenNameAvailable(String screenName, String userId){
+    public boolean isScreenNameAvailable(String screenName, String userId) {
         Assert.hasText(screenName);
 
         Criteria criteria = new Criteria(User.SCREEN_NAME_KEY).is(screenName);
-        if(StringUtils.isNotBlank(userId)){
+        if (StringUtils.isNotBlank(userId)) {
             criteria.and("_id").ne(userId);
         }
         return mongoTemplate.count(new Query(criteria), User.class) == 0;

@@ -28,9 +28,10 @@
         pre code {
             background-color: transparent;
         }
+
         #header #title small a {
             margin-left: 1em;
-            color:#658A16
+            color: #658A16
         }
     </style>
 
@@ -60,7 +61,7 @@
         });
     });
     //去掉textarea首尾空格 -- 如果textarea.tag被格式化，那么页面上textarea内容有空格。
-    $('textarea').each(function(){
+    $('textarea').each(function () {
         this.innerHTML = $.trim(this.innerHTML);
     });
 </script>

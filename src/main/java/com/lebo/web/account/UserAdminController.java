@@ -40,7 +40,7 @@ public class UserAdminController {
         } else if (order.equals("asc")) {
             direction = Sort.Direction.ASC;
         } else {
-            model.addAttribute("error", String.format("参数order值[%s]无效",order));
+            model.addAttribute("error", String.format("参数order值[%s]无效", order));
             return "account/adminUserList";
         }
 
@@ -74,7 +74,7 @@ public class UserAdminController {
     }
 
     //TODO 删除用户功能
-	/*@RequestMapping(value = "delete/{id}")
+    /*@RequestMapping(value = "delete/{id}")
     public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
 		User user = accountService.getUser(id);
 		accountService.deleteUser(id);

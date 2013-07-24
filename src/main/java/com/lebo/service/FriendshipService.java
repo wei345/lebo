@@ -1,7 +1,6 @@
 package com.lebo.service;
 
 import com.lebo.entity.Following;
-import com.lebo.entity.User;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.ErrorDto;
@@ -46,11 +45,11 @@ public class FriendshipService extends AbstractMongoService {
         }
 
         if (userDao.exists(userId) && userDao.exists(followingId)) {
-            if(blockService.isBlocked(followingId, userId)){
+            if (blockService.isBlocked(followingId, userId)) {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKED);
             }
 
-            if(blockService.isBlocked(userId, followingId)){
+            if (blockService.isBlocked(userId, followingId)) {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING);
             }
 
@@ -86,11 +85,11 @@ public class FriendshipService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Following.USER_ID_KEY).is(userId)), Following.class);
     }
 
-    public List<Following> getFriends(String userId, PaginationParam param){
+    public List<Following> getFriends(String userId, PaginationParam param) {
         return followingDao.findByUserId(userId, param);
     }
 
-    public List<Following> getFollowers(String userId, PaginationParam param){
+    public List<Following> getFollowers(String userId, PaginationParam param) {
         return followingDao.findByFollowingId(userId, param);
     }
 }

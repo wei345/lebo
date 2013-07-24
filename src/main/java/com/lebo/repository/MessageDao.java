@@ -8,5 +8,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Date: 13-7-14
  * Time: PM8:01
  */
-public interface MessageDao extends MongoRepository<Message, String>{
+public interface MessageDao extends MongoRepository<Message, String> {
 }

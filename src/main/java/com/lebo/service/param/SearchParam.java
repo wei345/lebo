@@ -14,7 +14,7 @@ public class SearchParam extends PageRequest {
     //private String geocode;    //Example Values: 37.781157,-122.398720,1mi
     //private Date until;
 
-    public SearchParam(){
+    public SearchParam() {
         super(0, PaginationParam.DEFAULT_COUNT);
     }
 

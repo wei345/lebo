@@ -36,7 +36,7 @@ public class FollowerRestController {
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
     public Object list(@RequestParam(value = "userId") String userId,
-                           @Valid PaginationParam param) {
+                       @Valid PaginationParam param) {
 
         List<Following> followers = friendshipService.getFollowers(userId, param);
         List<User> users = new ArrayList<User>();

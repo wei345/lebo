@@ -5,7 +5,6 @@ import com.lebo.entity.Post;
 import com.lebo.repository.FavoriteDao;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -31,12 +30,12 @@ public class FavoriteService extends AbstractMongoService {
 
     public void create(String userId, String postId) {
         Post post = statusService.findPost(postId);
-        if(post == null){
+        if (post == null) {
             throw new ServiceException(postId + "不存在");
         }
 
         String originId = statusService.getOriginPostId(post);
-        if(statusService.findPost(originId) == null){
+        if (statusService.findPost(originId) == null) {
             throw new ServiceException("原始Post不存在");
         }
 
@@ -47,7 +46,7 @@ public class FavoriteService extends AbstractMongoService {
 
     public void destroy(String userId, String postId) {
         Favorite favorite = favoriteDao.findByUserIdAndPostId(userId, postId);
-        if(favorite != null){
+        if (favorite != null) {
             favoriteDao.delete(favorite);
             throwOnMongoError();
             accountService.decreaseFavoritesCount(userId);

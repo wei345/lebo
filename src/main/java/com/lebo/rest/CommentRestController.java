@@ -6,7 +6,6 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.ShowCommentParam;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.validation.Valid;
 
 /**
  * 评论接口。
@@ -65,10 +63,10 @@ public class CommentRestController {
             return ErrorDto.newInternalServerError(e.getMessage());
         }
     }
-    
+
     @RequestMapping(value = "show", method = RequestMethod.GET)
     @ResponseBody
     public Object show(@Valid ShowCommentParam param) {
-    	return commentService.show(param);
+        return commentService.show(param);
     }
 }
