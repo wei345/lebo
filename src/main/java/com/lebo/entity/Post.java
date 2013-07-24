@@ -49,11 +49,15 @@ public class Post extends IdEntity {
     private LinkedHashSet<String> searchTerms;
     public static final String SEARCH_TERMS_KEY = "searchTerms";
 
+    private Integer favoritesCount;
+    public static final String FAVOURITES_COUNT_KEY = "favoritesCount";
+
     private Integer viewsCount;
     public static final String VIEWS_COUNT_KEY = "viewsCount";
 
     public static Post initial(Post post){
         post.setViewsCount(0);
+        post.setFavoritesCount(0);
         return post;
     }
 
@@ -153,5 +157,13 @@ public class Post extends IdEntity {
 
     public void setViewsCount(Integer viewsCount) {
         this.viewsCount = viewsCount;
+    }
+
+    public Integer getFavoritesCount() {
+        return favoritesCount;
+    }
+
+    public void setFavoritesCount(Integer favoritesCount) {
+        this.favoritesCount = favoritesCount;
     }
 }

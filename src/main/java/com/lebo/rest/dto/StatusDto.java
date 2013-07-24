@@ -19,11 +19,11 @@ public class StatusDto {
     //该Tweet来源，如：手机客户端、网页版
     private String source;
     private Boolean favorited;
-    private Integer favouritesCount;
+    private Integer favoritesCount;
     private Integer repostsCount;
     private Boolean reposted;
     private Integer commentsCount;
-    private Integer viewsCount = 0;
+    private Integer viewsCount;
     private StatusDto originStatus;
 
     public String getId() {
@@ -74,12 +74,12 @@ public class StatusDto {
         this.source = source;
     }
 
-    public Integer getFavouritesCount() {
-        return favouritesCount;
+    public Integer getFavoritesCount() {
+        return favoritesCount;
     }
 
-    public void setFavouritesCount(Integer favouritesCount) {
-        this.favouritesCount = favouritesCount;
+    public void setFavoritesCount(Integer favoritesCount) {
+        this.favoritesCount = favoritesCount;
     }
 
     public Integer getRepostsCount() {

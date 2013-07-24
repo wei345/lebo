@@ -166,7 +166,6 @@ public class StatusService extends AbstractMongoService {
         if (post.getOriginPostId() == null) {
             dto.setRepostsCount(countReposts(post.getId()));
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post.getId()));
-            dto.setFavouritesCount(favoriteService.countPostFavorites(post.getId()));
             dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
             dto.setCommentsCount(commentService.countPostComments(post.getId()));
 
@@ -393,6 +392,18 @@ public class StatusService extends AbstractMongoService {
     public void increaseViewsCount(String id) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
                 new Update().inc(Post.VIEWS_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    public void increaseFavoritesCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
+                new Update().inc(Post.FAVOURITES_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    public void decreaseFavoritesCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
+                new Update().inc(Post.FAVOURITES_COUNT_KEY, -1),
                 Post.class);
     }
 }

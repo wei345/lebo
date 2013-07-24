@@ -42,6 +42,7 @@ public class FavoriteService extends AbstractMongoService {
         favoriteDao.save(new Favorite(userId, originId));
         throwOnMongoError();
         accountService.increaseFavoritesCount(userId);
+        statusService.increaseFavoritesCount(postId);
     }
 
     public void destroy(String userId, String postId) {
@@ -50,6 +51,7 @@ public class FavoriteService extends AbstractMongoService {
             favoriteDao.delete(favorite);
             throwOnMongoError();
             accountService.decreaseFavoritesCount(userId);
+            statusService.decreaseFavoritesCount(postId);
         }
     }
 

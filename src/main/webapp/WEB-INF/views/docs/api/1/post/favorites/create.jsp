@@ -46,7 +46,7 @@
         source: null,
         geoLocation: null,
         favorited: true,
-        favouritesCount: 2,
+        favoritesCount: 2,
         repostsCount: 0,
         reposted: false,
         commentsCount: 0,

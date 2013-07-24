@@ -33,7 +33,7 @@
             ],
             source: null,
             geoLocation: null,
-            favouritesCount: null,
+            favoritesCount: null,
             repostsCount: null,
             reposted: null,
             originPostId: null

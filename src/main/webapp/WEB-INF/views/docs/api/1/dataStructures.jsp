@@ -100,7 +100,7 @@
     </tr>
     <tr>
         <td>
-            favouritesCount
+            favoritesCount
         </td>
         <td>
             int32
