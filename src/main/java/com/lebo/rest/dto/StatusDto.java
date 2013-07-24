@@ -23,7 +23,7 @@ public class StatusDto {
     private Integer repostsCount;
     private Boolean reposted;
     private Integer commentsCount;
-    private Integer viewsCount;
+    private Integer viewsCount = 0;
     private StatusDto originStatus;
 
     public String getId() {

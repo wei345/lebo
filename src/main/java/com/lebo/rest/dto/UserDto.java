@@ -14,7 +14,6 @@ import java.util.Date;
 public class UserDto {
     private String id;
     private String screenName;
-    private String name;
     private String profileImageUrl;
     //TODO 日期转为UTC格式，如：Mon Nov 29 21:18:15 +0000 2010
     private Date createdAt;
@@ -25,8 +24,9 @@ public class UserDto {
     private Integer friendsCount;
     //TODO 填充全部字段
     private Integer statusesCount;
+    private Integer favoritesCount;
     private Integer beFavoritedCount;
-    private Integer viewsCount;
+    private Integer viewsCount = 0;
 
     public String getId() {
         return id;
@@ -42,14 +42,6 @@ public class UserDto {
 
     public void setScreenName(String screenName) {
         this.screenName = screenName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getProfileImageUrl() {
@@ -114,5 +106,13 @@ public class UserDto {
 
     public void setViewsCount(Integer viewsCount) {
         this.viewsCount = viewsCount;
+    }
+
+    public Integer getFavoritesCount() {
+        return favoritesCount;
+    }
+
+    public void setFavoritesCount(Integer favoritesCount) {
+        this.favoritesCount = favoritesCount;
     }
 }

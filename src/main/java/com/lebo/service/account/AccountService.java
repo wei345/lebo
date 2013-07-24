@@ -52,6 +52,8 @@ public class AccountService extends AbstractMongoService {
     private SpyMemcachedClient spyMemcachedClient;
     @Autowired
     private GridFsService gridFsService;
+    @Autowired
+    private FavoriteService favoriteService;
 
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
@@ -130,7 +132,9 @@ public class AccountService extends AbstractMongoService {
             dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), user.getId()));
         }
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
+        dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
         dto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl(), null));
+        dto.setFavoritesCount(favoriteService.countUserFavorites(user.getId()));
 
         return dto;
     }
