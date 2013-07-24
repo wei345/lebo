@@ -15,18 +15,15 @@ public class UserDto {
     private String id;
     private String screenName;
     private String profileImageUrl;
-    //TODO 日期转为UTC格式，如：Mon Nov 29 21:18:15 +0000 2010
     private Date createdAt;
     private Boolean following;
-    //TODO 使用缓存处理followersCount，读通过，写通过
     private Integer followersCount;
     //TODO 不输出null字段
     private Integer friendsCount;
-    //TODO 填充全部字段
     private Integer statusesCount;
     private Integer favoritesCount;
     private Integer beFavoritedCount;
-    private Integer viewsCount = 0;
+    private Integer viewsCount;
 
     public String getId() {
         return id;

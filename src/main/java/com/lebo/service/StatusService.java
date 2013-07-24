@@ -68,7 +68,7 @@ public class StatusService extends AbstractMongoService {
     public Post update(String userId, String text, List<FileInfo> fileInfos, String originPostId, String source) throws Exception {
         List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
 
-        Post post = new Post();
+        Post post = Post.initial(new Post());
         post.setUserId(userId);
         post.setCreatedAt(new Date());
         post.setSource(source);

@@ -45,7 +45,7 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
 
         // 第一次登录，创建用户
         if (user == null) {
-            user = new User();
+            user = User.initial(new User());
             user.setScreenName(newScreenName((String) userInfo.get("name")));
             user.setName((String) userInfo.get("name"));
 

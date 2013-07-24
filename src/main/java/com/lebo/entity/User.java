@@ -80,6 +80,13 @@ public class User extends IdEntity {
         this.id = id;
     }
 
+    public static User initial(User user){
+        user.setFollowersCount(0);
+        user.setViewsCount(0);
+        user.setBeFavoritedCount(0);
+        return user;
+    }
+
     public String getProfileImageUrl() {
         return profileImageUrl;
     }

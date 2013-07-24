@@ -52,6 +52,11 @@ public class Post extends IdEntity {
     private Integer viewsCount;
     public static final String VIEWS_COUNT_KEY = "viewsCount";
 
+    public static Post initial(Post post){
+        post.setViewsCount(0);
+        return post;
+    }
+
     public String getUserId() {
         return userId;
     }
