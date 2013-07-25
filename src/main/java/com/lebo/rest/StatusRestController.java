@@ -5,12 +5,11 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.FileInfo;
-import com.lebo.service.param.StatusFilterParam;
-import com.lebo.service.param.TimelineParam;
+import com.lebo.service.param.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -91,7 +90,7 @@ public class StatusRestController {
         param.setUserId(accountService.getCurrentUserId());
         List<Post> postList = statusService.homeTimeline(param);
 
-        return statusService.toStatusDtoList(postList);
+        return statusService.toStatusDtos(postList);
     }
 
     /**
@@ -106,7 +105,7 @@ public class StatusRestController {
         param.setUserId(accountService.getCurrentUserId());
         List<Post> postList = statusService.userTimeline(param);
 
-        return statusService.toStatusDtoList(postList);
+        return statusService.toStatusDtos(postList);
     }
 
     @RequestMapping(value = "mentionsTimeline", method = RequestMethod.GET)
@@ -115,7 +114,7 @@ public class StatusRestController {
         param.setUserId(accountService.getCurrentUserId());
         List<Post> postList = statusService.mentionsTimeline(param);
 
-        return statusService.toStatusDtoList(postList);
+        return statusService.toStatusDtos(postList);
     }
 
 
@@ -128,8 +127,8 @@ public class StatusRestController {
     @RequestMapping(value = "repost", method = RequestMethod.POST)
     @ResponseBody
     public Object repost(@RequestParam("id") String id,
-                          @RequestParam(value = "text", required = false) String text,
-                          @RequestParam(value = "source", required = false) String source) {
+                         @RequestParam(value = "text", required = false) String text,
+                         @RequestParam(value = "source", required = false) String source) {
         try {
             Post post = statusService.findPost(id);
             if (post == null) {
@@ -163,6 +162,39 @@ public class StatusRestController {
     @RequestMapping(value = "filter", method = RequestMethod.GET)
     @ResponseBody
     public Object filter(@Valid StatusFilterParam param) {
-        return statusService.toStatusDtoList(statusService.searchPosts(param));
+        return statusService.toStatusDtos(statusService.filterPosts(param));
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    @ResponseBody
+    public Object search(@RequestParam(value = "q", required = false) String q,
+                         @RequestParam(value = "page", defaultValue = "0") int pageNo,
+                         @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size,
+                         @RequestParam(value = "orderBy", defaultValue = "_id") String orderBy,
+                         @RequestParam(value = "order", defaultValue = "desc") String order) {
+        if (orderBy.equals("id")) {
+            orderBy = "_id";
+        }
+
+        Sort.Direction direction;
+        if (order.equals("desc")) {
+            direction = Sort.Direction.DESC;
+        } else if (order.equals("asc")) {
+            direction = Sort.Direction.ASC;
+        } else {
+            return ErrorDto.badRequest(String.format("参数order值[%s]无效", order));
+        }
+
+        if (Post.FAVOURITES_COUNT_KEY.equals(orderBy) ||
+                Post.VIEWS_COUNT_KEY.equals(orderBy) ||
+                "_id".equals(orderBy)) {
+            //搜索
+            SearchParam param = new SearchParam(q, pageNo, size, direction, orderBy);
+            List<Post> posts = statusService.searchPosts(param);
+            return statusService.toStatusDtos(posts);
+
+        } else {
+            return ErrorDto.badRequest(String.format("参数orderBy值[%s]无效", orderBy));
+        }
     }
 }

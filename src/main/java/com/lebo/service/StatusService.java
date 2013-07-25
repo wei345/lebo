@@ -10,10 +10,7 @@ import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.FileInfo;
-import com.lebo.service.param.PaginationParam;
-import com.lebo.service.param.StatusFilterParam;
-import com.lebo.service.param.TimelineParam;
+import com.lebo.service.param.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,7 +194,7 @@ public class StatusService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId)), Post.class);
     }
 
-    public List<StatusDto> toStatusDtoList(List<Post> posts) {
+    public List<StatusDto> toStatusDtos(List<Post> posts) {
         List<StatusDto> dtoList = Lists.newArrayList();
         for (Post post : posts) {
             dtoList.add(toStatusDto(post));
@@ -205,7 +202,10 @@ public class StatusService extends AbstractMongoService {
         return dtoList;
     }
 
-    public List<Post> searchPosts(StatusFilterParam param) {
+    /**
+     * 按ID降序排序，按ID分页。
+     */
+    public List<Post> filterPosts(StatusFilterParam param) {
         List<Criteria> criteriaList = new ArrayList<Criteria>(5);
 
         if (StringUtils.isNotBlank(param.getFollow())) {
@@ -261,6 +261,17 @@ public class StatusService extends AbstractMongoService {
         }
         query.with(PaginationParam.DEFAULT_SORT).limit(param.getCount());
 
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    public List<Post> searchPosts(SearchParam param){
+        Query query = new Query();
+
+        if (StringUtils.isNotBlank(param.getQ())) {
+            query.addCriteria(new Criteria(Post.SEARCH_TERMS_KEY).is(param.getQ()));
+        }
+
+        query.with(param);
         return mongoTemplate.find(query, Post.class);
     }
 

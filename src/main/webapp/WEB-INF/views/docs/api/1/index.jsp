@@ -99,6 +99,14 @@
             过滤 - 可以指定一个或多个用户、指定hashtag、指定@某人、指定关键词
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/search" text="GET statuses/search"/>
+        </td>
+        <td>
+            搜索 - 可以按喜欢数、浏览数排序，可搜索hashtag、指定@某人、指定关键词
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>

@@ -74,6 +74,6 @@ public class FavoriteService extends AbstractMongoService {
             ids.add(favorites.get(i).getPostId());
         }
         List<Post> posts = statusService.findPosts(ids);
-        return statusService.toStatusDtoList(posts);
+        return statusService.toStatusDtos(posts);
     }
 }

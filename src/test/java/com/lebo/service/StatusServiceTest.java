@@ -108,19 +108,19 @@ public class StatusServiceTest extends SpringContextTestCase {
     public void searchPosts() {
         StatusFilterParam param = new StatusFilterParam();
         param.setTrack("杨过,标签1 2");
-        List<Post> posts = statusService.searchPosts(param);
+        List<Post> posts = statusService.filterPosts(param);
         assertTrue(posts.size() > 0);
         assertTrue(posts.get(0).getText().contains("杨过"));
 
         param.setFollow("51def1ce1a883914869e46f2,51def1e61a883914869e46f3");
         param.setTrack("@杨过, 标签");
-        posts = statusService.searchPosts(param);
+        posts = statusService.filterPosts(param);
         assertTrue(posts.size() > 0);
         assertTrue(posts.get(0).getText().contains("@杨过"));
 
         param.setFollow("51def1e61a883914869e46f3");
         param.setTrack("");
-        posts = statusService.searchPosts(param);
+        posts = statusService.filterPosts(param);
         assertTrue(posts.size() > 0);
         assertEquals("51def1e61a883914869e46f3", posts.get(0).getUserId());
     }

@@ -58,7 +58,7 @@ public class AccountService extends AbstractMongoService {
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
 
-        if (!StringUtils.isBlank(param.getQ())) {
+        if (StringUtils.isNotBlank(param.getQ())) {
             query.addCriteria(new Criteria(User.SCREEN_NAME_KEY).regex(param.getQ(), "i"));
         }
 
