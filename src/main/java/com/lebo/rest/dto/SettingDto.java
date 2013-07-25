@@ -13,6 +13,8 @@ import java.util.List;
 public class SettingDto {
     private List<Setting.Channel> channels = new ArrayList<Setting.Channel>();
     private String officialAccountId;
+    private Integer jingHuaDays;
+    private Integer reMenDays;
     private String guanZhu;
     private String reMen;
     private String jingHua;
@@ -82,5 +84,21 @@ public class SettingDto {
 
     public void setPiaoFangZuiGao(String piaoFangZuiGao) {
         this.piaoFangZuiGao = piaoFangZuiGao;
+    }
+
+    public Integer getJingHuaDays() {
+        return jingHuaDays;
+    }
+
+    public void setJingHuaDays(Integer jingHuaDays) {
+        this.jingHuaDays = jingHuaDays;
+    }
+
+    public Integer getReMenDays() {
+        return reMenDays;
+    }
+
+    public void setReMenDays(Integer reMenDays) {
+        this.reMenDays = reMenDays;
     }
 }

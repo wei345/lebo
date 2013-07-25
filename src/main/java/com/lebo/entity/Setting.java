@@ -119,6 +119,14 @@ public class Setting extends IdEntity {
         return piaoFangZuiGao;
     }
 
+    public Integer getReMenDays() {
+        return reMenDays;
+    }
+
+    public void setReMenDays(Integer reMenDays) {
+        this.reMenDays = reMenDays;
+    }
+
     public static class Channel {
         private String name;
         //statuses/filter参数
