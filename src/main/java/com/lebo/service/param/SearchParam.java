@@ -53,4 +53,6 @@ public class SearchParam extends PageRequest {
     public void setAfter(Date after) {
         this.after = after;
     }
+
+    //TODO 限制size和page
 }

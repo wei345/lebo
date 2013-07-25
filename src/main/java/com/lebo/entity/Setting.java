@@ -87,7 +87,7 @@ public class Setting extends IdEntity {
      * 精华。由乐播官方账号转发，最近多少天的内容
      */
     public String getJingHua() {
-        String url = "/api/1/statuses/filter";
+        String url = "/api/1/statuses/filter.json";
 
         List<String> param = new ArrayList<String>();
         if (StringUtils.isNotBlank(officialAccountId)) {

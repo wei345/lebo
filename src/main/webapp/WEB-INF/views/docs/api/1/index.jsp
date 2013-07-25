@@ -115,6 +115,22 @@
             搜索 - 可以按喜欢数、浏览数排序，可搜索hashtag、指定@某人、指定关键词
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/jingHua" text="GET statuses/jingHua"/>
+        </td>
+        <td>
+            精华 - 乐播官方账号转发，2天之内
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/reMen" text="GET statuses/reMen"/>
+        </td>
+        <td>
+            热门 - 按红心数(收藏数)排序，最近2天
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>

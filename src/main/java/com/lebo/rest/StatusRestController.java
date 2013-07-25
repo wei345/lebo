@@ -1,11 +1,14 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Post;
+import com.lebo.entity.Setting;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.DuplicateException;
+import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,9 +37,10 @@ public class StatusRestController {
     public static final int ONE_M_BYTE = 1024 * 1024;
     @Autowired
     private StatusService statusService;
-
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private SettingService settingService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
@@ -171,7 +176,8 @@ public class StatusRestController {
                          @RequestParam(value = "page", defaultValue = "0") int pageNo,
                          @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size,
                          @RequestParam(value = "orderBy", defaultValue = "_id") String orderBy,
-                         @RequestParam(value = "order", defaultValue = "desc") String order) {
+                         @RequestParam(value = "order", defaultValue = "desc") String order,
+                         @RequestParam(value = "after", required = false) Date after) {
         if (orderBy.equals("id")) {
             orderBy = "_id";
         }
@@ -190,11 +196,38 @@ public class StatusRestController {
                 "_id".equals(orderBy)) {
             //搜索
             SearchParam param = new SearchParam(q, pageNo, size, direction, orderBy);
+            param.setAfter(after);
             List<Post> posts = statusService.searchPosts(param);
             return statusService.toStatusDtos(posts);
 
         } else {
             return ErrorDto.badRequest(String.format("参数orderBy值[%s]无效", orderBy));
         }
+    }
+
+    @RequestMapping(value = "reMen", method = RequestMethod.GET)
+    @ResponseBody
+    public Object reMen(@RequestParam(value = "page", defaultValue = "0") int pageNo,
+                         @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
+        Setting setting = settingService.getSetting();
+        Date date = DateUtils.addDays(new Date(), setting.getReMenDays() * -1);
+        SearchParam param = new SearchParam(null, pageNo, size, Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY);
+        param.setAfter(date);
+
+        List<Post> posts = statusService.searchPosts(param);
+        return statusService.toStatusDtos(posts);
+    }
+
+    @RequestMapping(value = "jingHua", method = RequestMethod.GET)
+    @ResponseBody
+    public Object jingHua(@Valid StatusFilterParam param) {
+        Setting setting = settingService.getSetting();
+        Date date = DateUtils.addDays(new Date(), setting.getReMenDays() * -1);
+
+        param.setFollow(setting.getOfficialAccountId());
+        param.setAfter(date);
+
+        List<Post> posts = statusService.filterPosts(param);
+        return statusService.toStatusDtos(posts);
     }
 }
