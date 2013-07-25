@@ -205,12 +205,12 @@ public class StatusRestController {
         }
     }
 
-    @RequestMapping(value = "reMen", method = RequestMethod.GET)
+    @RequestMapping(value = "hot", method = RequestMethod.GET)
     @ResponseBody
-    public Object reMen(@RequestParam(value = "page", defaultValue = "0") int pageNo,
+    public Object hot(@RequestParam(value = "page", defaultValue = "0") int pageNo,
                          @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
         Setting setting = settingService.getSetting();
-        Date date = DateUtils.addDays(new Date(), setting.getReMenDays() * -1);
+        Date date = DateUtils.addDays(new Date(), setting.getHotDays() * -1);
         SearchParam param = new SearchParam(null, pageNo, size, Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY);
         param.setAfter(date);
 
@@ -218,11 +218,11 @@ public class StatusRestController {
         return statusService.toStatusDtos(posts);
     }
 
-    @RequestMapping(value = "jingHua", method = RequestMethod.GET)
+    @RequestMapping(value = "digest", method = RequestMethod.GET)
     @ResponseBody
-    public Object jingHua(@Valid StatusFilterParam param) {
+    public Object digest(@Valid StatusFilterParam param) {
         Setting setting = settingService.getSetting();
-        Date date = DateUtils.addDays(new Date(), setting.getReMenDays() * -1);
+        Date date = DateUtils.addDays(new Date(), setting.getHotDays() * -1);
 
         param.setFollow(setting.getOfficialAccountId());
         param.setAfter(date);

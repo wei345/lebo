@@ -18,10 +18,10 @@
             </div>
         </div>
         <div class="control-group">
-            <label for="jingHuaDays" class="control-label">"精华"几天内的内容:</label>
+            <label for="digestDays" class="control-label">"精华"几天内的内容:</label>
 
             <div class="controls">
-                <input type="text" id="jingHuaDays" name="jingHuaDays" value="${setting.jingHuaDays}"
+                <input type="text" id="digestDays" name="digestDays" value="${setting.digestDays}"
                        class="input-large required"/>
             </div>
         </div>

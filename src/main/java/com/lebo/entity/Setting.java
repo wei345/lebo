@@ -23,16 +23,9 @@ public class Setting extends IdEntity {
     private List<Channel> channels = new ArrayList<Channel>();
     private String officialAccountId;
 
-    private Integer jingHuaDays = 2;
-    private Integer reMenDays = 2;
+    private Integer digestDays = 2;
+    private Integer hotDays = 2;
     private LinkedHashSet<String> digestFollow;
-
-    private String guanZhu = "/api/1/statuses/homeTimeline.json"; //关注
-    private String reMen;   //热门。
-    private String jingHua; //精华
-    private String fenSiZuiDuo = "/api/1/users/search.json?orderBy=followersCount&order=desc"; //粉丝最多
-    private String zuiShouXiHuan = "/api/1/users/search.json?orderBy=beFavoritedCount&order=desc"; //最受喜欢
-    private String piaoFangZuiGao = "/api/1/users/search.json?orderBy=viewsCount&order=desc";//票房最高
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -50,16 +43,12 @@ public class Setting extends IdEntity {
         this.channels = channels;
     }
 
-    public Integer getJingHuaDays() {
-        return jingHuaDays;
+    public Integer getDigestDays() {
+        return digestDays;
     }
 
-    public void setJingHuaDays(Integer jingHuaDays) {
-        this.jingHuaDays = jingHuaDays;
-    }
-
-    public String getGuanZhu() {
-        return guanZhu;
+    public void setDigestDays(Integer digestDays) {
+        this.digestDays = digestDays;
     }
 
     /**
@@ -72,8 +61,8 @@ public class Setting extends IdEntity {
         param.add("orderBy=favoritesCount");
         param.add("order=desc");
 
-        if (reMenDays != null) {
-            Date date = DateUtils.addDays(new Date(), reMenDays * -1);
+        if (hotDays != null) {
+            Date date = DateUtils.addDays(new Date(), hotDays * -1);
             String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
             param.add("after=" + Encodes.urlEncode(dateStr));
         }
@@ -96,8 +85,8 @@ public class Setting extends IdEntity {
             param.add("follow=" + officialAccountId);
         }
 
-        if (jingHuaDays != null) {
-            Date date = DateUtils.addDays(new Date(), jingHuaDays * -1);
+        if (digestDays != null) {
+            Date date = DateUtils.addDays(new Date(), digestDays * -1);
             String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
             param.add("after=" + Encodes.urlEncode(dateStr));
         }
@@ -109,24 +98,12 @@ public class Setting extends IdEntity {
         return url;
     }
 
-    public String getFenSiZuiDuo() {
-        return fenSiZuiDuo;
+    public Integer getHotDays() {
+        return hotDays;
     }
 
-    public String getZuiShouXiHuan() {
-        return zuiShouXiHuan;
-    }
-
-    public String getPiaoFangZuiGao() {
-        return piaoFangZuiGao;
-    }
-
-    public Integer getReMenDays() {
-        return reMenDays;
-    }
-
-    public void setReMenDays(Integer reMenDays) {
-        this.reMenDays = reMenDays;
+    public void setHotDays(Integer hotDays) {
+        this.hotDays = hotDays;
     }
 
     public LinkedHashSet<String> getDigestFollow() {

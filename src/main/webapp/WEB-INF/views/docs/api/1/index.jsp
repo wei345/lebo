@@ -44,7 +44,7 @@
             <tags:link url="${ctx}/docs/api/1/get/settings/settings" text="GET settings"/>
         </td>
         <td>
-            设置 - 频道列表、精华内容URL
+            返回全部设置
         </td>
     </tr>
     <tr>
@@ -52,7 +52,7 @@
             <tags:link url="${ctx}/docs/api/1/get/settings/channels" text="GET settings/channels"/>
         </td>
         <td>
-            设置 - 频道列表、精华内容URL
+            返回频道列表
         </td>
     </tr>
 </table>
@@ -117,7 +117,7 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/statuses/jingHua" text="GET statuses/jingHua"/>
+            <tags:link url="${ctx}/docs/api/1/get/statuses/digest" text="GET statuses/digest"/>
         </td>
         <td>
             精华 - 乐播官方账号转发，2天之内
@@ -125,7 +125,7 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/statuses/reMen" text="GET statuses/reMen"/>
+            <tags:link url="${ctx}/docs/api/1/get/statuses/hot" text="GET statuses/hot"/>
         </td>
         <td>
             热门 - 按红心数(收藏数)排序，最近2天
