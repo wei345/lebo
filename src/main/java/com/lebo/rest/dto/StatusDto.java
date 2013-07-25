@@ -2,7 +2,6 @@ package com.lebo.rest.dto;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -28,7 +27,8 @@ public class StatusDto {
     private StatusDto originStatus;
     //最近3条评论
     private List<CommentDto> comments;
-    private HashSet<String> userMentions;
+    private List<UserDto> userMentions;
+    private Boolean digested;//是否已被加精
 
     public String getId() {
         return id;
@@ -142,12 +142,20 @@ public class StatusDto {
         this.comments = comments;
     }
 
-    public HashSet<String> getUserMentions() {
+    public List<UserDto> getUserMentions() {
         return userMentions;
     }
 
-    public void setUserMentions(HashSet<String> userMentions) {
+    public void setUserMentions(List<UserDto> userMentions) {
         this.userMentions = userMentions;
+    }
+
+    public Boolean getDigested() {
+        return digested;
+    }
+
+    public void setDigested(Boolean digested) {
+        this.digested = digested;
     }
 
     public static class FileInfoDto {

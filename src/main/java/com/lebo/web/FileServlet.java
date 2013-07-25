@@ -41,6 +41,8 @@ public class FileServlet extends HttpServlet {
 
     private Logger logger = LoggerFactory.getLogger(FileServlet.class);
 
+    public static String POST_ID_KEY = "postId";
+
     /**
      * 需要被Gzip压缩的Mime类型.
      */
@@ -64,7 +66,7 @@ public class FileServlet extends HttpServlet {
         Assert.isTrue(request.getPathInfo().length() > 1, "Incorrect Request Path");
 
         String fileId = request.getPathInfo().substring(1);
-        String postId = request.getParameter("postId");
+        String postId = request.getParameter(POST_ID_KEY);
 
         //获取请求内容的基本信息.
         FileInfo contentInfo;

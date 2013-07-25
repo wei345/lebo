@@ -1,17 +1,17 @@
 package com.lebo.service;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.lebo.entity.Comment;
-import com.lebo.entity.Following;
-import com.lebo.entity.Post;
-import com.lebo.entity.User;
+import com.lebo.entity.*;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.StatusDto;
+import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
+import com.lebo.web.FileServlet;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.io.IOException;
@@ -53,6 +54,8 @@ public class StatusService extends AbstractMongoService {
     private Segmentation segmentation;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private SettingService settingService;
 
 
     /**
@@ -167,17 +170,36 @@ public class StatusService extends AbstractMongoService {
             dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
             dto.setCommentsCount(commentService.countPostComments(post.getId()));
 
+            //文件
             List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
             for (String fileId : post.getFiles()) {
-                fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?postId=" + post.getId()));
+                fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
             }
             dto.setFiles(fileInfoDtos);
 
+            //前3条评论
             CommentShowParam commentShowParam = new CommentShowParam();
             commentShowParam.setCount(3);
             commentShowParam.setPostId(post.getId());
             List<Comment> comments = commentService.show(commentShowParam);
             dto.setComments(commentService.toCommentDtos(comments));
+
+            //提到的用户
+            if(!CollectionUtils.isEmpty(post.getUserMentions())){
+                List<UserDto> userMetions = new ArrayList<UserDto>(post.getUserMentions().size());
+                for (String userId : post.getUserMentions()) {
+                    User user = accountService.getUser(userId);
+                    UserDto userDto = new UserDto();
+                    userDto.setId(user.getId());
+                    userDto.setScreenName(user.getScreenName());
+                    userMetions.add(userDto);
+                }
+                dto.setUserMentions(userMetions);
+            }
+
+            //是否是加精的
+            Setting setting = settingService.getSetting();
+            dto.setDigested(setting.getDigestFollow().contains(post.getUserId()));
         }
         // 嵌入转发的POST
         else {
@@ -271,7 +293,7 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
-    public List<Post> searchPosts(SearchParam param){
+    public List<Post> searchPosts(SearchParam param) {
         Query query = new Query();
 
         if (StringUtils.isNotBlank(param.getQ())) {
@@ -354,7 +376,7 @@ public class StatusService extends AbstractMongoService {
     private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
 
     public LinkedHashSet<String> mentionScreenNames(String text, boolean trimAt) {
-        if(StringUtils.isBlank(text)){
+        if (StringUtils.isBlank(text)) {
             return new LinkedHashSet<String>(1);
         }
         Matcher m = mentionPattern.matcher(text);
@@ -381,7 +403,7 @@ public class StatusService extends AbstractMongoService {
     private Pattern tagPattern = Pattern.compile("#([^#@\\s]+)#");
 
     public LinkedHashSet<String> findHashtags(String text) {
-        if(StringUtils.isBlank(text)){
+        if (StringUtils.isBlank(text)) {
             return new LinkedHashSet<String>(1);
         }
         Matcher m = tagPattern.matcher(text);

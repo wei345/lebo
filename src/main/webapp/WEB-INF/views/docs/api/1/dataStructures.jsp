@@ -173,7 +173,18 @@
             array
         </td>
         <td>
-            提到的用户ID
+            提到的用户
+        </td>
+    </tr>
+    <tr>
+        <td>
+            digested
+        </td>
+        <td>
+            boolean
+        </td>
+        <td>
+            是否已被加精
         </td>
     </tr>
 </table>

@@ -8,6 +8,7 @@ import org.springside.modules.utils.Encodes;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class Setting extends IdEntity {
 
     private Integer jingHuaDays = 2;
     private Integer reMenDays = 2;
+    private LinkedHashSet<String> digestFollow;
 
     private String guanZhu = "/api/1/statuses/homeTimeline.json"; //关注
     private String reMen;   //热门。
@@ -125,6 +127,14 @@ public class Setting extends IdEntity {
 
     public void setReMenDays(Integer reMenDays) {
         this.reMenDays = reMenDays;
+    }
+
+    public LinkedHashSet<String> getDigestFollow() {
+        return digestFollow;
+    }
+
+    public void setDigestFollow(LinkedHashSet<String> digestFollow) {
+        this.digestFollow = digestFollow;
     }
 
     public static class Channel {
