@@ -23,6 +23,7 @@ public class Post extends IdEntity {
     @Indexed
     private String userId;
     public static final String USER_ID_KEY = "userId";
+    @Indexed
     private Date createdAt;
     public static final String CREATED_AT_KEY = "createdAt";
 

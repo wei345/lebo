@@ -2,6 +2,7 @@ package com.lebo.rest.dto;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -25,6 +26,9 @@ public class StatusDto {
     private Integer commentsCount;
     private Integer viewsCount;
     private StatusDto originStatus;
+    //最近3条评论
+    private List<CommentDto> comments;
+    private HashSet<String> userMentions;
 
     public String getId() {
         return id;
@@ -128,6 +132,22 @@ public class StatusDto {
 
     public void setViewsCount(Integer viewsCount) {
         this.viewsCount = viewsCount;
+    }
+
+    public List<CommentDto> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDto> comments) {
+        this.comments = comments;
+    }
+
+    public HashSet<String> getUserMentions() {
+        return userMentions;
+    }
+
+    public void setUserMentions(HashSet<String> userMentions) {
+        this.userMentions = userMentions;
     }
 
     public static class FileInfoDto {

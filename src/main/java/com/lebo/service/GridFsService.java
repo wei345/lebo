@@ -128,6 +128,10 @@ public class GridFsService extends AbstractMongoService {
         return fileId;
     }
 
+    public static String getContentUrl(String fileId) {
+        return getContentUrl(fileId, null);
+    }
+
     public StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix) {
         GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
 

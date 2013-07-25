@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="com.lebo.rest.dto.ErrorDto" %>
 <%response.setStatus(500);%>
 <%
     Throwable ex = null;
@@ -17,7 +18,7 @@
 <%
     String uri = (String) request.getAttribute("javax.servlet.forward.request_uri");
     if (uri != null && (uri.endsWith(".json") || uri.startsWith("/api"))) {
-        response.getWriter().write(com.lebo.rest.dto.ErrorDto.newInternalServerError(ex.getMessage()).toJson());
+        response.getWriter().write(ErrorDto.INTERNAL_SERVER_ERROR.toJson());
     } else {
 %>
 

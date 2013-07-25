@@ -59,7 +59,7 @@ public class CommentRestController {
         } catch (DuplicateException e) {
             return ErrorDto.duplicate();
         } catch (Exception e) {
-            logger.info("发布Post失败", e);
+            logger.info("发布评论失败", e);
             return ErrorDto.internalServerError(e.getMessage());
         }
     }
@@ -67,6 +67,6 @@ public class CommentRestController {
     @RequestMapping(value = "show", method = RequestMethod.GET)
     @ResponseBody
     public Object show(@Valid CommentShowParam param) {
-        return commentService.show(param);
+        return commentService.toCommentDtos(commentService.show(param));
     }
 }

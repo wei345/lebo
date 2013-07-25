@@ -34,6 +34,7 @@ public class User extends IdEntity {
     // The user-defined describing their account.
     private String description;
     private String profileImageUrl;
+    @Indexed
     private Date createdAt;
     private Boolean verified;
     private String location;

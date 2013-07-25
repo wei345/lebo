@@ -1,6 +1,7 @@
 package com.lebo.service;
 
 import com.google.common.collect.Lists;
+import com.lebo.entity.Comment;
 import com.lebo.entity.Following;
 import com.lebo.entity.Post;
 import com.lebo.entity.User;
@@ -171,6 +172,12 @@ public class StatusService extends AbstractMongoService {
                 fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?postId=" + post.getId()));
             }
             dto.setFiles(fileInfoDtos);
+
+            CommentShowParam commentShowParam = new CommentShowParam();
+            commentShowParam.setCount(3);
+            commentShowParam.setPostId(post.getId());
+            List<Comment> comments = commentService.show(commentShowParam);
+            dto.setComments(commentService.toCommentDtos(comments));
         }
         // 嵌入转发的POST
         else {

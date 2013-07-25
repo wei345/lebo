@@ -133,7 +133,7 @@ public class AccountService extends AbstractMongoService {
         }
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
         dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
-        dto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl(), null));
+        dto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
         dto.setFavoritesCount(favoriteService.countUserFavorites(user.getId()));
 
         return dto;

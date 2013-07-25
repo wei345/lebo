@@ -78,7 +78,7 @@ public class ShiroUser implements Serializable {
     }
 
     public String getProfileImageUrl() {
-        return GridFsService.getContentUrl(profileImageUrl, null);
+        return GridFsService.getContentUrl(profileImageUrl);
     }
 
     public String getProvider() {

@@ -1,14 +1,22 @@
 package com.lebo.service;
 
 import com.lebo.entity.Comment;
+import com.lebo.entity.User;
 import com.lebo.repository.CommentDao;
+import com.lebo.rest.dto.CommentDto;
+import com.lebo.rest.dto.StatusDto;
+import com.lebo.rest.dto.UserDto;
+import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentShowParam;
 import com.lebo.service.param.FileInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springside.modules.mapper.BeanMapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +33,8 @@ public class CommentService extends AbstractMongoService {
     private GridFsService gridFsService;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * @throws com.mongodb.MongoException 当存储数据失败时
@@ -52,5 +62,39 @@ public class CommentService extends AbstractMongoService {
 
     public List<Comment> show(CommentShowParam param) {
         return commentDao.findByPostId(param.getPostId(), param);
+    }
+
+    public CommentDto toCommentDto(Comment comment){
+        CommentDto dto = BeanMapper.map(comment, CommentDto.class);
+
+        List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
+        for (String fileId : comment.getFiles()) {
+            fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, null));
+        }
+        dto.setFiles(fileInfoDtos);
+
+        for(StatusDto.FileInfoDto file : fileInfoDtos){
+            if(StringUtils.startsWith(file.getContentType(), "video/")){
+                dto.setHasVideo(true);
+                break;
+            }
+        }
+
+        User user = accountService.getUser(comment.getUserId());
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setScreenName(user.getScreenName());
+        userDto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
+        dto.setUser(userDto);
+
+        return dto;
+    }
+
+    public List<CommentDto> toCommentDtos(List<Comment> comments){
+        List<CommentDto> dtos = new ArrayList<CommentDto>(comments.size());
+        for(Comment comment : comments){
+            dtos.add(toCommentDto(comment));
+        }
+        return dtos;
     }
 }
