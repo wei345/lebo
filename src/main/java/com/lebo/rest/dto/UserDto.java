@@ -14,6 +14,7 @@ import java.util.Date;
 public class UserDto {
     private String id;
     private String screenName;
+    private String description;
     private String profileImageUrl;
     private Date createdAt;
     private Boolean following;
@@ -111,5 +112,13 @@ public class UserDto {
 
     public void setFavoritesCount(Integer favoritesCount) {
         this.favoritesCount = favoritesCount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
