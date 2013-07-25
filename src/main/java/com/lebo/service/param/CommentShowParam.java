@@ -2,7 +2,7 @@ package com.lebo.service.param;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-public class ShowCommentParam extends PaginationParam {
+public class CommentShowParam extends PaginationParam {
     private String postId;
 
     @NotBlank
