@@ -26,6 +26,14 @@
                         <property name="dateFormat">
                             <util:constant static-field="com.lebo.web.ControllerSetup.DEFAULT_DATE_FORMAT"/>
                         </property>
+                        <property name="indentOutput" value="true"/>
+                        <property name="objectMapper">
+                            <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                                <property name="serializationInclusion">
+                                    <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+                                </property>
+                            </bean>
+                        </property>
                     </bean>
                 </property>
             </bean>
