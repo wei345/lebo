@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <p>
-    获取应用设置，包括频道列表、精华内容URL。
+    频道列表
 </p>
 <tags:form name="选项" method="GET" action="${ctx}/api/1/settings/channels.json">
 </tags:form>
