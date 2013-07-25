@@ -37,6 +37,8 @@ public class User extends IdEntity {
     @Indexed
     private Date createdAt;
     private Boolean verified;
+    //是否是新浪微博认证用户，即加V用户
+    private Boolean weiboVerified;
     private String location;
     private String timeZone;
 
@@ -242,6 +244,14 @@ public class User extends IdEntity {
 
     public void setViewsCount(Integer viewsCount) {
         this.viewsCount = viewsCount;
+    }
+
+    public Boolean getWeiboVerified() {
+        return weiboVerified;
+    }
+
+    public void setWeiboVerified(Boolean weiboVerified) {
+        this.weiboVerified = weiboVerified;
     }
 
     @Override

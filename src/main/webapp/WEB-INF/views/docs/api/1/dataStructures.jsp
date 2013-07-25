@@ -318,6 +318,28 @@
             该用户发布的乐播被播放的次数
         </td>
     </tr>
+    <tr>
+        <td>
+            weiboVerified
+        </td>
+        <td>
+            boolean
+        </td>
+        <td>
+            是否是新浪微博认证用户，即加V用户
+        </td>
+    </tr>
+    <tr>
+        <td>
+            blocking
+        </td>
+        <td>
+            boolean
+        </td>
+        <td>
+            当前登录用户是否已将该用户加入黑名单
+        </td>
+    </tr>
 </table>
 
 <strong>error</strong>

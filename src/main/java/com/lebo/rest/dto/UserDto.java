@@ -25,6 +25,9 @@ public class UserDto {
     private Integer favoritesCount;
     private Integer beFavoritedCount;
     private Integer viewsCount;
+    private Boolean weiboVerified;
+    //当前登录用户是否已将该用户加入黑名单
+    private Boolean blocking;
 
     public String getId() {
         return id;
@@ -120,5 +123,21 @@ public class UserDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getWeiboVerified() {
+        return weiboVerified;
+    }
+
+    public void setWeiboVerified(Boolean weiboVerified) {
+        this.weiboVerified = weiboVerified;
+    }
+
+    public Boolean getBlocking() {
+        return blocking;
+    }
+
+    public void setBlocking(Boolean blocking) {
+        this.blocking = blocking;
     }
 }

@@ -54,6 +54,8 @@ public class AccountService extends AbstractMongoService {
     private GridFsService gridFsService;
     @Autowired
     private FavoriteService favoriteService;
+    @Autowired
+    private BlockService blockService;
 
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
@@ -135,6 +137,7 @@ public class AccountService extends AbstractMongoService {
         dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
         dto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
         dto.setFavoritesCount(favoriteService.countUserFavorites(user.getId()));
+        dto.setBlocking(blockService.isBlocked(getCurrentUserId(), user.getId()));
 
         return dto;
     }

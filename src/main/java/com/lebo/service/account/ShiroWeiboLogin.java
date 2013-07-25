@@ -62,6 +62,8 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
+            Boolean weiboVerified = (Boolean)userInfo.get("verified");
+            user.setWeiboVerified(weiboVerified);
             user.setLastSignInAt(user.getCreatedAt());
             user = accountService.saveUser(user);
         } else {

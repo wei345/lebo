@@ -71,6 +71,11 @@ public class UserRestController {
                        @RequestParam(value = "screenName", required = false) String screenName) {
         String id = accountService.getUserId(userId, screenName);
         User user = accountService.getUser(id);
+
+        if(user == null){
+            return ErrorDto.notFound();
+        }
+
         return accountService.toUserDto(user);
     }
 }
