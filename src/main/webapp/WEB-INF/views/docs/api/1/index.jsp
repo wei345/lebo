@@ -41,7 +41,15 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/settings" text="GET settings"/>
+            <tags:link url="${ctx}/docs/api/1/get/settings/settings" text="GET settings"/>
+        </td>
+        <td>
+            设置 - 频道列表、精华内容URL
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/settings/channels" text="GET settings/channels"/>
         </td>
         <td>
             设置 - 频道列表、精华内容URL

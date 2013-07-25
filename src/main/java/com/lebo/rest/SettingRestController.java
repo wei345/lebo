@@ -27,4 +27,11 @@ public class SettingRestController {
         Setting setting = settingService.getSetting();
         return BeanMapper.map(setting, SettingDto.class);
     }
+
+    @RequestMapping(value = "channels", method = RequestMethod.GET)
+    @ResponseBody
+    public Object channels() {
+        Setting setting = settingService.getSetting();
+        return setting.getChannels();
+    }
 }
