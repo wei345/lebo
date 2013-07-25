@@ -271,6 +271,10 @@ public class StatusService extends AbstractMongoService {
             query.addCriteria(new Criteria(Post.SEARCH_TERMS_KEY).is(param.getQ()));
         }
 
+        if (param.getAfter() != null) {
+            query.addCriteria(new Criteria(Post.CREATED_AT_KEY).gte(param.getAfter()));
+        }
+
         query.with(param);
         return mongoTemplate.find(query, Post.class);
     }

@@ -13,7 +13,12 @@ import java.util.List;
 public class SettingDto {
     private List<Setting.Channel> channels = new ArrayList<Setting.Channel>();
     private String officialAccountId;
-    private String bestContentUrl;
+    private String guanZhu;
+    private String reMen;
+    private String jingHua;
+    private String fenSiZuiDuo;
+    private String zuiShouXiHuan;
+    private String piaoFangZuiGao;
 
     public List<Setting.Channel> getChannels() {
         return channels;
@@ -31,11 +36,51 @@ public class SettingDto {
         this.officialAccountId = officialAccountId;
     }
 
-    public String getBestContentUrl() {
-        return bestContentUrl;
+    public String getGuanZhu() {
+        return guanZhu;
     }
 
-    public void setBestContentUrl(String bestContentUrl) {
-        this.bestContentUrl = bestContentUrl;
+    public void setGuanZhu(String guanZhu) {
+        this.guanZhu = guanZhu;
+    }
+
+    public String getReMen() {
+        return reMen;
+    }
+
+    public void setReMen(String reMen) {
+        this.reMen = reMen;
+    }
+
+    public String getJingHua() {
+        return jingHua;
+    }
+
+    public void setJingHua(String jingHua) {
+        this.jingHua = jingHua;
+    }
+
+    public String getFenSiZuiDuo() {
+        return fenSiZuiDuo;
+    }
+
+    public void setFenSiZuiDuo(String fenSiZuiDuo) {
+        this.fenSiZuiDuo = fenSiZuiDuo;
+    }
+
+    public String getZuiShouXiHuan() {
+        return zuiShouXiHuan;
+    }
+
+    public void setZuiShouXiHuan(String zuiShouXiHuan) {
+        this.zuiShouXiHuan = zuiShouXiHuan;
+    }
+
+    public String getPiaoFangZuiGao() {
+        return piaoFangZuiGao;
+    }
+
+    public void setPiaoFangZuiGao(String piaoFangZuiGao) {
+        this.piaoFangZuiGao = piaoFangZuiGao;
     }
 }

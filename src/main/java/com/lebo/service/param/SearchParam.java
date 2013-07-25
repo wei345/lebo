@@ -3,6 +3,8 @@ package com.lebo.service.param;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.Date;
+
 /**
  * @author: Wei Liu
  * Date: 13-7-9
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Sort;
  */
 public class SearchParam extends PageRequest {
     private String q;
+    private Date after;
     //备用字段
     //private String geocode;    //Example Values: 37.781157,-122.398720,1mi
     //private Date until;
@@ -41,5 +44,13 @@ public class SearchParam extends PageRequest {
 
     public void setQ(String q) {
         this.q = q;
+    }
+
+    public Date getAfter() {
+        return after;
+    }
+
+    public void setAfter(Date after) {
+        this.after = after;
     }
 }

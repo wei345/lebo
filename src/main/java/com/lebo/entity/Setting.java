@@ -1,8 +1,13 @@
 package com.lebo.entity;
 
+import com.lebo.web.ControllerSetup;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springside.modules.utils.Encodes;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,10 +21,16 @@ import java.util.List;
 public class Setting extends IdEntity {
     private List<Channel> channels = new ArrayList<Channel>();
     private String officialAccountId;
-    //精华。由乐播官方账号转发，最近多少天的内容
-    private Integer bestContentDays;
-    //热门。按红心数(收藏数)排序，最近2天
-    private String reMen;
+
+    private Integer jingHuaDays = 2;
+    private Integer reMenDays = 2;
+
+    private String guanZhu = "/api/1/statuses/homeTimeline.json"; //关注
+    private String reMen;   //热门。
+    private String jingHua; //精华
+    private String fenSiZuiDuo = "/api/1/users/search.json?orderBy=followersCount&order=desc"; //粉丝最多
+    private String zuiShouXiHuan = "/api/1/users/search.json?orderBy=beFavoritedCount&order=desc"; //最受喜欢
+    private String piaoFangZuiGao = "/api/1/users/search.json?orderBy=viewsCount&order=desc";//票房最高
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -37,12 +48,75 @@ public class Setting extends IdEntity {
         this.channels = channels;
     }
 
-    public Integer getBestContentDays() {
-        return bestContentDays;
+    public Integer getJingHuaDays() {
+        return jingHuaDays;
     }
 
-    public void setBestContentDays(Integer bestContentDays) {
-        this.bestContentDays = bestContentDays;
+    public void setJingHuaDays(Integer jingHuaDays) {
+        this.jingHuaDays = jingHuaDays;
+    }
+
+    public String getGuanZhu() {
+        return guanZhu;
+    }
+
+    /**
+     * 热门。按红心数(收藏数)排序，最近2天
+     */
+    public String getReMen() {
+        String url = "/api/1/statuses/search.json";
+
+        List<String> param = new ArrayList<String>();
+        param.add("orderBy=favoritesCount");
+        param.add("order=desc");
+
+        if (reMenDays != null) {
+            Date date = DateUtils.addDays(new Date(), reMenDays * -1);
+            String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
+            param.add("after=" + Encodes.urlEncode(dateStr));
+        }
+
+        if (param.size() > 0) {
+            url += "?" + StringUtils.join(param, "&");
+        }
+
+        return url;
+    }
+
+    /**
+     * 精华。由乐播官方账号转发，最近多少天的内容
+     */
+    public String getJingHua() {
+        String url = "/api/1/statuses/filter";
+
+        List<String> param = new ArrayList<String>();
+        if (StringUtils.isNotBlank(officialAccountId)) {
+            param.add("follow=" + officialAccountId);
+        }
+
+        if (jingHuaDays != null) {
+            Date date = DateUtils.addDays(new Date(), jingHuaDays * -1);
+            String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
+            param.add("after=" + Encodes.urlEncode(dateStr));
+        }
+
+        if (param.size() > 0) {
+            url += "?" + StringUtils.join(param, "&");
+        }
+
+        return url;
+    }
+
+    public String getFenSiZuiDuo() {
+        return fenSiZuiDuo;
+    }
+
+    public String getZuiShouXiHuan() {
+        return zuiShouXiHuan;
+    }
+
+    public String getPiaoFangZuiGao() {
+        return piaoFangZuiGao;
     }
 
     public static class Channel {
