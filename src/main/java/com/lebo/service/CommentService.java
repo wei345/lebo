@@ -73,6 +73,7 @@ public class CommentService extends AbstractMongoService {
         }
         dto.setFiles(fileInfoDtos);
 
+        //是否为视频回复
         for(StatusDto.FileInfoDto file : fileInfoDtos){
             if(StringUtils.startsWith(file.getContentType(), "video/")){
                 dto.setHasVideo(true);
@@ -80,11 +81,13 @@ public class CommentService extends AbstractMongoService {
             }
         }
 
+        //评论的作者信息
         User user = accountService.getUser(comment.getUserId());
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setScreenName(user.getScreenName());
         userDto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
+        userDto.setDescription(user.getDescription());
         dto.setUser(userDto);
 
         return dto;

@@ -154,6 +154,28 @@
             原始乐播，当该乐播是转发的才有值
         </td>
     </tr>
+    <tr>
+        <td>
+            comments
+        </td>
+        <td>
+            array
+        </td>
+        <td>
+            前3条评论
+        </td>
+    </tr>
+    <tr>
+        <td>
+            userMentions
+        </td>
+        <td>
+            array
+        </td>
+        <td>
+            提到的用户ID
+        </td>
+    </tr>
 </table>
 
 <strong>用户</strong>
@@ -183,6 +205,17 @@
         </td>
         <td>
             唯一的显示名
+        </td>
+    </tr>
+    <tr>
+        <td>
+            description
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            用户个性签名
         </td>
     </tr>
     <tr>
