@@ -19,7 +19,6 @@ public class UserDto {
     private Date createdAt;
     private Boolean following;
     private Integer followersCount;
-    //TODO 不输出null字段
     private Integer friendsCount;
     private Integer statusesCount;
     private Integer favoritesCount;

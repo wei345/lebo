@@ -145,4 +145,10 @@ public class StatusServiceTest extends SpringContextTestCase {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ", Locale.CHINA);
         assertEquals("2013-07-22 12:08:58 +0800", dateFormat.format(date));
     }
+
+    @Test
+    public void isReposted(){
+       assertTrue(statusService.isRepost("51dfd3d21a8855744379891f","51df9f8d1a8899de19ebe351"));
+       assertFalse(statusService.isRepost("51dfd3d21a8855744379891f","51ee22a01a88ab951db570c6"));
+    }
 }

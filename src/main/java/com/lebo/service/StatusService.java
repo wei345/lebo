@@ -121,27 +121,6 @@ public class StatusService extends AbstractMongoService {
         return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
-    /**
-     * hot列表
-     *
-     * @param param
-     * @return
-     */
-    public List<Post> hotTimeline(TimelineParam param) {
-        Assert.hasText(param.getUserId(), "The userId can not be null");
-        // 一次取出所有follows？如果数量很多怎么办？少峰 2013.07.18
-        List<Following> followingList = followingDao.findByUserId(param.getUserId());
-
-        List<String> followingIdList = new ArrayList<String>(followingList.size() + 1);
-        for (Following following : followingList) {
-            followingIdList.add(following.getFollowingId());
-        }
-
-        followingIdList.add(param.getUserId());
-
-        return postDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
-    }
-
     public Post findPost(String id) {
         return postDao.findOne(id);
     }
@@ -196,6 +175,9 @@ public class StatusService extends AbstractMongoService {
                 }
                 dto.setUserMentions(userMetions);
             }
+
+            //是否被当前登录用户转发
+            dto.setReposted(isReposted(accountService.getCurrentUserId(), post.getId()));
 
             //是否是加精的
             Setting setting = settingService.getSetting();
@@ -429,7 +411,10 @@ public class StatusService extends AbstractMongoService {
     }
 
     public boolean isReposted(String userId, String postId) {
-        return postDao.findByUserIdAndOriginPostId(userId, postId) != null;
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId));
+        return mongoTemplate.count(query, Post.class) > 0;
     }
 
     //增长浏览数
