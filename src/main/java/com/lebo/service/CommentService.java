@@ -83,12 +83,7 @@ public class CommentService extends AbstractMongoService {
 
         //评论的作者信息
         User user = accountService.getUser(comment.getUserId());
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setScreenName(user.getScreenName());
-        userDto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
-        userDto.setDescription(user.getDescription());
-        dto.setUser(userDto);
+        dto.setUser(accountService.toUserDto(user));
 
         return dto;
     }
