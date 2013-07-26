@@ -1,14 +1,12 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Setting;
-import com.lebo.rest.dto.SettingDto;
 import com.lebo.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springside.modules.mapper.BeanMapper;
 
 /**
  * @author: Wei Liu
@@ -25,13 +23,13 @@ public class SettingRestController {
     @ResponseBody
     public Object get() {
         Setting setting = settingService.getSetting();
-        return BeanMapper.map(setting, SettingDto.class);
+        return settingService.toSettingDto(setting);
     }
 
     @RequestMapping(value = "channels", method = RequestMethod.GET)
     @ResponseBody
     public Object channels() {
         Setting setting = settingService.getSetting();
-        return setting.getChannels();
+        return settingService.toSettingDto(setting).getChannels();
     }
 }

@@ -2,11 +2,13 @@ package com.lebo.service;
 
 import com.lebo.entity.Setting;
 import com.lebo.repository.SettingDao;
+import com.lebo.rest.dto.SettingDto;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springside.modules.mapper.BeanMapper;
 
 /**
  * @author: Wei Liu
@@ -43,5 +45,13 @@ public class SettingService extends AbstractMongoService {
             setting = page.getContent().get(0);
         }
         return setting;
+    }
+
+    public SettingDto toSettingDto(Setting setting){
+        SettingDto dto = BeanMapper.map(setting, SettingDto.class);
+        for(SettingDto.ChannelDto channelDto : dto.getChannels()){
+            channelDto.setImageUrl(GridFsService.getContentUrl(channelDto.getImage()));
+        }
+        return dto;
     }
 }

@@ -116,9 +116,8 @@ public class Setting extends IdEntity {
 
     public static class Channel {
         private String name;
-        //statuses/filter参数
+        private String description;
         private String contentUrl;
-        //图片存在MongoDB中，图片可在后台修改
         private String image;
         private String backgroundColor;
         private boolean enabled;
@@ -141,6 +140,14 @@ public class Setting extends IdEntity {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
 
         public String getContentUrl() {

@@ -53,7 +53,7 @@ public class ChannelController {
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String create(@RequestParam(value = "name") String name,
-                         @RequestParam(value = "content") String content,
+                         @RequestParam(value = "contentUrl") String contentUrl,
                          @RequestParam(value = "image") MultipartFile image,
                          @RequestParam(value = "backgroundColor") String backgroundColor,
                          @RequestParam(value = "enabled", defaultValue = "false") boolean enabled,
@@ -62,7 +62,7 @@ public class ChannelController {
         try {
             String fileId = gridFsService.save(image.getInputStream(), image.getOriginalFilename(), image.getContentType());
 
-            Setting.Channel channel = new Setting.Channel(name, content, fileId, backgroundColor, enabled);
+            Setting.Channel channel = new Setting.Channel(name, contentUrl, fileId, backgroundColor, enabled);
             Setting setting = settingService.getSetting();
             setting.getChannels().add(channel);
             settingService.saveOption(setting);

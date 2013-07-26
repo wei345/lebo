@@ -1,6 +1,7 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
+import com.lebo.service.GridFsService;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -10,6 +11,8 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 
 /**
@@ -21,6 +24,8 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
     protected final RestTemplate restTemplate = new RestTemplate();
     @Autowired
     protected AccountService accountService;
+    @Autowired
+    protected GridFsService gridFsService;
 
     String oAuthId(String provider, String uid) {
         return provider + "/" + uid;
@@ -46,6 +51,31 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         return info != null && info.getPrincipals().getPrimaryPrincipal() != null;
+    }
+
+    protected String getProfileImage(String imageUrl) {
+        try {
+            URL url = new URL("http://tp4.sinaimg.cn/2704116035/50/5656124822/0");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            String fileName = null;
+            try {
+                //获取文件名
+                String raw = conn.getHeaderField("Content-Disposition");
+                // raw = "attachment; filename=abc.jpg"
+                if (raw != null && raw.indexOf("=") != -1) {
+                    fileName = raw.split("=")[1];
+                } else {
+                    // fall back to random generated file name?
+                }
+            } catch (Exception e) {
+                //忽略
+            }
+
+            return gridFsService.save(conn.getInputStream(), fileName, conn.getContentType());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
 
