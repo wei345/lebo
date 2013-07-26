@@ -11,10 +11,7 @@ import java.io.Serializable;
  */
 public class ShiroUser implements Serializable {
     private static final long serialVersionUID = -1373760761780840081L;
-    //不显示在Restful接口的属性.
-    @JsonIgnore
     public String id;
-
     public String screenName;
     public String name;
     public String profileImageUrl;

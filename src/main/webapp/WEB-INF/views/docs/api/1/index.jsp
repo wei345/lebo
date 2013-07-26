@@ -64,7 +64,7 @@
             <tags:link url="${ctx}/docs/api/1/get/statuses/homeTimeline" text="GET statuses/homeTimeline"/>
         </td>
         <td>
-            主页时间线
+            返回当前登录用户视频，
         </td>
     </tr>
     <tr>
@@ -72,7 +72,7 @@
             <tags:link url="${ctx}/docs/api/1/get/statuses/userTimeline" text="GET statuses/userTimeline"/>
         </td>
         <td>
-            用户时间线
+            返回由userId或screenName指定的用户的视频，包括转发。
         </td>
     </tr>
     <tr>

@@ -4,6 +4,9 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="用户时间线" action="${ctx}/api/1/statuses/userTimeline.json" method="GET">
+    userId、screenName任选其一。
+    <tags:field name="userId" optional="true"/>
+    <tags:field name="screenName" optional="true"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>

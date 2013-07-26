@@ -7,6 +7,7 @@ package com.lebo.service.param;
  */
 public class TimelineParam extends PaginationParam {
     private String userId;
+    private String screenName;
     private boolean trimUser = false;
     private boolean includeRts = true;
 
@@ -34,5 +35,11 @@ public class TimelineParam extends PaginationParam {
         this.includeRts = includeRts;
     }
 
+    public String getScreenName() {
+        return screenName;
+    }
 
+    public void setScreenName(String screenName) {
+        this.screenName = screenName;
+    }
 }

@@ -8,6 +8,7 @@ import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +108,7 @@ public class StatusRestController {
     @RequestMapping(value = "userTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object userTimeline(@Valid TimelineParam param) {
-        param.setUserId(accountService.getCurrentUserId());
+        param.setUserId(accountService.getUserId(param.getUserId(), param.getScreenName()));
         List<Post> postList = statusService.userTimeline(param);
 
         return statusService.toStatusDtos(postList);
