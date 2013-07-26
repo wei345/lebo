@@ -42,7 +42,7 @@ public class StatusServiceTest extends SpringContextTestCase {
         assertTrue(classPathResource.exists());
 
         long fileCount = mongoTemplate.getCollection("fs.files").count();
-        Map meta = Maps.newHashMap();
+        Map<String, Object> meta = Maps.newHashMap();
         meta.put("a", 1);
         meta.put("b", "abc");
 
