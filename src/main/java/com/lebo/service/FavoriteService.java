@@ -3,10 +3,9 @@ package com.lebo.service;
 import com.lebo.entity.Favorite;
 import com.lebo.entity.Post;
 import com.lebo.repository.FavoriteDao;
-import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -67,13 +66,14 @@ public class FavoriteService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)), Favorite.class);
     }
 
-    public List<StatusDto> list(String userId, PageRequest param) {
-        List<Favorite> favorites = favoriteDao.findByUserId(userId, param);
+    public List<Post> list(String userId, PaginationParam paginationParam) {
+        List<Favorite> favorites = favoriteDao.findByUserId(userId,
+                paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
         List<String> ids = new ArrayList<String>();
         for (int i = 0; i < favorites.size(); i++) {
             ids.add(favorites.get(i).getPostId());
         }
-        List<Post> posts = statusService.findPosts(ids);
-        return statusService.toStatusDtos(posts);
+        //TODO statusService.findPosts(ids)使用缓存，用ID一次查一个
+        return statusService.findPosts(ids);
     }
 }

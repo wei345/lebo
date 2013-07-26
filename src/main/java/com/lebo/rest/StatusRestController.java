@@ -101,9 +101,6 @@ public class StatusRestController {
 
     /**
      * 获取某个用户最新视频列表
-     *
-     * @param param
-     * @return
      */
     @RequestMapping(value = "userTimeline", method = RequestMethod.GET)
     @ResponseBody

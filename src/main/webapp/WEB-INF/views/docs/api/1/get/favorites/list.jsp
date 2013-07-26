@@ -4,8 +4,14 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="查看收藏" action="${ctx}/api/1/favorites/list.json" method="GET">
-    <tags:field name="page" value="0" optional="true"/>
-    <tags:field name="size" value="20" optional="true"/>
+    <p>
+        userId、screenName任选其一。
+    </p>
+    <tags:field name="userId" value="51def1e61a883914869e46f3" optional="true"/>
+    <tags:field name="screenName" value="法图_麦" optional="true"/>
+    <tags:field name="count" optional="true"/>
+    <tags:field name="maxId" optional="true"/>
+    <tags:field name="sinceId" optional="true"/>
 </tags:form>
 
 <tags:example method="GET" url="http://localhost:8080/api/1/favorites/list.json">
