@@ -229,7 +229,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/favorites/list" text="GET favorites/list"/>
+            <tags:link url="${ctx}/docs/api/1/get/favorites/list" text="GET favorites/list"/>
         </td>
         <td>
             查看收藏
