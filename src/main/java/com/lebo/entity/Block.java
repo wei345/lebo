@@ -11,19 +11,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "block_unique", def = "{'userId': 1, 'blockedId': 1}", unique = true)
+        @CompoundIndex(name = "block_unique", def = "{'userId': 1, 'blockingId': 1}", unique = true)
 })
 public class Block extends IdEntity {
-    //a把b加入黑名单，a为userId，b为blockedId
+    //a把b加入黑名单，a为userId，b为blockingId
     private String userId;
-    private String blockedId;
+    private String blockingId;
 
     public Block() {
     }
 
-    public Block(String userId, String blockedId) {
+    public Block(String userId, String blockingId) {
         this.userId = userId;
-        this.blockedId = blockedId;
+        this.blockingId = blockingId;
     }
 
     public String getUserId() {
@@ -34,11 +34,11 @@ public class Block extends IdEntity {
         this.userId = userId;
     }
 
-    public String getBlockedId() {
-        return blockedId;
+    public String getBlockingId() {
+        return blockingId;
     }
 
-    public void setBlockedId(String blockedId) {
-        this.blockedId = blockedId;
+    public void setBlockingId(String blockingId) {
+        this.blockingId = blockingId;
     }
 }

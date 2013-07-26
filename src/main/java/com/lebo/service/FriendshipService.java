@@ -45,11 +45,11 @@ public class FriendshipService extends AbstractMongoService {
         }
 
         if (userDao.exists(userId) && userDao.exists(followingId)) {
-            if (blockService.isBlocked(followingId, userId)) {
+            if (blockService.isBlocking(followingId, userId)) {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKED);
             }
 
-            if (blockService.isBlocked(userId, followingId)) {
+            if (blockService.isBlocking(userId, followingId)) {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING);
             }
 

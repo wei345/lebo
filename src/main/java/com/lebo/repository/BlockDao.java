@@ -12,7 +12,7 @@ import java.util.List;
  * Time: PM3:55
  */
 public interface BlockDao extends MongoRepository<Block, String> {
-    Block findByUserIdAndBlockedId(String userId, String blockedId);
+    Block findByUserIdAndBlockingId(String userId, String blockedId);
 
     List<Block> findByUserId(String userId, Pageable pageable);
 }

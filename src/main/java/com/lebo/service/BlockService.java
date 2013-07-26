@@ -34,7 +34,7 @@ public class BlockService {
      * @param blockedId 被拉入黑名单的用户ID
      */
     public User block(String userId, String blockedId) {
-        Block block = blockDao.findByUserIdAndBlockedId(userId, blockedId);
+        Block block = blockDao.findByUserIdAndBlockingId(userId, blockedId);
         if (block == null) {
             blockDao.save(new Block(userId, blockedId));
             friendshipService.unfollow(userId, blockedId);
@@ -44,7 +44,7 @@ public class BlockService {
     }
 
     public User unblock(String userId, String blockedId) {
-        Block block = blockDao.findByUserIdAndBlockedId(userId, blockedId);
+        Block block = blockDao.findByUserIdAndBlockingId(userId, blockedId);
         if (block != null) {
             blockDao.delete(block);
         }
@@ -55,12 +55,12 @@ public class BlockService {
         List<Block> blocks = blockDao.findByUserId(userId, pageRequest);
         List<User> users = new ArrayList<User>();
         for (Block block : blocks) {
-            users.add(accountService.getUser(block.getBlockedId()));
+            users.add(accountService.getUser(block.getBlockingId()));
         }
         return users;
     }
 
-    public boolean isBlocked(String userId, String blockedId) {
-        return blockDao.findByUserIdAndBlockedId(userId, blockedId) != null;
+    public boolean isBlocking(String userId, String blockedId) {
+        return blockDao.findByUserIdAndBlockingId(userId, blockedId) != null;
     }
 }
