@@ -4,9 +4,6 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="转发视频" method="POST" action="${ctx}/api/1/statuses/repost.json">
-    <p>
-        视频id：postId
-    </p>
     <tags:field name="id" value=""/>
     <tags:field name="text" value="转发" optional="true"/>
 </tags:form>
