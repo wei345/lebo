@@ -131,6 +131,15 @@
             热门 - 按红心数(收藏数)排序，最近2天
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/userDigest" text="GET statuses/userDigest"/>
+        </td>
+        <td>
+            我的精华 - 被乐播官方账号转发的视频
+        </td>
+    </tr>
+    <tr>
 </table>
 
 <strong>评论</strong>

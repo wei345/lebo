@@ -121,6 +121,16 @@ public class StatusService extends AbstractMongoService {
         return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
+    /**
+     * 获取精品视频翻页
+     * @param param
+     * @return
+     */
+    public List<Post> usreDigestline(TimelineParam param){
+        Assert.hasText(param.getUserId());
+        return postDao.usreDigestline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
+    }
+
     public Post findPost(String id) {
         return postDao.findOne(id);
     }
@@ -179,9 +189,11 @@ public class StatusService extends AbstractMongoService {
             //是否被当前登录用户转发
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post.getId()));
 
+            /* 已经添加精华字段
             //是否是加精的
             Setting setting = settingService.getSetting();
             dto.setDigested(setting.getDigestFollow().contains(post.getUserId()));
+            */
         }
         // 嵌入转发的POST
         else {

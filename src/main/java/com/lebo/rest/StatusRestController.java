@@ -228,4 +228,19 @@ public class StatusRestController {
         List<Post> posts = statusService.filterPosts(param);
         return statusService.toStatusDtos(posts);
     }
+
+    /**
+     * 获取用户精品视频列表
+     * @param userId
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "userDigest", method = RequestMethod.GET)
+    @ResponseBody
+    public Object userDigest(@RequestParam(value = "userId") String userId,
+                             @Valid TimelineParam param) {
+        param.setUserId(userId);
+        List<Post> posts = statusService.usreDigestline(param);
+        return statusService.toStatusDtos(posts);
+    }
 }
