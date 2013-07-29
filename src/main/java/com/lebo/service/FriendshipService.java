@@ -1,6 +1,9 @@
 package com.lebo.service;
 
 import com.lebo.entity.Following;
+import com.lebo.event.AfterCreatFollowingEvent;
+import com.lebo.event.AfterDestroyFollowingEvent;
+import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.ErrorDto;
@@ -30,6 +33,8 @@ public class FriendshipService extends AbstractMongoService {
     private AccountService accountService;
     @Autowired
     private BlockService blockService;
+    @Autowired
+    private ApplicationEventBus eventBus;
 
     /**
      * userId关注followingId。
@@ -54,9 +59,10 @@ public class FriendshipService extends AbstractMongoService {
             }
 
             //关注
-            followingDao.save(new Following(userId, followingId));
+            Following following = new Following(userId, followingId);
+            followingDao.save(following);
             throwOnMongoError();
-            accountService.increaseFollowersCount(followingId);
+            eventBus.post(new AfterCreatFollowingEvent(following.getUserId(), following.getFollowingId()));
         } else {
             throw new ServiceException(String.format("%s or %s is not exists.", userId, followingId));
         }
@@ -69,7 +75,7 @@ public class FriendshipService extends AbstractMongoService {
         Following following = followingDao.findByUserIdAndFollowingId(userId, followingId);
         if (following != null) {
             followingDao.delete(following);
-            accountService.decreaseFollowersCount(followingId);
+            eventBus.post(new AfterDestroyFollowingEvent(following.getUserId(), following.getFollowingId()));
         }
     }
 

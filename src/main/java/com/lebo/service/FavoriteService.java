@@ -2,6 +2,9 @@ package com.lebo.service;
 
 import com.lebo.entity.Favorite;
 import com.lebo.entity.Post;
+import com.lebo.event.AfterCreateFavoriteEvent;
+import com.lebo.event.AfterDestroyFavoriteEvent;
+import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.FavoriteDao;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
@@ -26,6 +29,8 @@ public class FavoriteService extends AbstractMongoService {
     private StatusService statusService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ApplicationEventBus eventBus;
 
     public void create(String userId, String postId) {
         Post post = statusService.findPost(postId);
@@ -38,10 +43,10 @@ public class FavoriteService extends AbstractMongoService {
             throw new ServiceException("原始Post不存在");
         }
 
-        favoriteDao.save(new Favorite(userId, originId));
+        Favorite favorite = new Favorite(userId, originId);
+        favoriteDao.save(favorite);
         throwOnMongoError();
-        accountService.increaseFavoritesCount(userId);
-        statusService.increaseFavoritesCount(postId);
+        eventBus.post(new AfterCreateFavoriteEvent(favorite));
     }
 
     public void destroy(String userId, String postId) {
@@ -49,8 +54,7 @@ public class FavoriteService extends AbstractMongoService {
         if (favorite != null) {
             favoriteDao.delete(favorite);
             throwOnMongoError();
-            accountService.decreaseFavoritesCount(userId);
-            statusService.decreaseFavoritesCount(postId);
+            eventBus.post(new AfterDestroyFavoriteEvent(favorite));
         }
     }
 

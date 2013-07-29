@@ -1,8 +1,9 @@
 package com.lebo.service;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.lebo.entity.*;
+import com.lebo.event.AfterCreatePostEvent;
+import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
@@ -56,6 +57,8 @@ public class StatusService extends AbstractMongoService {
     private CommentService commentService;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private ApplicationEventBus eventBus;
 
 
     /**
@@ -82,7 +85,7 @@ public class StatusService extends AbstractMongoService {
 
         post = postDao.save(post);
         throwOnMongoError();
-        onPostCreated();
+        eventBus.post(new AfterCreatePostEvent(post));
 
         return post;
     }
@@ -304,16 +307,6 @@ public class StatusService extends AbstractMongoService {
         }
 
         return matchedHashtags;
-    }
-
-
-    /**
-     * 创建了Post。可能需要统计Tags或更新全文索引。
-     */
-    // TODO 完成 onPostCreated
-    private void onPostCreated() {
-        //发送JMS消息
-        //更新Tags统计数据
     }
 
     /**
