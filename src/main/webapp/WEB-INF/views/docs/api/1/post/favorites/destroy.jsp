@@ -4,10 +4,10 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="取消收藏" method="POST" action="${ctx}/api/1/favorites/destroy.json">
-    <tags:field name="postId" value="51df969c1a88cb49eec1f5f7"/>
+    <tags:field name="id" value="51df969c1a88cb49eec1f5f7"/>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/1/favorites/destroy.json?postId=51e6136ea0eedbd1aad37b71">
+<tags:example method="POST" url="http://localhost:8080/api/1/favorites/destroy.json?id=51e6136ea0eedbd1aad37b71">
     {
         id: "51df969c1a88cb49eec1f5f7",
         user: {

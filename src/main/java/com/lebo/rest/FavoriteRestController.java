@@ -62,10 +62,10 @@ public class FavoriteRestController {
 
     @RequestMapping(value = "destroy", method = RequestMethod.POST)
     @ResponseBody
-    public Object destroy(@RequestParam("postId") String postId) {
-        Post post = statusService.findPost(postId);
+    public Object destroy(@RequestParam("id") String id) {
+        Post post = statusService.findPost(id);
         if (post == null) {
-            return ErrorDto.badRequest("参数id [" + postId + "] 无效");
+            return ErrorDto.badRequest("参数id [" + id + "] 无效");
         }
 
         favoriteService.destroy(accountService.getCurrentUserId(), statusService.getOriginPostId(post));
