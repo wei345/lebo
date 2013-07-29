@@ -56,6 +56,10 @@ public class Post extends IdEntity {
     private Integer viewsCount;
     public static final String VIEWS_COUNT_KEY = "viewsCount";
 
+    // 是否精品
+    private boolean digested;
+    public static final String IS_BOUTIQUE_KEY = "digested";
+
     public static Post initial(Post post){
         post.setViewsCount(0);
         post.setFavoritesCount(0);
@@ -166,5 +170,13 @@ public class Post extends IdEntity {
 
     public void setFavoritesCount(Integer favoritesCount) {
         this.favoritesCount = favoritesCount;
+    }
+
+    public boolean getDigested() {
+        return digested;
+    }
+
+    public void setDigested(boolean digested) {
+        this.digested = digested;
     }
 }
