@@ -5,13 +5,15 @@ import com.lebo.event.AfterCreatFollowingEvent;
 import com.lebo.event.AfterDestroyFollowingEvent;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: Wei Liu
  * Date: 13-7-29
  * Time: PM2:01
  */
-public class FollowerCountRecorder extends AbstractListener {
+@Component
+public class FollowerCountRecorder {
     @Autowired
     private AccountService accountService;
 

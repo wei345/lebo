@@ -6,14 +6,15 @@ import com.lebo.event.AfterDestroyFavoriteEvent;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: Wei Liu
  * Date: 13-7-29
  * Time: PM3:28
  */
-public class FavoritesCountRecorder extends AbstractListener {
-
+@Component
+public class FavoritesCountRecorder {
     @Autowired
     private AccountService accountService;
     @Autowired
