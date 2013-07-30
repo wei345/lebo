@@ -16,18 +16,18 @@
 <tags:example method="GET" url="http://localhost:8080/api/1/followers/list.json?userId=51def53f1a883914869e46f5">
     [
         {
-            id: "51def1e61a883914869e46f3",
-            screenName: "法图_麦",
-            name: "法图_麦",
-            profileImageUrl: "http://tp4.sinaimg.cn/1774156407/50/5657962784/0",
-            createdAt: "Fri Jul 12 01:56:54 +0800 2013",
+            id: "51e778ea1a8816dc79e40aaf",
+            screenName: "liuwei",
+            profileImageUrl: "/files/51ed11161a88f15acf2d87fd",
+            createdAt: "Thu Jul 18 13:11:06 +0800 2013",
             following: false,
-            followersCount: null,
-            friendsCount: 1,
+            followersCount: 0,
+            friendsCount: 2,
             statusesCount: 5,
-            verified: null,
-            location: null,
-            timeZone: null
+            favoritesCount: 3,
+            beFavoritedCount: 1,
+            viewsCount: 3,
+            blocking: false
         }
     ]
 </tags:example>
