@@ -5,7 +5,7 @@
 
 <tags:form name="Friends" action="${ctx}/api/1/friends/list.json" method="GET">
     <p>
-        返回由userId或screenName指定的用户的粉丝，如果userId和screenName都未指定，则返回当前登录用户的粉丝。
+        返回由userId或screenName指定的用户关注的人，如果userId和screenName都未指定，则返回当前登录用户的粉丝。
     </p>
     <tags:field name="userId" value="51def1e61a883914869e46f3" optional="true"/>
     <tags:field name="screenName" value="法图_麦" optional="true"/>
