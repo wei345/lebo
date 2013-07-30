@@ -73,4 +73,8 @@ public abstract class AbstractMongoService {
         }
         return mongoIdPattern.matcher(str).matches();
     }
+
+    public void setDateProvider(DateProvider dateProvider) {
+        this.dateProvider = dateProvider;
+    }
 }

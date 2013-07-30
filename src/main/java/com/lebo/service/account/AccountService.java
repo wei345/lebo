@@ -40,8 +40,8 @@ public class AccountService extends AbstractMongoService {
     public static final int HASH_INTERATIONS = 1024;
     private static final int SALT_SIZE = 8;
 
+    @Autowired
     private UserDao userDao;
-    private DateProvider dateProvider = DateProvider.DEFAULT;
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
@@ -218,14 +218,5 @@ public class AccountService extends AbstractMongoService {
             criteria.and("_id").ne(userId);
         }
         return mongoTemplate.count(new Query(criteria), User.class) == 0;
-    }
-
-    @Autowired
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    public void setDateProvider(DateProvider dateProvider) {
-        this.dateProvider = dateProvider;
     }
 }

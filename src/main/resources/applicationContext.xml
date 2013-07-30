@@ -41,6 +41,7 @@
     </bean>
 
     <import resource="applicationContext-memcached.xml"/>
+    <import resource="applicationContext-quartz-timer-cluster.xml" />
 
     <!-- production环境 -->
     <beans profile="production">

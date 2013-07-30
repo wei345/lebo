@@ -196,6 +196,14 @@
             检查screenName是否可用
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/users/suggestions/hot" text="GET users/suggestions/hot"/>
+        </td>
+        <td>
+            推荐关注
+        </td>
+    </tr>
 </table>
 
 <strong>关系</strong>
