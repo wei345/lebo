@@ -47,7 +47,7 @@ public class FollowerRestController {
             userId = accountService.getUserId(userId, screenName);
         }
 
-        List<Following> followers = friendshipService.getFollowers(userId, new PageRequest(page, size));
+        List<Following> followers = friendshipService.getFollowers(userId, new PageRequest(page, size, PaginationParam.DEFAULT_SORT));
 
         List<User> users = new ArrayList<User>();
         for (Following following : followers) {

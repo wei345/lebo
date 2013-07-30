@@ -44,7 +44,7 @@ public class FriendRestController {
             userId = accountService.getUserId(userId, screenName);
         }
 
-        List<Following> followings = friendshipService.getFriends(userId, new PageRequest(page, size));
+        List<Following> followings = friendshipService.getFriends(userId, new PageRequest(page, size, PaginationParam.DEFAULT_SORT));
 
         List<User> users = new ArrayList<User>();
         for (Following following : followings) {
