@@ -3,6 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="FOLLOWERS_COUNT_KEY" value="<%=User.FOLLOWERS_COUNT_KEY%>"/>
+<c:set var="BE_FAVORITED_COUNT_KEY" value="<%=User.BE_FAVORITED_COUNT_KEY%>"/>
+<c:set var="VIEWS_COUNT_KEY" value="<%=User.VIEWS_COUNT_KEY%>"/>
 
 <tags:form name="搜索用户" method="GET" action="${ctx}/api/1/users/search.json">
     正则表达式查找screenName
@@ -11,7 +14,7 @@
     <tags:field name="size" value="5" optional="true"/>
     第几页，从0开始，0返回第1页数据
     <tags:field name="page" value="2" optional="true"/>
-    按什么字段排序：id,<%=User.FOLLOWERS_COUNT_KEY%>,<%=User.BE_FAVORITED_COUNT_KEY%>,<%=User.VIEWS_COUNT_KEY%>，缺省id
+    按什么字段排序：id,${FOLLOWERS_COUNT_KEY},${BE_FAVORITED_COUNT_KEY},${VIEWS_COUNT_KEY}，缺省id
     <tags:field name="orderBy" value="<%=User.FOLLOWERS_COUNT_KEY%>" optional="true"/>
     顺序：desc或asc，缺省desc
     <tags:field name="order" value="desc" optional="true"/>
