@@ -8,12 +8,11 @@
 
 <form method="<%=method%>" action="<%=action%>" <% if (enctype != null) { %> enctype="<%=enctype%>" <% } %>>
     <fieldset>
+        <legend><%=name%>
+        </legend>
         <p>
             <%=method%> <%=action%>
         </p>
-        <b>参数：</b>
-        <legend><%=name%>
-        </legend>
         <jsp:doBody/>
         <button type="submit" class="btn">Submit</button>
     </fieldset>
