@@ -10,6 +10,7 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -91,11 +92,11 @@ public class FriendshipService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Following.USER_ID_KEY).is(userId)), Following.class);
     }
 
-    public List<Following> getFriends(String userId, PaginationParam param) {
-        return followingDao.findByUserId(userId, param);
+    public List<Following> getFriends(String userId, Pageable pageable) {
+        return followingDao.findByUserId(userId, pageable);
     }
 
-    public List<Following> getFollowers(String userId, PaginationParam param) {
-        return followingDao.findByFollowingId(userId, param);
+    public List<Following> getFollowers(String userId, Pageable pageable) {
+        return followingDao.findByFollowingId(userId, pageable);
     }
 }

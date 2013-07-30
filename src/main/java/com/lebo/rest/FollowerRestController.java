@@ -5,7 +5,9 @@ import com.lebo.entity.User;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,10 +37,18 @@ public class FollowerRestController {
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(@RequestParam(value = "userId") String userId,
-                       @Valid PaginationParam param) {
+    public Object list(@RequestParam(value = "userId", required = false) String userId,
+                       @RequestParam(value = "screenName", required = false) String screenName,
+                       @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
+        if(StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)){
+            userId = accountService.getCurrentUserId();
+        } else {
+            userId = accountService.getUserId(userId, screenName);
+        }
 
-        List<Following> followers = friendshipService.getFollowers(userId, param);
+        List<Following> followers = friendshipService.getFollowers(userId, new PageRequest(page, size));
+
         List<User> users = new ArrayList<User>();
         for (Following following : followers) {
             users.add(accountService.getUser(following.getUserId()));

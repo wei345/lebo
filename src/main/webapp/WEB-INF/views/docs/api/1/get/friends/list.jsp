@@ -4,7 +4,13 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="Friends" action="${ctx}/api/1/friends/list.json" method="GET">
-    <tags:field name="userId" value="51def1e61a883914869e46f3"/>
+    <p>
+        返回由userId或screenName指定的用户的粉丝，如果userId和screenName都未指定，则返回当前登录用户的粉丝。
+    </p>
+    <tags:field name="userId" value="51def1e61a883914869e46f3" optional="true"/>
+    <tags:field name="screenName" value="法图_麦" optional="true"/>
+    <tags:field name="page" value="" optional="true"/>
+    <tags:field name="size" value="" optional="true"/>
 </tags:form>
 
 <tags:example method="GET" url="http://localhost:8080/api/1/friends/list.json?userId=51def1e61a883914869e46f3">
