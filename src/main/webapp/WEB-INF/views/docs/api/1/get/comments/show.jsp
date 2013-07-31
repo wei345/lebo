@@ -4,7 +4,14 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="查看评论" action="${ctx}/api/1/comments/show.json" method="GET">
+    <p>
+        返回评论列表，按时间降序，新的在前、旧的在后。
+    </p>
     <tags:field name="postId"/>
+    <p>
+        true - 返回视频评论，false - 返回非视频评论，不传 - 返回视频评论和非视频评论
+    </p>
+    <tags:field name="hasVideo" optional="true"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>

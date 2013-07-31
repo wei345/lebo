@@ -5,9 +5,8 @@ import com.lebo.entity.User;
 import com.lebo.repository.CommentDao;
 import com.lebo.rest.dto.CommentDto;
 import com.lebo.rest.dto.StatusDto;
-import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.CommentShowParam;
+import com.lebo.service.param.CommentListParam;
 import com.lebo.service.param.FileInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +49,16 @@ public class CommentService extends AbstractMongoService {
         comment.setMentions(statusService.mentionUserIds(text));
         comment.setFiles(fileIds);
         comment.setPostId(postId);
+
+        //是否为视频回复
+        comment.setHasVideo(false);
+        for(FileInfo fileInfo : fileInfos){
+            if(StringUtils.startsWith(fileInfo.getMimeType(), "video/")){
+                comment.setHasVideo(true);
+                break;
+            }
+        }
+
         comment = commentDao.save(comment);
         throwOnMongoError();
 
@@ -60,8 +69,13 @@ public class CommentService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)), Comment.class);
     }
 
-    public List<Comment> show(CommentShowParam param) {
-        return commentDao.findByPostId(param.getPostId(), param);
+    public List<Comment> list(CommentListParam param) {
+        Query query = new Query(new Criteria(Comment.POST_ID_KEY).is(param.getPostId()));
+        if(param.getHasVideo() != null){
+            query.addCriteria(new Criteria(Comment.HAS_VIDEO_KEY).is(param.getHasVideo()));
+        }
+        paginationById(query, param);
+        return mongoTemplate.find(query, Comment.class);
     }
 
     public CommentDto toCommentDto(Comment comment){
@@ -72,14 +86,6 @@ public class CommentService extends AbstractMongoService {
             fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, null));
         }
         dto.setFiles(fileInfoDtos);
-
-        //是否为视频回复
-        for(StatusDto.FileInfoDto file : fileInfoDtos){
-            if(StringUtils.startsWith(file.getContentType(), "video/")){
-                dto.setHasVideo(true);
-                break;
-            }
-        }
 
         //评论的作者信息
         User user = accountService.getUser(comment.getUserId());

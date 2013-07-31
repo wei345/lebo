@@ -170,10 +170,10 @@ public class StatusService extends AbstractMongoService {
             dto.setFiles(fileInfoDtos);
 
             //前3条评论
-            CommentShowParam commentShowParam = new CommentShowParam();
-            commentShowParam.setCount(3);
-            commentShowParam.setPostId(post.getId());
-            List<Comment> comments = commentService.show(commentShowParam);
+            CommentListParam commentListParam = new CommentListParam();
+            commentListParam.setCount(3);
+            commentListParam.setPostId(post.getId());
+            List<Comment> comments = commentService.list(commentListParam);
             dto.setComments(commentService.toCommentDtos(comments));
 
             //提到的用户

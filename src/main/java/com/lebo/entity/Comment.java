@@ -31,6 +31,9 @@ public class Comment extends IdEntity {
     private String originId;
     @Indexed
     private LinkedHashSet<String> mentions;
+    @Indexed
+    private Boolean hasVideo;
+    public static final String HAS_VIDEO_KEY = "hasVideo";
 
     public String getPostId() {
         return postId;
@@ -110,5 +113,13 @@ public class Comment extends IdEntity {
 
     public void setOriginId(String originId) {
         this.originId = originId;
+    }
+
+    public Boolean getHasVideo() {
+        return hasVideo;
+    }
+
+    public void setHasVideo(Boolean hasVideo) {
+        this.hasVideo = hasVideo;
     }
 }

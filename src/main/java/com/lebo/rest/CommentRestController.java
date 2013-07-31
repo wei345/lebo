@@ -4,7 +4,7 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.CommentService;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.CommentShowParam;
+import com.lebo.service.param.CommentListParam;
 import com.lebo.service.param.FileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +66,7 @@ public class CommentRestController {
 
     @RequestMapping(value = "show", method = RequestMethod.GET)
     @ResponseBody
-    public Object show(@Valid CommentShowParam param) {
-        return commentService.toCommentDtos(commentService.show(param));
+    public Object list(@Valid CommentListParam param) {
+        return commentService.toCommentDtos(commentService.list(param));
     }
 }

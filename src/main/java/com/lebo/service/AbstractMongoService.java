@@ -1,10 +1,13 @@
 package com.lebo.service;
 
 import com.lebo.repository.MongoConstant;
+import com.lebo.service.param.PaginationParam;
 import com.mongodb.MongoException;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springside.modules.utils.DateProvider;
 import org.springside.modules.utils.Reflections;
 
@@ -76,5 +79,25 @@ public abstract class AbstractMongoService {
 
     public void setDateProvider(DateProvider dateProvider) {
         this.dateProvider = dateProvider;
+    }
+
+    public static void paginationById(Query query, PaginationParam paginationParam) {
+        //分页
+        Criteria criteria = new Criteria("_id");
+        boolean flag = false;
+        if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
+            criteria.lt(new ObjectId(paginationParam.getMaxId()));
+            flag = true;
+        }
+        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
+            criteria.gt(new ObjectId(paginationParam.getSinceId()));
+            flag = true;
+        }
+
+        if (flag) {
+            query.addCriteria(criteria);
+        }
+
+        query.with(paginationParam.getSort()).limit(paginationParam.getCount());
     }
 }
