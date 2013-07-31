@@ -16,7 +16,6 @@ import com.lebo.web.FileServlet;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -126,10 +125,11 @@ public class StatusService extends AbstractMongoService {
 
     /**
      * 获取精品视频翻页
+     *
      * @param param
      * @return
      */
-    public List<Post> usreDigestline(TimelineParam param){
+    public List<Post> usreDigestline(TimelineParam param) {
         Assert.hasText(param.getUserId());
         return postDao.usreDigestline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
@@ -177,7 +177,7 @@ public class StatusService extends AbstractMongoService {
             dto.setComments(commentService.toCommentDtos(comments));
 
             //提到的用户
-            if(!CollectionUtils.isEmpty(post.getUserMentions())){
+            if (!CollectionUtils.isEmpty(post.getUserMentions())) {
                 List<UserDto> userMetions = new ArrayList<UserDto>(post.getUserMentions().size());
                 for (String userId : post.getUserMentions()) {
                     User user = accountService.getUser(userId);
@@ -384,5 +384,98 @@ public class StatusService extends AbstractMongoService {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
                 new Update().inc(Post.FAVOURITES_COUNT_KEY, -1),
                 Post.class);
+    }
+
+    /**
+     * 查找某频道的Posts，按ID降序排序，按ID分页。
+     */
+    //TODO 精简代码
+    //(follow || track) && page
+    public List<Post> getChannelPosts(String id, PaginationParam paginationParam) {
+        //查找配置中的channel
+        Setting.Channel channel = null;
+        List<Setting.Channel> channels = settingService.getSetting().getChannels();
+        for(Setting.Channel c : channels){
+            if(id.equals(c.getId())){
+                 channel = c;
+                break;
+            }
+        }
+
+        String follow = null;
+        String track = null;
+        //未配置的频道，返回含有hashtag的内容
+        if(channel == null){
+            track = "#" + id + "#";
+        //配置过的频道
+        }else{
+            follow = channel.getFollow();
+            track = channel.getTrack();
+        }
+
+        List<Criteria> criteriaList = new ArrayList<Criteria>(5);
+        Criteria followCriteria = null;
+        if (StringUtils.isNotBlank(follow)) {
+            String[] userIds = follow.split("\\s*,\\s*");
+            //用户ID之间or关系
+            followCriteria = new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds));
+        }
+
+        Criteria trackCriteria = null;
+        if (StringUtils.isNotBlank(track)) {
+            String[] phrases = track.split("\\s*,\\s*");
+            List<Criteria> criterias = new ArrayList<Criteria>(phrases.length);
+            for (String phrase : phrases) {
+                String[] keywords = phrase.split("\\s+");
+                List<String> keywordList = new ArrayList<String>(keywords.length);
+                for (String keyword : keywords) {
+                    keywordList.add(
+                            isHashtagOrAtSomeone(keyword) ? keyword : keyword.toLowerCase());
+                }
+                //短语中关键词之间是and关系
+                criterias.add(new Criteria(Post.SEARCH_TERMS_KEY).all(keywordList));
+            }
+            //短语之间是or关系
+            if (criterias.size() > 1) {
+                trackCriteria = orOperator(criterias);
+            } else if (criterias.size() == 1) {
+                trackCriteria = criterias.get(0);
+            }
+        }
+
+        if (followCriteria != null && trackCriteria != null) {
+            criteriaList.add(orOperator(Arrays.asList(followCriteria, trackCriteria)));
+        } else {
+            if (followCriteria != null) {
+                criteriaList.add(followCriteria);
+            }
+            if (trackCriteria != null) {
+                criteriaList.add(trackCriteria);
+            }
+        }
+
+        //分页
+        if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
+            criteriaList.add(new Criteria("_id").lt(new ObjectId(paginationParam.getMaxId())));
+        }
+        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
+            criteriaList.add(new Criteria("_id").gt(new ObjectId(paginationParam.getSinceId())));
+        }
+
+        Criteria queryCriteria = null;
+        if (criteriaList.size() > 1) {
+            //各条件间是and关系
+            queryCriteria = andOperator(criteriaList);
+        } else if (criteriaList.size() == 1) {
+            queryCriteria = criteriaList.get(0);
+        }
+
+        Query query = new Query();
+        if (queryCriteria != null) {
+            query.addCriteria(queryCriteria);
+        }
+        query.with(PaginationParam.DEFAULT_SORT).limit(paginationParam.getCount());
+
+        return mongoTemplate.find(query, Post.class);
     }
 }

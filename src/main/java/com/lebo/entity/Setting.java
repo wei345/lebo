@@ -3,6 +3,7 @@ package com.lebo.entity;
 import com.lebo.web.ControllerSetup;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springside.modules.utils.Encodes;
 
@@ -51,53 +52,6 @@ public class Setting extends IdEntity {
         this.digestDays = digestDays;
     }
 
-    /**
-     * 热门。按红心数(收藏数)排序，最近2天
-     */
-    public String getReMen() {
-        String url = "/api/1/statuses/search.json";
-
-        List<String> param = new ArrayList<String>();
-        param.add("orderBy=favoritesCount");
-        param.add("order=desc");
-
-        if (hotDays != null) {
-            Date date = DateUtils.addDays(new Date(), hotDays * -1);
-            String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
-            param.add("after=" + Encodes.urlEncode(dateStr));
-        }
-
-        if (param.size() > 0) {
-            url += "?" + StringUtils.join(param, "&");
-        }
-
-        return url;
-    }
-
-    /**
-     * 精华。由乐播官方账号转发，最近多少天的内容
-     */
-    public String getJingHua() {
-        String url = "/api/1/statuses/filter.json";
-
-        List<String> param = new ArrayList<String>();
-        if (StringUtils.isNotBlank(officialAccountId)) {
-            param.add("follow=" + officialAccountId);
-        }
-
-        if (digestDays != null) {
-            Date date = DateUtils.addDays(new Date(), digestDays * -1);
-            String dateStr = ControllerSetup.DEFAULT_DATE_FORMAT.format(date);
-            param.add("after=" + Encodes.urlEncode(dateStr));
-        }
-
-        if (param.size() > 0) {
-            url += "?" + StringUtils.join(param, "&");
-        }
-
-        return url;
-    }
-
     public Integer getHotDays() {
         return hotDays;
     }
@@ -115,23 +69,22 @@ public class Setting extends IdEntity {
     }
 
     public static class Channel {
+        private String id;
         private String name;
         private String description;
-        private String contentUrl;
         private String image;
         private String backgroundColor;
         private boolean enabled;
+        private String follow;
+        private String track;
 
-        public Channel() {
-
+        @NotBlank
+        public String getId() {
+            return id;
         }
 
-        public Channel(String name, String contentUrl, String image, String backgroundColor, boolean enabled) {
-            this.name = name;
-            this.contentUrl = contentUrl;
-            this.image = image;
-            this.backgroundColor = backgroundColor;
-            this.enabled = enabled;
+        public void setId(String id) {
+            this.id = id;
         }
 
         public String getName() {
@@ -148,14 +101,6 @@ public class Setting extends IdEntity {
 
         public void setDescription(String description) {
             this.description = description;
-        }
-
-        public String getContentUrl() {
-            return contentUrl;
-        }
-
-        public void setContentUrl(String contentUrl) {
-            this.contentUrl = contentUrl;
         }
 
         public String getImage() {
@@ -180,6 +125,22 @@ public class Setting extends IdEntity {
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+        public String getFollow() {
+            return follow;
+        }
+
+        public void setFollow(String follow) {
+            this.follow = follow;
+        }
+
+        public String getTrack() {
+            return track;
+        }
+
+        public void setTrack(String track) {
+            this.track = track;
         }
     }
 }

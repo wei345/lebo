@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.mapper.JsonMapper;
 import org.springside.modules.utils.Collections3;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,22 +53,27 @@ public class ChannelController {
     }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String create(@RequestParam(value = "name") String name,
-                         @RequestParam(value = "contentUrl") String contentUrl,
-                         @RequestParam(value = "image") MultipartFile image,
-                         @RequestParam(value = "backgroundColor") String backgroundColor,
-                         @RequestParam(value = "enabled", defaultValue = "false") boolean enabled,
+    public String create(@Valid Setting.Channel channel,
+                         @RequestParam(value = "channelImage") MultipartFile image,
                          Model model,
                          RedirectAttributes redirectAttributes) {
         try {
             String fileId = gridFsService.save(image.getInputStream(), image.getOriginalFilename(), image.getContentType());
+            channel.setImage(fileId);
 
-            Setting.Channel channel = new Setting.Channel(name, contentUrl, fileId, backgroundColor, enabled);
             Setting setting = settingService.getSetting();
+
+            for(Setting.Channel c : setting.getChannels()){
+                if(channel.getId().equals(c.getId())){
+                    redirectAttributes.addFlashAttribute("error", "重复 " + channel.getId());
+                    return "redirect:/admin/channels";
+                }
+            }
+
             setting.getChannels().add(channel);
             settingService.saveOption(setting);
 
-            redirectAttributes.addFlashAttribute("success", "已创建 " + name);
+            redirectAttributes.addFlashAttribute("success", "已创建 " + channel.getId());
             return "redirect:/admin/channels";
         } catch (Exception e) {
             model.addAttribute("error", e);

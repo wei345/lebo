@@ -52,6 +52,7 @@
 <table id="contentTable" class="table table-striped table-bordered table-condensed table-hover">
     <thead>
     <tr>
+        <th>ID</th>
         <th>用户名</th>
         <th>邮件地址</th>
         <th>姓名</th>
@@ -62,7 +63,8 @@
     <tbody>
     <c:forEach items="${users}" var="user">
         <tr>
-            <td><a href="${ctx}/admin/user/update/${user.id}">${user.screenName}</a></td>
+            <td><a href="${ctx}/admin/user/update/${user.id}">${user.id}</a></td>
+            <td>${user.screenName}</td>
             <td>${user.email}</td>
             <td>${user.name}</td>
             <td>

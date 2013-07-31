@@ -239,4 +239,19 @@ public class StatusRestController {
         List<Post> posts = statusService.usreDigestline(param);
         return statusService.toStatusDtos(posts);
     }
+
+    /**
+     * 返回指定频道的post
+     */
+    @RequestMapping(value = "channel", method = RequestMethod.GET)
+    @ResponseBody
+    public Object channel(@RequestParam(value = "id") String id,
+                          PaginationParam paginationParam) {
+        if(StringUtils.isBlank(id)){
+            return ErrorDto.badRequest("频道名不能为空");
+        }
+
+        List<Post> posts = statusService.getChannelPosts(id, paginationParam);
+        return statusService.toStatusDtos(posts);
+    }
 }

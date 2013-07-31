@@ -19,7 +19,7 @@
             OAuth登录
         </td>
     </tr>
-    <tr>
+    <tr class="disabled" title="未用到">
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/login" text="POST login"/>
         </td>
@@ -140,6 +140,13 @@
         </td>
     </tr>
     <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/channel" text="GET statuses/channel"/>
+        </td>
+        <td>
+            返回指定频道的posts
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>
