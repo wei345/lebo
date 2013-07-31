@@ -15,6 +15,7 @@
         <tr>
             <th>ID</th>
             <th>名称</th>
+            <th>描述</th>
             <th>图片</th>
             <th>背景颜色</th>
             <th>follow</th>
@@ -27,6 +28,7 @@
             <tr>
                 <td>${channel.id}</td>
                 <td>${channel.name}</td>
+                <td>${channel.description}</td>
                 <td><img class="input-small" src="${ctx}/files/${channel.image}"/></td>
                 <td><span
                         style="background-color: ${channel.backgroundColor}; display: inline-block; width: 1em;">&nbsp;</span>${channel.backgroundColor}
