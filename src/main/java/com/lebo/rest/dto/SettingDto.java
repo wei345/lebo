@@ -32,11 +32,11 @@ public class SettingDto {
     }
 
     public static class ChannelDto{
+        private String id;
         private String name;
         private String description;
-        private String contentUrl;
-        private String imageUrl;
         private String image;
+        private String imageUrl;
         private String backgroundColor;
 
         public String getName() {
@@ -53,14 +53,6 @@ public class SettingDto {
 
         public void setDescription(String description) {
             this.description = description;
-        }
-
-        public String getContentUrl() {
-            return contentUrl;
-        }
-
-        public void setContentUrl(String contentUrl) {
-            this.contentUrl = contentUrl;
         }
 
         public String getImageUrl() {
@@ -81,6 +73,14 @@ public class SettingDto {
 
         public void setImage(String image) {
             this.image = image;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         @JsonIgnore
