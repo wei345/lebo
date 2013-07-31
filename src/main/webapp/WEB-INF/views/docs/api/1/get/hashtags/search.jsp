@@ -4,27 +4,24 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="搜索Tags" method="GET" action="${ctx}/api/1/hashtags/search.json">
-    <tags:field name="q" value="标签"/>
-    <tags:field name="count" optional="true"/>
+    <tags:field name="q" value="标签" optional="true"/>
+    <tags:field name="page" optional="true"/>
+    <tags:field name="size" optional="true"/>
 </tags:form>
 
 <tags:example method="GET" url="http://localhost:8080/api/1/hashtags/search.json?q=%E6%A0%87%E7%AD%BE">
     [
         {
-            name: "标签3",
-            count: 2
+            id: "51f8d50e81df74bcee25d481",
+            name: "番石榴",
+            count: 2,
+            increaseAt: "Wed Jul 31 17:40:26 +0800 2013"
         },
         {
-            name: "标签1",
-            count: 1
-        },
-        {
-            name: "标签2",
-            count: 1
-        },
-        {
-            name: "标签4",
-            count: 1
+            id: "51f8db8a81df74bcee25d482",
+            name: "獴狐猴",
+            count: 1,
+            increaseAt: "Wed Jul 31 17:40:26 +0800 2013"
         }
     ]
 </tags:example>

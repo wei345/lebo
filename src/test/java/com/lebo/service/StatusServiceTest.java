@@ -74,11 +74,6 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void findAllTags() {
-        statusService.findAllHashtags();
-    }
-
-    @Test
     public void mentionNames() {
         LinkedHashSet<String> names = statusService.mentionScreenNames("@@abc@@ @@def", true);
         assertEquals(2, names.size());

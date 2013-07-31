@@ -305,40 +305,6 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
-    public List<Hashtag> searchHashtags(String q, int count) {
-        List<Hashtag> allHashtags = findAllHashtags();
-        List<Hashtag> matchedHashtags = new ArrayList<Hashtag>();
-
-        for (Hashtag hashtag : allHashtags) {
-            if (hashtag.getName().contains(q)) {
-                matchedHashtags.add(hashtag);
-                if (matchedHashtags.size() == count) {
-                    break;
-                }
-            }
-        }
-
-        return matchedHashtags;
-    }
-
-    /**
-     * 返回所有Tag，按次数由大到小排序。
-     */
-    public List<Hashtag> findAllHashtags() {
-        //TODO 优化findAllTags，读写通过缓存
-        //查最近3个月？
-        //返回结果带有最后出现日期？
-
-        String map = String.format("function(){for(var i in this.%s) emit(this.%s[i], 1)}", Post.HASHTAGS_KEY, Post.HASHTAGS_KEY);
-        String reduce = "function(key, emits){total = 0; for(var i in emits) total += emits[i]; return total;}";
-        MapReduceResults<Hashtag> result = mongoTemplate.mapReduce(mongoTemplate.getCollectionName(Post.class), map, reduce, Hashtag.class);
-
-        List<Hashtag> hashtags = Lists.newArrayList(result.iterator());
-        Collections.sort(hashtags);
-
-        return hashtags;
-    }
-
     public static class Hashtag implements Comparable<Hashtag> {
         private String _id;
         private Integer value;
