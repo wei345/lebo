@@ -305,27 +305,6 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
-    public static class Hashtag implements Comparable<Hashtag> {
-        private String _id;
-        private Integer value;
-
-        public String getName() {
-            return _id;
-        }
-
-        public Integer getCount() {
-            return value;
-        }
-
-        /**
-         * //按value由大到小排序
-         */
-        @Override
-        public int compareTo(Hashtag o) {
-            return o.value.compareTo(value);
-        }
-    }
-
     private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
 
     public LinkedHashSet<String> mentionScreenNames(String text, boolean trimAt) {
