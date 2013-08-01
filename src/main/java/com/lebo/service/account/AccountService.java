@@ -158,7 +158,7 @@ public class AccountService extends AbstractMongoService {
         entryptPassword(user);
         user.setCreatedAt(dateProvider.getDate());
 
-        userDao.save(User.initial(user));
+        userDao.save(user.initial());
     }
 
     /**

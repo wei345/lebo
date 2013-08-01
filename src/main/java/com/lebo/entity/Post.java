@@ -60,10 +60,10 @@ public class Post extends IdEntity {
     private boolean digested;
     public static final String IS_BOUTIQUE_KEY = "digested";
 
-    public static Post initial(Post post){
-        post.setViewsCount(0);
-        post.setFavoritesCount(0);
-        return post;
+    public Post initial(){
+        setViewsCount(0);
+        setFavoritesCount(0);
+        return this;
     }
 
     public String getUserId() {
