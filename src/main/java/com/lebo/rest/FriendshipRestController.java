@@ -71,9 +71,7 @@ public class FriendshipRestController {
         }
 
         User user = accountService.getUser(userId);
-        UserDto dto = BeanMapper.map(user, UserDto.class);
-        dto.setFollowing(true);
-        return dto;
+        return accountService.toUserDto(user);
     }
 
     /**
@@ -96,6 +94,6 @@ public class FriendshipRestController {
         }
 
         User user = accountService.getUser(userId);
-        return BeanMapper.map(user, UserDto.class);
+        return accountService.toUserDto(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.entity.Comment;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.CommentService;
 import com.lebo.service.DuplicateException;
@@ -54,7 +55,8 @@ public class CommentRestController {
                 fileInfos.add(new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
             }
 
-            return commentService.create(accountService.getCurrentUserId(), text, fileInfos, postId);
+            Comment comment = commentService.create(accountService.getCurrentUserId(), text, fileInfos, postId);
+            return commentService.toCommentDto(comment);
 
         } catch (DuplicateException e) {
             return ErrorDto.duplicate();

@@ -244,12 +244,12 @@ public class StatusRestController {
     /**
      * 返回指定频道的post
      */
-    @RequestMapping(value = "channel", method = RequestMethod.GET)
+    @RequestMapping(value = "channelTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object channel(@RequestParam(value = "id") String id,
                           PaginationParam paginationParam) {
         if(StringUtils.isBlank(id)){
-            return ErrorDto.badRequest("频道名不能为空");
+            return ErrorDto.badRequest("id参数不能为空");
         }
 
         List<Post> posts = statusService.getChannelPosts(id, paginationParam);
