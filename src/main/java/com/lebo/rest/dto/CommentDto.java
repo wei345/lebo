@@ -9,12 +9,15 @@ import java.util.List;
  * Time: PM1:43
  */
 public class CommentDto {
+    private String id;
+    private String postId;
     private Date createdAt;
     private String text;
     private List<StatusDto.FileInfoDto> files;
-
     private Boolean hasVideo;
     private UserDto user;
+    private String replyCommentId;
+    private UserDto replyCommentUser;
 
     public Date getCreatedAt() {
         return createdAt;
@@ -54,5 +57,37 @@ public class CommentDto {
 
     public void setHasVideo(Boolean hasVideo) {
         this.hasVideo = hasVideo;
+    }
+
+    public String getReplyCommentId() {
+        return replyCommentId;
+    }
+
+    public void setReplyCommentId(String replyCommentId) {
+        this.replyCommentId = replyCommentId;
+    }
+
+    public UserDto getReplyCommentUser() {
+        return replyCommentUser;
+    }
+
+    public void setReplyCommentUser(UserDto replyCommentUser) {
+        this.replyCommentUser = replyCommentUser;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }

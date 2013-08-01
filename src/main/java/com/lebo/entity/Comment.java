@@ -27,6 +27,10 @@ public class Comment extends IdEntity {
     private GeoLocation geoLocation;
     // 被评论的post
     private String postId;
+    //回复评论id，如果该字段不为空，表示此评论为评论的评论
+    private String replyCommentId;
+    //回复评论的作者id
+    private String replyCommentUserId;//冗余，为更好的性能
     // 如果被评论post是转发的，则该评论也要归结到原始post上
     private String originId;
     @Indexed
@@ -121,5 +125,21 @@ public class Comment extends IdEntity {
 
     public void setHasVideo(Boolean hasVideo) {
         this.hasVideo = hasVideo;
+    }
+
+    public String getReplyCommentId() {
+        return replyCommentId;
+    }
+
+    public void setReplyCommentId(String replyCommentId) {
+        this.replyCommentId = replyCommentId;
+    }
+
+    public String getReplyCommentUserId() {
+        return replyCommentUserId;
+    }
+
+    public void setReplyCommentUserId(String replyCommentUserId) {
+        this.replyCommentUserId = replyCommentUserId;
     }
 }

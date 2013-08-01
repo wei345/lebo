@@ -188,6 +188,7 @@ public class StatusService extends AbstractMongoService {
 
             //前3条评论
             CommentListParam commentListParam = new CommentListParam();
+            //TODO 评论数量可配置
             commentListParam.setCount(3);
             commentListParam.setPostId(post.getId());
             List<Comment> comments = commentService.list(commentListParam);
@@ -499,5 +500,9 @@ public class StatusService extends AbstractMongoService {
         query.with(PaginationParam.DEFAULT_SORT).limit(paginationParam.getCount());
 
         return mongoTemplate.find(query, Post.class);
+    }
+
+    public boolean isPostExists(String id){
+        return postDao.exists(id);
     }
 }

@@ -5,6 +5,7 @@ import com.lebo.entity.User;
 import com.lebo.repository.CommentDao;
 import com.lebo.rest.dto.CommentDto;
 import com.lebo.rest.dto.StatusDto;
+import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
 import com.lebo.service.param.FileInfo;
@@ -39,16 +40,11 @@ public class CommentService extends AbstractMongoService {
      * @throws com.mongodb.MongoException 当存储数据失败时
      * @throws DuplicateException         当文件重复时
      */
-    public Comment create(String userId, String text, List<FileInfo> fileInfos, String postId) {
+    public Comment create(Comment comment, List<FileInfo> fileInfos) {
         List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
 
-        Comment comment = new Comment();
-        comment.setUserId(userId);
-        comment.setCreatedAt(new Date());
-        comment.setText(text);
-        comment.setMentions(statusService.mentionUserIds(text));
+        comment.setMentions(statusService.mentionUserIds(comment.getText()));
         comment.setFiles(fileIds);
-        comment.setPostId(postId);
 
         //是否为视频回复
         comment.setHasVideo(false);
@@ -91,6 +87,16 @@ public class CommentService extends AbstractMongoService {
         User user = accountService.getUser(comment.getUserId());
         dto.setUser(accountService.toUserDto(user));
 
+        //评论评论的作者信息
+        if(StringUtils.isNotBlank(comment.getReplyCommentUserId())){
+            User replyCommentUser = accountService.getUser(comment.getReplyCommentUserId());
+            UserDto replyCommentUserDto = new UserDto();
+            replyCommentUserDto.setScreenName(replyCommentUser.getScreenName());
+            replyCommentUserDto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
+            replyCommentUserDto.setId(replyCommentUser.getId());
+            dto.setReplyCommentUser(replyCommentUserDto);
+        }
+
         return dto;
     }
 
@@ -105,5 +111,9 @@ public class CommentService extends AbstractMongoService {
     public void deleteByPostId(String postId){
         mongoTemplate.remove(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)),
                 Comment.class);
+    }
+
+    public Comment getComment(String id){
+        return commentDao.findOne(id);
     }
 }
