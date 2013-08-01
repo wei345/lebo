@@ -97,9 +97,14 @@ public class GridFsService extends AbstractMongoService {
         collection.update(q, o);
     }
 
+    /**
+     * 减少由id参数指定的文件的引用数，如果引用数为0，则删除文件。
+     *
+     * @param id 文件id
+     */
     public void delete(String id) {
         decreaseReferrerCount(id);
-        gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id)).and(REFERRER_COUNT_KEY).is(0)));
+        gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id)).and(REFERRER_COUNT_KEY).lte(0)));
     }
 
     public List<String> saveFilesSafely(List<FileInfo> fileInfos) {

@@ -20,11 +20,10 @@ import java.util.Date;
         @CompoundIndex(name = "user_favorite_unique", def = "{'userId': 1, 'postId': 1}", unique = true)
 })
 public class Favorite extends IdEntity {
-    public static final String USER_ID_KEY = "userId";
-    public static final String POST_ID_KEY = "postId";
-
     private String userId;
+    public static final String USER_ID_KEY = "userId";
     private String postId;
+    public static final String POST_ID_KEY = "postId";
     @Indexed
     private String postUserId;
     public static final String POST_USERID_KEY = "postUserId";

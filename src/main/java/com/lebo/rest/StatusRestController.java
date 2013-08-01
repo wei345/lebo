@@ -3,6 +3,7 @@ package com.lebo.rest;
 import com.lebo.entity.Post;
 import com.lebo.entity.Setting;
 import com.lebo.rest.dto.ErrorDto;
+import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
@@ -63,7 +64,7 @@ public class StatusRestController {
                     new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
                     new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
 
-            Post post = statusService.update(accountService.getCurrentUserId(), text, fileInfos, null, source);
+            Post post = statusService.createPost(accountService.getCurrentUserId(), text, fileInfos, null, source);
             return statusService.toStatusDto(post);
 
         } catch (DuplicateException e) {
@@ -141,7 +142,7 @@ public class StatusRestController {
 
             //转发
             if (!statusService.isReposted(accountService.getCurrentUserId(), originId)) {
-                post = statusService.update(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
+                post = statusService.createPost(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
             }
 
             return statusService.toStatusDto(post);
@@ -253,5 +254,25 @@ public class StatusRestController {
 
         List<Post> posts = statusService.getChannelPosts(id, paginationParam);
         return statusService.toStatusDtos(posts);
+    }
+
+
+    @RequestMapping(value = "destroy", method = RequestMethod.POST)
+    @ResponseBody
+    public Object destroy(@RequestParam(value = "id") String id) {
+        if(StringUtils.isBlank(id)){
+            return ErrorDto.badRequest("id参数不能为空");
+        }
+
+        Post post = statusService.findPost(id);
+
+        if(!post.getUserId().equals(accountService.getCurrentUserId())){
+            return ErrorDto.unauthorized("你不是作者，没有权限删除");
+        }
+
+        StatusDto dto = statusService.toStatusDto(post);
+
+        statusService.destroyPost(id);
+        return dto;
     }
 }

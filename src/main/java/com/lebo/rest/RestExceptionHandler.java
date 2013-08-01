@@ -29,12 +29,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {DuplicateException.class})
-    public final ResponseEntity<?> handleDuplicateException(ServiceException ex, WebRequest request) {
+    public final ResponseEntity<?> handleDuplicateException(DuplicateException ex, WebRequest request) {
         return ErrorDto.duplicate();
     }
 
     @ExceptionHandler(value = {Exception.class})
-    public final ResponseEntity<?> handleException2(ServiceException ex, WebRequest request) {
+    public final ResponseEntity<?> handleException2(Exception ex, WebRequest request) {
         return ErrorDto.badRequest(NestedExceptionUtils.buildMessage(ex.getMessage(), ex));
     }
 

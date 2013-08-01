@@ -3,6 +3,7 @@ package com.lebo.event.listener;
 import com.google.common.eventbus.Subscribe;
 import com.lebo.event.AfterCreateFavoriteEvent;
 import com.lebo.event.AfterDestroyFavoriteEvent;
+import com.lebo.event.AfterDestroyPostEvent;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,12 @@ public class FavoritesCountRecorder {
     public void decrease(AfterDestroyFavoriteEvent e) {
         accountService.decreaseFavoritesCount(e.getFavorite().getUserId());
         statusService.decreaseFavoritesCount(e.getFavorite().getPostId());
+    }
+
+    @Subscribe
+    public void decreaseOnPostDestroy(AfterDestroyPostEvent event) {
+        if(event.getPost().getFavoritesCount() > 0){
+            accountService.decreaseFavoritesCount(event.getPost().getUserId(), event.getPost().getFavoritesCount());
+        }
     }
 }

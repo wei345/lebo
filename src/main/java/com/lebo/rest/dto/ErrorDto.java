@@ -19,9 +19,10 @@ import org.springside.modules.mapper.JsonMapper;
  * Time: PM6:14
  */
 public class ErrorDto {
+    private static final int UNAUTHORIZED_CODE = 10403;
     public static final ErrorDto BAD_REQUEST = new ErrorDto("Bad Request", 10400, HttpStatus.BAD_REQUEST);
     public static final ErrorDto UNAUTHORIZED = new ErrorDto("Unauthorized", 10401, HttpStatus.UNAUTHORIZED);
-    public static final ErrorDto FORBIDDEN = new ErrorDto("Forbidden", 10403, HttpStatus.FORBIDDEN);
+    public static final ErrorDto FORBIDDEN = new ErrorDto("Forbidden", UNAUTHORIZED_CODE, HttpStatus.FORBIDDEN);
     public static final ErrorDto NOT_FOUND = new ErrorDto("Not Found", 10404, HttpStatus.NOT_FOUND);
     public static final ErrorDto DUPLICATE = new ErrorDto("Duplicate", 10427, HttpStatus.BAD_REQUEST);
     public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_BLOCKED = new ErrorDto("不能关注该用户，因为你在对方的黑名单中", 10428, HttpStatus.BAD_REQUEST);
@@ -77,6 +78,10 @@ public class ErrorDto {
 
     public static ResponseEntity<ErrorDto> unauthorized() {
         return new ResponseEntity<ErrorDto>(ErrorDto.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+    }
+
+    public static ResponseEntity<ErrorDto> unauthorized(String message) {
+        return new ResponseEntity<ErrorDto>(new ErrorDto(message, UNAUTHORIZED_CODE), HttpStatus.UNAUTHORIZED);
     }
 
     public static ResponseEntity<ErrorDto> duplicate() {

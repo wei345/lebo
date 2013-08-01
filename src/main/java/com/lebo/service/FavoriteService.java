@@ -83,4 +83,9 @@ public class FavoriteService extends AbstractMongoService {
         //TODO statusService.findPosts(ids)使用缓存，用ID一次查一个
         return statusService.findPosts(ids);
     }
+
+    public void deleteByPostId(String postId){
+        mongoTemplate.remove(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)),
+                Favorite.class);
+    }
 }

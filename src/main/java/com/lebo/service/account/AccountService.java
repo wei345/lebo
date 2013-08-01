@@ -90,12 +90,11 @@ public class AccountService extends AbstractMongoService {
     /**
      * 接收userId和screenName，二者至少一个不为空，返回userId。
      *
-     * @throws IllegalArgumentException 当userId和screenName都为空
-     * @throws ServiceException         当根据screenName未找到User时
+     * @throws ServiceException 当userId和screenName都为空，或当根据screenName未找到User时
      */
     public String getUserId(String userId, String screenName) {
         if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
-            throw new IllegalArgumentException("Providing either screenName or userId is required.");
+            throw new ServiceException("Providing either screenName or userId is required.");
         }
 
         if (!StringUtils.isBlank(userId)) {
@@ -193,10 +192,24 @@ public class AccountService extends AbstractMongoService {
                 User.class);
     }
 
-    //减少收藏计数
+    /**
+     * 指定用户的被收藏计数减少1。
+     *
+     * @param userId 要减少收藏计数的用户ID
+     */
     public void decreaseFavoritesCount(String userId) {
+        decreaseFavoritesCount(userId, 1);
+    }
+
+    /**
+     * 指定用户的被收藏计数减少指定数量。
+     *
+     * @param userId 要减少收藏计数的用户ID
+     * @param count 收藏计数减少多少，应为正数
+     */
+    public void decreaseFavoritesCount(String userId, int count) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.BE_FAVORITED_COUNT_KEY, -1),
+                new Update().inc(User.BE_FAVORITED_COUNT_KEY, count * -1),
                 User.class);
     }
 

@@ -3,6 +3,7 @@ package com.lebo.service;
 import com.google.common.collect.Lists;
 import com.lebo.entity.*;
 import com.lebo.event.AfterCreatePostEvent;
+import com.lebo.event.AfterDestroyPostEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.MongoConstant;
@@ -68,7 +69,7 @@ public class StatusService extends AbstractMongoService {
      * @return
      * @throws IOException
      */
-    public Post update(String userId, String text, List<FileInfo> fileInfos, String originPostId, String source) throws Exception {
+    public Post createPost(String userId, String text, List<FileInfo> fileInfos, String originPostId, String source) throws Exception {
         List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
 
         Post post = new Post().initial();
@@ -77,7 +78,7 @@ public class StatusService extends AbstractMongoService {
         post.setSource(source);
         post.setText(text);
         post.setUserMentions(mentionUserIds(text));
-        post.setHashtags(findHashtags(text));
+        post.setHashtags(findHashtags(text, true));
         post.setFiles(fileIds);
         post.setOriginPostId(originPostId);
         post.setSearchTerms(buildSearchTerms(post));
@@ -86,6 +87,22 @@ public class StatusService extends AbstractMongoService {
         throwOnMongoError();
         eventBus.post(new AfterCreatePostEvent(post));
 
+        return post;
+    }
+
+    public Post destroyPost(String id) {
+        Post post = postDao.findOne(id);
+        if (post != null) {
+            commentService.deleteByPostId(id);
+            favoriteService.deleteByPostId(id);
+
+            for(String fileId : post.getFiles()){
+                gridFsService.delete(fileId);
+            }
+
+            postDao.delete(post);
+            eventBus.post(new AfterDestroyPostEvent(post));
+        }
         return post;
     }
 
@@ -334,14 +351,19 @@ public class StatusService extends AbstractMongoService {
 
     private Pattern tagPattern = Pattern.compile("#([^#@\\s]+)#");
 
-    public LinkedHashSet<String> findHashtags(String text) {
+    public LinkedHashSet<String> findHashtags(String text, boolean strip) {
         if (StringUtils.isBlank(text)) {
             return new LinkedHashSet<String>(1);
         }
         Matcher m = tagPattern.matcher(text);
         LinkedHashSet<String> tags = new LinkedHashSet<String>();
         while (m.find()) {
-            tags.add(m.group(0));
+            if (strip) {
+                tags.add(m.group(1));
+            } else {
+                tags.add(m.group(0));
+            }
+
         }
         return tags;
     }
@@ -354,7 +376,7 @@ public class StatusService extends AbstractMongoService {
 
     public LinkedHashSet<String> buildSearchTerms(Post post) {
         LinkedHashSet<String> words = new LinkedHashSet<String>();
-        words.addAll(findHashtags(post.getText()));
+        words.addAll(findHashtags(post.getText(), false));
         words.addAll(mentionScreenNames(post.getText(), false));
         words.addAll(segmentation.findWords(post.getText()));
         return words;
@@ -395,9 +417,9 @@ public class StatusService extends AbstractMongoService {
         //查找配置中的channel
         Setting.Channel channel = null;
         List<Setting.Channel> channels = settingService.getSetting().getChannels();
-        for(Setting.Channel c : channels){
-            if(id.equals(c.getId())){
-                 channel = c;
+        for (Setting.Channel c : channels) {
+            if (id.equals(c.getId())) {
+                channel = c;
                 break;
             }
         }
@@ -405,10 +427,10 @@ public class StatusService extends AbstractMongoService {
         String follow = null;
         String track = null;
         //未配置的频道，返回含有hashtag的内容
-        if(channel == null){
+        if (channel == null) {
             track = "#" + id + "#";
-        //配置过的频道
-        }else{
+            //配置过的频道
+        } else {
             follow = channel.getFollow();
             track = channel.getTrack();
         }

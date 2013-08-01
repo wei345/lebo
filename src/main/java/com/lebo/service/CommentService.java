@@ -101,4 +101,9 @@ public class CommentService extends AbstractMongoService {
         }
         return dtos;
     }
+
+    public void deleteByPostId(String postId){
+        mongoTemplate.remove(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)),
+                Comment.class);
+    }
 }

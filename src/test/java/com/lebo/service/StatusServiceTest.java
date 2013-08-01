@@ -62,7 +62,7 @@ public class StatusServiceTest extends SpringContextTestCase {
 
         String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(classPathResource.getFile());
         FileInfo fileInfo = new FileInfo(classPathResource.getInputStream(), classPathResource.getFilename(), contentType);
-        Post post = statusService.update("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(fileInfo), null, "test");
+        Post post = statusService.createPost("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(fileInfo), null, "test");
 
         assertNotNull(post);
     }
@@ -89,13 +89,13 @@ public class StatusServiceTest extends SpringContextTestCase {
 
     @Test
     public void findTags() {
-        LinkedHashSet<String> tags = statusService.findHashtags("##a#b#c##d##");
+        LinkedHashSet<String> tags = statusService.findHashtags("##a#b#c##d##", true);
         assertEquals(3, tags.size());
         assertTrue(tags.contains("a"));
         assertTrue(tags.contains("c"));
         assertTrue(tags.contains("d"));
 
-        tags = statusService.findHashtags("#### ## ####");
+        tags = statusService.findHashtags("#### ## ####", false);
         assertEquals(0, tags.size());
     }
 

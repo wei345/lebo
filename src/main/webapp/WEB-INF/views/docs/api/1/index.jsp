@@ -147,6 +147,14 @@
             返回指定频道的posts
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/statuses/destroy" text="POST statuses/destroy"/>
+        </td>
+        <td>
+            删除指定的Post，返回被删除的Post
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>
