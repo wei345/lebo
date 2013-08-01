@@ -3,9 +3,9 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="频道posts" method="GET" action="${ctx}/api/1/statuses/channel.json">
+<tags:form name="频道posts" method="GET" action="${ctx}/api/1/statuses/channelTimeline.json">
     <p>
-        返回指定频道的posts
+        返回由id参数指定频道的视频列表。
     </p>
     <tags:field name="id" value="who_is_next"/>
     <tags:field name="count" optional="true"/>
@@ -14,7 +14,7 @@
 </tags:form>
 
 
-<tags:example method="GET" url="">
+<tags:example method="GET" url="http://localhost:8080/api/1/statuses/channelTimeline.json?id=who_is_next&count=2">
     [
         {
             id: "51f906781a88b127ccb0f42b",
@@ -67,10 +67,9 @@
                 screenName: "xueeR_Z",
                 profileImageUrl: "http://tp4.sinaimg.cn/2484091107/50/5668404603/0",
                 createdAt: "Fri Jul 12 18:00:50 +0800 2013",
-                following: true,
                 followersCount: 1,
                 friendsCount: 2,
-                statusesCount: 5,
+                statusesCount: 3,
                 favoritesCount: 2,
                 beFavoritedCount: 2,
                 blocking: false

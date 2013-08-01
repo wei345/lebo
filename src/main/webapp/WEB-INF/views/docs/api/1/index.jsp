@@ -83,6 +83,14 @@
             返回 @我 的视频列表。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/channelTimeline" text="GET statuses/channelTimeline"/>
+        </td>
+        <td>
+            返回id参数指定的频道的视频列表。
+        </td>
+    </tr>
     <tr class="disabled">
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1/get/statuses/filter" text="GET statuses/filter"/>
@@ -105,14 +113,6 @@
         </td>
         <td>
             返回由userId或screenName指定的用户被加精的视频列表。
-        </td>
-    </tr>
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/statuses/channel" text="GET statuses/channel"/>
-        </td>
-        <td>
-            返回指定频道的视频列表。
         </td>
     </tr>
 </table>
