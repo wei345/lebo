@@ -10,7 +10,7 @@
     <tags:field name="id" value="51f8db8a1a88178f820c1422"/>
 </tags:form>
 
-<tags:example method="GET" url="http://localhost:8080/api/1/statuses/show.json">
+<tags:example method="GET" url="http://localhost:8080/api/1/statuses/show.json?id=51f8db8a1a88178f820c1422">
     {
         id: "51f8db8a1a88178f820c1422",
         user: {
