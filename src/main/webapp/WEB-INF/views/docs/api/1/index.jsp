@@ -163,6 +163,14 @@
             删除由id参数指定的视频，当前登录用户必须是被删除视频的作者，返回被删除的视频。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/show" text="POST statuses/show"/>
+        </td>
+        <td>
+            返回由id参数指定的单个视频。
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>

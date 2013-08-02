@@ -20,6 +20,7 @@ import org.springside.modules.mapper.JsonMapper;
  */
 public class ErrorDto {
     private static final int UNAUTHORIZED_CODE = 10403;
+    private static final int NOT_FOUND_CODE = 10404;
     public static final ErrorDto BAD_REQUEST = new ErrorDto("Bad Request", 10400, HttpStatus.BAD_REQUEST);
     public static final ErrorDto UNAUTHORIZED = new ErrorDto("Unauthorized", 10401, HttpStatus.UNAUTHORIZED);
     public static final ErrorDto FORBIDDEN = new ErrorDto("Forbidden", UNAUTHORIZED_CODE, HttpStatus.FORBIDDEN);
@@ -74,6 +75,10 @@ public class ErrorDto {
 
     public static ResponseEntity<ErrorDto> notFound() {
         return new ResponseEntity<ErrorDto>(ErrorDto.NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    public static ResponseEntity<ErrorDto> notFound(String message) {
+        return new ResponseEntity<ErrorDto>(new ErrorDto(message, NOT_FOUND_CODE), HttpStatus.NOT_FOUND);
     }
 
     public static ResponseEntity<ErrorDto> unauthorized() {

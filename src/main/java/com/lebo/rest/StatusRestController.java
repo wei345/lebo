@@ -275,4 +275,21 @@ public class StatusRestController {
         statusService.destroyPost(id);
         return dto;
     }
+
+    @RequestMapping(value = "show", method = RequestMethod.GET)
+    @ResponseBody
+    public Object show(@RequestParam(value = "id") String id) {
+        if(StringUtils.isBlank(id)){
+            return ErrorDto.badRequest("id参数不能为空");
+        }
+
+        Post post = statusService.findPost(id);
+
+        if(post == null){
+            return ErrorDto.notFound("该视频不存在");
+        }
+
+        return statusService.toStatusDto(post);
+    }
+
 }
