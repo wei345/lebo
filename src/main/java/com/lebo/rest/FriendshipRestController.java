@@ -2,7 +2,6 @@ package com.lebo.rest;
 
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.rest.dto.UserDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.ServiceException;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springside.modules.mapper.BeanMapper;
 
 /**
  * Friends & Followers

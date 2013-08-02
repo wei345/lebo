@@ -38,7 +38,7 @@ public class FriendRestController {
                        @RequestParam(value = "screenName", required = false) String screenName,
                        @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        if(StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)){
+        if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
             userId = accountService.getCurrentUserId();
         } else {
             userId = accountService.getUserId(userId, screenName);

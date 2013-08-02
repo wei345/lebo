@@ -1,6 +1,5 @@
 package com.lebo.service.account;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 import com.lebo.service.GridFsService;
 

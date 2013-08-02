@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,8 +47,8 @@ public class CommentService extends AbstractMongoService {
 
         //是否为视频回复
         comment.setHasVideo(false);
-        for(FileInfo fileInfo : fileInfos){
-            if(StringUtils.startsWith(fileInfo.getMimeType(), "video/")){
+        for (FileInfo fileInfo : fileInfos) {
+            if (StringUtils.startsWith(fileInfo.getMimeType(), "video/")) {
                 comment.setHasVideo(true);
                 break;
             }
@@ -67,14 +66,14 @@ public class CommentService extends AbstractMongoService {
 
     public List<Comment> list(CommentListParam param) {
         Query query = new Query(new Criteria(Comment.POST_ID_KEY).is(param.getPostId()));
-        if(param.getHasVideo() != null){
+        if (param.getHasVideo() != null) {
             query.addCriteria(new Criteria(Comment.HAS_VIDEO_KEY).is(param.getHasVideo()));
         }
         paginationById(query, param);
         return mongoTemplate.find(query, Comment.class);
     }
 
-    public CommentDto toCommentDto(Comment comment){
+    public CommentDto toCommentDto(Comment comment) {
         CommentDto dto = BeanMapper.map(comment, CommentDto.class);
 
         List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
@@ -88,7 +87,7 @@ public class CommentService extends AbstractMongoService {
         dto.setUser(accountService.toUserDto(user));
 
         //评论评论的作者信息
-        if(StringUtils.isNotBlank(comment.getReplyCommentUserId())){
+        if (StringUtils.isNotBlank(comment.getReplyCommentUserId())) {
             User replyCommentUser = accountService.getUser(comment.getReplyCommentUserId());
             UserDto replyCommentUserDto = new UserDto();
             replyCommentUserDto.setScreenName(replyCommentUser.getScreenName());
@@ -100,20 +99,20 @@ public class CommentService extends AbstractMongoService {
         return dto;
     }
 
-    public List<CommentDto> toCommentDtos(List<Comment> comments){
+    public List<CommentDto> toCommentDtos(List<Comment> comments) {
         List<CommentDto> dtos = new ArrayList<CommentDto>(comments.size());
-        for(Comment comment : comments){
+        for (Comment comment : comments) {
             dtos.add(toCommentDto(comment));
         }
         return dtos;
     }
 
-    public void deleteByPostId(String postId){
+    public void deleteByPostId(String postId) {
         mongoTemplate.remove(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)),
                 Comment.class);
     }
 
-    public Comment getComment(String id){
+    public Comment getComment(String id) {
         return commentDao.findOne(id);
     }
 }

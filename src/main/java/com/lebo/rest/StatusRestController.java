@@ -207,7 +207,7 @@ public class StatusRestController {
     @RequestMapping(value = "hot", method = RequestMethod.GET)
     @ResponseBody
     public Object hot(@RequestParam(value = "page", defaultValue = "0") int pageNo,
-                         @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
+                      @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
         Setting setting = settingService.getSetting();
         Date date = DateUtils.addDays(new Date(), setting.getHotDays() * -1);
         SearchParam param = new SearchParam(null, pageNo, size, Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY);
@@ -248,7 +248,7 @@ public class StatusRestController {
     @ResponseBody
     public Object channel(@RequestParam(value = "id") String id,
                           PaginationParam paginationParam) {
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             return ErrorDto.badRequest("id参数不能为空");
         }
 
@@ -260,13 +260,13 @@ public class StatusRestController {
     @RequestMapping(value = "destroy", method = RequestMethod.POST)
     @ResponseBody
     public Object destroy(@RequestParam(value = "id") String id) {
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             return ErrorDto.badRequest("id参数不能为空");
         }
 
         Post post = statusService.findPost(id);
 
-        if(!post.getUserId().equals(accountService.getCurrentUserId())){
+        if (!post.getUserId().equals(accountService.getCurrentUserId())) {
             return ErrorDto.unauthorized("你不是作者，没有权限删除");
         }
 
@@ -279,13 +279,13 @@ public class StatusRestController {
     @RequestMapping(value = "show", method = RequestMethod.GET)
     @ResponseBody
     public Object show(@RequestParam(value = "id") String id) {
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             return ErrorDto.badRequest("id参数不能为空");
         }
 
         Post post = statusService.findPost(id);
 
-        if(post == null){
+        if (post == null) {
             return ErrorDto.notFound("该视频不存在");
         }
 

@@ -19,12 +19,12 @@ public class HashtagServiceTest extends SpringContextTestCase {
     private HashtagService hashtagService;
 
     @Test
-    public void increaseCount(){
+    public void increaseCount() {
         hashtagService.increaseCount("测试");
     }
 
     @Test
-    public void searchHashtags(){
+    public void searchHashtags() {
         SearchParam p = new SearchParam();
         p.setSort(new Sort(Sort.Direction.DESC, Hashtag.COUNT_KEY));
         p.setQ("石");

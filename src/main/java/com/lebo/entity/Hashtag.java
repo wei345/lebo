@@ -12,7 +12,7 @@ import java.util.Date;
  * Time: PM3:48
  */
 @Document
-public class Hashtag extends IdEntity{
+public class Hashtag extends IdEntity {
     @Indexed(unique = true)
     private String name;
     public static final String NAME_KEY = "name";
@@ -21,8 +21,8 @@ public class Hashtag extends IdEntity{
     public static final String COUNT_KEY = "count";
     private Date increaseAt;
     /**
-     *  count增长时间，也就是最后使用该hashtag的post的时间。
-     *  可认为是该hashtag最后活跃时间。
+     * count增长时间，也就是最后使用该hashtag的post的时间。
+     * 可认为是该hashtag最后活跃时间。
      */
     public static final String INCREASE_AT_KEY = "increaseAt";
 

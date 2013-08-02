@@ -16,7 +16,7 @@ import java.net.URL;
 
 /**
  * 全局EventBus。
- *
+ * <p/>
  * 应用启动时，Spring会调用由@PostConstruct指定的方法，注册事件处理器。
  *
  * @author: Wei Liu

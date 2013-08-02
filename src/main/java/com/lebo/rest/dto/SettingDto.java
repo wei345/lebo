@@ -1,7 +1,6 @@
 package com.lebo.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lebo.entity.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class SettingDto {
         this.officialAccountId = officialAccountId;
     }
 
-    public static class ChannelDto{
+    public static class ChannelDto {
         private String id;
         private String name;
         private String description;

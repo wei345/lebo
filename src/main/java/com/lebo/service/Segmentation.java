@@ -21,7 +21,7 @@ public class Segmentation {
      * 返回文本中全部词的集合，英文字母会转为小写。
      */
     public LinkedHashSet findWords(String text) {
-        if(StringUtils.isBlank(text)){
+        if (StringUtils.isBlank(text)) {
             return new LinkedHashSet<String>(1);
         }
 

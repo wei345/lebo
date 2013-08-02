@@ -7,15 +7,8 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -69,7 +62,7 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
-            Boolean weiboVerified = (Boolean)userInfo.get("verified");
+            Boolean weiboVerified = (Boolean) userInfo.get("verified");
             user.setWeiboVerified(weiboVerified);
             user.setLastSignInAt(user.getCreatedAt());
             user = accountService.saveUser(user);

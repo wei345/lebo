@@ -20,7 +20,8 @@
 </tags:form>
 
 
-<tags:example method="GET" url="http://localhost:8080/api/1/statuses/search.json?q=%23%E7%95%AA%E7%9F%B3%E6%A6%B4%23&size=5">
+<tags:example method="GET"
+              url="http://localhost:8080/api/1/statuses/search.json?q=%23%E7%95%AA%E7%9F%B3%E6%A6%B4%23&size=5">
     [
         {
             id: "51f8db8a1a88178f820c1422",

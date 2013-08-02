@@ -39,7 +39,7 @@ public class FavoriteService extends AbstractMongoService {
             throw new ServiceException(postId + "不存在");
         }
 
-        if(StringUtils.isNotBlank(post.getOriginPostId())){
+        if (StringUtils.isNotBlank(post.getOriginPostId())) {
             post = statusService.findPost(post.getOriginPostId());
             if (post == null) {
                 throw new ServiceException("原始Post不存在");
@@ -84,7 +84,7 @@ public class FavoriteService extends AbstractMongoService {
         return statusService.findPosts(ids);
     }
 
-    public void deleteByPostId(String postId){
+    public void deleteByPostId(String postId) {
         mongoTemplate.remove(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)),
                 Favorite.class);
     }

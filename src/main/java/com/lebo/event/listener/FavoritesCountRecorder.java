@@ -35,7 +35,7 @@ public class FavoritesCountRecorder {
 
     @Subscribe
     public void decreaseOnPostDestroy(AfterDestroyPostEvent event) {
-        if(event.getPost().getFavoritesCount() > 0){
+        if (event.getPost().getFavoritesCount() > 0) {
             accountService.decreaseFavoritesCount(event.getPost().getUserId(), event.getPost().getFavoritesCount());
         }
     }

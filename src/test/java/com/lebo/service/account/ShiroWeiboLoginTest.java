@@ -15,7 +15,7 @@ public class ShiroWeiboLoginTest extends SpringContextTestCase {
     private ShiroWeiboLogin shiroWeiboLogin;
 
     @Test
-    public void getProfileImage(){
+    public void getProfileImage() {
         //shiroWeiboLogin.getProfileImage();
 
     }

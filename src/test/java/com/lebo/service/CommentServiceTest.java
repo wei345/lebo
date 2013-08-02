@@ -14,7 +14,7 @@ public class CommentServiceTest extends SpringContextTestCase {
     private CommentService commentService;
 
     @Test
-    public void deleteByPostId(){
+    public void deleteByPostId() {
         commentService.deleteByPostId("51ef6f741a8847c724a187f7");
     }
 }

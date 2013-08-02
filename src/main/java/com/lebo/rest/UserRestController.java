@@ -76,7 +76,7 @@ public class UserRestController {
         String id = accountService.getUserId(userId, screenName);
         User user = accountService.getUser(id);
 
-        if(user == null){
+        if (user == null) {
             return ErrorDto.notFound();
         }
 
@@ -86,7 +86,7 @@ public class UserRestController {
     @RequestMapping(value = "suggestions/hot", method = RequestMethod.GET)
     @ResponseBody
     public Object suggestionsHot(@RequestParam(value = "page", defaultValue = "0") int page,
-                                 @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size){
+                                 @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
         List<User> users = suggestionsService.getHotUsers(new PageRequest(page, size));
         return accountService.toUserDtos(users);
     }

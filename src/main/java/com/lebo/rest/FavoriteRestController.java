@@ -51,9 +51,9 @@ public class FavoriteRestController {
                        @RequestParam(value = "screenName", required = false) String screenName,
                        @Valid PaginationParam paginationParam) {
 
-        if(StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)){
+        if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
             userId = accountService.getCurrentUserId();
-        }else{
+        } else {
             userId = accountService.getUserId(userId, screenName);
         }
 

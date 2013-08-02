@@ -51,24 +51,24 @@ public class CommentRestController {
                          @RequestParam(value = "postId", required = false) String postId,
                          @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
         try {
-            if(StringUtils.isBlank(postId) && StringUtils.isBlank(replyCommentId)){
+            if (StringUtils.isBlank(postId) && StringUtils.isBlank(replyCommentId)) {
                 return ErrorDto.badRequest("参数postId和replyCommentId不能都为空");
             }
 
             Comment comment = new Comment();
 
             //回复Comment
-            if(StringUtils.isNotBlank(replyCommentId)){
+            if (StringUtils.isNotBlank(replyCommentId)) {
                 Comment replyComment = commentService.getComment(replyCommentId);
-                if(replyComment == null){
+                if (replyComment == null) {
                     return ErrorDto.badRequest(String.format("replyCommentId[%s]无效", replyCommentId));
                 }
                 comment.setReplyCommentId(replyCommentId);
                 comment.setReplyCommentUserId(replyComment.getUserId());
                 comment.setPostId(replyComment.getPostId());
-            //回复Post
+                //回复Post
             } else {
-                if(!statusService.isPostExists(postId)){
+                if (!statusService.isPostExists(postId)) {
                     return ErrorDto.badRequest(String.format("postId[%s]不存在", postId));
                 }
                 comment.setPostId(postId);

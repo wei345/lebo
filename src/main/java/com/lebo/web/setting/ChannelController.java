@@ -63,8 +63,8 @@ public class ChannelController {
 
             Setting setting = settingService.getSetting();
 
-            for(Setting.Channel c : setting.getChannels()){
-                if(channel.getId().equals(c.getId())){
+            for (Setting.Channel c : setting.getChannels()) {
+                if (channel.getId().equals(c.getId())) {
                     redirectAttributes.addFlashAttribute("error", "重复 " + channel.getId());
                     return "redirect:/admin/channels";
                 }

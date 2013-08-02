@@ -8,7 +8,6 @@ import com.lebo.repository.FollowingDao;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;

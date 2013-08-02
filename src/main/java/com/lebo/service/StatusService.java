@@ -96,7 +96,7 @@ public class StatusService extends AbstractMongoService {
             commentService.deleteByPostId(id);
             favoriteService.deleteByPostId(id);
 
-            for(String fileId : post.getFiles()){
+            for (String fileId : post.getFiles()) {
                 gridFsService.delete(fileId);
             }
 
@@ -502,7 +502,7 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
-    public boolean isPostExists(String id){
+    public boolean isPostExists(String id) {
         return postDao.exists(id);
     }
 }

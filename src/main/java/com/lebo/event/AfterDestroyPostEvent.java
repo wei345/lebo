@@ -10,7 +10,7 @@ import com.lebo.entity.Post;
 public class AfterDestroyPostEvent {
     private Post post;
 
-    public AfterDestroyPostEvent(Post post){
+    public AfterDestroyPostEvent(Post post) {
         this.post = post;
     }
 

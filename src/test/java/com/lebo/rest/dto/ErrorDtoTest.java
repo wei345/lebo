@@ -1,7 +1,8 @@
 package com.lebo.rest.dto;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author: Wei Liu
@@ -11,7 +12,7 @@ import static org.junit.Assert.*;
 public class ErrorDtoTest {
 
     @Test
-    public void toJson(){
+    public void toJson() {
         assertEquals(ErrorDto.BAD_REQUEST.toJson(), ErrorDto.BAD_REQUEST.toJson());
     }
 }

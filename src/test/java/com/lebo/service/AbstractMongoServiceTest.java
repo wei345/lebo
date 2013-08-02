@@ -11,10 +11,10 @@ import org.springframework.data.mongodb.core.query.Query;
  * Date: 13-7-31
  * Time: PM1:51
  */
-public class AbstractMongoServiceTest extends SpringContextTestCase{
+public class AbstractMongoServiceTest extends SpringContextTestCase {
 
     @Test
-    public void pagination(){
+    public void pagination() {
         Query query = new Query();
         PaginationParam p = new PaginationParam();
         p.setMaxId("aaaaabbbbbcccccdddddeeee");

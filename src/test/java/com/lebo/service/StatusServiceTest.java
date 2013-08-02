@@ -142,8 +142,8 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void isReposted(){
-       assertTrue(statusService.isRepost("51dfd3d21a8855744379891f","51df9f8d1a8899de19ebe351"));
-       assertFalse(statusService.isRepost("51dfd3d21a8855744379891f","51ee22a01a88ab951db570c6"));
+    public void isReposted() {
+        assertTrue(statusService.isRepost("51dfd3d21a8855744379891f", "51df9f8d1a8899de19ebe351"));
+        assertFalse(statusService.isRepost("51dfd3d21a8855744379891f", "51ee22a01a88ab951db570c6"));
     }
 }

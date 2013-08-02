@@ -83,7 +83,7 @@ public class User extends IdEntity {
         this.id = id;
     }
 
-    public User initial(){
+    public User initial() {
         setFollowersCount(0);
         setViewsCount(0);
         setBeFavoritedCount(0);

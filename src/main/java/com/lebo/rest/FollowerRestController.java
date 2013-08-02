@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class FollowerRestController {
                        @RequestParam(value = "screenName", required = false) String screenName,
                        @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        if(StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)){
+        if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
             userId = accountService.getCurrentUserId();
         } else {
             userId = accountService.getUserId(userId, screenName);

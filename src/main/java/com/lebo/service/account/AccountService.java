@@ -20,7 +20,6 @@ import org.springframework.util.Assert;
 import org.springside.modules.cache.memcached.SpyMemcachedClient;
 import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.security.utils.Digests;
-import org.springside.modules.utils.DateProvider;
 import org.springside.modules.utils.Encodes;
 
 import java.util.ArrayList;
@@ -205,7 +204,7 @@ public class AccountService extends AbstractMongoService {
      * 指定用户的被收藏计数减少指定数量。
      *
      * @param userId 要减少收藏计数的用户ID
-     * @param count 收藏计数减少多少，应为正数
+     * @param count  收藏计数减少多少，应为正数
      */
     public void decreaseFavoritesCount(String userId, int count) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),

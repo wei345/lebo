@@ -1,14 +1,9 @@
 package com.lebo.entity;
 
-import com.lebo.web.ControllerSetup;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springside.modules.utils.Encodes;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 

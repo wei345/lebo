@@ -62,7 +62,7 @@ public class SuggestionsService extends AbstractMongoService {
         });
 
         //保存前1000条
-        if(users.size() > 1000){
+        if (users.size() > 1000) {
             users = users.subList(0, 1000);
         }
 
@@ -71,20 +71,20 @@ public class SuggestionsService extends AbstractMongoService {
                 Suggestions.class);
     }
 
-    public List<User> getHotUsers(Pageable pageable){
+    public List<User> getHotUsers(Pageable pageable) {
         Query query = new Query();
         query.fields().include(String.format("%s.%s", Suggestions.USERS_KEY, Suggestions.Users.HOT_KEY));
         Suggestions suggestions = mongoTemplate.findOne(query, Suggestions.class);
 
         List<Suggestions.User> hotUsers = suggestions.getUsers().getHot();
 
-        if(hotUsers.size() > pageable.getOffset()){
+        if (hotUsers.size() > pageable.getOffset()) {
             hotUsers = hotUsers.subList(pageable.getOffset(),
                     Math.min(hotUsers.size(), pageable.getOffset() + pageable.getPageSize()));
         }
 
         List<User> users = new ArrayList<User>(hotUsers.size());
-        for(Suggestions.User u : hotUsers){
+        for (Suggestions.User u : hotUsers) {
             User user = accountService.getUser(u.getUserId());
             user.setBeFavoritedCount(u.getValue());
             users.add(user);

@@ -354,7 +354,9 @@
 </table>
 
 <strong>error</strong>
+
 <p><code>200&lt;=HTTP状态码<300为成功，否则失败</code></p>
+
 <p><code>HTTP状态码>=400并且内容为JSON，是错误对象</code></p>
 <ul>
     <li>
