@@ -15,9 +15,9 @@ import javax.jms.MessageListener;
  * @author calvin
  *
  */
-public class AdvancedNotifyMessageListener implements MessageListener {
+public class APNSMessageListener implements MessageListener {
 
-	private static Logger logger = LoggerFactory.getLogger(AdvancedNotifyMessageListener.class);
+	private static Logger logger = LoggerFactory.getLogger(APNSMessageListener.class);
 
 	/**
 	 * MessageListener回调函数.

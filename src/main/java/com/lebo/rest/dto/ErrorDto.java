@@ -1,6 +1,7 @@
 package com.lebo.rest.dto;
 
 import com.lebo.service.ServiceException;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springside.modules.mapper.JsonMapper;
@@ -69,8 +70,16 @@ public class ErrorDto {
         }
     }
 
+    public static ResponseEntity<ErrorDto> badRequest(Exception e) {
+        return new ResponseEntity<ErrorDto>(newBadRequestError(NestedExceptionUtils.buildMessage(e.getMessage(), e.getCause())), HttpStatus.BAD_REQUEST);
+    }
+
     public static ResponseEntity<ErrorDto> internalServerError(String message) {
         return new ResponseEntity<ErrorDto>(newInternalServerError(message), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public static ResponseEntity<ErrorDto> internalServerError(Exception e) {
+        return new ResponseEntity<ErrorDto>(newInternalServerError(NestedExceptionUtils.buildMessage(e.getMessage(), e.getCause())), HttpStatus.BAD_REQUEST);
     }
 
     public static ResponseEntity<ErrorDto> notFound() {

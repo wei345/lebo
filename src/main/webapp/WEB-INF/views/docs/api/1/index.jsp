@@ -213,6 +213,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/account/updateApnsToken" text="POST account/updateApnsToken"/>
+        </td>
+        <td>
+            更新APNS(Apple Push Notification Service) token，返回用户信息。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/get/users/search" text="GET users/search"/>
         </td>
         <td>

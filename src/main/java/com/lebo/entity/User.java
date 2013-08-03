@@ -46,7 +46,7 @@ public class User extends IdEntity {
     @Indexed
     private LinkedHashSet<String> oAuthIds;
     // 性别 -1 未知，0 女，1 男
-    private int gender = -1;
+    private Integer gender;
     //TODO 在设置email时，保证唯一
     @Indexed
     private String email;
@@ -75,6 +75,10 @@ public class User extends IdEntity {
     @Indexed(direction = IndexDirection.DESCENDING)
     private Integer viewCount;
     public static final String VIEW_COUNT_KEY = "viewCount";
+
+    //Apple Push Notification Service Token
+    private String apnsProductionToken;
+    private String apnsDevelopmentToken;
 
     public User() {
     }
@@ -165,11 +169,11 @@ public class User extends IdEntity {
         this.oAuthIds = oAuthIds;
     }
 
-    public int getGender() {
+    public Integer getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 
@@ -254,6 +258,22 @@ public class User extends IdEntity {
         this.weiboVerified = weiboVerified;
     }
 
+    public String getApnsProductionToken() {
+        return apnsProductionToken;
+    }
+
+    public void setApnsProductionToken(String apnsProductionToken) {
+        this.apnsProductionToken = apnsProductionToken;
+    }
+
+    public String getApnsDevelopmentToken() {
+        return apnsDevelopmentToken;
+    }
+
+    public void setApnsDevelopmentToken(String apnsDevelopmentToken) {
+        this.apnsDevelopmentToken = apnsDevelopmentToken;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -263,9 +283,21 @@ public class User extends IdEntity {
                 ", profileImageUrl='" + profileImageUrl + '\'' +
                 ", createdAt=" + createdAt +
                 ", verified=" + verified +
+                ", weiboVerified=" + weiboVerified +
                 ", location='" + location + '\'' +
                 ", timeZone='" + timeZone + '\'' +
                 ", oAuthIds=" + oAuthIds +
+                ", gender=" + gender +
+                ", email='" + email + '\'' +
+                ", lastSignInAt=" + lastSignInAt +
+                ", plainPassword='" + plainPassword + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", roles=" + roles +
+                ", followersCount=" + followersCount +
+                ", beFavoritedCount=" + beFavoritedCount +
+                ", viewCount=" + viewCount +
+                ", apnsProductionToken='" + apnsProductionToken + '\'' +
                 "} " + super.toString();
     }
 }

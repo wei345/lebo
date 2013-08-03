@@ -16,7 +16,7 @@
             </list>
         </property>
         <!--  quartz配置文件路径, 指向cluster配置 -->
-        <property name="configLocation" value="classpath:quartz-cluster.properties"/>
+        <property name="configLocation" value="classpath:schedule/quartz-cluster.properties"/>
         <!-- 启动时延期2秒开始任务 -->
         <property name="startupDelay" value="2"/>
         <!-- Job接受applicationContext的成员变量名 -->

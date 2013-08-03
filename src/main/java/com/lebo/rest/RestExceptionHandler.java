@@ -41,11 +41,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         switch (status) {
             case BAD_REQUEST:
-                return ErrorDto.badRequest(ex.getMessage());
+                return ErrorDto.badRequest(ex);
             case NOT_FOUND:
                 return ErrorDto.notFound();
             case INTERNAL_SERVER_ERROR:
-                return ErrorDto.internalServerError(ex.getMessage());
+                return ErrorDto.internalServerError(ex);
             default:
                 return super.handleExceptionInternal(ex, body, headers, status, request);
         }

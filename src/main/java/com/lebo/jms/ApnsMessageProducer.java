@@ -12,11 +12,10 @@ import javax.jms.*;
  *
  * @author calvin
  */
-public class AdvancedNotifyMessageProducer {
+public class APNSMessageProducer {
 
     private JmsTemplate jmsTemplate;
     private Destination notifyQueue;
-    private Destination notifyTopic;
 
     /**
      * 当用户被关注、喜欢、转播、at、评论、回复评论时，向用户发送通知。
@@ -47,9 +46,5 @@ public class AdvancedNotifyMessageProducer {
 
     public void setNotifyQueue(Destination notifyQueue) {
         this.notifyQueue = notifyQueue;
-    }
-
-    public void setNotifyTopic(Destination nodifyTopic) {
-        this.notifyTopic = nodifyTopic;
     }
 }

@@ -88,6 +88,31 @@ public class AccountRestController {
         }
     }
 
+    @RequestMapping(value = "updateApnsToken", method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateApnsToken(@RequestParam(value = "apnsDevelopmentToken", required = false) String apnsDevelopmentToken,
+                                  @RequestParam(value = "apnsProductionToken", required = false) String apnsProductionToken) {
+        if (StringUtils.isBlank(apnsDevelopmentToken) && StringUtils.isBlank(apnsProductionToken)) {
+            return ErrorDto.badRequest("参数apnsDevelopmentToken、apnsProductionToken不能都为空");
+        }
+
+        User user = accountService.getUser(accountService.getCurrentUserId());
+        if (apnsDevelopmentToken != null) {
+            user.setApnsDevelopmentToken(apnsDevelopmentToken);
+        }
+        if (apnsProductionToken != null) {
+            user.setApnsProductionToken(apnsProductionToken);
+        }
+        accountService.saveUser(user);
+
+        User dto = new User();
+        dto.setRoles(null);
+        dto.setId(user.getId());
+        dto.setApnsDevelopmentToken(user.getApnsDevelopmentToken());
+        dto.setApnsProductionToken(user.getApnsProductionToken());
+        return dto;
+    }
+
     /**
      * 更新Shiro中当前用户的用户名、图片.
      */
