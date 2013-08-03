@@ -213,7 +213,7 @@ public class StatusService extends AbstractMongoService {
             /* 已经添加精华字段
             //是否是加精的
             Setting setting = settingService.getSetting();
-            dto.setDigested(setting.getDigestFollow().contains(post.getUserId()));
+            dto.setDigest(setting.getDigestFollow().contains(post.getUserId()));
             */
         }
         // 嵌入转发的POST
@@ -252,12 +252,14 @@ public class StatusService extends AbstractMongoService {
     public List<Post> filterPosts(StatusFilterParam param) {
         List<Criteria> criteriaList = new ArrayList<Criteria>(5);
 
+        //follow
         if (StringUtils.isNotBlank(param.getFollow())) {
             String[] userIds = param.getFollow().split("\\s*,\\s*");
             //用户ID之间or关系
             criteriaList.add(new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds)));
         }
 
+        //track
         if (StringUtils.isNotBlank(param.getTrack())) {
             String[] phrases = param.getTrack().split("\\s*,\\s*");
             List<Criteria> criterias = new ArrayList<Criteria>(phrases.length);
@@ -279,31 +281,32 @@ public class StatusService extends AbstractMongoService {
             }
         }
 
+        //after
         if (param.getAfter() != null) {
             criteriaList.add(new Criteria(Post.CREATED_AT_KEY).gte(param.getAfter()));
         }
 
         //分页
+        Query query = new Query();
         if (!param.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
             criteriaList.add(new Criteria("_id").lt(new ObjectId(param.getMaxId())));
         }
         if (!param.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
             criteriaList.add(new Criteria("_id").gt(new ObjectId(param.getSinceId())));
         }
+        query.with(PaginationParam.DEFAULT_SORT).limit(param.getCount());
 
+        //查询
         Criteria queryCriteria = null;
         if (criteriaList.size() > 1) {
-            //各条件间是and关系
             queryCriteria = andOperator(criteriaList);
         } else if (criteriaList.size() == 1) {
             queryCriteria = criteriaList.get(0);
         }
 
-        Query query = new Query();
         if (queryCriteria != null) {
             query.addCriteria(queryCriteria);
         }
-        query.with(PaginationParam.DEFAULT_SORT).limit(param.getCount());
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -391,9 +394,9 @@ public class StatusService extends AbstractMongoService {
     }
 
     //增长浏览数
-    public void increaseViewsCount(String id) {
+    public void increaseViewCount(String id) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
-                new Update().inc(Post.VIEWS_COUNT_KEY, 1),
+                new Update().inc(Post.VIEW_COUNT_KEY, 1),
                 Post.class);
     }
 

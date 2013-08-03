@@ -73,8 +73,8 @@ public class User extends IdEntity {
 
     //该用户Posts被播放的次数
     @Indexed(direction = IndexDirection.DESCENDING)
-    private Integer viewsCount;
-    public static final String VIEWS_COUNT_KEY = "viewsCount";
+    private Integer viewCount;
+    public static final String VIEW_COUNT_KEY = "viewCount";
 
     public User() {
     }
@@ -85,7 +85,7 @@ public class User extends IdEntity {
 
     public User initial() {
         setFollowersCount(0);
-        setViewsCount(0);
+        setViewCount(0);
         setBeFavoritedCount(0);
         return this;
     }
@@ -238,12 +238,12 @@ public class User extends IdEntity {
         this.beFavoritedCount = beFavoritedCount;
     }
 
-    public Integer getViewsCount() {
-        return viewsCount;
+    public Integer getViewCount() {
+        return viewCount;
     }
 
-    public void setViewsCount(Integer viewsCount) {
-        this.viewsCount = viewsCount;
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 
     public Boolean getWeiboVerified() {

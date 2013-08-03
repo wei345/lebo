@@ -31,6 +31,6 @@ public interface PostDao extends MongoRepository<Post, String> {
     @Query(value = "{ _id : { $in : ?0 } }")
     List<Post> findPosts(List<ObjectId> ids);
 
-    @Query(value = "{ userId : ?0 , digested: true, _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
+    @Query(value = "{ userId : ?0 , digest: true, _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
     Page<Post> usreDigestline(String userId, String maxId, String sinceId, Pageable pageable);
 }

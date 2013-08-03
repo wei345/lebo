@@ -24,7 +24,7 @@
                 statusesCount: 6,
                 favoritesCount: 2,
                 beFavoritedCount: null,
-                viewsCount: null
+                viewCount: null
             },
             createdAt: "Wed Jul 24 11:23:12 +0800 2013",
             text: null,
@@ -35,7 +35,7 @@
             repostsCount: null,
             reposted: null,
             commentsCount: null,
-            viewsCount: 0,
+            viewCount: 0,
             originStatus: {
                 id: "51ee23411a88eaa41b348b72",
                 user: {
@@ -49,7 +49,7 @@
                     statusesCount: 5,
                     favoritesCount: 1,
                     beFavoritedCount: 0,
-                    viewsCount: 3
+                    viewCount: 3
                 },
                 createdAt: "Tue Jul 23 14:31:28 +0800 2013",
                 text: "杰克逊2",
@@ -73,7 +73,7 @@
                 repostsCount: 1,
                 reposted: true,
                 commentsCount: 0,
-                viewsCount: 0,
+                viewCount: 0,
                 originStatus: null
             }
         }

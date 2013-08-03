@@ -26,7 +26,7 @@
             statusesCount: 8,
             favoritesCount: 3,
             beFavoritedCount: 1,
-            viewsCount: 4,
+            viewCount: 4,
             blocking: false
         },
         {
@@ -39,7 +39,7 @@
             friendsCount: 0,
             statusesCount: 1,
             favoritesCount: 0,
-            viewsCount: 1,
+            viewCount: 1,
             blocking: false
         }
     ]

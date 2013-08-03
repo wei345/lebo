@@ -12,6 +12,7 @@ public class StatusFilterParam extends PaginationParam {
     private String track;
     private String locations;
     private Date after;
+    private Boolean digest;
 
     public String getFollow() {
         return follow;

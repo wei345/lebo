@@ -215,7 +215,7 @@ public class AccountService extends AbstractMongoService {
     //增长播放计数
     public void increasePlaysCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
-                new Update().inc(User.VIEWS_COUNT_KEY, 1),
+                new Update().inc(User.VIEW_COUNT_KEY, 1),
                 User.class);
     }
 

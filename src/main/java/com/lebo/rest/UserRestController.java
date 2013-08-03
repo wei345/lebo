@@ -55,7 +55,7 @@ public class UserRestController {
         }
 
         if (User.FOLLOWERS_COUNT_KEY.equals(orderBy) || User.BE_FAVORITED_COUNT_KEY.equals(orderBy) ||
-                User.VIEWS_COUNT_KEY.equals(orderBy) || "_id".equals(orderBy)) {
+                User.VIEW_COUNT_KEY.equals(orderBy) || "_id".equals(orderBy)) {
             //搜索
             SearchParam param = new SearchParam(q, pageNo, size, direction, orderBy);
             List<User> users = accountService.searchUser(param);
