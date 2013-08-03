@@ -32,7 +32,7 @@
                 location: null,
                 timeZone: null,
                 beFavoritedCount: null,
-                viewsCount: null
+                viewCount: null
             },
             createdAt: "Fri Jul 12 13:39:40 +0800 2013",
             text: "视频1",

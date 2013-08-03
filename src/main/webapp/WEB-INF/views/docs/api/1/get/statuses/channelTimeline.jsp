@@ -29,7 +29,7 @@
                 statusesCount: 1,
                 favoritesCount: 0,
                 beFavoritedCount: 0,
-                viewsCount: 0,
+                viewCount: 0,
                 weiboVerified: false,
                 blocking: false
             },
@@ -55,10 +55,10 @@
             repostsCount: 0,
             reposted: false,
             commentsCount: 0,
-            viewsCount: 0,
+            viewCount: 0,
             comments: [ ],
             userMentions: [ ],
-            digested: false
+            digest: false
         },
         {
             id: "51f8db8a1a88178f820c1422",
@@ -96,10 +96,10 @@
             repostsCount: 0,
             reposted: false,
             commentsCount: 0,
-            viewsCount: 0,
+            viewCount: 0,
             comments: [ ],
             userMentions: [ ],
-            digested: false
+            digest: false
         }
     ]
 </tags:example>

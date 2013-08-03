@@ -100,7 +100,7 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void searchPosts() {
+    public void filterPosts() {
         StatusFilterParam param = new StatusFilterParam();
         param.setTrack("杨过,标签1 2");
         List<Post> posts = statusService.filterPosts(param);

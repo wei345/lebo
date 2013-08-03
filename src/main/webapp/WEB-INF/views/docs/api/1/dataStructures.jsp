@@ -134,7 +134,7 @@
     </tr>
     <tr>
         <td>
-            viewsCount
+            viewCount
         </td>
         <td>
             int32
@@ -178,7 +178,7 @@
     </tr>
     <tr>
         <td>
-            digested
+            digest
         </td>
         <td>
             boolean
@@ -320,7 +320,7 @@
     </tr>
     <tr>
         <td>
-            viewsCount
+            viewCount
         </td>
         <td>
             int32

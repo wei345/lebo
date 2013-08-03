@@ -38,7 +38,7 @@
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
           onclick="$('input[name=q]').val('')"></span>
     orderBy <input type="text" class="input-mini" name="orderBy" value="${orderBy}"
-                   placeholder="followersCount/beFavoritedCount/viewsCount">
+                   placeholder="followersCount/beFavoritedCount/viewCount">
     <select class="input-small" name="order">
         <setting ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</setting>
         <setting ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</setting>

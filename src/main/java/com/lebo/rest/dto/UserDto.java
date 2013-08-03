@@ -23,7 +23,7 @@ public class UserDto {
     private Integer statusesCount;
     private Integer favoritesCount;
     private Integer beFavoritedCount;
-    private Integer viewsCount;
+    private Integer viewCount;
     private Boolean weiboVerified;
     //当前登录用户是否已将该用户加入黑名单
     private Boolean blocking;
@@ -100,12 +100,12 @@ public class UserDto {
         this.beFavoritedCount = beFavoritedCount;
     }
 
-    public Integer getViewsCount() {
-        return viewsCount;
+    public Integer getViewCount() {
+        return viewCount;
     }
 
-    public void setViewsCount(Integer viewsCount) {
-        this.viewsCount = viewsCount;
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 
     public Integer getFavoritesCount() {

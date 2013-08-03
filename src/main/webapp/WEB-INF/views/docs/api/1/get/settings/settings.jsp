@@ -26,6 +26,6 @@
         jingHua: "/api/1/statuses/filter?follow=51def1e61a883914869e46f3&after=Tue+Jul+23+12%3A28%3A35+%2B0800+2013",
         fenSiZuiDuo: "/api/1/users/search.json?orderBy=followersCount&order=desc",
         zuiShouXiHuan: "/api/1/users/search.json?orderBy=beFavoritedCount&order=desc",
-        piaoFangZuiGao: "/api/1/users/search.json?orderBy=viewsCount&order=desc"
+        piaoFangZuiGao: "/api/1/users/search.json?orderBy=viewCount&order=desc"
     }
 </tags:example>

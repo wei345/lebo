@@ -197,7 +197,7 @@ public class StatusRestController {
         }
 
         if (Post.FAVOURITES_COUNT_KEY.equals(orderBy) ||
-                Post.VIEWS_COUNT_KEY.equals(orderBy) ||
+                Post.VIEW_COUNT_KEY.equals(orderBy) ||
                 "_id".equals(orderBy)) {
             //搜索
             SearchParam param = new SearchParam(q, pageNo, size, direction, orderBy);

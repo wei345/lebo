@@ -23,12 +23,12 @@ public class StatusDto {
     private Integer repostsCount;
     private Boolean reposted;
     private Integer commentsCount;
-    private Integer viewsCount;
+    private Integer viewCount;
     private StatusDto originStatus;
     //最近3条评论
     private List<CommentDto> comments;
     private List<UserDto> userMentions;
-    private Boolean digested;//是否已被加精
+    private Boolean digest;//是否已被加精
 
     public String getId() {
         return id;
@@ -126,12 +126,12 @@ public class StatusDto {
         this.originStatus = originStatus;
     }
 
-    public Integer getViewsCount() {
-        return viewsCount;
+    public Integer getViewCount() {
+        return viewCount;
     }
 
-    public void setViewsCount(Integer viewsCount) {
-        this.viewsCount = viewsCount;
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 
     public List<CommentDto> getComments() {
@@ -150,12 +150,12 @@ public class StatusDto {
         this.userMentions = userMentions;
     }
 
-    public Boolean getDigested() {
-        return digested;
+    public Boolean getDigest() {
+        return digest;
     }
 
-    public void setDigested(Boolean digested) {
-        this.digested = digested;
+    public void setDigest(Boolean digest) {
+        this.digest = digest;
     }
 
     public static class FileInfoDto {

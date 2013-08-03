@@ -47,9 +47,9 @@
         repostsCount: 0,
         reposted: false,
         commentsCount: 0,
-        viewsCount: 0,
+        viewCount: 0,
         comments: [ ],
         userMentions: [ ],
-        digested: false
+        digest: false
     }
 </tags:example>

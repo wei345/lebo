@@ -26,7 +26,7 @@
                 statusesCount: 8,
                 favoritesCount: 3,
                 beFavoritedCount: 1,
-                viewsCount: null
+                viewCount: null
             },
             createdAt: "Thu Jul 25 14:40:39 +0800 2013",
             text: "@Desi_漓沫沫@小萌君sang @家有笨猫咪",
@@ -50,7 +50,7 @@
             repostsCount: 0,
             reposted: false,
             commentsCount: 0,
-            viewsCount: 0,
+            viewCount: 0,
             originStatus: null,
             comments: [ ],
             userMentions: [

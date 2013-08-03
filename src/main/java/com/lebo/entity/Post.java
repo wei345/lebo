@@ -53,15 +53,15 @@ public class Post extends IdEntity {
     private Integer favoritesCount;
     public static final String FAVOURITES_COUNT_KEY = "favoritesCount";
 
-    private Integer viewsCount;
-    public static final String VIEWS_COUNT_KEY = "viewsCount";
+    private Integer viewCount;
+    public static final String VIEW_COUNT_KEY = "viewCount";
 
     // 是否精品
-    private boolean digested;
-    public static final String IS_BOUTIQUE_KEY = "digested";
+    private boolean digest;
+    public static final String DIGEST_KEY = "digest";
 
     public Post initial() {
-        setViewsCount(0);
+        setViewCount(0);
         setFavoritesCount(0);
         return this;
     }
@@ -156,12 +156,12 @@ public class Post extends IdEntity {
         this.searchTerms = searchTerms;
     }
 
-    public Integer getViewsCount() {
-        return viewsCount;
+    public Integer getViewCount() {
+        return viewCount;
     }
 
-    public void setViewsCount(Integer viewsCount) {
-        this.viewsCount = viewsCount;
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 
     public Integer getFavoritesCount() {
@@ -172,11 +172,11 @@ public class Post extends IdEntity {
         this.favoritesCount = favoritesCount;
     }
 
-    public boolean getDigested() {
-        return digested;
+    public boolean getDigest() {
+        return digest;
     }
 
-    public void setDigested(boolean digested) {
-        this.digested = digested;
+    public void setDigest(boolean digest) {
+        this.digest = digest;
     }
 }

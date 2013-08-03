@@ -35,7 +35,7 @@
             statusesCount: 5,
             favoritesCount: 3,
             beFavoritedCount: 1,
-            viewsCount: 3,
+            viewCount: 3,
             blocking: false
         },
         replyCommentId: "51f0c3851a8830dba5744f64",

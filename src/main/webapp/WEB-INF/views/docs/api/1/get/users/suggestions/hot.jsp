@@ -25,7 +25,7 @@
             statusesCount: 19,
             favoritesCount: 5,
             beFavoritedCount: 3,
-            viewsCount: 16,
+            viewCount: 16,
             blocking: false
         }
     ]
