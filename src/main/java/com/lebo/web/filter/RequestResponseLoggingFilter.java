@@ -47,8 +47,12 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
             logger.warn("打印RequestBody时发生异常", e);
         }
 
-        for (Cookie cookie : request.getCookies()) {
-            logger.info("Cookie: {} = {}", cookie.getName(), cookie.getValue());
+        if(request.getCookies() == null || request.getCookies().length == 0){
+            logger.info("Cookie: 无");
+        }else{
+            for (Cookie cookie : request.getCookies()) {
+                logger.info("Cookie: {} = {}", cookie.getName(), cookie.getValue());
+            }
         }
     }
 
