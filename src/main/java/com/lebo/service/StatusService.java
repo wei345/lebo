@@ -5,6 +5,7 @@ import com.lebo.entity.*;
 import com.lebo.event.AfterCreatePostEvent;
 import com.lebo.event.AfterDestroyPostEvent;
 import com.lebo.event.ApplicationEventBus;
+import com.lebo.event.BeforeCreatePostEvent;
 import com.lebo.repository.FollowingDao;
 import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
@@ -83,6 +84,7 @@ public class StatusService extends AbstractMongoService {
         post.setOriginPostId(originPostId);
         post.setSearchTerms(buildSearchTerms(post));
 
+        eventBus.post(new BeforeCreatePostEvent(post));
         post = postDao.save(post);
         throwOnMongoError();
         eventBus.post(new AfterCreatePostEvent(post));
