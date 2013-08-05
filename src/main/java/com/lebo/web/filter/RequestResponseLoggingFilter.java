@@ -39,13 +39,13 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
     @Override
     protected void beforeRequest(HttpServletRequest request, String message) {
         logger.info("{} {}", request.getMethod(), request.getRequestURL().toString());
-        try {
+        /*try {
             if ("POST".equalsIgnoreCase(request.getMethod())) {
                 logger.info("RequestBody: {}", IOUtils.toString(request.getInputStream()));
             }
         } catch (IOException e) {
             logger.warn("打印RequestBody时发生异常", e);
-        }
+        } */
 
         if(request.getCookies() == null || request.getCookies().length == 0){
             logger.info("Cookie: 无");
