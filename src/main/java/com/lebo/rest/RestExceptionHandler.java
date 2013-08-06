@@ -7,8 +7,6 @@ import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -35,17 +33,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {Exception.class})
-    public final ResponseEntity<?> handleException2(Exception ex, WebRequest request) {
+    public final ResponseEntity<?> handleAllException(Exception ex, WebRequest request) {
         return ErrorDto.badRequest(NestedExceptionUtils.buildMessage(ex.getMessage(), ex));
     }
 
     @Override
-    protected ResponseEntity handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return ErrorDto.badRequest(ex.getMessage());
-    }
-
-    @Override
-    protected ResponseEntity handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return ErrorDto.badRequest(ex.getMessage());
+    protected ResponseEntity handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        switch (status) {
+            case BAD_REQUEST:
+                return ErrorDto.badRequest(ex.getMessage());
+            case NOT_FOUND:
+                return ErrorDto.notFound();
+            case INTERNAL_SERVER_ERROR:
+                return ErrorDto.internalServerError(ex.getMessage());
+            default:
+                return super.handleExceptionInternal(ex, body, headers, status, request);
+        }
     }
 }
