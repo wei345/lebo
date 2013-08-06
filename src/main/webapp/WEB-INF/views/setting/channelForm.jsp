@@ -27,24 +27,21 @@
         </legend>
 
         <div class="control-group">
-            <label for="id" class="control-label">ID:</label>
-
+            <label for="name" class="control-label">名称:</label>
             <div class="controls">
-                <input type="text" id="id" name="id" value="${id}" class="input-large required"/>
+                <input type="text" id="name" name="name" value="${name}" class="input-large required"/>
             </div>
         </div>
 
         <div class="control-group">
-            <label for="name" class="control-label">名称:</label>
-
+            <label for="title" class="control-label">标题:</label>
             <div class="controls">
-                <input type="text" id="name" name="name" value="${name}" class="input-large"/>
+                <input type="text" id="title" name="title" value="${title}" class="input-large"/>
             </div>
         </div>
 
         <div class="control-group">
             <label for="description" class="control-label">描述:</label>
-
             <div class="controls">
                 <input type="text" id="description" name="description" value="${description}" class="input-large"/>
             </div>
@@ -52,7 +49,6 @@
 
         <div class="control-group">
             <label for="channelImage" class="control-label">图片:</label>
-
             <div class="controls">
                 <input type="file" id="channelImage" name="channelImage" value="${channelImage}" class="input-large"
                        minlength="3"/>
@@ -61,7 +57,6 @@
 
         <div class="control-group">
             <label for="backgroundColor" class="control-label">背景:</label>
-
             <div class="controls">
                 <input type="text" id="backgroundColor" name="backgroundColor" value="${backgroundColor}"
                        class="input-large"/>
@@ -70,7 +65,6 @@
 
         <div class="control-group">
             <label for="track" class="control-label">follow:</label>
-
             <div class="controls">
                 <input type="text" id="follow" name="follow" value="${follow}"
                        class="input-large"/>
@@ -79,7 +73,6 @@
 
         <div class="control-group">
             <label for="track" class="control-label">track:</label>
-
             <div class="controls">
                 <input type="text" id="track" name="track" value="${track}" class="input-large"/>
             </div>
@@ -87,7 +80,6 @@
 
         <div class="control-group">
             <label for="enabled" class="control-label">启用:</label>
-
             <div class="controls">
                 <input type="checkbox" id="enabled" name="enabled" ${enabled == null ? "" : "checked='checked'"}/>
             </div>

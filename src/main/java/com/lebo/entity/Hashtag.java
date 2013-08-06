@@ -17,13 +17,17 @@ public class Hashtag extends IdEntity {
     private String name;
     public static final String NAME_KEY = "name";
     @Indexed(direction = IndexDirection.DESCENDING)
-    private Integer count;
-    public static final String COUNT_KEY = "count";
-    private Date increaseAt;
+    private Integer postsCount;
+    public static final String POSTS_COUNT_KEY = "postsCount";
+    private Integer favoritesCount;
+    public static final String FAVORITES_COUNT_KEY = "favoritesCount";
+    private Integer viewCount;
+    public static final String VIEW_COUNT_KEY = "viewCount";
     /**
      * count增长时间，也就是最后使用该hashtag的post的时间。
      * 可认为是该hashtag最后活跃时间。
      */
+    private Date increaseAt;
     public static final String INCREASE_AT_KEY = "increaseAt";
 
     public String getName() {
@@ -34,12 +38,12 @@ public class Hashtag extends IdEntity {
         this.name = name;
     }
 
-    public Integer getCount() {
-        return count;
+    public Integer getPostsCount() {
+        return postsCount;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setPostsCount(Integer postsCount) {
+        this.postsCount = postsCount;
     }
 
     public Date getIncreaseAt() {
@@ -48,5 +52,21 @@ public class Hashtag extends IdEntity {
 
     public void setIncreaseAt(Date increaseAt) {
         this.increaseAt = increaseAt;
+    }
+
+    public Integer getFavoritesCount() {
+        return favoritesCount;
+    }
+
+    public void setFavoritesCount(Integer favoritesCount) {
+        this.favoritesCount = favoritesCount;
+    }
+
+    public Integer getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 }

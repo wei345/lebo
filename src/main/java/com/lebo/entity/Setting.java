@@ -64,24 +64,27 @@ public class Setting extends IdEntity {
     }
 
     public static class Channel {
-        private String id;
         private String name;
+        private String title;
         private String description;
         private String image;
         private String backgroundColor;
         private boolean enabled;
         private String follow;
         private String track;
+        private Integer postsCount;
+        private Integer favoritesCount;
+        private Integer viewCount;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
 
         @NotBlank
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
         public String getName() {
             return name;
         }
@@ -136,6 +139,30 @@ public class Setting extends IdEntity {
 
         public void setTrack(String track) {
             this.track = track;
+        }
+
+        public Integer getPostsCount() {
+            return postsCount;
+        }
+
+        public void setPostsCount(Integer postsCount) {
+            this.postsCount = postsCount;
+        }
+
+        public Integer getFavoritesCount() {
+            return favoritesCount;
+        }
+
+        public void setFavoritesCount(Integer favoritesCount) {
+            this.favoritesCount = favoritesCount;
+        }
+
+        public Integer getViewCount() {
+            return viewCount;
+        }
+
+        public void setViewCount(Integer viewCount) {
+            this.viewCount = viewCount;
         }
     }
 }

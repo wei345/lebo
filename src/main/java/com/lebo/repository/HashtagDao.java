@@ -9,4 +9,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Time: PM4:01
  */
 public interface HashtagDao extends MongoRepository<Hashtag, String> {
+    Hashtag findByName(String name);
 }

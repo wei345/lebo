@@ -30,7 +30,7 @@ public class HashtagRestController {
     @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody
     public Object search(@Valid SearchParam param) {
-        param.setSort(new Sort(Sort.Direction.DESC, Hashtag.COUNT_KEY));
-        return hashtagService.searchHashtags(param);
+        param.setSort(new Sort(Sort.Direction.DESC, Hashtag.POSTS_COUNT_KEY));
+        return hashtagService.toChannelDtos(hashtagService.searchHashtags(param));
     }
 }

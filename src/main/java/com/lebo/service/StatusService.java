@@ -442,12 +442,12 @@ public class StatusService extends AbstractMongoService {
      */
     //TODO 精简代码
     //(follow || track) && page
-    public List<Post> getChannelPosts(String id, PaginationParam paginationParam) {
+    public List<Post> getChannelPosts(String name, PaginationParam paginationParam) {
         //查找配置中的channel
         Setting.Channel channel = null;
         List<Setting.Channel> channels = settingService.getSetting().getChannels();
         for (Setting.Channel c : channels) {
-            if (id.equals(c.getId())) {
+            if (name.equals(c.getTitle())) {
                 channel = c;
                 break;
             }
@@ -457,7 +457,7 @@ public class StatusService extends AbstractMongoService {
         String track = null;
         //未配置的频道，返回含有hashtag的内容
         if (channel == null) {
-            track = "#" + id + "#";
+            track = "#" + name + "#";
             //配置过的频道
         } else {
             follow = channel.getFollow();

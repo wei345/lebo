@@ -13,21 +13,21 @@
     <table id="contentTable" class="table table-striped table-bordered table-condensed table-hover">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>名称</th>
-            <th>描述</th>
-            <th>图片</th>
-            <th>背景颜色</th>
-            <th>follow</th>
-            <th>track</th>
-            <th>启用/禁用</th>
+            <th class="input-small">名称</th>
+            <th class="input-small">标题</th>
+            <th class="input-large">描述</th>
+            <th class="input-small">图片</th>
+            <th class="input-mini">背景颜色</th>
+            <th class="input-small">follow</th>
+            <th class="input-small">track</th>
+            <th class="input-mini">启用/禁用</th>
         </tr>
         </thead>
         <tbody>
         <c:forEach items="${channels}" var="channel">
             <tr>
-                <td>${channel.id}</td>
                 <td>${channel.name}</td>
+                <td>${channel.title}</td>
                 <td>${channel.description}</td>
                 <td><img class="input-small" src="${ctx}/files/${channel.image}"/></td>
                 <td><span

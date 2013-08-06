@@ -7,14 +7,14 @@
     <p>
         返回由id参数指定频道的视频列表。
     </p>
-    <tags:field name="id" value="who_is_next"/>
+    <tags:field name="name" value="who_is_next"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>
 </tags:form>
 
 
-<tags:example method="GET" url="http://localhost:8080/api/1/statuses/channelTimeline.json?id=who_is_next&count=2">
+<tags:example method="GET" url="http://localhost:8080/api/1/statuses/channelTimeline.json?name=who_is_next&count=2">
     [
         {
             id: "51f906781a88b127ccb0f42b",

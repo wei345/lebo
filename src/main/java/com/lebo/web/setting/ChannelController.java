@@ -64,8 +64,8 @@ public class ChannelController {
             Setting setting = settingService.getSetting();
 
             for (Setting.Channel c : setting.getChannels()) {
-                if (channel.getId().equals(c.getId())) {
-                    redirectAttributes.addFlashAttribute("error", "重复 " + channel.getId());
+                if (channel.getName().equals(c.getName())) {
+                    redirectAttributes.addFlashAttribute("error", "重复 " + channel.getName());
                     return "redirect:/admin/channels";
                 }
             }
@@ -73,7 +73,7 @@ public class ChannelController {
             setting.getChannels().add(channel);
             settingService.saveOption(setting);
 
-            redirectAttributes.addFlashAttribute("success", "已创建 " + channel.getId());
+            redirectAttributes.addFlashAttribute("success", "已创建 " + channel.getName());
             return "redirect:/admin/channels";
         } catch (Exception e) {
             model.addAttribute("error", e);
