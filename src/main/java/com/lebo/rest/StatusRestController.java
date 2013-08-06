@@ -252,7 +252,7 @@ public class StatusRestController {
      */
     @RequestMapping(value = "channelTimeline", method = RequestMethod.GET)
     @ResponseBody
-    public Object channel(@RequestParam(value = "id") String id,
+    public Object channelTimeline(@RequestParam(value = "id") String id,
                           PaginationParam paginationParam) {
         if (StringUtils.isBlank(id)) {
             return ErrorDto.badRequest("id参数不能为空");
