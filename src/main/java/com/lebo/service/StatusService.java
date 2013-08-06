@@ -105,8 +105,12 @@ public class StatusService extends AbstractMongoService {
     public Post destroyPost(String id) {
         Post post = postDao.findOne(id);
         if (post != null) {
-            commentService.deleteByPostId(id);
-            favoriteService.deleteByPostId(id);
+            //原始帖子，删除评论、收藏、转发
+            if(post.getOriginPostId() == null){
+                commentService.deleteByPostId(id);
+                favoriteService.deleteByPostId(id);
+                deleteReposts(id); //Twitter也会删除转发贴
+            }
 
             for (String fileId : post.getFiles()) {
                 gridFsService.delete(fileId);
@@ -116,6 +120,10 @@ public class StatusService extends AbstractMongoService {
             eventBus.post(new AfterDestroyPostEvent(post));
         }
         return post;
+    }
+
+    private void deleteReposts(String originPostId){
+        mongoTemplate.remove(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(originPostId)), Post.class);
     }
 
     public List<Post> userTimeline(TimelineParam param) {
