@@ -9,6 +9,7 @@ import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -55,9 +56,14 @@ public class StatusRestController {
                          @RequestParam(value = "text") String text,
                          @RequestParam(value = "source", required = false) String source) {
         try {
+            logger.debug("正在发布新视频:");
+            logger.debug("      video: {}", FileUtils.byteCountToDisplaySize(video.getSize()));
+            logger.debug("      image: {}", FileUtils.byteCountToDisplaySize(image.getSize()));
+            logger.debug("       text: {}", text);
+            logger.debug("     source: {}", source == null ? "无" : source);
 
             if (video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE) {
-                return ErrorDto.badRequest(" Upload Single file size cannot be greater than 1 M byte.");
+                return ErrorDto.badRequest("上传的单个文件不能超过1M");
             }
 
             List<FileInfo> fileInfos = Arrays.asList(
