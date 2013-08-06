@@ -38,6 +38,8 @@ public class Post extends IdEntity {
     @Indexed
     private String originPostId;
     public static final String ORIGIN_POST_ID_KEY = "originPostId";
+    private String originPostUserId;
+    public static final String ORIGIN_POST_USER_ID_KEY = "originPostUserId";
     //提到的用户的ID
     @Indexed
     private LinkedHashSet<String> userMentions;
@@ -178,5 +180,13 @@ public class Post extends IdEntity {
 
     public void setDigest(boolean digest) {
         this.digest = digest;
+    }
+
+    public String getOriginPostUserId() {
+        return originPostUserId;
+    }
+
+    public void setOriginPostUserId(String originPostUserId) {
+        this.originPostUserId = originPostUserId;
     }
 }

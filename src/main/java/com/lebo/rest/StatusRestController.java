@@ -131,7 +131,7 @@ public class StatusRestController {
     /**
      * 转发Post
      *
-     * @param id   要转发的微博ID。
+     * @param id   原始post id或转发post id
      * @param text 添加的转发文本，必须做URLencode，内容不超过140个汉字
      */
     @RequestMapping(value = "repost", method = RequestMethod.POST)
@@ -140,15 +140,14 @@ public class StatusRestController {
                          @RequestParam(value = "text", required = false) String text,
                          @RequestParam(value = "source", required = false) String source) {
         try {
-            Post post = statusService.findPost(id);
+            Post post = statusService.getPost(id);
             if (post == null) {
-                return ErrorDto.badRequest("The parameter id [" + id + "] is invalid.");
+                return ErrorDto.badRequest("原始视频[" + id + "]不存在.");
             }
-            String originId = statusService.getOriginPostId(post);
 
             //转发
-            if (!statusService.isReposted(accountService.getCurrentUserId(), originId)) {
-                post = statusService.createPost(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originId, source);
+            if (!statusService.isReposted(accountService.getCurrentUserId(), post)) {
+                post = statusService.createPost(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, post, source);
             }
 
             return statusService.toStatusDto(post);
@@ -270,7 +269,7 @@ public class StatusRestController {
             return ErrorDto.badRequest("id参数不能为空");
         }
 
-        Post post = statusService.findPost(id);
+        Post post = statusService.getPost(id);
 
         if (!post.getUserId().equals(accountService.getCurrentUserId())) {
             return ErrorDto.unauthorized("你不是作者，没有权限删除");
@@ -289,7 +288,7 @@ public class StatusRestController {
             return ErrorDto.badRequest("id参数不能为空");
         }
 
-        Post post = statusService.findPost(id);
+        Post post = statusService.getPost(id);
 
         if (post == null) {
             return ErrorDto.notFound("该视频不存在");

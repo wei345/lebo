@@ -122,7 +122,7 @@ public class FileServlet extends HttpServlet {
         gridFsService.increaseViewCount(fileId);
         //增长用户视频被播放次数
         if (StringUtils.startsWith(contentInfo.getMimeType(), "video/") && postId != null) {
-            Post post = statusService.findPost(postId);
+            Post post = statusService.getPost(postId);
             if (post != null && post.getFiles().contains(fileId)) {
                 statusService.increaseViewCount(postId);
                 accountService.increasePlaysCount(post.getUserId());

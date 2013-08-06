@@ -41,7 +41,7 @@ public class FavoriteRestController {
         }
 
         favoriteService.create(userId, id);
-        Post post = statusService.findPost(id);
+        Post post = statusService.getPost(id);
         return statusService.toStatusDto(post);
     }
 
@@ -63,7 +63,7 @@ public class FavoriteRestController {
     @RequestMapping(value = "destroy", method = RequestMethod.POST)
     @ResponseBody
     public Object destroy(@RequestParam("id") String id) {
-        Post post = statusService.findPost(id);
+        Post post = statusService.getPost(id);
         if (post == null) {
             return ErrorDto.badRequest("参数id [" + id + "] 无效");
         }

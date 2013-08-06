@@ -66,11 +66,11 @@ public class StatusService extends AbstractMongoService {
      * @param userId
      * @param text
      * @param fileInfos
-     * @param originPostId 若是转发，为原Post ID，否则为null
+     * @param originPost 若是转发，为原Post ID，否则为null
      * @return
      * @throws IOException
      */
-    public Post createPost(String userId, String text, List<FileInfo> fileInfos, String originPostId, String source) throws Exception {
+    public Post createPost(String userId, String text, List<FileInfo> fileInfos, Post originPost, String source) throws Exception {
         List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
 
         Post post = new Post().initial();
@@ -81,8 +81,18 @@ public class StatusService extends AbstractMongoService {
         post.setUserMentions(mentionUserIds(text));
         post.setHashtags(findHashtags(text, true));
         post.setFiles(fileIds);
-        post.setOriginPostId(originPostId);
         post.setSearchTerms(buildSearchTerms(post));
+
+        //转发
+        if (originPost != null) {
+            if (originPost.getOriginPostId() != null) {
+                post.setOriginPostId(originPost.getOriginPostId());
+                post.setOriginPostUserId(originPost.getOriginPostUserId());
+            } else {
+                post.setOriginPostId(originPost.getId());
+                post.setOriginPostUserId(originPost.getUserId());
+            }
+        }
 
         eventBus.post(new BeforeCreatePostEvent(post));
         post = postDao.save(post);
@@ -106,10 +116,6 @@ public class StatusService extends AbstractMongoService {
             eventBus.post(new AfterDestroyPostEvent(post));
         }
         return post;
-    }
-
-    public boolean isRepost(String userId, String postId) {
-        return postDao.findByUserIdAndOriginPostId(userId, postId) != null;
     }
 
     public List<Post> userTimeline(TimelineParam param) {
@@ -153,7 +159,7 @@ public class StatusService extends AbstractMongoService {
         return postDao.usreDigestline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
-    public Post findPost(String id) {
+    public Post getPost(String id) {
         return postDao.findOne(id);
     }
 
@@ -177,7 +183,7 @@ public class StatusService extends AbstractMongoService {
         //该Post为原始Post，非转发
         if (post.getOriginPostId() == null) {
             dto.setRepostsCount(countReposts(post.getId()));
-            dto.setReposted(isReposted(accountService.getCurrentUserId(), post.getId()));
+            dto.setReposted(isReposted(accountService.getCurrentUserId(), post));
             dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
             dto.setCommentsCount(commentService.countPostComments(post.getId()));
 
@@ -210,7 +216,7 @@ public class StatusService extends AbstractMongoService {
             }
 
             //是否被当前登录用户转发
-            dto.setReposted(isReposted(accountService.getCurrentUserId(), post.getId()));
+            dto.setReposted(isReposted(accountService.getCurrentUserId(), post));
 
             /* 已经添加精华字段
             //是否是加精的
@@ -388,10 +394,19 @@ public class StatusService extends AbstractMongoService {
         return words;
     }
 
-    public boolean isReposted(String userId, String postId) {
+    /**
+     * 指定用户是否转发了指定post.
+     *
+     * @param userId
+     * @param post
+     * @return
+     */
+    public boolean isReposted(String userId, Post post) {
+        String id = (post.getOriginPostId() == null ? post.getId() : post.getOriginPostId());
+
         Query query = new Query();
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(id));
         return mongoTemplate.count(query, Post.class) > 0;
     }
 

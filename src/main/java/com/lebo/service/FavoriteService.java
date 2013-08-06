@@ -34,13 +34,13 @@ public class FavoriteService extends AbstractMongoService {
     private ApplicationEventBus eventBus;
 
     public void create(String userId, String postId) {
-        Post post = statusService.findPost(postId);
+        Post post = statusService.getPost(postId);
         if (post == null) {
             throw new ServiceException(postId + "不存在");
         }
 
         if (StringUtils.isNotBlank(post.getOriginPostId())) {
-            post = statusService.findPost(post.getOriginPostId());
+            post = statusService.getPost(post.getOriginPostId());
             if (post == null) {
                 throw new ServiceException("原始Post不存在");
             }
