@@ -12,7 +12,7 @@ import javax.jms.*;
  *
  * @author calvin
  */
-public class APNSMessageProducer {
+public class ApnsMessageProducer {
 
     private JmsTemplate jmsTemplate;
     private Destination notifyQueue;

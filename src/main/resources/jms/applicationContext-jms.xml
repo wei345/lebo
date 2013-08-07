@@ -46,7 +46,7 @@
     </bean>
 
     <!-- 使用Spring JmsTemplate的消息生产者 -->
-    <bean id="advancedNotifyMessageProducer" class="com.lebo.jms.APNSMessageProducer">
+    <bean id="advancedNotifyMessageProducer" class="com.lebo.jms.ApnsMessageProducer">
         <property name="jmsTemplate" ref="advancedJmsTemplate"/>
         <property name="notifyQueue" ref="apnsQueue"/>
         <!--<property name="notifyTopic" ref="advancedNotifyTopic"/>-->
@@ -76,5 +76,5 @@
     </bean>-->
 
     <!-- 异步接收消息处理类 -->
-    <bean id="advancedNotifyMessageListener" class="com.lebo.jms.APNSMessageListener"/>
+    <bean id="advancedNotifyMessageListener" class="com.lebo.jms.ApnsMessageListener"/>
 </beans>
