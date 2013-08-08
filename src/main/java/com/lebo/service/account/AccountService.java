@@ -130,6 +130,11 @@ public class AccountService extends AbstractMongoService {
         dto.setStatusesCount(statusService.countUserStatus(user.getId()));
         if (!getCurrentUserId().equals(user.getId())) {
             dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), user.getId()));
+            if (dto.getFollowing()) {
+                dto.setBilateral(friendshipService.isBilateral(getCurrentUserId(), user.getId()));
+            } else {
+                dto.setBilateral(false);
+            }
         }
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
         dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
@@ -146,6 +151,14 @@ public class AccountService extends AbstractMongoService {
             dtos.add(toUserDto(user));
         }
         return dtos;
+    }
+
+    public List<User> getUsers(List<String> ids) {
+        List<User> users = new ArrayList<User>();
+        for (String id : ids) {
+            users.add((getUser(id)));
+        }
+        return users;
     }
 
     public User findUserByEmail(String email) {

@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import com.lebo.entity.Following;
 import com.lebo.entity.User;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.account.AccountService;
@@ -46,11 +45,11 @@ public class FollowerRestController {
             userId = accountService.getUserId(userId, screenName);
         }
 
-        List<Following> followers = friendshipService.getFollowers(userId, new PageRequest(page, size, PaginationParam.DEFAULT_SORT));
+        List<String> followers = friendshipService.getFollowers(userId, new PageRequest(page, size, PaginationParam.DEFAULT_SORT));
 
         List<User> users = new ArrayList<User>();
-        for (Following following : followers) {
-            users.add(accountService.getUser(following.getUserId()));
+        for (String following : followers) {
+            users.add(accountService.getUser(following));
         }
 
         return accountService.toUserDtos(users);

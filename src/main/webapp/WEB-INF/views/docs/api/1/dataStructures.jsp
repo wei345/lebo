@@ -264,6 +264,17 @@
     </tr>
     <tr>
         <td>
+            bilateral
+        </td>
+        <td>
+            boolean
+        </td>
+        <td>
+            当前登录用户与该用户是否双向关注
+        </td>
+    </tr>
+    <tr>
+        <td>
             followersCount
         </td>
         <td>

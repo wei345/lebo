@@ -1,20 +1,17 @@
 package com.lebo.rest;
 
-import com.lebo.entity.Following;
-import com.lebo.entity.User;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.PaginationParam;
+import com.lebo.service.param.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -36,21 +33,32 @@ public class FriendRestController {
     @ResponseBody
     public Object list(@RequestParam(value = "userId", required = false) String userId,
                        @RequestParam(value = "screenName", required = false) String screenName,
-                       @RequestParam(value = "page", defaultValue = "0") int page,
-                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
+                       @Valid PageRequest pageRequest) {
         if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
             userId = accountService.getCurrentUserId();
         } else {
             userId = accountService.getUserId(userId, screenName);
         }
 
-        List<Following> followings = friendshipService.getFriends(userId, new PageRequest(page, size, PaginationParam.DEFAULT_SORT));
+        List<String> ids = friendshipService.getFriends(userId, pageRequest);
+        return accountService.toUserDtos(accountService.getUsers(ids));
+    }
 
-        List<User> users = new ArrayList<User>();
-        for (Following following : followings) {
-            users.add(accountService.getUser(following.getFollowingId()));
+    /**
+     * 双向关注。
+     */
+    @RequestMapping(value = "bilateral", method = RequestMethod.GET)
+    @ResponseBody
+    public Object bilateral(@RequestParam(value = "userId", required = false) String userId,
+                       @RequestParam(value = "screenName", required = false) String screenName,
+                       @Valid PageRequest pageRequest) {
+        if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
+            userId = accountService.getCurrentUserId();
+        } else {
+            userId = accountService.getUserId(userId, screenName);
         }
 
-        return accountService.toUserDtos(users);
+        List<String> ids = friendshipService.getBilateralFriends(userId, pageRequest);
+        return accountService.toUserDtos(accountService.getUsers(ids));
     }
 }

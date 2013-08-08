@@ -6,7 +6,6 @@ import com.lebo.event.AfterCreatePostEvent;
 import com.lebo.event.AfterDestroyPostEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.event.BeforeCreatePostEvent;
-import com.lebo.repository.FollowingDao;
 import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
@@ -41,7 +40,7 @@ public class StatusService extends AbstractMongoService {
     public static final int MAX_TEXT_LENGTH = 140;
 
     @Autowired
-    private FollowingDao followingDao;
+    private FriendshipService friendshipService;
     @Autowired
     private PostDao postDao;
     @Autowired
@@ -139,12 +138,7 @@ public class StatusService extends AbstractMongoService {
     public List<Post> homeTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
         // 一次取出所有follows？如果数量很多怎么办？少峰 2013.07.18
-        List<Following> followingList = followingDao.findByUserId(param.getUserId());
-
-        List<String> followingIdList = new ArrayList<String>(followingList.size() + 1);
-        for (Following following : followingList) {
-            followingIdList.add(following.getFollowingId());
-        }
+        List<String> followingIdList = friendshipService.getAllFriends(param.getUserId());
 
         followingIdList.add(param.getUserId());
 

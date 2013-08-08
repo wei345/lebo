@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 public class PageRequest implements Pageable, Serializable {
     protected int page;
-    protected int size;
+    protected int size = PaginationParam.DEFAULT_COUNT;
     protected Sort sort;
 
     /*

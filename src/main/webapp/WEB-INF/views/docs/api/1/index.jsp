@@ -279,6 +279,14 @@
             返回由userId或screenName指定的用户的粉丝列表。
         </td>
     </tr>
+    <tr>
+        <td>
+            <tags:link url="${ctx}/docs/api/1/get/friends/bilateral" text="GET friends/bilateral"/>
+        </td>
+        <td>
+            返回由userId或screenName指定的用户的双向关注好友。
+        </td>
+    </tr>
 </table>
 
 <strong>收藏</strong>

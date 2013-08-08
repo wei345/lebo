@@ -23,4 +23,9 @@ public class FriendshipServiceTest extends SpringContextTestCase {
         int count = friendshipService.countFollowers("51def53f1a883914869e46f5");
         System.out.println(count);
     }
+
+    @Test
+    public void countBilateralFriends(){
+        System.out.println(friendshipService.countBilateralFriends("51e778ea1a8816dc79e40aaf"));
+    }
 }

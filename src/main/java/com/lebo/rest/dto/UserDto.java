@@ -27,6 +27,7 @@ public class UserDto {
     private Boolean weiboVerified;
     //当前登录用户是否已将该用户加入黑名单
     private Boolean blocking;
+    private Boolean bilateral;
 
     public String getId() {
         return id;
@@ -138,5 +139,13 @@ public class UserDto {
 
     public void setBlocking(Boolean blocking) {
         this.blocking = blocking;
+    }
+
+    public Boolean getBilateral() {
+        return bilateral;
+    }
+
+    public void setBilateral(Boolean bilateral) {
+        this.bilateral = bilateral;
     }
 }
