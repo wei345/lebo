@@ -71,7 +71,7 @@ public class NotificationListener {
                     event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
                     Notification.OBJECT_TYPE_POST, event.getPost().getId());
 
-            sendNotificationQueue(notification, "%s 转发了你的视频");
+            sendNotificationQueue(notification, "%s 转播了你的视频");
         }
         //原帖，at通知
         else {
