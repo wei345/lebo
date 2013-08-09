@@ -1,8 +1,8 @@
 package com.lebo.service;
 
 import com.lebo.entity.Friendship;
-import com.lebo.event.AfterCreatFollowingEvent;
-import com.lebo.event.AfterDestroyFollowingEvent;
+import com.lebo.event.AfterFollowingCreatEvent;
+import com.lebo.event.AfterFollowingDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.ErrorDto;
@@ -68,7 +68,7 @@ public class FriendshipService extends AbstractMongoService {
             }
             mongoTemplate.upsert(query, update, Friendship.class);
             throwOnMongoError();
-            eventBus.post(new AfterCreatFollowingEvent(userId, followingId));
+            eventBus.post(new AfterFollowingCreatEvent(userId, followingId));
         } else {
             throw new ServiceException(String.format("%s or %s is not exists.", userId, followingId));
         }
@@ -95,7 +95,7 @@ public class FriendshipService extends AbstractMongoService {
         WriteResult result = mongoTemplate.updateFirst(query, update, Friendship.class);
 
         if (result.getN() == 1) {
-            eventBus.post(new AfterDestroyFollowingEvent(userId, followingId));
+            eventBus.post(new AfterFollowingDestroyEvent(userId, followingId));
         }
     }
 

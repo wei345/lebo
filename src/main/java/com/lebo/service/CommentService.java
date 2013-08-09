@@ -2,6 +2,8 @@ package com.lebo.service;
 
 import com.lebo.entity.Comment;
 import com.lebo.entity.User;
+import com.lebo.event.AfterCommentCreateEvent;
+import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.CommentDao;
 import com.lebo.rest.dto.CommentDto;
 import com.lebo.rest.dto.StatusDto;
@@ -34,6 +36,8 @@ public class CommentService extends AbstractMongoService {
     private StatusService statusService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ApplicationEventBus eventBus;
 
     /**
      * @throws com.mongodb.MongoException 当存储数据失败时
@@ -56,6 +60,7 @@ public class CommentService extends AbstractMongoService {
 
         comment = commentDao.save(comment);
         throwOnMongoError();
+        eventBus.post(new AfterCommentCreateEvent(comment));
 
         return comment;
     }
@@ -73,6 +78,18 @@ public class CommentService extends AbstractMongoService {
         return mongoTemplate.find(query, Comment.class);
     }
 
+    public CommentDto toBasicCommentDto(Comment comment){
+        CommentDto dto = BeanMapper.map(comment, CommentDto.class);
+
+        List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
+        for (String fileId : comment.getFiles()) {
+            fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, null));
+        }
+        dto.setFiles(fileInfoDtos);
+
+        return dto;
+    }
+
     public CommentDto toCommentDto(Comment comment) {
         CommentDto dto = BeanMapper.map(comment, CommentDto.class);
 
@@ -86,7 +103,7 @@ public class CommentService extends AbstractMongoService {
         User user = accountService.getUser(comment.getUserId());
         dto.setUser(accountService.toUserDto(user));
 
-        //评论评论的作者信息
+        //回复评论的作者信息
         if (StringUtils.isNotBlank(comment.getReplyCommentUserId())) {
             User replyCommentUser = accountService.getUser(comment.getReplyCommentUserId());
             UserDto replyCommentUserDto = new UserDto();

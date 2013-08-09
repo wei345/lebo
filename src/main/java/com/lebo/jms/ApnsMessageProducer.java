@@ -18,24 +18,24 @@ public class ApnsMessageProducer {
     private Destination notifyQueue;
 
     /**
-     * 当用户被关注、喜欢、转播、at、评论、回复评论时，向用户发送通知。
      *
-     * @param userId      该用户关注了一个用户
-     * @param followingId 该用户被关注了，会收到通知
+     * @param message     ios通知内容
+     * @param deviceToken ios设备token
      */
     //使用jmsTemplate的send/MessageCreator()发送Map类型的消息并在Message中附加属性用于消息过滤.
-    public void sendAppPushNotification(final String userId, final String screenName, final String followingId) {
+    public void sendNotificationQueue(final String message, final String deviceToken, final String recipientId) {
         jmsTemplate.send(notifyQueue, new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
 
-                MapMessage message = session.createMapMessage();
-                message.setString("screenName", screenName);
-                message.setString("followingId", followingId);
+                MapMessage mapMessage = session.createMapMessage();
+                mapMessage.setString("message", message);
+                mapMessage.setString("deviceToken", deviceToken);
+                mapMessage.setString("recipientId", recipientId);
 
-                message.setStringProperty("objectType", "user");
+                mapMessage.setStringProperty("objectType", "notification");
 
-                return message;
+                return mapMessage;
             }
         });
     }

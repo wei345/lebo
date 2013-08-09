@@ -124,6 +124,12 @@ public class AccountService extends AbstractMongoService {
                 new Update().set(User.USER_LAST_SIGN_IN_AT_KEY, dateProvider.getDate()), User.class);
     }
 
+    public UserDto toBasicUserDto(User user){
+        UserDto dto = BeanMapper.map(user, UserDto.class);
+        dto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
+        return dto;
+    }
+
     public UserDto toUserDto(User user) {
         UserDto dto = BeanMapper.map(user, UserDto.class);
 

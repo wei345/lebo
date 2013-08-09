@@ -1,0 +1,89 @@
+package com.lebo.service;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.lebo.entity.Notification;
+import com.lebo.repository.NotificationDao;
+import com.lebo.rest.dto.NotificationDto;
+import com.lebo.service.account.AccountService;
+import com.lebo.service.param.PaginationParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
+import org.springside.modules.mapper.BeanMapper;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * @author: Wei Liu
+ * Date: 13-8-8
+ * Time: PM7:17
+ */
+@Service
+public class NotificationService extends AbstractMongoService {
+    @Autowired
+    private NotificationDao notificationDao;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private StatusService statusService;
+    @Autowired
+    private CommentService commentService;
+
+    public List<Notification> find(String recipientId, PaginationParam paginationParam) {
+        return notificationDao.find(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
+    }
+
+    public Notification create(Notification notification) {
+        return notificationDao.save(notification);
+    }
+
+    public void delete(String id) {
+        notificationDao.delete(id);
+    }
+
+    public void markRead(List<Notification> notifications) {
+        Collection<String> ids = Collections2.transform(notifications, new Function<Notification, String>() {
+            @Override
+            public String apply(Notification notification) {
+                return notification.getId();
+            }
+        });
+
+        mongoTemplate.updateMulti(new Query(new Criteria(Notification.ID_KEY).in(ids)),
+                new Update().set(Notification.UNREAD_KEY, false), Notification.class);
+    }
+
+    public int countUnreadNotifications(String recipientId) {
+        Query query = new Query();
+        query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
+        query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+        return ((Long) mongoTemplate.count(query, Notification.class)).intValue();
+    }
+
+    public NotificationDto toNotificationDto(Notification notification) {
+        NotificationDto dto = BeanMapper.map(notification, NotificationDto.class);
+        dto.setSender(accountService.toBasicUserDto(accountService.getUser(notification.getSenderId())));
+        if (Notification.OBJECT_TYPE_POST.equals(notification.getObjectType())) {
+            dto.setRelatedStatus(statusService.toBasicStatusDto(statusService.getPost(notification.getObjectId())));
+        }
+        if (Notification.OBJECT_TYPE_COMMENT.equals(notification.getObjectType())) {
+            dto.setRelatedComment(commentService.toBasicCommentDto(commentService.getComment(notification.getObjectId())));
+            dto.setRelatedStatus(statusService.toBasicStatusDto(statusService.getPost(dto.getRelatedComment().getPostId())));
+        }
+
+        return dto;
+    }
+
+    public List<NotificationDto> toNotificationDtos(List<Notification> notifications) {
+        List<NotificationDto> dtos = new ArrayList<NotificationDto>(notifications.size());
+        for (Notification notification : notifications) {
+            dtos.add(toNotificationDto(notification));
+        }
+        return dtos;
+    }
+}

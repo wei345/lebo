@@ -2,10 +2,10 @@ package com.lebo.service;
 
 import com.google.common.collect.Lists;
 import com.lebo.entity.*;
-import com.lebo.event.AfterCreatePostEvent;
-import com.lebo.event.AfterDestroyPostEvent;
+import com.lebo.event.AfterPostCreateEvent;
+import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
-import com.lebo.event.BeforeCreatePostEvent;
+import com.lebo.event.BeforePostCreateEvent;
 import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
@@ -93,10 +93,10 @@ public class StatusService extends AbstractMongoService {
             }
         }
 
-        eventBus.post(new BeforeCreatePostEvent(post));
+        eventBus.post(new BeforePostCreateEvent(post));
         post = postDao.save(post);
         throwOnMongoError();
-        eventBus.post(new AfterCreatePostEvent(post));
+        eventBus.post(new AfterPostCreateEvent(post));
 
         return post;
     }
@@ -116,7 +116,7 @@ public class StatusService extends AbstractMongoService {
             }
 
             postDao.delete(post);
-            eventBus.post(new AfterDestroyPostEvent(post));
+            eventBus.post(new AfterPostDestroyEvent(post));
         }
         return post;
     }
@@ -178,11 +178,31 @@ public class StatusService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
     }
 
+    public StatusDto toBasicStatusDto(Post post){
+        StatusDto dto = BeanMapper.map(post, StatusDto.class);
+
+        //原帖
+        if (post.getOriginPostId() == null) {
+            List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
+            for (String fileId : post.getFiles()) {
+                fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
+            }
+            dto.setFiles(fileInfoDtos);
+        }
+        //转发贴
+        else {
+            Post originPost = postDao.findOne(post.getOriginPostId());
+            dto.setOriginStatus(toBasicStatusDto(originPost));
+        }
+
+        return dto;
+    }
+
     public StatusDto toStatusDto(Post post) {
         StatusDto dto = BeanMapper.map(post, StatusDto.class);
         dto.setUser(accountService.toUserDto(accountService.getUser(post.getUserId())));
 
-        //该Post为原始Post，非转发
+        //原帖
         if (post.getOriginPostId() == null) {
             dto.setRepostsCount(countReposts(post.getId()));
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post));
@@ -226,7 +246,7 @@ public class StatusService extends AbstractMongoService {
             dto.setDigest(setting.getDigestFollow().contains(post.getUserId()));
             */
         }
-        // 嵌入转发的POST
+        //转发贴
         else {
             Post originPost = postDao.findOne(post.getOriginPostId());
             StatusDto originStatusDto = toStatusDto(originPost);

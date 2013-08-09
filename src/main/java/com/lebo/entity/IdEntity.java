@@ -15,6 +15,7 @@ import java.io.Serializable;
 public abstract class IdEntity implements Serializable {
 
     protected String id;
+    public static final String ID_KEY = "id";
 
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
