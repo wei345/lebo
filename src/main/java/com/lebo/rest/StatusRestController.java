@@ -140,17 +140,26 @@ public class StatusRestController {
                          @RequestParam(value = "text", required = false) String text,
                          @RequestParam(value = "source", required = false) String source) {
         try {
-            Post post = statusService.getPost(id);
-            if (post == null) {
+            Post originPost = statusService.getPost(id);
+            if (originPost == null) {
                 return ErrorDto.badRequest("原始视频[" + id + "]不存在.");
             }
 
-            //转发
-            if (!statusService.isReposted(accountService.getCurrentUserId(), post)) {
-                post = statusService.createPost(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, post, source);
+            //确保转发原帖
+            if(originPost.getOriginPostId() != null){
+                originPost = statusService.getPost(originPost.getOriginPostId());
+                if (originPost == null) {
+                    return ErrorDto.badRequest("原始视频[" + originPost.getOriginPostId() + "]不存在.");
+                }
             }
 
+            //转发
+            Post post = statusService.getRepost(accountService.getCurrentUserId(), originPost);
+            if (post == null) {
+                post = statusService.createPost(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originPost, source);
+            }
             return statusService.toStatusDto(post);
+
         } catch (Exception e) {
             logger.info("转发Post失败", e);
             return ErrorDto.badRequest(e.getMessage());

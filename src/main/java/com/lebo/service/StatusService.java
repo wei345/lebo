@@ -1,7 +1,10 @@
 package com.lebo.service;
 
 import com.google.common.collect.Lists;
-import com.lebo.entity.*;
+import com.lebo.entity.Comment;
+import com.lebo.entity.Post;
+import com.lebo.entity.Setting;
+import com.lebo.entity.User;
 import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
@@ -84,13 +87,8 @@ public class StatusService extends AbstractMongoService {
 
         //转发
         if (originPost != null) {
-            if (originPost.getOriginPostId() != null) {
-                post.setOriginPostId(originPost.getOriginPostId());
-                post.setOriginPostUserId(originPost.getOriginPostUserId());
-            } else {
-                post.setOriginPostId(originPost.getId());
-                post.setOriginPostUserId(originPost.getUserId());
-            }
+            post.setOriginPostId(originPost.getId());
+            post.setOriginPostUserId(originPost.getUserId());
         }
 
         eventBus.post(new BeforePostCreateEvent(post));
@@ -105,7 +103,7 @@ public class StatusService extends AbstractMongoService {
         Post post = postDao.findOne(id);
         if (post != null) {
             //原始帖子，删除评论、收藏、转发
-            if(post.getOriginPostId() == null){
+            if (post.getOriginPostId() == null) {
                 commentService.deleteByPostId(id);
                 favoriteService.deleteByPostId(id);
                 deleteReposts(id); //Twitter也会删除转发贴
@@ -121,7 +119,7 @@ public class StatusService extends AbstractMongoService {
         return post;
     }
 
-    private void deleteReposts(String originPostId){
+    private void deleteReposts(String originPostId) {
         mongoTemplate.remove(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(originPostId)), Post.class);
     }
 
@@ -178,7 +176,7 @@ public class StatusService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
     }
 
-    public StatusDto toBasicStatusDto(Post post){
+    public StatusDto toBasicStatusDto(Post post) {
         StatusDto dto = BeanMapper.map(post, StatusDto.class);
 
         //原帖
@@ -430,6 +428,15 @@ public class StatusService extends AbstractMongoService {
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(id));
         return mongoTemplate.count(query, Post.class) > 0;
+    }
+
+    public Post getRepost(String userId, Post post) {
+        String id = (post.getOriginPostId() == null ? post.getId() : post.getOriginPostId());
+
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(id));
+        return mongoTemplate.findOne(query, Post.class);
     }
 
     //增长浏览数

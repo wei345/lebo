@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "post_unique", def = "{'user': 1, 'text': 1, 'files': 1, 'originPostId': 1}", unique = true)
+        @CompoundIndex(name = "post_unique", def = "{'userId': 1, 'text': 1, 'files': 1, 'originPostId': 1}", unique = true)
 })
 public class Post extends IdEntity {
     @Indexed

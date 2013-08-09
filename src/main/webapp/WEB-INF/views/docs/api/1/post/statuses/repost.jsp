@@ -5,7 +5,7 @@
 
 <tags:form name="转发视频" method="POST" action="${ctx}/api/1/statuses/repost.json">
     <tags:field name="id" value=""/>
-    <tags:field name="text" value="转发" optional="true"/>
+    <%--未用到 <tags:field name="text" value="转发" optional="true"/>--%>
 </tags:form>
 
 <tags:example method="POST" url="">
