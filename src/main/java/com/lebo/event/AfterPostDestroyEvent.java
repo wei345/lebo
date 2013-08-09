@@ -7,10 +7,10 @@ import com.lebo.entity.Post;
  * Date: 13-7-29
  * Time: AM11:01
  */
-public class AfterDestroyPostEvent {
+public class AfterPostDestroyEvent {
     private Post post;
 
-    public AfterDestroyPostEvent(Post post) {
+    public AfterPostDestroyEvent(Post post) {
         this.post = post;
     }
 

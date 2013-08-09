@@ -7,10 +7,10 @@ import com.lebo.entity.Favorite;
  * Date: 13-7-29
  * Time: AM11:09
  */
-public class AfterDestroyFavoriteEvent {
+public class AfterFavoriteCreateEvent {
     private Favorite favorite;
 
-    public AfterDestroyFavoriteEvent(Favorite favorite) {
+    public AfterFavoriteCreateEvent(Favorite favorite) {
         this.favorite = favorite;
     }
 

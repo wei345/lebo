@@ -1,9 +1,9 @@
 package com.lebo.event.listener;
 
 import com.google.common.eventbus.Subscribe;
-import com.lebo.event.AfterCreateFavoriteEvent;
-import com.lebo.event.AfterDestroyFavoriteEvent;
-import com.lebo.event.AfterDestroyPostEvent;
+import com.lebo.event.AfterFavoriteCreateEvent;
+import com.lebo.event.AfterFavoriteDestroyEvent;
+import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +22,19 @@ public class FavoritesCountRecorder {
     private StatusService statusService;
 
     @Subscribe
-    public void increase(AfterCreateFavoriteEvent e) {
+    public void increase(AfterFavoriteCreateEvent e) {
         accountService.increaseFavoritesCount(e.getFavorite().getUserId());
         statusService.increaseFavoritesCount(e.getFavorite().getPostId());
     }
 
     @Subscribe
-    public void decrease(AfterDestroyFavoriteEvent e) {
+    public void decrease(AfterFavoriteDestroyEvent e) {
         accountService.decreaseFavoritesCount(e.getFavorite().getUserId());
         statusService.decreaseFavoritesCount(e.getFavorite().getPostId());
     }
 
     @Subscribe
-    public void decreaseOnPostDestroy(AfterDestroyPostEvent event) {
+    public void decreaseOnPostDestroy(AfterPostDestroyEvent event) {
         if (event.getPost().getFavoritesCount() > 0) {
             accountService.decreaseFavoritesCount(event.getPost().getUserId(), event.getPost().getFavoritesCount());
         }

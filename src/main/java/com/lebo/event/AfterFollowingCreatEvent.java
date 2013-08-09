@@ -5,11 +5,11 @@ package com.lebo.event;
  * Date: 13-7-29
  * Time: AM11:02
  */
-public class AfterCreatFollowingEvent {
+public class AfterFollowingCreatEvent {
     private String userId;
     private String followingId;
 
-    public AfterCreatFollowingEvent(String userId, String followingId) {
+    public AfterFollowingCreatEvent(String userId, String followingId) {
         this.userId = userId;
         this.followingId = followingId;
     }

@@ -7,10 +7,10 @@ import com.lebo.entity.Post;
  * Date: 13-8-3
  * Time: PM1:52
  */
-public class BeforeCreatePostEvent {
+public class BeforePostCreateEvent {
     private Post post;
 
-    public BeforeCreatePostEvent(Post post) {
+    public BeforePostCreateEvent(Post post) {
         this.post = post;
     }
 

@@ -2,10 +2,10 @@ package com.lebo.event.listener;
 
 import com.google.common.eventbus.Subscribe;
 import com.lebo.entity.Post;
-import com.lebo.event.AfterCreateFavoriteEvent;
-import com.lebo.event.AfterCreatePostEvent;
-import com.lebo.event.AfterDestroyFavoriteEvent;
-import com.lebo.event.AfterDestroyPostEvent;
+import com.lebo.event.AfterFavoriteCreateEvent;
+import com.lebo.event.AfterFavoriteDestroyEvent;
+import com.lebo.event.AfterPostCreateEvent;
+import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.service.HashtagService;
 import com.lebo.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class HashtagRecorder {
      * @param event
      */
     @Subscribe
-    public void saveHashtags(AfterCreatePostEvent event) {
+    public void saveHashtags(AfterPostCreateEvent event) {
         for (String name : event.getPost().getHashtags()) {
             hashtagService.increasePostsCount(name);
         }
@@ -40,7 +40,7 @@ public class HashtagRecorder {
      * @param event
      */
     @Subscribe
-    public void removeHashtags(AfterDestroyPostEvent event) {
+    public void removeHashtags(AfterPostDestroyEvent event) {
         for (String name : event.getPost().getHashtags()) {
             hashtagService.decreasePostsCount(name);
         }
@@ -51,7 +51,7 @@ public class HashtagRecorder {
      * @param e
      */
     @Subscribe
-    public void increaseFavoritesCount(AfterCreateFavoriteEvent e) {
+    public void increaseFavoritesCount(AfterFavoriteCreateEvent e) {
         Post post = statusService.getPost(e.getFavorite().getPostId());
         for(String name : post.getHashtags()){
             hashtagService.increaseFavoritesCount(name);
@@ -63,7 +63,7 @@ public class HashtagRecorder {
      * @param e
      */
     @Subscribe
-    public void decreaseFavoritesCount(AfterDestroyFavoriteEvent e) {
+    public void decreaseFavoritesCount(AfterFavoriteDestroyEvent e) {
         Post post = statusService.getPost(e.getFavorite().getPostId());
         for(String name : post.getHashtags()){
             hashtagService.decreaseFavoritesCount(name);

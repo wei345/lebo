@@ -2,7 +2,7 @@ package com.lebo.event.listener;
 
 import com.google.common.eventbus.Subscribe;
 import com.lebo.entity.Setting;
-import com.lebo.event.BeforeCreatePostEvent;
+import com.lebo.event.BeforePostCreateEvent;
 import com.lebo.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class DigestPostRecorder {
     private SettingService settingService;
 
     @Subscribe
-    public void markDigest(BeforeCreatePostEvent e) {
+    public void markDigest(BeforePostCreateEvent e) {
         Setting setting = settingService.getSetting();
 
         //被特定乐播账号转发，记为精华

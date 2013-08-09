@@ -5,12 +5,12 @@ import com.lebo.entity.Post;
 /**
  * @author: Wei Liu
  * Date: 13-7-29
- * Time: AM11:10
+ * Time: AM10:59
  */
-public class AfterViewPostEvent {
+public class AfterPostCreateEvent {
     private Post post;
 
-    public AfterViewPostEvent(Post post) {
+    public AfterPostCreateEvent(Post post) {
         this.post = post;
     }
 
