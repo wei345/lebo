@@ -26,7 +26,9 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
     private Logger logger = LoggerFactory.getLogger(RequestResponseLoggingFilter.class);
     private int maxLoggingContentLength = 500; //为了显示较完整错误信息
 
-    //logging response
+    /**
+     * response日志。
+     */
     @Override
     protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response);
@@ -46,33 +48,35 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
                 //header不是全部，不包含JSESSIONID
                 for (String key : responseWrapper.headers.keySet()) {
                     for (String v : responseWrapper.headers.get(key)) {
-                        logger.debug("     response header: {} = {}", key, v);
+                        logger.debug("       response header : {} = {}", key, v);
                     }
                 }
             } else {
-                logger.debug("     response header: 无");
+                logger.debug("       response header : 无");
             }
 
             byte[] copy = responseWrapper.getCopy();
             String responseText = new String(copy, response.getCharacterEncoding());
-            logger.debug("response contentType: {}", (responseWrapper.getContentType() == null ? "" : responseWrapper.getContentType()));
+            logger.debug("  response contentType : {}", responseWrapper.getContentType());
             //响应文本
             if (StringUtils.indexOfAny(response.getContentType(), "json", "text") != -1) {
-                logger.debug("     response length: {} characters", FileUtils.byteCountToDisplaySize(responseText.length()));
+                logger.debug("  response body length : {} characters", FileUtils.byteCountToDisplaySize(responseText.length()));
                 if (responseText.length() > 0) {
                     String trimmed = responseText.trim();
                     String text = StringUtils.substring(trimmed, 0, maxLoggingContentLength) + (trimmed.length() > maxLoggingContentLength ? "..." : "");
-                    logger.debug("    response content{}: {}", (responseText.equals(text) ? "" : "(trimmed)"), text);
+                    logger.debug("      response content{} : {}", (responseText.equals(text) ? "" : "(trimmed)"), text);
                 }
             }
             //响应二进制
             else {
-                logger.debug("     response length: {}", FileUtils.byteCountToDisplaySize(responseWrapper.getCopy().length));
+                logger.debug("  response body length : {}", FileUtils.byteCountToDisplaySize(responseWrapper.getCopy().length));
             }
         }
     }
 
-    //logging request
+    /**
+     * request日志。
+     */
     @Override
     protected void beforeRequest(HttpServletRequest request, String message) {
         logger.debug("{} {}", request.getMethod(), request.getRequestURL().toString());
@@ -80,10 +84,10 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
         //request查询字符串参数和post的表单参数
         Map parameterMap = request.getParameterMap();
         for (Object name : parameterMap.keySet()) {
-            logger.debug("   request parameter: {} = {}", name, parameterMap.get(name));
+            logger.debug("     request parameter : {} = {}", name, parameterMap.get(name));
         }
         if (parameterMap.size() == 0) {
-            logger.debug("   request parameter: 无");
+            logger.debug("     request parameter : 无");
         }
 
         //request headers
@@ -92,16 +96,16 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
             String name = names.nextElement().toString();
             Enumeration values = request.getHeaders(name);
             while (values.hasMoreElements()){
-                logger.debug("      request header: {} = {}", name, values.nextElement());
+                logger.debug("        request header : {} = {}", name, values.nextElement());
             }
         }
 
         //request cookies
         if (request.getCookies() == null || request.getCookies().length == 0) {
-            logger.debug("      request Cookie: 无");
+            logger.debug("        request Cookie : 无");
         } else {
             for (Cookie cookie : request.getCookies()) {
-                logger.debug("      request Cookie: {} = {}", cookie.getName(), cookie.getValue());
+                logger.debug("        request Cookie : {} = {}", cookie.getName(), cookie.getValue());
             }
         }
     }
