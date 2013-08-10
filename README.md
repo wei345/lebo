@@ -1,26 +1,15 @@
-## 环境
+## 开发环境
 
 * Java 1.6 以上。 - [JDK 1.6u45下载](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR)
 * Maven 3.0.3 以上。 - [Maven 3.0.5下载](http://apache.etoak.com/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.zip)
 * MongoDB 2.4.4。 - [MongoDB下载](http://www.mongodb.org/downloads)
+* Memcached 1.4.5 - [Memcached安装](https://code.google.com/p/memcached/wiki/NewInstallFromPackage)
 
-### Windows设置Maven仓库路径
-
-在Windows XP上，Maven本地仓库默认为：
-
-    C:/Documents and Settings/用户名/.m2/repository
-
-这个路径中含有空格，会导致build失败。
-
-编辑`$MAVEN_HOME/conf/settings.xml`，找到这行：
+注意：Maven仓库路径不能有空格，否则会导致build失败。可在`$MAVEN_HOME/conf/settings.xml`中设置：
 
     <localRepository>/path/to/local/repo</localRepository>
 
-去掉注释，改为不带空格的路径，如：
-
-    <localRepository>D:\maven_repository</localRepository>
-
-## 开始
+## 第一次build
 
 ### SpringSide
 
@@ -42,7 +31,7 @@
 
 ### Lebo
 
-执行下面命令克隆lebo --> 下载依赖 --> 编译 --> 启动，lebo启动时会连接MongoDB 127.0.0.1:27017，连不上会报错。
+执行下面命令克隆lebo --> 下载依赖 --> 编译 --> 启动，lebo启动时会连接MongoDB 127.0.0.1:27017、Memcached 127.0.0.1:11211，连不上会报错。
 
     git clone https://git.oschina.net/weiliu/lebo.git
     cd lebo
@@ -86,26 +75,25 @@
 
 上面演示了在命令行中快速启动。开发时通常在IDE中启动，方便调试。
 
-## 开发
+## IDE
 
-### 导入到IDE中
+### IDEA
 
-#### Eclispe
+IDEA对Maven支持良好，选中pom.xml导入。
+
+### Eclispe
+
+执行下面命令会下载依赖包的源码，然后会生成eclipse项目文件。
 
     cd lebo
     mvn eclipse:eclipse
 
-会下载所有依赖包的源码，方便查阅。完成后会生成eclipse项目文件，eclipse可直接导入lebo目录。
-
-#### IDEA
-
-IDEA原生支持Maven，可直接导入。
+用eclipse选中lebo目录导入。
 
 ### 启动
 
-在IDE中，启动com.lebo.QuickStartServer，可以debug方式启动。
+在IDE中，运行启动类com.lebo.QuickStartServer，也可以以debug方式运行。
 
 ### 代码
 
 * 不格式化/src/main/webapp/static
-* 不格式化/src/main/webapp/WEB-INF/tags/textarea.tag
