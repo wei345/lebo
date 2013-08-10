@@ -36,4 +36,13 @@ public class NotificationRestController {
         notificationService.markRead(notifications);
         return notificationService.toNotificationDtos(notifications);
     }
+
+    /**
+     * 标记所有未读通知为已读。
+     */
+    @RequestMapping(value = "markAllRead", method = RequestMethod.POST)
+    @ResponseBody
+    public void markAllRead(){
+        notificationService.markAllRead(accountService.getCurrentUserId());
+    }
 }

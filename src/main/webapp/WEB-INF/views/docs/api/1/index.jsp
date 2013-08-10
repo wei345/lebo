@@ -279,14 +279,14 @@
             返回由userId或screenName指定的用户的粉丝列表。
         </td>
     </tr>
-    <tr>
+    <%--未用到 <tr>
         <td>
             <tags:link url="${ctx}/docs/api/1/get/friends/bilateral" text="GET friends/bilateral"/>
         </td>
         <td>
             返回由userId或screenName指定的用户的双向关注好友。
         </td>
-    </tr>
+    </tr>--%>
 </table>
 
 <strong>收藏</strong>
@@ -361,10 +361,18 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/notifications/list" text="POST notifications/list"/>
+            <tags:link url="${ctx}/docs/api/1/get/notifications/list" text="GET notifications/list"/>
         </td>
         <td>
             返回当前登录用户的通知(消息)列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/notifications/markAllRead" text="POST notifications/markAllRead"/>
+        </td>
+        <td>
+            将当前登录用户的所有未读通知标记为已读。
         </td>
     </tr>
 </table>

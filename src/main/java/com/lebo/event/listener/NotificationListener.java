@@ -135,7 +135,8 @@ public class NotificationListener {
         }
     }
 
-    private Notification createNotification(String activityType, String recipientId, String senderId, String objectType, String objectId) {
+    private Notification createNotification(String activityType, String recipientId, String senderId,
+                                            String objectType, String objectId) {
         Notification notification = new Notification();
         notification.setActivityType(activityType);
         notification.setCreatedAt(new Date());

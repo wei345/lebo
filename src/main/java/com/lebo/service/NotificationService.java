@@ -58,6 +58,17 @@ public class NotificationService extends AbstractMongoService {
                 new Update().set(Notification.UNREAD_KEY, false), Notification.class);
     }
 
+    /**
+     * 将指定用户的所有未读通知标记为已读。
+     */
+    public void markAllRead(String userId) {
+        Query query = new Query();
+        query.addCriteria(new Criteria(Notification.ID_KEY).is(userId));
+        query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+
+        mongoTemplate.updateMulti(query, new Update().set(Notification.UNREAD_KEY, false), Notification.class);
+    }
+
     public int countUnreadNotifications(String recipientId) {
         Query query = new Query();
         query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
