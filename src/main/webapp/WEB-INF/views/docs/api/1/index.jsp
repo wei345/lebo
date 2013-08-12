@@ -185,6 +185,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/comments/destroy" text="POST comments/destroy"/>
+        </td>
+        <td>
+            删除一条评论，返回被删除的评论。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/get/comments/show" text="GET comments/show"/>
         </td>
         <td>

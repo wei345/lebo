@@ -94,6 +94,10 @@ public class ErrorDto {
         return new ResponseEntity<ErrorDto>(ErrorDto.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
 
+    public static ResponseEntity<ErrorDto> forbidden() {
+        return new ResponseEntity<ErrorDto>(ErrorDto.FORBIDDEN, HttpStatus.FORBIDDEN);
+    }
+
     public static ResponseEntity<ErrorDto> unauthorized(String message) {
         return new ResponseEntity<ErrorDto>(new ErrorDto(message, UNAUTHORIZED_CODE), HttpStatus.UNAUTHORIZED);
     }

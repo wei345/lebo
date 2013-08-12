@@ -1,4 +1,5 @@
 <%@ page import="com.lebo.entity.Notification" %>
+<%@ page import="com.lebo.entity.Comment" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
@@ -70,6 +71,21 @@
         </td>
     </tr>
 </table>
+
+<strong>返回结果中的relatedStatus</strong>
+<p>
+    当activityType值为<%=Notification.ACTIVITY_TYPE_REPOST%>、 <%=Notification.ACTIVITY_TYPE_REPLY_POST%>、
+    <%=Notification.ACTIVITY_TYPE_REPLY_COMMENT%>、<%=Notification.ACTIVITY_TYPE_FAVORITE%>、
+    <%=Notification.ACTIVITY_TYPE_POST_AT%>、<%=Notification.ACTIVITY_TYPE_COMMENT_AT%>时，
+    如果返回结果中没有relatedStatus字段或其值为null，则表示该视频已被删除。
+</p>
+
+<strong>返回结果中的relatedComment</strong>
+<p>
+    当activityType值为<%=Notification.ACTIVITY_TYPE_REPLY_POST%>、
+    <%=Notification.ACTIVITY_TYPE_REPLY_COMMENT%>、<%=Notification.ACTIVITY_TYPE_COMMENT_AT%>时，
+    如果返回结果中没有relatedStatus字段或其值为null，则表示该评论已被删除。
+</p>
 
 <tags:example method="GET" url="http://localhost:8080/api/1/notifications/list.json">
     [

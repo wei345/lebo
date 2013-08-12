@@ -1,6 +1,7 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Comment;
+import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.CommentService;
 import com.lebo.service.DuplicateException;
@@ -66,19 +67,27 @@ public class CommentRestController {
                 comment.setReplyCommentId(replyCommentId);
                 comment.setReplyCommentUserId(replyComment.getUserId());
                 comment.setPostId(replyComment.getPostId());
+                //TODO 存被回复者screenName以提高性能
                 //回复Post
             } else {
-                if (!statusService.isPostExists(postId)) {
+                Post post = statusService.getPost(postId);
+
+                if (post == null) {
                     return ErrorDto.badRequest(String.format("postId[%s]不存在", postId));
                 }
-                comment.setPostId(postId);
+
+                if(post.getOriginPostId() == null){
+                    comment.setPostId(postId);
+                }else{
+                    comment.setPostId(post.getOriginPostId());
+                }
             }
 
             //文件
             List<FileInfo> fileInfos = new ArrayList<FileInfo>();
             if (video != null && image != null) {
                 if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
-                    return ErrorDto.badRequest(" Upload Single file size cannot be greater than 1 M byte.");
+                    return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
                 }
                 fileInfos.add(new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()));
                 fileInfos.add(new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
@@ -103,5 +112,35 @@ public class CommentRestController {
     @ResponseBody
     public Object list(@Valid CommentListParam param) {
         return commentService.toCommentDtos(commentService.list(param));
+    }
+
+    @RequestMapping(value = "destroy", method = RequestMethod.POST)
+    @ResponseBody
+    public Object destroy(@RequestParam(value = "id") String id) {
+        Comment comment = commentService.getComment(id);
+        if (comment == null) {
+            return ErrorDto.badRequest(String.format("评论不存在(id=%s)", id));
+        }
+
+        boolean permission = false;
+        //评论作者有权限删除
+        if (comment.getUserId().equals(accountService.getCurrentUserId())) {
+            permission = true;
+        }
+
+        //帖子作者有权限删除
+        if (!permission) {
+            Post post = statusService.getPost(comment.getPostId());
+            if (accountService.getCurrentUserId().equals(post.getUserId())) {
+                permission = true;
+            }
+        }
+
+        if (permission) {
+            commentService.deleteComment(comment);
+            return commentService.toBasicCommentDto(comment);
+        } else {
+            return ErrorDto.forbidden();
+        }
     }
 }

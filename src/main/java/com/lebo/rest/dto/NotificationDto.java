@@ -11,7 +11,9 @@ public class NotificationDto {
     //触发通知的用户
     private UserDto sender;
     private String activityType;
+    //当activityType为收藏、转发、视频at、评论at、回复视频、回复评论时，relatedStatus有值，如果为null(返回值没有该字段)则表示该视频已被删除。
     private StatusDto relatedStatus;
+    //当activityType为评论at、回复视频、回复评论时，relatedComment有值，如果为null(返回值没有该字段)则表示该评论已被删除。
     private CommentDto relatedComment;
     private Date createdAt;
     private Boolean unread;

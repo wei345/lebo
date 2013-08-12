@@ -3,6 +3,7 @@ package com.lebo.service;
 import com.lebo.entity.Comment;
 import com.lebo.entity.User;
 import com.lebo.event.AfterCommentCreateEvent;
+import com.lebo.event.AfterCommentDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.CommentDao;
 import com.lebo.rest.dto.CommentDto;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.util.ArrayList;
@@ -131,5 +133,12 @@ public class CommentService extends AbstractMongoService {
 
     public Comment getComment(String id) {
         return commentDao.findOne(id);
+    }
+
+    public void deleteComment(Comment comment){
+        Assert.notNull(comment);
+
+        commentDao.delete(comment);
+        eventBus.post(new AfterCommentDestroyEvent(comment));
     }
 }

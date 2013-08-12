@@ -27,10 +27,10 @@ public class Comment extends IdEntity {
     private GeoLocation geoLocation;
     // 被评论的post
     private String postId;
-    //回复评论id，如果该字段不为空，表示此评论为评论的评论
+    //被回复的评论id，可能为null，不会被级联删除
     private String replyCommentId;
-    //回复评论的作者id
-    private String replyCommentUserId;//冗余，为更好的性能
+    //被回复的评论的作者id，冗余，为更好的性能
+    private String replyCommentUserId;
     // 如果被评论post是转发的，则该评论也要归结到原始post上
     private String originId;
     @Indexed

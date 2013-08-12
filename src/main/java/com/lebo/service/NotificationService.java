@@ -2,7 +2,9 @@ package com.lebo.service;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.lebo.entity.Comment;
 import com.lebo.entity.Notification;
+import com.lebo.entity.Post;
 import com.lebo.repository.NotificationDao;
 import com.lebo.rest.dto.NotificationDto;
 import com.lebo.service.account.AccountService;
@@ -80,11 +82,17 @@ public class NotificationService extends AbstractMongoService {
         NotificationDto dto = BeanMapper.map(notification, NotificationDto.class);
         dto.setSender(accountService.toBasicUserDto(accountService.getUser(notification.getSenderId())));
         if (Notification.OBJECT_TYPE_POST.equals(notification.getObjectType())) {
-            dto.setRelatedStatus(statusService.toBasicStatusDto(statusService.getPost(notification.getObjectId())));
+            Post post = statusService.getPost(notification.getObjectId());
+            if (post != null) {
+                dto.setRelatedStatus(statusService.toBasicStatusDto(post));
+            }
         }
         if (Notification.OBJECT_TYPE_COMMENT.equals(notification.getObjectType())) {
-            dto.setRelatedComment(commentService.toBasicCommentDto(commentService.getComment(notification.getObjectId())));
-            dto.setRelatedStatus(statusService.toBasicStatusDto(statusService.getPost(dto.getRelatedComment().getPostId())));
+            Comment comment = commentService.getComment(notification.getObjectId());
+            if (comment != null) {
+                dto.setRelatedComment(commentService.toBasicCommentDto(comment));
+                dto.setRelatedStatus(statusService.toBasicStatusDto(statusService.getPost(dto.getRelatedComment().getPostId())));
+            }
         }
 
         return dto;

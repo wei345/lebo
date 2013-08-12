@@ -19,6 +19,7 @@ import java.util.List;
 @CompoundIndexes({
         @CompoundIndex(name = "post_unique", def = "{'userId': 1, 'text': 1, 'files': 1, 'originPostId': 1}", unique = true)
 })
+//TODO 增加是否转发字段，如果原始帖子被删除，则originPostId为null
 public class Post extends IdEntity {
     @Indexed
     private String userId;
