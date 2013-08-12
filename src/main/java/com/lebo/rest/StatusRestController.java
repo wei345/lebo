@@ -233,25 +233,21 @@ public class StatusRestController {
 
     @RequestMapping(value = "digest", method = RequestMethod.GET)
     @ResponseBody
-    public Object digest(@Valid StatusFilterParam param) {
-        Setting setting = settingService.getSetting();
-        Date date = DateUtils.addDays(new Date(), setting.getHotDays() * -1);
-
-        param.setFollow(setting.getOfficialAccountId());
-        param.setAfter(date);
-
-        List<Post> posts = statusService.filterPosts(param);
+    public Object digest(@Valid PaginationParam param) {
+        List<Post> posts = statusService.findDigest(param);
         return statusService.toStatusDtos(posts);
     }
 
     /**
-     * 获取用户精品视频列表
+     * 返回用户精品视频列表
      */
     @RequestMapping(value = "userDigest", method = RequestMethod.GET)
     @ResponseBody
-    public Object userDigest(@Valid TimelineParam param) {
-        param.setUserId(accountService.getUserId(param.getUserId(), param.getScreenName()));
-        List<Post> posts = statusService.usreDigestline(param);
+    public Object userDigest(@Valid PaginationParam param,
+                             @RequestParam(value = "userId", required = false) String userId,
+                             @RequestParam(value = "screenName", required = false) String screenName) {
+        userId = accountService.getUserId(userId, screenName);
+        List<Post> posts = statusService.findUserDigest(userId, param);
         return statusService.toStatusDtos(posts);
     }
 

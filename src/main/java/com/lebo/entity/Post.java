@@ -17,11 +17,12 @@ import java.util.List;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "post_unique", def = "{'userId': 1, 'text': 1, 'files': 1, 'originPostId': 1}", unique = true)
+        @CompoundIndex(name = "post_unique", def = "{'userId': 1, 'text': 1, 'files': 1, 'originPostId': 1}", unique = true),
+        @CompoundIndex(name = "uid_1_opuid_1", def = "{'userId': 1, 'originPostUserId': 1}"),
+        @CompoundIndex(name = "uid_1_opid_1", def = "{'userId': 1, 'originPostId': 1}")
 })
-//TODO 增加是否转发字段，如果原始帖子被删除，则originPostId为null
+//TODO 增加是否转发字段，如果原始帖子被删除，则originPostId为null?
 public class Post extends IdEntity {
-    @Indexed
     private String userId;
     public static final String USER_ID_KEY = "userId";
     @Indexed

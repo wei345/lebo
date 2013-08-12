@@ -107,14 +107,14 @@
             返回加精的视频列表。
         </td>
     </tr>
-    <%--<tr>
+    <tr>
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1/get/statuses/userDigest" text="GET statuses/userDigest"/>
         </td>
         <td>
             返回由userId或screenName指定的用户被加精的视频列表。
         </td>
-    </tr>--%>
+    </tr>
 </table>
 
 <strong>视频搜索</strong>

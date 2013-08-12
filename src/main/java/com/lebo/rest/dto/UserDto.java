@@ -24,6 +24,7 @@ public class UserDto {
     private Integer favoritesCount;
     private Integer beFavoritedCount;
     private Integer viewCount;
+    private Integer digestCount;
     private Boolean weiboVerified;
     //当前登录用户是否已将该用户加入黑名单
     private Boolean blocking;
@@ -147,5 +148,13 @@ public class UserDto {
 
     public void setBilateral(Boolean bilateral) {
         this.bilateral = bilateral;
+    }
+
+    public Integer getDigestCount() {
+        return digestCount;
+    }
+
+    public void setDigestCount(Integer digestCount) {
+        this.digestCount = digestCount;
     }
 }

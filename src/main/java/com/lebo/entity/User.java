@@ -24,6 +24,7 @@ import java.util.List;
  *
  * @author Wei Liu
  */
+
 @Document
 public class User extends IdEntity {
     @Indexed(unique = true)
@@ -61,20 +62,25 @@ public class User extends IdEntity {
     @Indexed
     private List<String> roles = new ArrayList<String>(1);
 
-    //该用户的粉丝数
+    //用户的粉丝数
     @Indexed(direction = IndexDirection.DESCENDING)
     private Integer followersCount;
     public static final String FOLLOWERS_COUNT_KEY = "followersCount";
 
-    //该用户Posts被收藏的次数
+    //用户Posts被收藏的次数
     @Indexed(direction = IndexDirection.DESCENDING)
     private Integer beFavoritedCount;
     public static final String BE_FAVORITED_COUNT_KEY = "beFavoritedCount";
 
-    //该用户Posts被播放的次数
+    //用户Posts被播放的次数
     @Indexed(direction = IndexDirection.DESCENDING)
     private Integer viewCount;
     public static final String VIEW_COUNT_KEY = "viewCount";
+
+    //用户精品视频数
+    @Indexed(direction = IndexDirection.DESCENDING)
+    private Integer digestCount;
+    public static final String DIGEST_COUNT_KEY = "digestCount";
 
     //Apple Push Notification Service Token
     private String apnsProductionToken;

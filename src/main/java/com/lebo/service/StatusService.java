@@ -148,17 +148,6 @@ public class StatusService extends AbstractMongoService {
         return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
     }
 
-    /**
-     * 获取精品视频翻页
-     *
-     * @param param
-     * @return
-     */
-    public List<Post> usreDigestline(TimelineParam param) {
-        Assert.hasText(param.getUserId());
-        return postDao.usreDigestline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
-    }
-
     public Post getPost(String id) {
         return postDao.findOne(id);
     }
@@ -551,7 +540,30 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
-    public boolean isPostExists(String id) {
-        return postDao.exists(id);
+    public List<Post> findDigest(PaginationParam paginationParam) {
+        Setting setting = settingService.getSetting();
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getOfficialAccountId()));
+        paginationById(query, paginationParam);
+
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    public List<Post> findUserDigest(String userId, PaginationParam paginationParam) {
+        Setting setting = settingService.getSetting();
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getOfficialAccountId()));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
+        paginationById(query, paginationParam);
+
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    public int countUserDigest(String userId) {
+        Setting setting = settingService.getSetting();
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getOfficialAccountId()));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
+        return ((Long) mongoTemplate.count(query, Post.class)).intValue();
     }
 }

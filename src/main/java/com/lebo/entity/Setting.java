@@ -21,7 +21,6 @@ public class Setting extends IdEntity {
 
     private Integer digestDays = 2;
     private Integer hotDays = 2;
-    private LinkedHashSet<String> digestFollow;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -53,14 +52,6 @@ public class Setting extends IdEntity {
 
     public void setHotDays(Integer hotDays) {
         this.hotDays = hotDays;
-    }
-
-    public LinkedHashSet<String> getDigestFollow() {
-        return digestFollow;
-    }
-
-    public void setDigestFollow(LinkedHashSet<String> digestFollow) {
-        this.digestFollow = digestFollow;
     }
 
     public static class Channel {
