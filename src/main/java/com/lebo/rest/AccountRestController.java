@@ -52,8 +52,8 @@ public class AccountRestController {
         if (image != null && image.getSize() > 0) {
             try {
                 String imageId = gridFsService.save(image.getInputStream(), image.getOriginalFilename(), image.getContentType());
-                oldImageId = user.getProfileImageUrl();
-                user.setProfileImageUrl(imageId);
+                oldImageId = user.getProfileImage();
+                user.setProfileImage(imageId);
             } catch (IOException e) {
                 return ErrorDto.badRequest(new ServiceException("保存图片失败", e).getMessage());
             }
@@ -119,6 +119,6 @@ public class AccountRestController {
     private void updateCurrentUser(User user) {
         ShiroUser shiroUser = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
         shiroUser.screenName = user.getScreenName();
-        shiroUser.profileImageUrl = gridFsService.getContentUrl(user.getProfileImageUrl());
+        shiroUser.profileImageUrl = user.getProfileImageUrl();
     }
 }

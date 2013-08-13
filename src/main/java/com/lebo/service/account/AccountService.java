@@ -125,9 +125,7 @@ public class AccountService extends AbstractMongoService {
     }
 
     public UserDto toBasicUserDto(User user){
-        UserDto dto = BeanMapper.map(user, UserDto.class);
-        dto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
-        return dto;
+        return BeanMapper.map(user, UserDto.class);
     }
 
     public UserDto toUserDto(User user) {
@@ -144,7 +142,6 @@ public class AccountService extends AbstractMongoService {
         }
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
         dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
-        dto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
         dto.setFavoritesCount(favoriteService.countUserFavorites(user.getId()));
         dto.setBlocking(blockService.isBlocking(getCurrentUserId(), user.getId()));
 

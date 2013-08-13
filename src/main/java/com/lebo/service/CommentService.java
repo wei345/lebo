@@ -110,7 +110,7 @@ public class CommentService extends AbstractMongoService {
             User replyCommentUser = accountService.getUser(comment.getReplyCommentUserId());
             UserDto replyCommentUserDto = new UserDto();
             replyCommentUserDto.setScreenName(replyCommentUser.getScreenName());
-            replyCommentUserDto.setProfileImageUrl(gridFsService.getContentUrl(user.getProfileImageUrl()));
+            replyCommentUserDto.setProfileImageUrl(user.getProfileImageUrl());
             replyCommentUserDto.setId(replyCommentUser.getId());
             dto.setReplyCommentUser(replyCommentUserDto);
         }

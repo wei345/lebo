@@ -1,7 +1,9 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
+import com.lebo.jms.ProfileImageMessageProducer;
 import com.lebo.service.GridFsService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -26,6 +28,8 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
     protected AccountService accountService;
     @Autowired
     protected GridFsService gridFsService;
+    @Autowired
+    protected ProfileImageMessageProducer profileImageMessageProducer;
 
     String oAuthId(String provider, String uid) {
         return provider + "/" + uid;
@@ -53,28 +57,12 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
         return info != null && info.getPrincipals().getPrimaryPrincipal() != null;
     }
 
-    protected String getProfileImage(String imageUrl) {
-        try {
-            URL url = new URL("http://tp4.sinaimg.cn/2704116035/50/5656124822/0");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            String fileName = null;
-            try {
-                //获取文件名
-                String raw = conn.getHeaderField("Content-Disposition");
-                // raw = "attachment; filename=abc.jpg"
-                if (raw != null && raw.indexOf("=") != -1) {
-                    fileName = raw.split("=")[1];
-                } else {
-                    // fall back to random generated file name?
-                }
-            } catch (Exception e) {
-                //忽略
-            }
-
-            return gridFsService.save(conn.getInputStream(), fileName, conn.getContentType());
-        } catch (Exception e) {
-            return null;
+    /**
+     * 获取用户头像存到本地数据库
+     */
+    protected void ensureSaveProfileImage(String userId, String profileImageUrl) {
+        if(StringUtils.startsWithIgnoreCase(profileImageUrl, "http")){
+            profileImageMessageProducer.sendQueue(userId, profileImageUrl);
         }
     }
 }

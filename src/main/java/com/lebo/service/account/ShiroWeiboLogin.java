@@ -1,12 +1,14 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
+import com.lebo.jms.ProfileImageMessageProducer;
 import com.mongodb.MongoException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,6 +28,9 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
     private Logger logger = LoggerFactory.getLogger(ShiroWeiboLogin.class);
 
     public static final String PROVIDER = "weibo";
+
+    @Autowired
+    private ProfileImageMessageProducer profileImageMessageProducer;
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
@@ -57,7 +62,7 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
             Map userInfo = getUserInfo(token, uid);
             user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
             user.setName((String) userInfo.get("name"));
-            user.setProfileImageUrl((String) userInfo.get("profile_image_url"));
+            user.setProfileImage((String) userInfo.get("profile_image_url"));
             user.setCreatedAt(new Date());
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
             oAuthIds.add(oAuthId(PROVIDER, uid));
@@ -69,6 +74,8 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
         } else {
             accountService.updateLastSignInAt(user);
         }
+
+        ensureSaveProfileImage(user.getId(), user.getProfileImage());
 
         return new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), PROVIDER, uid, token);
     }

@@ -89,4 +89,28 @@
     <bean id="settingMessageListener" class="com.lebo.jms.SettingMessageListener"/>
     <!-- SETTING UPDATE end -->
 
+    <!-- FETCH PROFILE IMAGE begin -->
+    <bean id="profileImageQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="q.profileImage"/>
+    </bean>
+
+    <bean id="profileImageMessageProducer" class="com.lebo.jms.ProfileImageMessageProducer">
+        <property name="jmsTemplate" ref="advancedJmsTemplate"/>
+        <property name="profileImageQueue" ref="profileImageQueue"/>
+    </bean>
+
+    <bean id="profileImageQueueContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="advancedConnectionFactory"/>
+        <property name="destination" ref="profileImageQueue"/>
+        <property name="messageListener" ref="profileImageMessageListener"/>
+        <!-- 初始5个Consumer, 可动态扩展到10 -->
+        <property name="concurrentConsumers" value="5"/>
+        <property name="maxConcurrentConsumers" value="10"/>
+        <!-- 设置消息确认模式为Client -->
+        <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>
+    </bean>
+
+    <bean id="profileImageMessageListener" class="com.lebo.jms.ProfileImageMessageListener"/>
+    <!-- FETCH PROFILE IMAGE end -->
+
 </beans>

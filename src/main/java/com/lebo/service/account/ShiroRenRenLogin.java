@@ -54,17 +54,19 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
             if (avatar.get(1) != null) {
                 profileImageUrl = avatar.get(1).get("url");
             }
-            user.setProfileImageUrl(profileImageUrl);
+            user.setProfileImage(profileImageUrl);
 
             user.setCreatedAt(new Date());
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
-            //oAuthIds.add(oAuthId(PROVIDER, uid));
+            oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setLastSignInAt(user.getCreatedAt());
             user = accountService.saveUser(user);
         } else {
             accountService.updateLastSignInAt(user);
         }
+
+        ensureSaveProfileImage(user.getId(), user.getProfileImage());
 
         return new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), PROVIDER, uid, token);
     }

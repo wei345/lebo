@@ -1,6 +1,7 @@
 package com.lebo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.lebo.service.GridFsService;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -34,7 +35,8 @@ public class User extends IdEntity {
     private String name;
     // The user-defined describing their account.
     private String description;
-    private String profileImageUrl;
+    private String profileImage;
+    public static final String PROFILE_IMAGE_KEY = "profileImage";
     @Indexed
     private Date createdAt;
     private Boolean verified;
@@ -100,12 +102,12 @@ public class User extends IdEntity {
         return this;
     }
 
-    public String getProfileImageUrl() {
-        return profileImageUrl;
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getName() {
@@ -288,13 +290,17 @@ public class User extends IdEntity {
         this.digestCount = digestCount;
     }
 
+    public String getProfileImageUrl(){
+        return GridFsService.getContentUrl(profileImage);
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "screenName='" + screenName + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", profileImage='" + profileImage + '\'' +
                 ", createdAt=" + createdAt +
                 ", verified=" + verified +
                 ", weiboVerified=" + weiboVerified +
