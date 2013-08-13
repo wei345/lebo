@@ -1,5 +1,4 @@
 <%@ page import="com.lebo.entity.Notification" %>
-<%@ page import="com.lebo.entity.Comment" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
@@ -27,42 +26,48 @@
         <td>
             用户被关注。
         </td>
-    </tr><tr>
+    </tr>
+    <tr>
         <td>
             <%=Notification.ACTIVITY_TYPE_REPOST%>
         </td>
         <td>
             用户的视频被转播。
         </td>
-    </tr><tr>
+    </tr>
+    <tr>
         <td>
             <%=Notification.ACTIVITY_TYPE_REPLY_POST%>
         </td>
         <td>
-           用户的视频被回复。
+            用户的视频被回复。
         </td>
-    </tr><tr>
+    </tr>
+    <tr>
         <td>
             <%=Notification.ACTIVITY_TYPE_REPLY_COMMENT%>
         </td>
         <td>
-           用户的评论被回复。
+            用户的评论被回复。
         </td>
-    </tr><tr>
+    </tr>
+    <tr>
         <td>
             <%=Notification.ACTIVITY_TYPE_FAVORITE%>
         </td>
         <td>
-           用户的视频被喜欢。
+            用户的视频被喜欢。
         </td>
-    </tr><tr>
+    </tr>
+    <tr>
         <td>
             <%=Notification.ACTIVITY_TYPE_POST_AT%>
         </td>
         <td>
             用户被别人的视频<code>@</code>。
         </td>
-    </tr><tr>
+    </tr>
+    <tr>
         <td>
             <%=Notification.ACTIVITY_TYPE_COMMENT_AT%>
         </td>
@@ -73,6 +78,7 @@
 </table>
 
 <strong>返回结果中的relatedStatus</strong>
+
 <p>
     当activityType值为<%=Notification.ACTIVITY_TYPE_REPOST%>、 <%=Notification.ACTIVITY_TYPE_REPLY_POST%>、
     <%=Notification.ACTIVITY_TYPE_REPLY_COMMENT%>、<%=Notification.ACTIVITY_TYPE_FAVORITE%>、
@@ -81,6 +87,7 @@
 </p>
 
 <strong>返回结果中的relatedComment</strong>
+
 <p>
     当activityType值为<%=Notification.ACTIVITY_TYPE_REPLY_POST%>、
     <%=Notification.ACTIVITY_TYPE_REPLY_COMMENT%>、<%=Notification.ACTIVITY_TYPE_COMMENT_AT%>时，

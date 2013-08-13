@@ -76,9 +76,9 @@ public class CommentRestController {
                     return ErrorDto.badRequest(String.format("postId[%s]不存在", postId));
                 }
 
-                if(post.getOriginPostId() == null){
+                if (post.getOriginPostId() == null) {
                     comment.setPostId(postId);
-                }else{
+                } else {
                     comment.setPostId(post.getOriginPostId());
                 }
             }

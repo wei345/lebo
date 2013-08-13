@@ -80,7 +80,7 @@ public class CommentService extends AbstractMongoService {
         return mongoTemplate.find(query, Comment.class);
     }
 
-    public CommentDto toBasicCommentDto(Comment comment){
+    public CommentDto toBasicCommentDto(Comment comment) {
         CommentDto dto = BeanMapper.map(comment, CommentDto.class);
 
         List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
@@ -135,7 +135,7 @@ public class CommentService extends AbstractMongoService {
         return commentDao.findOne(id);
     }
 
-    public void deleteComment(Comment comment){
+    public void deleteComment(Comment comment) {
         Assert.notNull(comment);
 
         commentDao.delete(comment);

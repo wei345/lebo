@@ -58,7 +58,7 @@ public class FriendshipService extends AbstractMongoService {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING);
             }
 
-            if(countFollowings(userId) > maxFollowingCount){
+            if (countFollowings(userId) > maxFollowingCount) {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY);
             }
 
@@ -209,7 +209,7 @@ public class FriendshipService extends AbstractMongoService {
         criterias.add(new Criteria(Friendship.A_KEY).is(userId).and(Friendship.AFB_KEY).is(true).and(Friendship.BFA_KEY).is(true));
         criterias.add(new Criteria(Friendship.B_KEY).is(userId).and(Friendship.BFA_KEY).is(true).and(Friendship.AFB_KEY).is(true));
 
-        return ((Long)mongoTemplate.count(new Query(orOperator(criterias)), Friendship.class)).intValue();
+        return ((Long) mongoTemplate.count(new Query(orOperator(criterias)), Friendship.class)).intValue();
     }
 
     private List<String> getIds(String userId, List<Friendship> friendships) {

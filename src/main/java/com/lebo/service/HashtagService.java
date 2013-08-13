@@ -86,10 +86,10 @@ public class HashtagService extends AbstractMongoService {
         return mongoTemplate.find(query, Hashtag.class);
     }
 
-    public ChannelDto toChannelDto(Hashtag hashtag){
+    public ChannelDto toChannelDto(Hashtag hashtag) {
         List<Setting.Channel> channels = settingService.getSetting().getChannels();
-        for(Setting.Channel channel : channels){
-            if(channel.getName().equals(hashtag.getName())) {
+        for (Setting.Channel channel : channels) {
+            if (channel.getName().equals(hashtag.getName())) {
                 ChannelDto dto = BeanMapper.map(channel, ChannelDto.class);
                 dto.setImageUrl(GridFsService.getContentUrl(channel.getImage()));
                 return dto;
@@ -99,15 +99,15 @@ public class HashtagService extends AbstractMongoService {
         return BeanMapper.map(hashtag, ChannelDto.class);
     }
 
-    public List<ChannelDto> toChannelDtos(List<Hashtag> hashtags){
+    public List<ChannelDto> toChannelDtos(List<Hashtag> hashtags) {
         List<ChannelDto> dtos = new ArrayList<ChannelDto>(hashtags.size());
-        for(Hashtag hashtag : hashtags){
+        for (Hashtag hashtag : hashtags) {
             dtos.add(toChannelDto(hashtag));
         }
         return dtos;
     }
 
-    public Hashtag findHashtagByName(String name){
+    public Hashtag findHashtagByName(String name) {
         return hashtagDao.findByName(name);
     }
 }

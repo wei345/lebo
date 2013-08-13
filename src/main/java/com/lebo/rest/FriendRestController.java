@@ -50,8 +50,8 @@ public class FriendRestController {
     @RequestMapping(value = "bilateral", method = RequestMethod.GET)
     @ResponseBody
     public Object bilateral(@RequestParam(value = "userId", required = false) String userId,
-                       @RequestParam(value = "screenName", required = false) String screenName,
-                       @Valid PageRequest pageRequest) {
+                            @RequestParam(value = "screenName", required = false) String screenName,
+                            @Valid PageRequest pageRequest) {
         if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
             userId = accountService.getCurrentUserId();
         } else {

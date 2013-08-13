@@ -1,7 +1,6 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Post;
-import com.lebo.entity.Setting;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
@@ -11,7 +10,6 @@ import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,7 +144,7 @@ public class StatusRestController {
             }
 
             //确保转发原帖
-            if(originPost.getOriginPostId() != null){
+            if (originPost.getOriginPostId() != null) {
                 originPost = statusService.getPost(originPost.getOriginPostId());
                 if (originPost == null) {
                     return ErrorDto.badRequest("原始视频[" + originPost.getOriginPostId() + "]不存在.");
@@ -253,7 +251,7 @@ public class StatusRestController {
     @RequestMapping(value = "channelTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object channelTimeline(@RequestParam(value = "name") String name,
-                          PaginationParam paginationParam) {
+                                  PaginationParam paginationParam) {
         if (StringUtils.isBlank(name)) {
             return ErrorDto.badRequest("name参数不能为空");
         }

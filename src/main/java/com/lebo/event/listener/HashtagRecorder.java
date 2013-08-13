@@ -26,6 +26,7 @@ public class HashtagRecorder {
 
     /**
      * post数增长。
+     *
      * @param event
      */
     @Subscribe
@@ -37,6 +38,7 @@ public class HashtagRecorder {
 
     /**
      * post数减少。
+     *
      * @param event
      */
     @Subscribe
@@ -48,24 +50,26 @@ public class HashtagRecorder {
 
     /**
      * 红心(收藏)数增长。
+     *
      * @param e
      */
     @Subscribe
     public void increaseFavoritesCount(AfterFavoriteCreateEvent e) {
         Post post = statusService.getPost(e.getFavorite().getPostId());
-        for(String name : post.getHashtags()){
+        for (String name : post.getHashtags()) {
             hashtagService.increaseFavoritesCount(name);
         }
     }
 
     /**
      * 红心(收藏)数减少。
+     *
      * @param e
      */
     @Subscribe
     public void decreaseFavoritesCount(AfterFavoriteDestroyEvent e) {
         Post post = statusService.getPost(e.getFavorite().getPostId());
-        for(String name : post.getHashtags()){
+        for (String name : post.getHashtags()) {
             hashtagService.decreaseFavoritesCount(name);
         }
     }

@@ -290,7 +290,7 @@ public class User extends IdEntity {
         this.digestCount = digestCount;
     }
 
-    public String getProfileImageUrl(){
+    public String getProfileImageUrl() {
         return GridFsService.getContentUrl(profileImage);
     }
 

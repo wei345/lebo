@@ -18,7 +18,6 @@ public class ApnsMessageProducer {
     private Destination notifyQueue;
 
     /**
-     *
      * @param message     ios通知内容
      * @param deviceToken ios设备token
      */

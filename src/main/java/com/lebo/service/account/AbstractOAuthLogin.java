@@ -13,8 +13,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
 
 /**
@@ -61,7 +59,7 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
      * 获取用户头像存到本地数据库
      */
     protected void ensureSaveProfileImage(String userId, String profileImageUrl) {
-        if(StringUtils.startsWithIgnoreCase(profileImageUrl, "http")){
+        if (StringUtils.startsWithIgnoreCase(profileImageUrl, "http")) {
             profileImageMessageProducer.sendQueue(userId, profileImageUrl);
         }
     }

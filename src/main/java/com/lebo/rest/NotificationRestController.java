@@ -31,7 +31,7 @@ public class NotificationRestController {
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(@Valid PaginationParam param){
+    public Object list(@Valid PaginationParam param) {
         List<Notification> notifications = notificationService.find(accountService.getCurrentUserId(), param);
         notificationService.markRead(notifications);
         return notificationService.toNotificationDtos(notifications);
@@ -42,7 +42,7 @@ public class NotificationRestController {
      */
     @RequestMapping(value = "markAllRead", method = RequestMethod.POST)
     @ResponseBody
-    public void markAllRead(){
+    public void markAllRead() {
         notificationService.markAllRead(accountService.getCurrentUserId());
     }
 }

@@ -9,7 +9,8 @@ import com.lebo.entity.Comment;
  */
 public class AfterCommentCreateEvent {
     private Comment comment;
-    public AfterCommentCreateEvent(Comment comment){
+
+    public AfterCommentCreateEvent(Comment comment) {
         this.comment = comment;
     }
 

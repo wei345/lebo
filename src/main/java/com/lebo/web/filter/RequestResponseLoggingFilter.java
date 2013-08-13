@@ -92,10 +92,10 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
 
         //request headers
         Enumeration names = request.getHeaderNames();
-        while (names.hasMoreElements()){
+        while (names.hasMoreElements()) {
             String name = names.nextElement().toString();
             Enumeration values = request.getHeaders(name);
-            while (values.hasMoreElements()){
+            while (values.hasMoreElements()) {
                 logger.debug("        request header : {} = {}", name, values.nextElement());
             }
         }

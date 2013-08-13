@@ -228,12 +228,6 @@ public class StatusService extends AbstractMongoService {
 
             //是否被当前登录用户转发
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post));
-
-            /* 已经添加精华字段
-            //是否是加精的
-            Setting setting = settingService.getSetting();
-            dto.setDigest(setting.getDigestFollow().contains(post.getUserId()));
-            */
         }
         //转发贴
         else {

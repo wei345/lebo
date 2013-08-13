@@ -13,13 +13,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name="a_1_b_1_unique", def="{a : 1, b : 1}", unique = true),
+        @CompoundIndex(name = "a_1_b_1_unique", def = "{a : 1, b : 1}", unique = true),
         @CompoundIndex(name = "a_1_bFa_1", def = "{a : 1, bFa : 1}"),
         @CompoundIndex(name = "b_1_bFa_1", def = "{b : 1, bFa : 1}"),
         @CompoundIndex(name = "a_1_aFb_1_bFa_1", def = "{a : 1, aFb : 1, bFa : 1}"),
         @CompoundIndex(name = "b_1_aFb_1_bFa_1", def = "{b : 1, aFb : 1, bFa : 1}")
 })
-public class Friendship extends IdEntity{
+public class Friendship extends IdEntity {
     // 一个用户id，a < b
     private String a;
     public static final String A_KEY = "a";
