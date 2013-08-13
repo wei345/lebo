@@ -280,6 +280,14 @@ public class User extends IdEntity {
         this.apnsDevelopmentToken = apnsDevelopmentToken;
     }
 
+    public Integer getDigestCount() {
+        return digestCount;
+    }
+
+    public void setDigestCount(Integer digestCount) {
+        this.digestCount = digestCount;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -303,7 +311,9 @@ public class User extends IdEntity {
                 ", followersCount=" + followersCount +
                 ", beFavoritedCount=" + beFavoritedCount +
                 ", viewCount=" + viewCount +
+                ", digestCount=" + digestCount +
                 ", apnsProductionToken='" + apnsProductionToken + '\'' +
+                ", apnsDevelopmentToken='" + apnsDevelopmentToken + '\'' +
                 "} " + super.toString();
     }
 }
