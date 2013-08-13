@@ -1,3 +1,4 @@
+<%@ page import="com.lebo.rest.dto.ErrorDto" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
@@ -492,7 +493,7 @@
 
         </td>
         <td>
-            不能关注该用户，因为你在对方的黑名单中
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKED.getError().getMessage()%>
         </td>
     </tr>
     <tr>
@@ -506,7 +507,21 @@
 
         </td>
         <td>
-            不能关注该用户，因为对方在你的黑名单中
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING.getError().getMessage()%>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            400
+        </td>
+        <td>
+            10430
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY.getError().getMessage()%>
         </td>
     </tr>
     <tr>

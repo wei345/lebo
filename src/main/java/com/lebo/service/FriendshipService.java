@@ -31,6 +31,10 @@ public class FriendshipService extends AbstractMongoService {
     private BlockService blockService;
     @Autowired
     private ApplicationEventBus eventBus;
+    /**
+     * 允许关注的人数上限，太多可能会很慢。
+     */
+    private int maxFollowingCount = 2000;
 
     /**
      * userId关注followingId。
@@ -52,6 +56,10 @@ public class FriendshipService extends AbstractMongoService {
 
             if (blockService.isBlocking(userId, followingId)) {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING);
+            }
+
+            if(countFollowings(userId) > maxFollowingCount){
+                throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY);
             }
 
             //保存关系

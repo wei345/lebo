@@ -29,6 +29,7 @@ public class ErrorDto {
     public static final ErrorDto DUPLICATE = new ErrorDto("Duplicate", 10427, HttpStatus.BAD_REQUEST);
     public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_BLOCKED = new ErrorDto("不能关注该用户，因为你在对方的黑名单中", 10428, HttpStatus.BAD_REQUEST);
     public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_BLOCKING = new ErrorDto("不能关注该用户，因为对方在你的黑名单中", 10429, HttpStatus.BAD_REQUEST);
+    public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_TOO_MANY = new ErrorDto("不能关注该用户，因为你关注的人数已达到上限", 10430, HttpStatus.BAD_REQUEST);
     public static final ErrorDto INTERNAL_SERVER_ERROR = new ErrorDto("Internal Server Error", 10500, HttpStatus.INTERNAL_SERVER_ERROR);
 
     private static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
