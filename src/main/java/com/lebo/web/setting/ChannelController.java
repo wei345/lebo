@@ -71,7 +71,7 @@ public class ChannelController {
             }
 
             setting.getChannels().add(channel);
-            settingService.saveOption(setting);
+            settingService.saveSetting(setting);
 
             redirectAttributes.addFlashAttribute("success", "已创建 " + channel.getName());
             return "redirect:/admin/channels";
@@ -106,7 +106,7 @@ public class ChannelController {
 
         redirectAttributes.addFlashAttribute("success", "保存成功");
         setting.setChannels(channels);
-        settingService.saveOption(setting);
+        settingService.saveSetting(setting);
         return "redirect:/admin/channels";
     }
 }

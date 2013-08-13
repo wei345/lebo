@@ -32,7 +32,7 @@ public class SettingController {
     @RequestMapping(method = RequestMethod.POST)
     public String saveOption(@ModelAttribute("setting") Setting setting,
                              RedirectAttributes redirectAttributes) {
-        settingService.saveOption(setting);
+        settingService.saveSetting(setting);
         redirectAttributes.addFlashAttribute("success", "保存成功");
         return "redirect:/admin/settings";
     }

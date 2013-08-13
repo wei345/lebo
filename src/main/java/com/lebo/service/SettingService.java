@@ -1,6 +1,7 @@
 package com.lebo.service;
 
 import com.lebo.entity.Setting;
+import com.lebo.jms.SettingMessageProducer;
 import com.lebo.repository.SettingDao;
 import com.lebo.rest.dto.ChannelDto;
 import com.lebo.rest.dto.SettingDto;
@@ -10,9 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springside.modules.mapper.BeanMapper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -24,28 +22,29 @@ import java.util.List;
 public class SettingService extends AbstractMongoService {
     @Autowired
     private SettingDao settingDao;
-
+    @Autowired
+    private SettingMessageProducer settingMessageProducer;
     private Setting setting;
 
     public Setting getSetting() {
         //TODO getOption使用缓存，更新时通知所有节点，不要每次都reloadOption
-        /*if (setting == null) {
-            reloadOption();
+        if (setting == null) {
+            reloadSetting();
         }
-        return setting;*/
-
-        return reloadOption();
+        return setting;
     }
 
-    public Setting saveOption(Setting setting) {
-        return settingDao.save(setting);
+    public Setting saveSetting(Setting setting) {
+        setting = settingDao.save(setting);
+        settingMessageProducer.sendTopic();
+        return setting;
     }
 
-    public Setting reloadOption() {
+    public Setting reloadSetting() {
         PageRequest pageRequest = new PageRequest(0, 1, PaginationParam.DEFAULT_SORT);
         Page<Setting> page = settingDao.findAll(pageRequest);
         if (page.getContent().size() == 0) {
-            setting = saveOption(new Setting());
+            setting = new Setting();
         } else {
             setting = page.getContent().get(0);
         }

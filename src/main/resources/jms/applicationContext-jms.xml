@@ -24,16 +24,6 @@
         <property name="sessionCacheSize" value="10"/>
     </bean>
 
-    <!-- Queue定义 -->
-    <bean id="apnsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="q.apns"/>
-    </bean>
-
-    <!-- Topic定义 -->
-    <!--<bean id="advancedNotifyTopic" class="org.apache.activemq.command.ActiveMQTopic">
-        <constructor-arg value="t.advanced.notify"/>
-    </bean>-->
-
     <!-- Spring JMS Template -->
     <bean id="advancedJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="advancedCachingConnectionFactory"/>
@@ -45,18 +35,23 @@
         <property name="priority" value="9"/>
     </bean>
 
+    <!-- APNS MESSAGE begin -->
+    <!-- Queue定义 -->
+    <bean id="apnsQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="q.apns"/>
+    </bean>
+
     <!-- 使用Spring JmsTemplate的消息生产者 -->
-    <bean id="advancedNotifyMessageProducer" class="com.lebo.jms.ApnsMessageProducer">
+    <bean id="apnsMessageProducer" class="com.lebo.jms.ApnsMessageProducer">
         <property name="jmsTemplate" ref="advancedJmsTemplate"/>
         <property name="notifyQueue" ref="apnsQueue"/>
-        <!--<property name="notifyTopic" ref="advancedNotifyTopic"/>-->
     </bean>
 
     <!-- 异步接收Queue消息Container -->
-    <bean id="advancedQueueContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <bean id="apnsQueueContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="advancedConnectionFactory"/>
         <property name="destination" ref="apnsQueue"/>
-        <property name="messageListener" ref="advancedNotifyMessageListener"/>
+        <property name="messageListener" ref="apnsMessageListener"/>
         <!-- 初始5个Consumer, 可动态扩展到10 -->
         <property name="concurrentConsumers" value="5"/>
         <property name="maxConcurrentConsumers" value="10"/>
@@ -64,17 +59,34 @@
         <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>
     </bean>
 
-    <!-- 异步接收Topic消息Container -->
-    <!--<bean id="advancedTopicContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-        <property name="connectionFactory" ref="advancedTopicConnectionFactory"/>
-        <property name="destination" ref="advancedNotifyTopic"/>
-        <property name="messageListener" ref="advancedNotifyMessageListener"/>
-        &lt;!&ndash; JMS Selector消息过滤器 &ndash;&gt;
-        <property name="messageSelector" value="objectType='user'"/>
-        &lt;!&ndash; 持久化订阅者 &ndash;&gt;
-        <property name="subscriptionDurable" value="true"/>
-    </bean>-->
-
     <!-- 异步接收消息处理类 -->
-    <bean id="advancedNotifyMessageListener" class="com.lebo.jms.ApnsMessageListener"/>
+    <bean id="apnsMessageListener" class="com.lebo.jms.ApnsMessageListener"/>
+    <!-- APNS MESSAGE end -->
+
+    <!-- SETTING UPDATE begin -->
+    <!-- Topic定义 -->
+    <bean id="settingTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="t.setting"/>
+    </bean>
+
+    <!-- 使用Spring JmsTemplate的消息生产者 -->
+    <bean id="settingMessageProducer" class="com.lebo.jms.SettingMessageProducer">
+        <property name="jmsTemplate" ref="advancedJmsTemplate"/>
+        <property name="settingTopic" ref="settingTopic"/>
+    </bean>
+
+    <!-- 异步接收Topic消息Container -->
+    <bean id="settingTopicContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="advancedTopicConnectionFactory"/>
+        <property name="destination" ref="settingTopic"/>
+        <property name="messageListener" ref="settingMessageListener"/>
+        <!-- JMS Selector消息过滤器 -->
+        <property name="messageSelector" value="objectType='setting'"/>
+        <!-- 持久化订阅者 -->
+        <property name="subscriptionDurable" value="true"/>
+    </bean>
+
+    <bean id="settingMessageListener" class="com.lebo.jms.SettingMessageListener"/>
+    <!-- SETTING UPDATE end -->
+
 </beans>
