@@ -127,14 +127,14 @@
             返回热门视频列表。
         </td>
     </tr>
-    <tr>
+    <%--未用到 而且这个接口排序有问题 <tr>
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1/get/statuses/search" text="GET statuses/search"/>
         </td>
         <td>
             返回符合搜索条件的视频列表，可以指定hashtag、@某人、关键词，可以按喜欢数、浏览数排序。
         </td>
-    </tr>
+    </tr>--%>
 </table>
 
 <strong>视频</strong>

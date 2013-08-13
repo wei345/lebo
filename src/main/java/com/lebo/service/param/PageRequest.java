@@ -17,11 +17,21 @@ public class PageRequest implements Pageable, Serializable {
     protected int size = PaginationParam.DEFAULT_COUNT;
     protected Sort sort;
 
+    public PageRequest(){
+
+    }
+
+    public PageRequest(int page, int size, Sort sort) {
+        this.page = page;
+        this.size = size;
+        this.sort = sort;
+    }
+
     /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.data.domain.Pageable#getPageSize()
-     */
+         * (non-Javadoc)
+         *
+         * @see org.springframework.data.domain.Pageable#getPageSize()
+         */
     @DecimalMax("200")
     @DecimalMin("1")
     public int getPageSize() {

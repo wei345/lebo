@@ -18,8 +18,10 @@ import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
 import com.lebo.web.FileServlet;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -340,6 +342,22 @@ public class StatusService extends AbstractMongoService {
         }
 
         query.with(param);
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    /**
+     * 按帖子红心数降序排序
+     */
+    public List<Post> hotPosts(Integer page, Integer size) {
+        Query query = new Query();
+        //几天内
+        query.addCriteria(new Criteria(Post.CREATED_AT_KEY)
+                .gte(DateUtils.addDays(new Date(), settingService.getSetting().getHotDays() * -1)));
+        //不含转发贴，因为只有原帖有收藏计数
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //排序 & 分页
+        query.with(new PageRequest(page, size, new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY)));
+
         return mongoTemplate.find(query, Post.class);
     }
 

@@ -207,6 +207,7 @@ public class StatusRestController {
         if (Post.FAVOURITES_COUNT_KEY.equals(orderBy) ||
                 Post.VIEW_COUNT_KEY.equals(orderBy) ||
                 "_id".equals(orderBy)) {
+            //TODO 排序有问题，转发贴没有计数
             //搜索
             SearchParam param = new SearchParam(q, pageNo, size, direction, orderBy);
             param.setAfter(after);
@@ -220,14 +221,9 @@ public class StatusRestController {
 
     @RequestMapping(value = "hot", method = RequestMethod.GET)
     @ResponseBody
-    public Object hot(@RequestParam(value = "page", defaultValue = "0") int pageNo,
+    public Object hot(@RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        Setting setting = settingService.getSetting();
-        Date date = DateUtils.addDays(new Date(), setting.getHotDays() * -1);
-        SearchParam param = new SearchParam(null, pageNo, size, Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY);
-        param.setAfter(date);
-
-        List<Post> posts = statusService.searchPosts(param);
+        List<Post> posts = statusService.hotPosts(page, size);
         return statusService.toStatusDtos(posts);
     }
 
