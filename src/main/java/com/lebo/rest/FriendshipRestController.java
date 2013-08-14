@@ -53,7 +53,6 @@ public class FriendshipRestController {
      * @param screenName The screen name of the user for whom to befriend
      * @param follow     Enable notifications for the target user.
      */
-    //TODO 发送通知给被follow的用户
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseBody
     public Object create(@RequestParam(value = "userId", required = false) String userId,

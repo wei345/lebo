@@ -27,7 +27,6 @@ public class SettingService extends AbstractMongoService {
     private Setting setting;
 
     public Setting getSetting() {
-        //TODO getOption使用缓存，更新时通知所有节点，不要每次都reloadOption
         if (setting == null) {
             reloadSetting();
         }

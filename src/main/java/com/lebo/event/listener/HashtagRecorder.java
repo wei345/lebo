@@ -74,6 +74,6 @@ public class HashtagRecorder {
         }
     }
 
-    //TODO 记录viewCount
+    //TODO 记录频道viewCount
 
 }

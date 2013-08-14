@@ -21,7 +21,7 @@ public class FollowerCountRecorder {
     @Subscribe
     public void increase(AfterFollowingCreatEvent e) {
         accountService.increaseFollowersCount(e.getFollowingId());
-        //TODO 维护双向关注数量
+        //TODO 维护双向关注数量(还未用到2013.8.14)
     }
 
     @Subscribe

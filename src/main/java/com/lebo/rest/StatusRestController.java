@@ -46,7 +46,6 @@ public class StatusRestController {
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
     //TODO 检查Post.text长度
-    //TODO 保存source
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public Object update(@RequestParam(value = "video") MultipartFile video,

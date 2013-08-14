@@ -89,7 +89,6 @@ public class ChannelController {
         return "setting/channelPreview";
     }
 
-    //TODO 检查频道修改，删除图片
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@RequestParam("channels") String json, RedirectAttributes redirectAttributes) {
         List<Setting.Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Setting.Channel.class));

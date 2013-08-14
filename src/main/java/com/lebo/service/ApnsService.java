@@ -20,7 +20,6 @@ import java.util.List;
  * Date: 13-8-7
  * Time: PM3:39
  */
-//TODO 累计未读通知数量
 @Service
 public class ApnsService {
     private Logger logger = LoggerFactory.getLogger(ApnsService.class);

@@ -26,7 +26,6 @@ public class UserAdminController {
     @Autowired
     private AccountService accountService;
 
-    //TODO 搜索用户
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "q", required = false) String q,
                        @RequestParam(value = "page", defaultValue = "0") int pageNo,

@@ -45,7 +45,6 @@ public class Post extends IdEntity {
     //提到的用户的ID
     @Indexed
     private LinkedHashSet<String> userMentions;
-    //TODO 有terms了，删除tags?
     @Indexed
     private LinkedHashSet<String> hashtags;
     public static final String HASHTAGS_KEY = "hashtags";
@@ -119,7 +118,6 @@ public class Post extends IdEntity {
         this.geoLocation = geoLocation;
     }
 
-    //TODO 检查数据库字段，应该是truncated，isTruncated
     public boolean isTruncated() {
         return truncated;
     }
