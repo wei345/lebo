@@ -1,6 +1,8 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
+import com.lebo.event.AfterUserCreateEvent;
+import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.*;
@@ -55,6 +57,8 @@ public class AccountService extends AbstractMongoService {
     private FavoriteService favoriteService;
     @Autowired
     private BlockService blockService;
+    @Autowired
+    private ApplicationEventBus eventBus;
 
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
@@ -83,6 +87,14 @@ public class AccountService extends AbstractMongoService {
 
         user = userDao.save(user);
         throwOnMongoError();
+        return user;
+    }
+
+    public User createUser(User user){
+        user.initial();
+        user.setCreatedAt(dateProvider.getDate());
+        user = saveUser(user);
+        eventBus.post(new AfterUserCreateEvent(user));
         return user;
     }
 
@@ -166,13 +178,6 @@ public class AccountService extends AbstractMongoService {
 
     public User findUserByEmail(String email) {
         return userDao.findByEmail(email);
-    }
-
-    public void registerUser(User user) {
-        entryptPassword(user);
-        user.setCreatedAt(dateProvider.getDate());
-
-        userDao.save(user.initial());
     }
 
     /**

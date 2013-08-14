@@ -45,7 +45,7 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
 
         // 第一次登录，创建用户
         if (user == null) {
-            user = new User().initial();
+            user = new User();
             user.setScreenName(newScreenName((String) userInfo.get("name")));
             user.setName((String) userInfo.get("name"));
 
@@ -61,7 +61,8 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setLastSignInAt(user.getCreatedAt());
-            user = accountService.saveUser(user);
+
+            user = accountService.createUser(user);
         } else {
             accountService.updateLastSignInAt(user);
         }

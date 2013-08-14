@@ -58,8 +58,9 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
 
         // 第一次登录，创建用户
         if (user == null) {
-            user = new User().initial();
             Map userInfo = getUserInfo(token, uid);
+
+            user = new User();
             user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
             user.setName((String) userInfo.get("name"));
             user.setProfileImage((String) userInfo.get("profile_image_url"));
@@ -67,10 +68,10 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
-            Boolean weiboVerified = (Boolean) userInfo.get("verified");
-            user.setWeiboVerified(weiboVerified);
+            user.setWeiboVerified((Boolean) userInfo.get("verified"));
             user.setLastSignInAt(user.getCreatedAt());
-            user = accountService.saveUser(user);
+
+            user = accountService.createUser(user);
         } else {
             accountService.updateLastSignInAt(user);
         }
