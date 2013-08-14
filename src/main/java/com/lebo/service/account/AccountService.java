@@ -153,7 +153,6 @@ public class AccountService extends AbstractMongoService {
             }
         }
         dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
-        dto.setFollowersCount(friendshipService.countFollowers(user.getId()));
         dto.setFavoritesCount(favoriteService.countUserFavorites(user.getId()));
         dto.setBlocking(blockService.isBlocking(getCurrentUserId(), user.getId()));
 
