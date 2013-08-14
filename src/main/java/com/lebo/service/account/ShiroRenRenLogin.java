@@ -25,51 +25,34 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
     public static String PROVIDER = "renren";
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
-        OauthToken authcToken = (OauthToken) authenticationToken;
-        try {
-            return new OAuthAuthenticationInfo(getShiroUser(authcToken.getToken()), realmName);
-        } catch (MongoException e) {
-            logger.warn("登录失败 - " + authcToken + " - " + e.getMessage(), e);
-            return null;
-        } catch (Exception e) {
-            logger.info("登录失败 - " + authcToken + " - " + e.getMessage());
-            return null;
-        }
-    }
-
-    public ShiroUser getShiroUser(String token) {
+    public User getUser(String token) {
         Map userInfo = (Map) getUserInfo(token).get("response");
+        List<Map<String, String>> avatar = (List) userInfo.get("avatar");
+
         String uid = userInfo.get("id").toString();
         User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
         // 第一次登录，创建用户
         if (user == null) {
+
             user = new User();
             user.setScreenName(newScreenName((String) userInfo.get("name")));
             user.setName((String) userInfo.get("name"));
-
-            List<Map<String, String>> avatar = (List) userInfo.get("avatar");
-            String profileImageUrl = avatar.get(0).get("url");
-            if (avatar.get(1) != null) {
-                profileImageUrl = avatar.get(1).get("url");
-            }
-            user.setProfileImage(profileImageUrl);
-
-            user.setCreatedAt(new Date());
+            user.setProfileImageNormal(avatar.get(0).get("url")); //50x50
+            user.setProfileImageBigger(avatar.get(2).get("url")); //200x180   avatar.get(1).get("url"); //100x100
+            user.setProfileImageOriginal(avatar.get(3).get("url")); //200x180?
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
-            user.setLastSignInAt(user.getCreatedAt());
 
             user = accountService.createUser(user);
-        } else {
-            accountService.updateLastSignInAt(user);
         }
+        return user;
+    }
 
-        ensureSaveProfileImage(user.getId(), user.getProfileImage());
-
-        return new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), PROVIDER, uid, token);
+    @Override
+    public String getPrivoder() {
+        return PROVIDER;
     }
 
     Map getUserInfo(String token) {

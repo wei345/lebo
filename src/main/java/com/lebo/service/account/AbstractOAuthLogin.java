@@ -1,15 +1,20 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
+import com.lebo.event.AfterUserLoginEvent;
+import com.lebo.event.ApplicationEventBus;
 import com.lebo.jms.ProfileImageMessageProducer;
 import com.lebo.service.GridFsService;
-import org.apache.commons.lang3.StringUtils;
+import com.mongodb.MongoException;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.hibernate.validator.constraints.NotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,6 +33,10 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
     protected GridFsService gridFsService;
     @Autowired
     protected ProfileImageMessageProducer profileImageMessageProducer;
+    @Autowired
+    protected ApplicationEventBus eventBus;
+
+    private Logger logger = LoggerFactory.getLogger(AbstractOAuthLogin.class);
 
     String oAuthId(String provider, String uid) {
         return provider + "/" + uid;
@@ -55,14 +64,36 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
         return info != null && info.getPrincipals().getPrimaryPrincipal() != null;
     }
 
-    /**
-     * 获取用户头像存到本地数据库
-     */
-    protected void ensureSaveProfileImage(String userId, String profileImageUrl) {
-        if (StringUtils.startsWithIgnoreCase(profileImageUrl, "http")) {
-            profileImageMessageProducer.sendQueue(userId, profileImageUrl);
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
+        OauthToken authcToken = (OauthToken) authenticationToken;
+        try {
+            User user = getUser(authcToken.getToken());
+            OAuthAuthenticationInfo info = new OAuthAuthenticationInfo(
+                    new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), getPrivoder()),
+                    realmName);
+
+            eventBus.post(new AfterUserLoginEvent(user));
+
+            return info;
+        } catch (MongoException e) {
+            logger.warn("登录失败, token: " + authcToken, e);
+            return null;
+        } catch (Exception e) {
+            logger.info("登录失败, token: " + authcToken, e);
+            return null;
         }
     }
+
+    /**
+     * 根据OAuth Token获取用户信息。
+     *
+     * @param token OAuth Token
+     * @return 返回ShiroUser，不可返回null，如果OAuth验证失败，要抛出异常
+     */
+    abstract public User getUser(String token);
+
+    abstract public String getPrivoder();
 }
 
 class OAuthAuthenticationInfo implements AuthenticationInfo {

@@ -15,17 +15,13 @@ public class ShiroUser implements Serializable {
     public String name;
     public String profileImageUrl;
     public String provider;
-    public String uid;
-    public String token;
 
-    public ShiroUser(String id, String screenName, String name, String profileImageUrl, String provider, String uid, String token) {
+    public ShiroUser(String id, String screenName, String name, String profileImageUrl, String provider) {
         this.id = id;
         this.screenName = screenName;
         this.name = name;
         this.profileImageUrl = profileImageUrl;
         this.provider = provider;
-        this.uid = uid;
-        this.token = token;
     }
 
     /**
@@ -79,13 +75,5 @@ public class ShiroUser implements Serializable {
 
     public String getProvider() {
         return provider;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public String getToken() {
-        return token;
     }
 }

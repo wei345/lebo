@@ -3,10 +3,6 @@ package com.lebo.rest.dto;
 import java.util.Date;
 
 /**
- * <h2>User</h2>
- * <p/>
- * 字段描述见Twitter: https://dev.twitter.com/docs/platform-objects/users
- *
  * @author: Wei Liu
  * Date: 13-7-9
  * Time: PM5:24
@@ -16,6 +12,8 @@ public class UserDto {
     private String screenName;
     private String description;
     private String profileImageUrl;
+    private String profileImageBiggerUrl;
+    private String profileImageOriginalUrl;
     private Date createdAt;
     private Boolean following;
     private Integer followersCount;
@@ -165,5 +163,21 @@ public class UserDto {
 
     public void setHotBeFavoritedCount(Integer hotBeFavoritedCount) {
         this.hotBeFavoritedCount = hotBeFavoritedCount;
+    }
+
+    public String getProfileImageBiggerUrl() {
+        return profileImageBiggerUrl;
+    }
+
+    public void setProfileImageBiggerUrl(String profileImageBiggerUrl) {
+        this.profileImageBiggerUrl = profileImageBiggerUrl;
+    }
+
+    public String getProfileImageOriginalUrl() {
+        return profileImageOriginalUrl;
+    }
+
+    public void setProfileImageOriginalUrl(String profileImageOriginalUrl) {
+        this.profileImageOriginalUrl = profileImageOriginalUrl;
     }
 }

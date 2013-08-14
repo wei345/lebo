@@ -1,17 +1,11 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
-import com.lebo.jms.ProfileImageMessageProducer;
-import com.mongodb.MongoException;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -29,30 +23,13 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
 
     public static final String PROVIDER = "weibo";
 
-    @Autowired
-    private ProfileImageMessageProducer profileImageMessageProducer;
-
-    @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
-        OauthToken authcToken = (OauthToken) authenticationToken;
-        try {
-            return new OAuthAuthenticationInfo(getShiroUser(authcToken.getToken()), realmName);
-        } catch (MongoException e) {
-            logger.warn("登录失败 - " + authcToken + " - " + e.getMessage(), e);
-            return null;
-        } catch (Exception e) {
-            logger.info("登录失败 - " + authcToken + " - " + e.getMessage());
-            return null;
-        }
-    }
-
     /*private String weibo_redirect_uri = "/weibo_callback";
 
     public String authorizeUrl(String baseurl) {
         return String.format("https://api.weibo.com/oauth2/authorize?response_type=code&client_id=%s&redirect_uri=%s", weibo_api_key, baseurl + weibo_redirect_uri);
     }*/
 
-    public ShiroUser getShiroUser(String token) {
+    public User getUser(String token) {
         String uid = getUid(token);
         User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
@@ -63,22 +40,18 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
             user = new User();
             user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
             user.setName((String) userInfo.get("name"));
-            user.setProfileImage((String) userInfo.get("profile_image_url"));
-            user.setCreatedAt(new Date());
+            user.setProfileImageNormal((String) userInfo.get("profile_image_url"));//50x50
+            user.setProfileImageBigger((String) userInfo.get("avatar_large")); //180x180
+            user.setProfileImageOriginal((String) userInfo.get("avatar_hd")); //640x640 ?
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setWeiboVerified((Boolean) userInfo.get("verified"));
-            user.setLastSignInAt(user.getCreatedAt());
 
             user = accountService.createUser(user);
-        } else {
-            accountService.updateLastSignInAt(user);
         }
 
-        ensureSaveProfileImage(user.getId(), user.getProfileImage());
-
-        return new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), PROVIDER, uid, token);
+        return user;
     }
 
     private String getUid(String token) {
@@ -94,6 +67,11 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
             throw new RuntimeException("获取用户信息发生错误");
         }
         return userInfo;
+    }
+
+    @Override
+    public String getPrivoder() {
+        return PROVIDER;
     }
 }
 

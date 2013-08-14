@@ -9,6 +9,7 @@ import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.*;
 import com.lebo.service.param.SearchParam;
+import com.lebo.util.ImageUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DBObject;
@@ -33,6 +34,12 @@ import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -309,5 +316,49 @@ public class AccountService extends AbstractMongoService {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    /**
+     * 设置不同大小的用户profileImage。旧图片会被删掉。
+     *
+     * @param user 设置新profile image的用户
+     * @param profileImage InputStream of user's profile image
+     * @throws IOException
+     */
+    public void saveUserWithProfileImage(User user, InputStream profileImage) throws IOException {
+        BufferedImage originImage = ImageIO.read(profileImage);
+        ByteArrayOutputStream outputStream;
+        String fileId;
+
+        //normal size
+        BufferedImage normal = ImageUtils.resizeImage(User.PROFILE_IMAGE_NORMAL_SIZE, originImage);
+        outputStream = new ByteArrayOutputStream();
+        ImageIO.write(normal, "png", outputStream);
+        fileId = gridFsService.save(new ByteArrayInputStream(outputStream.toByteArray()), "profileImage-normal.png", "image/png");
+        if(isMongoId(user.getProfileImageNormal())){
+            gridFsService.delete(user.getProfileImageNormal());
+        }
+        user.setProfileImageNormal(fileId);
+
+        //bigger size
+        BufferedImage bigger = ImageUtils.resizeImage(User.PROFILE_IMAGE_BIGGER_SIZE, originImage);
+        outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bigger, "png", outputStream);
+        fileId = gridFsService.save(new ByteArrayInputStream(outputStream.toByteArray()), "profileImage-bigger.png", "image/png");
+        if(isMongoId(user.getProfileImageBigger())){
+            gridFsService.delete(user.getProfileImageBigger());
+        }
+        user.setProfileImageBigger(fileId);
+
+        //origin size
+        outputStream = new ByteArrayOutputStream();
+        ImageIO.write(originImage, "png", outputStream);
+        fileId = gridFsService.save(new ByteArrayInputStream(outputStream.toByteArray()), "profileImage-origin.png", "image/png");
+        if(isMongoId(user.getProfileImageOriginal())){
+            gridFsService.delete(user.getProfileImageOriginal());
+        }
+        user.setProfileImageOriginal(fileId);
+
+        saveUser(user);
     }
 }

@@ -34,8 +34,17 @@ public class User extends IdEntity {
     private String name;
     // The user-defined describing their account.
     private String description;
-    private String profileImage;
-    public static final String PROFILE_IMAGE_KEY = "profileImage";
+    //normal
+    private String profileImageNormal;
+    public static final String PROFILE_IMAGE_NORMAL_KEY = "profileImageNormal";
+    public static final int PROFILE_IMAGE_NORMAL_SIZE = 50;
+    //bigger
+    private String profileImageBigger;
+    public static final String PROFILE_IMAGE_BIGGER_KEY = "profileImageBigger";
+    public static final int PROFILE_IMAGE_BIGGER_SIZE = 100;
+    //origin 可以很大
+    private String profileImageOriginal;
+    public static final String PROFILE_IMAGE_ORIGIN_KEY = "profileImageOriginal";
     @Indexed
     private Date createdAt;
     private Boolean verified;
@@ -101,12 +110,12 @@ public class User extends IdEntity {
         return this;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public String getProfileImageNormal() {
+        return profileImageNormal;
     }
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setProfileImageNormal(String profileImageNormal) {
+        this.profileImageNormal = profileImageNormal;
     }
 
     public String getName() {
@@ -290,7 +299,35 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageUrl() {
-        return GridFsService.getContentUrl(profileImage);
+        return GridFsService.getContentUrl(profileImageNormal);
+    }
+
+    public String getProfileImage(){
+        return profileImageNormal;
+    }
+
+    public String getProfileImageBigger() {
+        return profileImageBigger;
+    }
+
+    public String getProfileImageBiggerUrl() {
+        return GridFsService.getContentUrl(profileImageBigger);
+    }
+
+    public void setProfileImageBigger(String profileImageBigger) {
+        this.profileImageBigger = profileImageBigger;
+    }
+
+    public String getProfileImageOriginal() {
+        return profileImageOriginal;
+    }
+
+    public String getProfileImageOriginalUrl() {
+        return GridFsService.getContentUrl(profileImageOriginal);
+    }
+
+    public void setProfileImageOriginal(String profileImageOriginal) {
+        this.profileImageOriginal = profileImageOriginal;
     }
 
     @Override
@@ -299,7 +336,7 @@ public class User extends IdEntity {
                 "screenName='" + screenName + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", profileImage='" + profileImage + '\'' +
+                ", profileImageNormal='" + profileImageNormal + '\'' +
                 ", createdAt=" + createdAt +
                 ", verified=" + verified +
                 ", weiboVerified=" + weiboVerified +

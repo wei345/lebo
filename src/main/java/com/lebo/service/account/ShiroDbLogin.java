@@ -37,9 +37,7 @@ public class ShiroDbLogin extends AbstractShiroLogin {
                             user.getScreenName(),
                             user.getName(),
                             user.getProfileImageUrl(),
-                            PROVIDER,
-                            user.getId(),
-                            null),
+                            PROVIDER),
                     user.getPassword(),
                     ByteSource.Util.bytes(salt),
                     realmName);

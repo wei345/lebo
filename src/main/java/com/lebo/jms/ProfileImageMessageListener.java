@@ -1,14 +1,11 @@
 package com.lebo.jms;
 
 import com.lebo.entity.User;
-import com.lebo.service.GridFsService;
+import com.lebo.service.account.AccountService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -24,9 +21,7 @@ import java.net.URL;
 public class ProfileImageMessageListener implements MessageListener {
     private Logger logger = LoggerFactory.getLogger(ProfileImageMessageListener.class);
     @Autowired
-    private GridFsService gridFsService;
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private AccountService accountService;
 
     /**
      * 将远程文件保存到MongoDB，返回文件ID
@@ -35,37 +30,30 @@ public class ProfileImageMessageListener implements MessageListener {
     public void onMessage(Message message) {
         MapMessage mapMessage = (MapMessage) message;
         String userId = null;
-        String profileImageUrl = null;
+        HttpURLConnection httpURLConnection = null;
 
-        HttpURLConnection httpurlconnection = null;
         try {
             userId = mapMessage.getString("userId");
-            profileImageUrl = mapMessage.getString("profileImageUrl");
+            User user = accountService.getUser(userId);
 
-            httpurlconnection = (HttpURLConnection) new URL(profileImageUrl).openConnection();
-
-            if (httpurlconnection.getResponseCode() == 200) {
-
-                //获取文件名
-                String filename = "profileImage";
-                // Content-Disposition格式："attachment; filename=abc.jpg"
-                String raw = httpurlconnection.getHeaderField("Content-Disposition");
-                if (raw != null && raw.indexOf("=") != -1) {
-                    filename = raw.split("=")[1];
-                }
-
-                String fileId = gridFsService.save(httpurlconnection.getInputStream(), filename, httpurlconnection.getContentType());
-
-                mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
-                        new Update().set(User.PROFILE_IMAGE_KEY, fileId), User.class);
-
-                logger.info("获取用户头像保存到数据库成功, userId : {}, profileImageUrl : {}, fileId : {}", userId, profileImageUrl, fileId);
+            //可能在服务器处理此消息时，用户已经更新了图片
+            if (!StringUtils.startsWithIgnoreCase(user.getProfileImageOriginal(), "http")) {
+                return;
             }
+            long t1 = System.currentTimeMillis();
+            logger.debug("正在更新 {} 的 profileImage, 原始图片URL: {}", user.getScreenName(), user.getProfileImageOriginal());
+
+            httpURLConnection = (HttpURLConnection) new URL(user.getProfileImageOriginal()).openConnection();
+
+            accountService.saveUserWithProfileImage(user, httpURLConnection.getInputStream());
+
+            logger.info("完成用户头像保存到数据库, {} ms, userId : {}, profileImageOriginal : {}",
+                    System.currentTimeMillis() - t1, userId, user.getProfileImageOriginal());
         } catch (Exception e) {
-            logger.info("获取用户profileImage失败, userId:{}, profileImageUrl:{}", userId, profileImageUrl);
+            logger.info("获取用户profileImage失败, userId: {}", userId);
         } finally {
-            if (httpurlconnection != null) {
-                httpurlconnection.disconnect();
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
             }
         }
     }

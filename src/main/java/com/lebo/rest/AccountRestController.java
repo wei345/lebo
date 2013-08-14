@@ -38,8 +38,7 @@ public class AccountRestController {
     public Object updateProfile(@RequestParam(value = "screenName", required = false) String screenName,
                                 @RequestParam(value = "image", required = false) MultipartFile image,
                                 @RequestParam(value = "description", required = false) String description) {
-        String userId = accountService.getCurrentUserId();
-        User user = accountService.getUser(userId);
+        User user = accountService.getUser(accountService.getCurrentUserId());
 
         if (StringUtils.isNotBlank(screenName)) {
             if (!accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {
@@ -48,29 +47,22 @@ public class AccountRestController {
             user.setScreenName(screenName);
         }
 
-        String oldImageId = null;
-        if (image != null && image.getSize() > 0) {
-            try {
-                String imageId = gridFsService.save(image.getInputStream(), image.getOriginalFilename(), image.getContentType());
-                oldImageId = user.getProfileImage();
-                user.setProfileImage(imageId);
-            } catch (IOException e) {
-                return ErrorDto.badRequest(new ServiceException("保存图片失败", e).getMessage());
-            }
-        }
         if (StringUtils.isNotBlank(description)) {
             user.setDescription(description);
         }
-        accountService.saveUser(user);
 
-        //删除旧图片
-        if (accountService.isMongoId(oldImageId)) {
-            gridFsService.delete(oldImageId);
+        if (image != null && image.getSize() > 0) {
+            try {
+                accountService.saveUserWithProfileImage(user, image.getInputStream());
+            } catch (IOException e) {
+                return ErrorDto.badRequest(new ServiceException("更新用户失败", e).getMessage());
+            }
+        } else {
+            accountService.saveUser(user);
         }
+
         //更新ShiroUser
-        if (oldImageId != null) {
-            updateCurrentUser(user);
-        }
+        updateCurrentUser(user);
         return accountService.toUserDto(user);
     }
 
