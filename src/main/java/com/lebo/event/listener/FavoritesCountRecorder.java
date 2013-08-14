@@ -23,13 +23,13 @@ public class FavoritesCountRecorder {
 
     @Subscribe
     public void increase(AfterFavoriteCreateEvent e) {
-        accountService.increaseFavoritesCount(e.getFavorite().getUserId());
+        accountService.increaseFavoritesCount(e.getFavorite().getPostUserId());
         statusService.increaseFavoritesCount(e.getFavorite().getPostId());
     }
 
     @Subscribe
     public void decrease(AfterFavoriteDestroyEvent e) {
-        accountService.decreaseFavoritesCount(e.getFavorite().getUserId());
+        accountService.decreaseFavoritesCount(e.getFavorite().getPostUserId());
         statusService.decreaseFavoritesCount(e.getFavorite().getPostId());
     }
 
