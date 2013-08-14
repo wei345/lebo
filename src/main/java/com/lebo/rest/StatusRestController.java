@@ -296,4 +296,14 @@ public class StatusRestController {
         return statusService.toStatusDto(post);
     }
 
+    /**
+     * 作品榜：按收藏数(红心)降序排序
+     */
+    @RequestMapping(value = "ranking", method = RequestMethod.GET)
+    @ResponseBody
+    public Object ranking(@RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
+        return statusService.toStatusDtos(statusService.rankingPosts(page, size));
+    }
+
 }

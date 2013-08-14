@@ -13,6 +13,11 @@ import java.io.Serializable;
  * Time: PM6:59
  */
 public class PageRequest implements Pageable, Serializable {
+    public static final int PAGE_SIZE_MAX = 200;
+    public static final int PAGE_SIZE_MIN = 1;
+    public static final int PAGE_NUBMER_MAX = 1000;
+    public static final int PAGE_NUBMER_START = 0;
+
     protected int page;
     protected int size = PaginationParam.DEFAULT_COUNT;
     protected Sort sort;
@@ -32,8 +37,8 @@ public class PageRequest implements Pageable, Serializable {
          *
          * @see org.springframework.data.domain.Pageable#getPageSize()
          */
-    @DecimalMax("200")
-    @DecimalMin("1")
+    @DecimalMax(PAGE_SIZE_MAX + "")
+    @DecimalMin(PAGE_SIZE_MIN + "")
     public int getPageSize() {
 
         return size;
@@ -44,8 +49,8 @@ public class PageRequest implements Pageable, Serializable {
      *
      * @see org.springframework.data.domain.Pageable#getPageNumber()
      */
-    @DecimalMax("1000")
-    @DecimalMin("0")
+    @DecimalMax(PAGE_NUBMER_MAX + "")
+    @DecimalMin(PAGE_NUBMER_START + "")
     public int getPageNumber() {
 
         return page;

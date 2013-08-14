@@ -117,7 +117,7 @@
     </tr>
 </table>
 
-<strong>视频搜索</strong>
+<strong>视频排序</strong>
 <table class="table table-hover">
     <tr>
         <td class="td1">
@@ -125,6 +125,14 @@
         </td>
         <td>
             返回热门视频列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/statuses/ranking" text="GET statuses/ranking"/>
+        </td>
+        <td>
+            返回作品榜视频列表。
         </td>
     </tr>
     <%--未用到 而且这个接口排序有问题 <tr>
