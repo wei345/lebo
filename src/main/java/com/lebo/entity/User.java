@@ -25,7 +25,6 @@ import java.util.List;
  *
  * @author Wei Liu
  */
-
 @Document
 public class User extends IdEntity {
     @Indexed(unique = true)

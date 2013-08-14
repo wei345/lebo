@@ -180,7 +180,7 @@
             <tags:link url="${ctx}/docs/api/1/post/comments/create" text="POST comments/create"/>
         </td>
         <td>
-            发布文字评论，返回发布的评论。
+            发文字评论，返回发布的评论。
         </td>
     </tr>
     <tr>
@@ -188,7 +188,7 @@
             <tags:link url="${ctx}/docs/api/1/post/comments/createWithMedia" text="POST comments/createWithMedia"/>
         </td>
         <td>
-            发布视频评论，返回发布的评论。
+            发视频评论，返回发布的评论。
         </td>
     </tr>
     <tr>
