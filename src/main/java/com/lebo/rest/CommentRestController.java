@@ -44,13 +44,28 @@ public class CommentRestController {
     @Autowired
     private StatusService statusService;
 
+    /**
+     * 文字评论
+     */
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseBody
-    public Object create(@RequestParam(value = "video", required = false) MultipartFile video,
-                         @RequestParam(value = "image", required = false) MultipartFile image,
-                         @RequestParam(value = "text", required = false) String text,
-                         @RequestParam(value = "postId", required = false) String postId,
-                         @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
+    public Object create(@RequestParam(value = "text") String text,
+            @RequestParam(value = "postId", required = false) String postId,
+            @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
+
+        return createWithMedia(null, null, text, postId, replyCommentId);
+    }
+
+    /**
+     * 视频评论
+     */
+    @RequestMapping(value = "createWithMedia", method = RequestMethod.POST)
+    @ResponseBody
+    public Object createWithMedia(@RequestParam(value = "video") MultipartFile video,
+                                  @RequestParam(value = "image") MultipartFile image,
+                                  @RequestParam(value = "text", required = false) String text,
+                                  @RequestParam(value = "postId", required = false) String postId,
+                                  @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
         try {
             if (StringUtils.isBlank(postId) && StringUtils.isBlank(replyCommentId)) {
                 return ErrorDto.badRequest("参数postId和replyCommentId不能都为空");
@@ -68,8 +83,9 @@ public class CommentRestController {
                 comment.setReplyCommentUserId(replyComment.getUserId());
                 comment.setPostId(replyComment.getPostId());
                 //TODO 存被回复者screenName以提高性能
-                //回复Post
-            } else {
+            }
+            //回复Post
+            else {
                 Post post = statusService.getPost(postId);
 
                 if (post == null) {

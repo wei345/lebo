@@ -3,7 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="发布评论" method="POST" action="${ctx}/api/1/comments/create.json">
+<tags:form name="发布评论" method="POST" action="${ctx}/api/1/comments/createWithMedia.json" enctype="multipart/form-data">
     <p>
         需要postId或replyCommentId，二者不能都为空。
     </p>
@@ -12,10 +12,12 @@
         被回复的评论id
     </p>
     <tags:field name="replyCommentId" value="" optional="true"/>
-    <tags:textarea name="text" value="文字评论"/>
+    <tags:textarea name="text" value="视频评论" optional="true"/>
+    <tags:field name="video" type="file"/>
+    <tags:field name="image" type="file"/>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/1/comments/create.json">
+<tags:example method="POST" url="http://localhost:8080/api/1/comments/createWithMedia.json">
     {
         id: "51fa4d841a88e74e79eaf4ef",
         postId: "51e3a0ca1a8890916e962c94",
