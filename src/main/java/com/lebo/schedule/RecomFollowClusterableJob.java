@@ -16,9 +16,9 @@ import java.util.Map;
  * 因为需要被持久化, 不能有用XXService等不能被持久化的成员变量,
  * 只能在每次调度时从QuartzJobBean注入的applicationContext中动态取出.
  */
-public class QuartzClusterableJob extends QuartzJobBean {
+public class RecomFollowClusterableJob extends QuartzJobBean {
 
-    private static Logger logger = LoggerFactory.getLogger(QuartzClusterableJob.class);
+    private static Logger logger = LoggerFactory.getLogger(RecomFollowClusterableJob.class);
 
     private ApplicationContext applicationContext;
 
@@ -30,7 +30,7 @@ public class QuartzClusterableJob extends QuartzJobBean {
     }
 
     /**
-     * 定时打印当前用户数到日志.
+     * 更新推荐关注列表.
      */
     @Override
     protected void executeInternal(JobExecutionContext ctx) throws JobExecutionException {
