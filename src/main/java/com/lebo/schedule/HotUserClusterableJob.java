@@ -1,6 +1,6 @@
 package com.lebo.schedule;
 
-import com.lebo.service.SuggestionsService;
+import com.lebo.service.account.AccountService;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -16,9 +16,9 @@ import java.util.Map;
  * 因为需要被持久化, 不能有用XXService等不能被持久化的成员变量,
  * 只能在每次调度时从QuartzJobBean注入的applicationContext中动态取出.
  */
-public class RecomFollowClusterableJob extends QuartzJobBean {
+public class HotUserClusterableJob extends QuartzJobBean {
 
-    private static Logger logger = LoggerFactory.getLogger(RecomFollowClusterableJob.class);
+    private static Logger logger = LoggerFactory.getLogger(HotUserClusterableJob.class);
 
     private ApplicationContext applicationContext;
 
@@ -34,10 +34,10 @@ public class RecomFollowClusterableJob extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext ctx) throws JobExecutionException {
-        SuggestionsService suggestionsService = applicationContext.getBean(SuggestionsService.class);
+        AccountService accountService = applicationContext.getBean(AccountService.class);
         Map config = (Map) applicationContext.getBean("timerJobConfig");
 
-        suggestionsService.updateHotUsers();
+        accountService.refreshHotUsers();
         String nodeName = (String) config.get("nodeName");
 
         logger.info("hotUsers updated, by quartz cluster job on node {}.", nodeName);

@@ -1,5 +1,7 @@
 package com.lebo.service.account;
 
+import com.lebo.entity.Favorite;
+import com.lebo.entity.HotUser;
 import com.lebo.entity.User;
 import com.lebo.event.AfterUserCreateEvent;
 import com.lebo.event.ApplicationEventBus;
@@ -7,12 +9,19 @@ import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.*;
 import com.lebo.service.param.SearchParam;
+import com.mongodb.BasicDBObject;
+import com.mongodb.CommandResult;
+import com.mongodb.DBObject;
+import com.mongodb.QueryBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,6 +34,7 @@ import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -90,7 +100,7 @@ public class AccountService extends AbstractMongoService {
         return user;
     }
 
-    public User createUser(User user){
+    public User createUser(User user) {
         user.initial();
         user.setCreatedAt(dateProvider.getDate());
         user = saveUser(user);
@@ -205,7 +215,7 @@ public class AccountService extends AbstractMongoService {
     }
 
     //更新粉丝数
-    public void updateFollowersCount(String userId){
+    public void updateFollowersCount(String userId) {
         int count = friendshipService.countFollowers(userId);
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
                 new Update().set(User.FOLLOWERS_COUNT_KEY, count),
@@ -258,5 +268,46 @@ public class AccountService extends AbstractMongoService {
             criteria.and("_id").ne(userId);
         }
         return mongoTemplate.count(new Query(criteria), User.class) == 0;
+    }
+
+    /**
+     * 更新热门用户。
+     * <p/>
+     * 按24小时内收到的红心数排序。
+     */
+    public void refreshHotUsers() {
+        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), -1);
+        String mapFunction = String.format("function(){ emit(this.%s, 1); }", Favorite.POST_USERID_KEY);
+        String reduceFunction = "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }";
+
+        //因为不需要返回结果，所有不用mongoTemplate#mapReduce
+        DBObject dbObject = new BasicDBObject();
+        dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
+        dbObject.put("map", mapFunction);
+        dbObject.put("reduce", reduceFunction);
+        dbObject.put("out", mongoTemplate.getCollectionName(HotUser.class));
+        dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(daysAgo).get());
+        dbObject.put("verbose", true);
+
+        logger.debug("正在刷新热门用户: {}", dbObject);
+
+        CommandResult result = mongoTemplate.executeCommand(dbObject);
+        result.throwOnError();
+
+        logger.debug("完成刷新热门用户，result: {}", result);
+    }
+
+    private static final Sort hotUserSort = new Sort(Sort.Direction.DESC, HotUser.HOT_BE_FAVORITED_COUNT);
+
+    public List<UserDto> getHotUsers(int page, int size) {
+        List<HotUser> hotUsers = mongoTemplate.find(new Query().with(new PageRequest(page, size, hotUserSort)), HotUser.class);
+
+        List<UserDto> dtos = new ArrayList<UserDto>(hotUsers.size());
+        for (HotUser hotUser : hotUsers) {
+            UserDto dto = toUserDto(getUser(hotUser.getId()));
+            dto.setHotBeFavoritedCount(hotUser.getHotBeFavoritedCount());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }

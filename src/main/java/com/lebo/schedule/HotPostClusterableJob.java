@@ -17,8 +17,8 @@ import java.util.Map;
  * Date: 13-8-15
  * Time: PM1:50
  */
-public class HotPostsClusterableJob extends QuartzJobBean {
-    private static Logger logger = LoggerFactory.getLogger(HotPostsClusterableJob.class);
+public class HotPostClusterableJob extends QuartzJobBean {
+    private static Logger logger = LoggerFactory.getLogger(HotPostClusterableJob.class);
 
     private ApplicationContext applicationContext;
 

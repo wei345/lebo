@@ -25,6 +25,7 @@ public class UserDto {
     private Integer beFavoritedCount;
     private Integer viewCount;
     private Integer digestCount;
+    private Integer hotBeFavoritedCount; //仅热门用户列表有此字段
     private Boolean weiboVerified;
     //当前登录用户是否已将该用户加入黑名单
     private Boolean blocking;
@@ -156,5 +157,13 @@ public class UserDto {
 
     public void setDigestCount(Integer digestCount) {
         this.digestCount = digestCount;
+    }
+
+    public Integer getHotBeFavoritedCount() {
+        return hotBeFavoritedCount;
+    }
+
+    public void setHotBeFavoritedCount(Integer hotBeFavoritedCount) {
+        this.hotBeFavoritedCount = hotBeFavoritedCount;
     }
 }

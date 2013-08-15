@@ -2,12 +2,10 @@ package com.lebo.rest;
 
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.service.SuggestionsService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +28,6 @@ import java.util.List;
 public class UserRestController {
     @Autowired
     private AccountService accountService;
-    @Autowired
-    private SuggestionsService suggestionsService;
 
     //TODO 搜索用户，除了名字还查找位置和公司？
     @RequestMapping(value = "search", method = RequestMethod.GET)
@@ -87,7 +83,6 @@ public class UserRestController {
     @ResponseBody
     public Object suggestionsHot(@RequestParam(value = "page", defaultValue = "0") int page,
                                  @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        List<User> users = suggestionsService.getHotUsers(new PageRequest(page, size));
-        return accountService.toUserDtos(users);
+        return accountService.getHotUsers(page, size);
     }
 }

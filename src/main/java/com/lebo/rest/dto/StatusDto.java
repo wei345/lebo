@@ -24,7 +24,7 @@ public class StatusDto {
     private Boolean reposted;
     private Integer commentsCount;
     private Integer viewCount;
-    private Integer hotFavoritesCount;
+    private Integer hotFavoritesCount; //仅热门帖子列表有此字段
     private StatusDto originStatus;
     //最近3条评论
     private List<CommentDto> comments;
