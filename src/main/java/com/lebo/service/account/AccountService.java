@@ -204,6 +204,14 @@ public class AccountService extends AbstractMongoService {
                 User.class);
     }
 
+    //更新粉丝数
+    public void updateFollowersCount(String userId){
+        int count = friendshipService.countFollowers(userId);
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().set(User.FOLLOWERS_COUNT_KEY, count),
+                User.class);
+    }
+
     //增长收藏计数
     public void increaseFavoritesCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
