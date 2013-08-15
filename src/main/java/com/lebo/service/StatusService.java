@@ -70,6 +70,7 @@ public class StatusService extends AbstractMongoService {
     @Autowired
     private ApplicationEventBus eventBus;
 
+    private static final Sort hotPostsSort = new Sort(Sort.Direction.DESC, HotPost.HOT_FAVOURITES_COUNT_KEY);
 
     /**
      * @param userId
@@ -347,8 +348,16 @@ public class StatusService extends AbstractMongoService {
     /**
      * 按2天内收到的红心数(收藏数)排序
      */
-    public List<Post> hotPosts(Integer page, Integer size) {
-        return null;
+    public List<StatusDto> hotPosts(Integer page, Integer size) {
+        List<HotPost> hotPosts = mongoTemplate.find(new Query().with(new PageRequest(page, size, hotPostsSort)), HotPost.class);
+
+        List<StatusDto> dtos = new ArrayList<StatusDto>(hotPosts.size());
+        for (HotPost hotPost : hotPosts) {
+            StatusDto dto = toStatusDto(getPost(hotPost.getId()));
+            dto.setHotFavoritesCount(hotPost.getHotFavoritesCount());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
     public void refreshHotPosts() {

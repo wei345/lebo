@@ -220,8 +220,7 @@ public class StatusRestController {
     @ResponseBody
     public Object hot(@RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        List<Post> posts = statusService.hotPosts(page, size);
-        return statusService.toStatusDtos(posts);
+        return  statusService.hotPosts(page, size);
     }
 
     @RequestMapping(value = "digest", method = RequestMethod.GET)

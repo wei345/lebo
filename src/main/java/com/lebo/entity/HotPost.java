@@ -3,6 +3,7 @@ package com.lebo.entity;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * 热门帖子。
@@ -14,8 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "mr.hotposts")
 public class HotPost extends IdEntity {
     @Indexed(direction = IndexDirection.DESCENDING)
+    @Field("value")
     private Integer hotFavoritesCount;
-    public static final String HOT_FAVOURITES_COUNT_KEY = "hotFavoritesCount";
+    public static final String HOT_FAVOURITES_COUNT_KEY = "value";
 
     public Integer getHotFavoritesCount() {
         return hotFavoritesCount;

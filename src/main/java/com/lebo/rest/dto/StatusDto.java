@@ -24,6 +24,7 @@ public class StatusDto {
     private Boolean reposted;
     private Integer commentsCount;
     private Integer viewCount;
+    private Integer hotFavoritesCount;
     private StatusDto originStatus;
     //最近3条评论
     private List<CommentDto> comments;
@@ -156,6 +157,14 @@ public class StatusDto {
 
     public void setDigest(Boolean digest) {
         this.digest = digest;
+    }
+
+    public Integer getHotFavoritesCount() {
+        return hotFavoritesCount;
+    }
+
+    public void setHotFavoritesCount(Integer hotFavoritesCount) {
+        this.hotFavoritesCount = hotFavoritesCount;
     }
 
     public static class FileInfoDto {
