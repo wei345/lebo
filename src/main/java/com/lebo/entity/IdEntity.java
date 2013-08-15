@@ -14,16 +14,22 @@ import java.io.Serializable;
 @MappedSuperclass
 public abstract class IdEntity implements Serializable {
 
-    protected String id;
-    public static final String ID_KEY = "id";
-
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected String id;
+    public static final String ID_KEY = "_id";
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "IdEntity{" +
+                "id='" + id + '\'' +
+                "} " + super.toString();
     }
 }

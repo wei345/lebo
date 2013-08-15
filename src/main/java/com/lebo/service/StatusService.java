@@ -1,10 +1,7 @@
 package com.lebo.service;
 
 import com.google.common.collect.Lists;
-import com.lebo.entity.Comment;
-import com.lebo.entity.Post;
-import com.lebo.entity.Setting;
-import com.lebo.entity.User;
+import com.lebo.entity.*;
 import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
@@ -17,9 +14,15 @@ import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
 import com.lebo.web.FileServlet;
+import com.mongodb.BasicDBObject;
+import com.mongodb.CommandResult;
+import com.mongodb.DBObject;
+import com.mongodb.QueryBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -43,6 +46,8 @@ import java.util.regex.Pattern;
 @Service
 public class StatusService extends AbstractMongoService {
     public static final int MAX_TEXT_LENGTH = 140;
+
+    private Logger logger = LoggerFactory.getLogger(StatusService.class);
 
     @Autowired
     private FriendshipService friendshipService;
@@ -340,19 +345,32 @@ public class StatusService extends AbstractMongoService {
     }
 
     /**
-     * 按帖子红心数降序排序
+     * 按2天内收到的红心数(收藏数)排序
      */
     public List<Post> hotPosts(Integer page, Integer size) {
-        Query query = new Query();
-        //几天内
-        query.addCriteria(new Criteria(Post.CREATED_AT_KEY)
-                .gte(DateUtils.addDays(new Date(), settingService.getSetting().getHotDays() * -1)));
-        //不含转发贴，因为只有原帖有收藏计数
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
-        //排序 & 分页
-        query.with(new PageRequest(page, size, new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY)));
+        return null;
+    }
 
-        return mongoTemplate.find(query, Post.class);
+    public void refreshHotPosts() {
+        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
+        String mapFunction = String.format("function(){ emit(this.%s, 1); }", Favorite.POST_ID_KEY);
+        String reduceFunction = "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }";
+
+        //因为不需要返回结果，所有不用mongoTemplate#mapReduce
+        DBObject dbObject = new BasicDBObject();
+        dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
+        dbObject.put("map", mapFunction);
+        dbObject.put("reduce", reduceFunction);
+        dbObject.put("out", mongoTemplate.getCollectionName(HotPost.class));
+        dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(daysAgo).get());
+        dbObject.put("verbose", true);
+
+        logger.debug("正在刷新热门帖子: {}", dbObject);
+
+        CommandResult result = mongoTemplate.executeCommand(dbObject);
+        result.throwOnError();
+
+        logger.debug("完成刷新热门帖子，result: {}", result);
     }
 
     private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");

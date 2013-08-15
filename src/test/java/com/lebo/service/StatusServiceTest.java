@@ -2,10 +2,13 @@ package com.lebo.service;
 
 import com.google.common.collect.Maps;
 import com.lebo.SpringContextTestCase;
+import com.lebo.entity.HotPost;
 import com.lebo.entity.Post;
 import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.StatusFilterParam;
 import com.mongodb.gridfs.GridFSFile;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -16,6 +19,7 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 import javax.activation.FileTypeMap;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -146,4 +150,10 @@ public class StatusServiceTest extends SpringContextTestCase {
         assertTrue(statusService.isReposted("51dfd3d21a8855744379891f", statusService.getPost("51df9f8d1a8899de19ebe351")));
         assertFalse(statusService.isReposted("51dfd3d21a8855744379891f", statusService.getPost("51ee22a01a88ab951db570c6")));
     }
+
+    @Test
+    public void refreshHotPosts(){
+        statusService.refreshHotPosts();
+    }
+
 }

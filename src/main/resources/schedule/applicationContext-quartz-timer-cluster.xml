@@ -13,6 +13,7 @@
         <property name="triggers">
             <list>
                 <ref bean="recomFollowTrigger"/>
+                <ref bean="hotPostsTrigger"/>
             </list>
         </property>
         <!--  quartz配置文件路径, 指向cluster配置 -->
@@ -42,5 +43,19 @@
         <property name="jobClass" value="com.lebo.schedule.RecomFollowClusterableJob"/>
     </bean>
     <!-- 更新推荐关注列表 end -->
+
+    <!-- 更新热门帖子列表 begin -->
+    <bean id="hotPostsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="hotPostsJobDetail"/>
+        <!-- 每次执行间隔5分钟 -->
+        <property name="repeatInterval" value="300000"/>
+    </bean>
+
+    <!-- JobDetail, 基于JobDetailBean实例化Job Class,可持久化到数据库实现集群 -->
+    <bean id="hotPostsJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="durability" value="true"/>
+        <property name="jobClass" value="com.lebo.schedule.HotPostsClusterableJob"/>
+    </bean>
+    <!-- 更新热门帖子列表 end -->
 
 </beans>
