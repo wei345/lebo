@@ -164,6 +164,14 @@
         </td>
     </tr>
     <tr>
+        <td>
+            <tags:link url="${ctx}/docs/api/1/post/statuses/unrepost" text="POST statuses/unrepost"/>
+        </td>
+        <td>
+            取消转发视频。
+        </td>
+    </tr>
+    <tr>
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/statuses/destroy" text="POST statuses/destroy"/>
         </td>

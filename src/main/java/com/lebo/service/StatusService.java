@@ -461,9 +461,13 @@ public class StatusService extends AbstractMongoService {
     public Post getRepost(String userId, Post post) {
         String id = (post.getOriginPostId() == null ? post.getId() : post.getOriginPostId());
 
+        return getRepost(userId, id);
+    }
+
+    public Post getRepost(String userId, String postId) {
         Query query = new Query();
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(id));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId));
         return mongoTemplate.findOne(query, Post.class);
     }
 

@@ -164,6 +164,23 @@ public class StatusRestController {
     }
 
     /**
+     * 取消转发Post
+     *
+     * @param id   原始帖ID
+     */
+    @RequestMapping(value = "unrepost", method = RequestMethod.POST)
+    @ResponseBody
+    public Object unrepost(@RequestParam("id") String id) {
+        Post post = statusService.getRepost(accountService.getCurrentUserId(), id);
+
+        if(post != null){
+            statusService.destroyPost(post.getId());
+        }
+
+        return statusService.toBasicStatusDto(post);
+    }
+
+    /**
      * <ul><li>以逗号分隔多个短语</li>
      * <li>一个短语包含一个或多个词，以空格分隔</li>
      * <li>如果Post.terms出现短语中的每个词，则认为匹配该短语，词顺序无关，忽略大小写</li>
