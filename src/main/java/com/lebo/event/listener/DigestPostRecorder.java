@@ -2,8 +2,8 @@ package com.lebo.event.listener;
 
 import com.google.common.eventbus.Subscribe;
 import com.lebo.entity.Post;
-import com.lebo.entity.Setting;
 import com.lebo.entity.User;
+import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.event.BeforePostCreateEvent;
 import com.lebo.service.SettingService;
@@ -31,21 +31,24 @@ public class DigestPostRecorder {
 
     @Subscribe
     public void markDigest(BeforePostCreateEvent event) {
-        Setting setting = settingService.getSetting();
-
         //被特定乐播账号转发，记为精华
-        if (event.getPost().getOriginPostId() != null && event.getPost().getUserId().equals(setting.getOfficialAccountId())) {
+        if (isMarkDigest(event.getPost())) {
             //转发贴和原帖都标记为精华
             event.getPost().setDigest(true);
             mongoTemplate.updateFirst(new Query(new Criteria(Post.ID_KEY).is(event.getPost().getOriginPostId())),
                     new Update().set(Post.DIGEST_KEY, true), Post.class);
-
-            //更新用户精华帖子计数
-            updateUserDigestCount(event.getPost().getOriginPostUserId());
         }
         //其他记为非精华
         else {
             event.getPost().setDigest(false);
+        }
+    }
+
+    @Subscribe
+    public void increaseUserDigestCount(AfterPostCreateEvent event) {
+        if (isMarkDigest(event.getPost())) {
+            //更新用户精华帖子计数
+            updateUserDigestCount(event.getPost().getOriginPostUserId());
         }
     }
 
@@ -67,5 +70,10 @@ public class DigestPostRecorder {
         int digestCount = statusService.countUserDigest(userId);
         mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().set(User.DIGEST_COUNT_KEY, digestCount), User.class);
+    }
+
+    private boolean isMarkDigest(Post post) {
+        return post.getOriginPostId() != null
+                && post.getUserId().equals(settingService.getSetting().getOfficialAccountId());
     }
 }
