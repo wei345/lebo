@@ -238,7 +238,29 @@
             string
         </td>
         <td>
-            用户头像，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
+            用户头像 50x50，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
+        </td>
+    </tr>
+    <tr>
+        <td>
+            profileImageBiggerUrl
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            用户头像 100x100，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
+        </td>
+    </tr>
+    <tr>
+        <td>
+            profileImageOriginalUrl
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            用户头像，原始图片，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
         </td>
     </tr>
     <tr>

@@ -166,7 +166,8 @@ public class UserDto {
     }
 
     public String getProfileImageBiggerUrl() {
-        return profileImageBiggerUrl;
+        //TODO 测试数据不完整，发布时改为 return profileImageBiggerUrl
+        return profileImageBiggerUrl == null ? getProfileImageUrl() : profileImageBiggerUrl;
     }
 
     public void setProfileImageBiggerUrl(String profileImageBiggerUrl) {
@@ -174,7 +175,8 @@ public class UserDto {
     }
 
     public String getProfileImageOriginalUrl() {
-        return profileImageOriginalUrl;
+        //TODO 测试数据不完整，发布时改为 return profileImageOriginalUrl
+        return profileImageOriginalUrl == null ? getProfileImageBiggerUrl() : profileImageOriginalUrl;
     }
 
     public void setProfileImageOriginalUrl(String profileImageOriginalUrl) {
