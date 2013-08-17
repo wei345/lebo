@@ -4,7 +4,7 @@ import com.lebo.entity.User;
 import com.lebo.event.AfterUserLoginEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.jms.ProfileImageMessageProducer;
-import com.lebo.service.GridFsService;
+import com.lebo.service.FileStorageService;
 import com.mongodb.MongoException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -30,7 +30,7 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
     @Autowired
     protected AccountService accountService;
     @Autowired
-    protected GridFsService gridFsService;
+    protected FileStorageService fileStorageService;
     @Autowired
     protected ProfileImageMessageProducer profileImageMessageProducer;
     @Autowired

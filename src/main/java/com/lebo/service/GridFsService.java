@@ -2,9 +2,6 @@ package com.lebo.service;
 
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.param.FileInfo;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
@@ -15,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.stereotype.Service;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
 
@@ -31,8 +27,7 @@ import java.util.List;
  * Date: 13-7-8
  * Time: AM11:28
  */
-@Service
-public class GridFsService extends AbstractMongoService {
+public class GridFsService extends AbstractMongoService implements FileStorageService {
     @Autowired
     private GridFsTemplate gridFsTemplate;
 
@@ -44,7 +39,8 @@ public class GridFsService extends AbstractMongoService {
      * @throws IOException
      * @throws DuplicateException 当文件重复时
      */
-    public String save(InputStream in, String filename, String contentType) throws IOException {
+    @Override
+    public String save(InputStream in, String contentType, long contentLength) throws IOException {
         if (!in.markSupported()) {
             in = new ByteArrayInputStream(IOUtils.toByteArray(in));
         }
@@ -55,7 +51,7 @@ public class GridFsService extends AbstractMongoService {
 
         if (file == null) {
             in.reset();
-            GridFSFile gridFSFile = gridFsTemplate.store(in, filename, contentType);
+            GridFSFile gridFSFile = gridFsTemplate.store(in, "filename", contentType);
             throwOnMongoError();
             increaseReferrerCount(gridFSFile.getId().toString());
             return gridFSFile.getId().toString();
@@ -65,16 +61,19 @@ public class GridFsService extends AbstractMongoService {
         }
     }
 
+    @Override
     public void increaseReferrerCount(String id) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
                 new Update().inc(REFERRER_COUNT_KEY, 1), GRID_FS_FILES_COLLECTION_NAME);
     }
 
+    @Override
     public void decreaseReferrerCount(String id) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
                 new Update().inc(REFERRER_COUNT_KEY, -1), GRID_FS_FILES_COLLECTION_NAME);
     }
 
+    @Override
     public FileInfo getFileInfo(String id) {
         GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
 
@@ -86,32 +85,35 @@ public class GridFsService extends AbstractMongoService {
         fileInfo.setLastModified(file.getUploadDate().getTime());
         fileInfo.setEtag("W/\"" + fileInfo.getLastModified() + "\"");
 
-        fileInfo.setMimeType(file.getContentType());
+        fileInfo.setContentType(file.getContentType());
         return fileInfo;
     }
 
-    public void increaseViewCount(String id) {
+    /*public void increaseViewCount(String id) {
         DBCollection collection = mongoTemplate.getCollection(GRID_FS_FILES_COLLECTION_NAME);
         DBObject q = new BasicDBObject("_id", new ObjectId(id));
         DBObject o = new BasicDBObject("$inc", new BasicDBObject("viewCount", 1));
         collection.update(q, o);
-    }
+    }*/
 
     /**
      * 减少由id参数指定的文件的引用数，如果引用数为0，则删除文件。
      *
      * @param id 文件id
      */
+    @Override
     public void delete(String id) {
         decreaseReferrerCount(id);
         gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id)).and(REFERRER_COUNT_KEY).lte(0)));
     }
 
-    public List<String> saveFilesSafely(List<FileInfo> fileInfos) {
+    @Override
+    public List<String> saveFiles(List<FileInfo> fileInfos) {
         List<String> fileIds = new ArrayList<String>();
         try {
             for (FileInfo fileInfo : fileInfos) {
-                fileIds.add(save(fileInfo.getContent(), fileInfo.getFilename(), fileInfo.getMimeType()));
+                fileIds.add(save(fileInfo.getContent(), fileInfo.getContentType(), fileInfo.getLength()));
+                IOUtils.closeQuietly(fileInfo.getContent());
             }
             return fileIds;
         } catch (Exception e) {
@@ -137,6 +139,7 @@ public class GridFsService extends AbstractMongoService {
         return getContentUrl(fileId, null);
     }
 
+    @Override
     public StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix) {
         GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
 

@@ -2,7 +2,7 @@ package com.lebo.web.setting;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.lebo.entity.Setting;
-import com.lebo.service.GridFsService;
+import com.lebo.service.FileStorageService;
 import com.lebo.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +31,7 @@ public class ChannelController {
     private SettingService settingService;
 
     @Autowired
-    private GridFsService gridFsService;
+    private FileStorageService fileStorageService;
 
     private JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
 
@@ -58,7 +58,7 @@ public class ChannelController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
         try {
-            String fileId = gridFsService.save(image.getInputStream(), image.getOriginalFilename(), image.getContentType());
+            String fileId = fileStorageService.save(image.getInputStream(), image.getContentType(), image.getSize());
             channel.setImage(fileId);
 
             Setting setting = settingService.getSetting();
@@ -99,7 +99,7 @@ public class ChannelController {
         List<String> newImages = Collections3.extractToList(channels, "image");
         for (String fileId : oldImages) {
             if (!newImages.contains(fileId)) {
-                gridFsService.delete(fileId);
+                fileStorageService.delete(fileId);
             }
         }
 

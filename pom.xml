@@ -58,6 +58,14 @@
 
     <!-- 依赖项定义 -->
     <dependencies>
+        <!-- ALIYUN begin -->
+        <dependency>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>aliyun-openservices</artifactId>
+            <version>1.0.12</version>
+        </dependency>
+        <!-- ALIYUN end -->
+
         <!-- IMAGE SCALING begin -->
         <dependency>
             <groupId>com.mortennobel</groupId>

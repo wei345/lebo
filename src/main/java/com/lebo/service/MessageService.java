@@ -17,12 +17,12 @@ import java.util.List;
 public class MessageService extends AbstractMongoService {
 
     @Autowired
-    private GridFsService gridFsService;
+    private FileStorageService fileStorageService;
     @Autowired
     private MessageDao messageDao;
 
     public Message newMessage(String from, String to, String text, List<FileInfo> fileInfos, String source) {
-        List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
+        List<String> fileIds = fileStorageService.saveFiles(fileInfos);
 
         Message message = new Message();
         message.setFrom(from);

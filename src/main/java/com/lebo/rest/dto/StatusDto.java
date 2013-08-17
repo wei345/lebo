@@ -169,7 +169,7 @@ public class StatusDto {
 
     public static class FileInfoDto {
         protected String filename;
-        protected int length;
+        protected long length;
         protected String contentType;
         protected String contentUrl;
 
@@ -181,11 +181,11 @@ public class StatusDto {
             this.filename = filename;
         }
 
-        public int getLength() {
+        public long getLength() {
             return length;
         }
 
-        public void setLength(int length) {
+        public void setLength(long length) {
             this.length = length;
         }
 

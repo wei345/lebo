@@ -8,30 +8,30 @@ import java.io.InputStream;
 public class FileInfo {
     protected InputStream content;
     protected String filename;
-    protected int length;
-    protected String mimeType;
+    protected long length;
+    protected String contentType;
     protected long lastModified;
     protected String etag;
 
     public FileInfo() {
     }
 
-    public FileInfo(InputStream content, String filename, String mimeType) {
+    public FileInfo(InputStream content, String contentType, long contentLength) {
         this.content = content;
-        this.filename = filename;
-        this.mimeType = mimeType;
+        this.length = contentLength;
+        this.contentType = contentType;
     }
 
     public InputStream getContent() {
         return content;
     }
 
-    public int getLength() {
+    public long getLength() {
         return length;
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public String getContentType() {
+        return contentType;
     }
 
     public long getLastModified() {
@@ -47,12 +47,12 @@ public class FileInfo {
     }
 
 
-    public void setLength(int length) {
+    public void setLength(long length) {
         this.length = length;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public void setLastModified(long lastModified) {

@@ -1,6 +1,7 @@
 package com.lebo.web;
 
 import com.lebo.entity.Post;
+import com.lebo.service.FileStorageService;
 import com.lebo.service.GridFsService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
@@ -56,7 +57,7 @@ public class FileServlet extends HttpServlet {
 
     private ApplicationContext applicationContext;
 
-    private GridFsService gridFsService;
+    private FileStorageService fileStorageService;
     private AccountService accountService;
     private StatusService statusService;
 
@@ -71,7 +72,7 @@ public class FileServlet extends HttpServlet {
         //获取请求内容的基本信息.
         FileInfo contentInfo;
         try {
-            contentInfo = gridFsService.getFileInfo(fileId);
+            contentInfo = fileStorageService.getFileInfo(fileId);
         } catch (Exception e) {
             logger.info("从MongoDB读取文件失败 - fileId : " + fileId + " - " + e.getMessage());
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -90,7 +91,7 @@ public class FileServlet extends HttpServlet {
         Servlets.setEtag(response, contentInfo.getEtag());
 
         //设置MIME类型
-        response.setContentType(contentInfo.getMimeType());
+        response.setContentType(contentInfo.getContentType());
 
         //设置弹出下载文件请求窗口的Header
         if (request.getParameter("download") != null) {
@@ -98,7 +99,7 @@ public class FileServlet extends HttpServlet {
         }
 
         boolean needGzip;
-        if (contentInfo.getLength() >= GZIP_MINI_LENGTH && ArrayUtils.contains(GZIP_MIME_TYPES, contentInfo.getMimeType())) {
+        if (contentInfo.getLength() >= GZIP_MINI_LENGTH && ArrayUtils.contains(GZIP_MIME_TYPES, contentInfo.getContentType())) {
             needGzip = true;
         } else {
             needGzip = false;
@@ -111,17 +112,17 @@ public class FileServlet extends HttpServlet {
             output = buildGzipOutputStream(response);
         } else {
             //使用普通outputstream, 设置content-length.
-            response.setContentLength(contentInfo.getLength());
+            response.setContentLength(((Long)contentInfo.getLength()).intValue());
             output = response.getOutputStream();
         }
 
         //高效读取文件内容并输出,然后关闭input file
         IOUtils.copy(contentInfo.getContent(), output);
         output.flush();
+        IOUtils.closeQuietly(contentInfo.getContent());
 
-        gridFsService.increaseViewCount(fileId);
         //增长用户视频被播放次数
-        if (StringUtils.startsWith(contentInfo.getMimeType(), "video/") && postId != null) {
+        if (StringUtils.startsWith(contentInfo.getContentType(), "video/") && postId != null) {
             Post post = statusService.getPost(postId);
             if (post != null && post.getFiles().contains(fileId)) {
                 statusService.increaseViewCount(postId);
@@ -156,7 +157,7 @@ public class FileServlet extends HttpServlet {
     public void init() throws ServletException {
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
-        gridFsService = applicationContext.getBean(GridFsService.class);
+        fileStorageService = applicationContext.getBean(GridFsService.class);
         accountService = applicationContext.getBean(AccountService.class);
         statusService = applicationContext.getBean(StatusService.class);
     }

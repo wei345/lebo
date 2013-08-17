@@ -56,7 +56,7 @@ public class StatusService extends AbstractMongoService {
     @Autowired
     private UserDao userDao;
     @Autowired
-    private GridFsService gridFsService;
+    private FileStorageService fileStorageService;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -81,7 +81,7 @@ public class StatusService extends AbstractMongoService {
      * @throws IOException
      */
     public Post createPost(String userId, String text, List<FileInfo> fileInfos, Post originPost, String source) throws Exception {
-        List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
+        List<String> fileIds = fileStorageService.saveFiles(fileInfos);
 
         Post post = new Post().initial();
         post.setUserId(userId);
@@ -118,7 +118,7 @@ public class StatusService extends AbstractMongoService {
             }
 
             for (String fileId : post.getFiles()) {
-                gridFsService.delete(fileId);
+                fileStorageService.delete(fileId);
             }
 
             postDao.delete(post);
@@ -180,7 +180,7 @@ public class StatusService extends AbstractMongoService {
         if (post.getOriginPostId() == null) {
             List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
             for (String fileId : post.getFiles()) {
-                fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
+                fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
             }
             dto.setFiles(fileInfoDtos);
         }
@@ -207,7 +207,7 @@ public class StatusService extends AbstractMongoService {
             //文件
             List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
             for (String fileId : post.getFiles()) {
-                fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
+                fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
             }
             dto.setFiles(fileInfoDtos);
 

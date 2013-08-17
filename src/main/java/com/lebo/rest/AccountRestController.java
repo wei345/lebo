@@ -2,7 +2,7 @@ package com.lebo.rest;
 
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.service.GridFsService;
+import com.lebo.service.FileStorageService;
 import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.account.ShiroUser;
@@ -31,7 +31,7 @@ public class AccountRestController {
     private AccountService accountService;
 
     @Autowired
-    private GridFsService gridFsService;
+    private FileStorageService fileStorageService;
 
     @RequestMapping(value = "updateProfile", method = RequestMethod.POST)
     @ResponseBody

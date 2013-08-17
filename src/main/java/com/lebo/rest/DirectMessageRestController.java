@@ -57,8 +57,8 @@ public class DirectMessageRestController {
                 if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
                     return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
                 }
-                fileInfos.add(new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()));
-                fileInfos.add(new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
+                fileInfos.add(new FileInfo(video.getInputStream(), video.getContentType(), video.getSize()));
+                fileInfos.add(new FileInfo(image.getInputStream(), image.getContentType(), image.getSize()));
             }
 
             return messageService.newMessage(accountService.getCurrentUserId(), userId, text, fileInfos, source);

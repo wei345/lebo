@@ -40,8 +40,6 @@ public class StatusRestController {
     private StatusService statusService;
     @Autowired
     private AccountService accountService;
-    @Autowired
-    private SettingService settingService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
@@ -54,18 +52,18 @@ public class StatusRestController {
                          @RequestParam(value = "source", required = false) String source) {
         try {
             logger.debug("正在发布新视频:");
-            logger.debug("      video: {}", FileUtils.byteCountToDisplaySize(video.getSize()));
-            logger.debug("      image: {}", FileUtils.byteCountToDisplaySize(image.getSize()));
-            logger.debug("       text: {}", text);
-            logger.debug("     source: {}", source == null ? "无" : source);
+            logger.debug("      video : {}", FileUtils.byteCountToDisplaySize(video.getSize()));
+            logger.debug("      image : {}", FileUtils.byteCountToDisplaySize(image.getSize()));
+            logger.debug("       text : {}", text);
+            logger.debug("     source : {}", source == null ? "无" : source);
 
             if (video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE) {
                 return ErrorDto.badRequest("上传的单个文件不能超过1M");
             }
 
             List<FileInfo> fileInfos = Arrays.asList(
-                    new FileInfo(video.getInputStream(), video.getOriginalFilename(), video.getContentType()),
-                    new FileInfo(image.getInputStream(), image.getOriginalFilename(), image.getContentType()));
+                    new FileInfo(video.getInputStream(), video.getContentType(), video.getSize()),
+                    new FileInfo(image.getInputStream(), image.getContentType(), image.getSize()));
 
             Post post = statusService.createPost(accountService.getCurrentUserId(), text, fileInfos, null, source);
             return statusService.toStatusDto(post);

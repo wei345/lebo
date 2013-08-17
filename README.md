@@ -97,3 +97,13 @@ IDEA对Maven支持良好，选中pom.xml导入。
 ### 代码
 
 * 不格式化/src/main/webapp/static
+
+## 依赖包源码 & JavaDoc
+
+执行以下命令下载源码：
+
+    mvn dependency:sources
+
+阿里云SDK没有源码，执行下面命令下载JavaDoc:
+
+    mvn dependency:resolve -Dclassifier=javadoc -DincludeArtifactIds=aliyun-openservices

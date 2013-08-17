@@ -33,7 +33,7 @@ public class CommentService extends AbstractMongoService {
     @Autowired
     private CommentDao commentDao;
     @Autowired
-    private GridFsService gridFsService;
+    private FileStorageService fileStorageService;
     @Autowired
     private StatusService statusService;
     @Autowired
@@ -46,7 +46,7 @@ public class CommentService extends AbstractMongoService {
      * @throws DuplicateException         当文件重复时
      */
     public Comment create(Comment comment, List<FileInfo> fileInfos) {
-        List<String> fileIds = gridFsService.saveFilesSafely(fileInfos);
+        List<String> fileIds = fileStorageService.saveFiles(fileInfos);
 
         comment.setMentions(statusService.mentionUserIds(comment.getText()));
         comment.setFiles(fileIds);
@@ -54,7 +54,7 @@ public class CommentService extends AbstractMongoService {
         //是否为视频回复
         comment.setHasVideo(false);
         for (FileInfo fileInfo : fileInfos) {
-            if (StringUtils.startsWith(fileInfo.getMimeType(), "video/")) {
+            if (StringUtils.startsWith(fileInfo.getContentType(), "video/")) {
                 comment.setHasVideo(true);
                 break;
             }
@@ -85,7 +85,7 @@ public class CommentService extends AbstractMongoService {
 
         List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
         for (String fileId : comment.getFiles()) {
-            fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, null));
+            fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, null));
         }
         dto.setFiles(fileInfoDtos);
 
@@ -97,7 +97,7 @@ public class CommentService extends AbstractMongoService {
 
         List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
         for (String fileId : comment.getFiles()) {
-            fileInfoDtos.add(gridFsService.getFileInfoDto(fileId, null));
+            fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, null));
         }
         dto.setFiles(fileInfoDtos);
 

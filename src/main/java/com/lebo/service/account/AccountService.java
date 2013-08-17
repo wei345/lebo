@@ -69,7 +69,7 @@ public class AccountService extends AbstractMongoService {
     @Autowired
     private SpyMemcachedClient spyMemcachedClient;
     @Autowired
-    private GridFsService gridFsService;
+    private FileStorageService fileStorageService;
     @Autowired
     private FavoriteService favoriteService;
     @Autowired
@@ -334,9 +334,10 @@ public class AccountService extends AbstractMongoService {
         BufferedImage normal = ImageUtils.resizeImage(User.PROFILE_IMAGE_NORMAL_SIZE, originImage);
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(normal, "png", outputStream);
-        fileId = gridFsService.save(new ByteArrayInputStream(outputStream.toByteArray()), "profileImage-normal.png", "image/png");
+        fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
+                "image/png", outputStream.size());
         if(isMongoId(user.getProfileImageNormal())){
-            gridFsService.delete(user.getProfileImageNormal());
+            fileStorageService.delete(user.getProfileImageNormal());
         }
         user.setProfileImageNormal(fileId);
 
@@ -344,18 +345,20 @@ public class AccountService extends AbstractMongoService {
         BufferedImage bigger = ImageUtils.resizeImage(User.PROFILE_IMAGE_BIGGER_SIZE, originImage);
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(bigger, "png", outputStream);
-        fileId = gridFsService.save(new ByteArrayInputStream(outputStream.toByteArray()), "profileImage-bigger.png", "image/png");
+        fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
+                "image/png", outputStream.size());
         if(isMongoId(user.getProfileImageBigger())){
-            gridFsService.delete(user.getProfileImageBigger());
+            fileStorageService.delete(user.getProfileImageBigger());
         }
         user.setProfileImageBigger(fileId);
 
         //origin size
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(originImage, "png", outputStream);
-        fileId = gridFsService.save(new ByteArrayInputStream(outputStream.toByteArray()), "profileImage-origin.png", "image/png");
+        fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
+                "image/png", outputStream.size());
         if(isMongoId(user.getProfileImageOriginal())){
-            gridFsService.delete(user.getProfileImageOriginal());
+            fileStorageService.delete(user.getProfileImageOriginal());
         }
         user.setProfileImageOriginal(fileId);
 

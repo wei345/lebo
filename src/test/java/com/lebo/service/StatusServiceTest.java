@@ -2,13 +2,10 @@ package com.lebo.service;
 
 import com.google.common.collect.Maps;
 import com.lebo.SpringContextTestCase;
-import com.lebo.entity.HotPost;
 import com.lebo.entity.Post;
 import com.lebo.service.param.FileInfo;
 import com.lebo.service.param.StatusFilterParam;
 import com.mongodb.gridfs.GridFSFile;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -19,7 +16,6 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 import javax.activation.FileTypeMap;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -65,7 +61,7 @@ public class StatusServiceTest extends SpringContextTestCase {
         assertTrue(classPathResource.exists());
 
         String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(classPathResource.getFile());
-        FileInfo fileInfo = new FileInfo(classPathResource.getInputStream(), classPathResource.getFilename(), contentType);
+        FileInfo fileInfo = new FileInfo(classPathResource.getInputStream(), contentType, classPathResource.getFile().length());
         Post post = statusService.createPost("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(fileInfo), null, "test");
 
         assertNotNull(post);
