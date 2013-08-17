@@ -10,7 +10,7 @@ import com.lebo.entity.User;
 public class AfterUserCreateEvent {
     private User user;
 
-    public AfterUserCreateEvent(User user){
+    public AfterUserCreateEvent(User user) {
         this.user = user;
     }
 

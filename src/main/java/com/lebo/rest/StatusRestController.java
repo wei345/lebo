@@ -4,7 +4,6 @@ import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
-import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
@@ -164,14 +163,14 @@ public class StatusRestController {
     /**
      * 取消转发Post
      *
-     * @param id   原始帖ID
+     * @param id 原始帖ID
      */
     @RequestMapping(value = "unrepost", method = RequestMethod.POST)
     @ResponseBody
     public Object unrepost(@RequestParam("id") String id) {
         Post post = statusService.getRepost(accountService.getCurrentUserId(), id);
 
-        if(post != null){
+        if (post != null) {
             statusService.destroyPost(post.getId());
         }
 
@@ -235,7 +234,7 @@ public class StatusRestController {
     @ResponseBody
     public Object hot(@RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        return  statusService.hotPosts(page, size);
+        return statusService.hotPosts(page, size);
     }
 
     @RequestMapping(value = "digest", method = RequestMethod.GET)

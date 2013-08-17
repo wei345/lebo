@@ -53,7 +53,7 @@ public class SettingService extends AbstractMongoService {
     public SettingDto toSettingDto(Setting setting) {
         SettingDto dto = BeanMapper.map(setting, SettingDto.class);
         for (ChannelDto channelDto : dto.getChannels()) {
-            channelDto.setImageUrl(GridFsService.getContentUrl(channelDto.getImage()));
+            channelDto.setImageUrl(FileContentUrlUtils.getContentUrl(channelDto.getImage()));
         }
         return dto;
     }

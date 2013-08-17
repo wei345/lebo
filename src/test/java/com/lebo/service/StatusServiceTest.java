@@ -148,7 +148,7 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void refreshHotPosts(){
+    public void refreshHotPosts() {
         statusService.refreshHotPosts();
     }
 

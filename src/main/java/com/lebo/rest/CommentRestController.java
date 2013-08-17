@@ -50,8 +50,8 @@ public class CommentRestController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseBody
     public Object create(@RequestParam(value = "text") String text,
-            @RequestParam(value = "postId", required = false) String postId,
-            @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
+                         @RequestParam(value = "postId", required = false) String postId,
+                         @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
 
         return createWithMedia(null, null, text, postId, replyCommentId);
     }

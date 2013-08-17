@@ -112,7 +112,7 @@ public class FileServlet extends HttpServlet {
             output = buildGzipOutputStream(response);
         } else {
             //使用普通outputstream, 设置content-length.
-            response.setContentLength(((Long)contentInfo.getLength()).intValue());
+            response.setContentLength(((Long) contentInfo.getLength()).intValue());
             output = response.getOutputStream();
         }
 

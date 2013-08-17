@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author: Wei Liu
@@ -18,7 +19,7 @@ public class IdEntityTest extends SpringContextTestCase {
     private MongoTemplate mongoTemplate;
 
     @Test
-    public void id(){
+    public void id() {
         User user = mongoTemplate.findOne(new Query(new Criteria(IdEntity.ID_KEY).is("51e778ea1a8816dc79e40aaf")), User.class);
         assertEquals("liuwei", user.getScreenName());
     }

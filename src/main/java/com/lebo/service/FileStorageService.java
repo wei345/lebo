@@ -26,4 +26,6 @@ public interface FileStorageService {
     List<String> saveFiles(List<FileInfo> fileInfos);
 
     StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix);
+
+    String getContentUrl(String id, String suffix);
 }

@@ -61,7 +61,7 @@ public class ALiYunStorageService implements FileStorageService {
 
     @Override
     public void increaseReferrerCount(String id) {
-         //什么都不做
+        //什么都不做
     }
 
     @Override
@@ -121,8 +121,9 @@ public class ALiYunStorageService implements FileStorageService {
         return dto;
     }
 
-    private String getContentUrl(String id, String suffix) {
-        if (AbstractMongoService.isMongoId(id)) {
+    @Override
+    public String getContentUrl(String id, String suffix) {
+        if (!StringUtils.startsWithIgnoreCase(id, "http")) {
             String contentUrl = String.format("http://%s.oss.aliyuncs.com/%s", bucketName, id);
             if (StringUtils.isNotBlank(suffix)) {
                 contentUrl += suffix;

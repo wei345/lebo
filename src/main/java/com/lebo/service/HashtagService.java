@@ -91,7 +91,7 @@ public class HashtagService extends AbstractMongoService {
         for (Setting.Channel channel : channels) {
             if (channel.getName().equals(hashtag.getName())) {
                 ChannelDto dto = BeanMapper.map(channel, ChannelDto.class);
-                dto.setImageUrl(GridFsService.getContentUrl(channel.getImage()));
+                dto.setImageUrl(FileContentUrlUtils.getContentUrl(channel.getImage()));
                 return dto;
             }
         }

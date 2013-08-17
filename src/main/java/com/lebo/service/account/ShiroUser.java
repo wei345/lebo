@@ -1,7 +1,7 @@
 package com.lebo.service.account;
 
 import com.google.common.base.Objects;
-import com.lebo.service.GridFsService;
+import com.lebo.service.FileContentUrlUtils;
 
 import java.io.Serializable;
 
@@ -70,7 +70,7 @@ public class ShiroUser implements Serializable {
     }
 
     public String getProfileImageUrl() {
-        return GridFsService.getContentUrl(profileImageUrl);
+        return FileContentUrlUtils.getContentUrl(profileImageUrl);
     }
 
     public String getProvider() {

@@ -22,7 +22,7 @@ public class AutoFollowOfficialAccountListener {
     private SettingService settingService;
 
     @Subscribe
-    public void followOfficialAccount(AfterUserCreateEvent event){
+    public void followOfficialAccount(AfterUserCreateEvent event) {
         friendshipService.follow(event.getUser().getId(), settingService.getSetting().getOfficialAccountId());
     }
 }

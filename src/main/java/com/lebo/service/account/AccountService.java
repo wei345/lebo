@@ -321,7 +321,7 @@ public class AccountService extends AbstractMongoService {
     /**
      * 设置不同大小的用户profileImage。旧图片会被删掉。
      *
-     * @param user 设置新profile image的用户
+     * @param user         设置新profile image的用户
      * @param profileImage InputStream of user's profile image
      * @throws IOException
      */
@@ -336,7 +336,7 @@ public class AccountService extends AbstractMongoService {
         ImageIO.write(normal, "png", outputStream);
         fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
                 "image/png", outputStream.size());
-        if(isMongoId(user.getProfileImageNormal())){
+        if (isMongoId(user.getProfileImageNormal())) {
             fileStorageService.delete(user.getProfileImageNormal());
         }
         user.setProfileImageNormal(fileId);
@@ -347,7 +347,7 @@ public class AccountService extends AbstractMongoService {
         ImageIO.write(bigger, "png", outputStream);
         fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
                 "image/png", outputStream.size());
-        if(isMongoId(user.getProfileImageBigger())){
+        if (isMongoId(user.getProfileImageBigger())) {
             fileStorageService.delete(user.getProfileImageBigger());
         }
         user.setProfileImageBigger(fileId);
@@ -357,7 +357,7 @@ public class AccountService extends AbstractMongoService {
         ImageIO.write(originImage, "png", outputStream);
         fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
                 "image/png", outputStream.size());
-        if(isMongoId(user.getProfileImageOriginal())){
+        if (isMongoId(user.getProfileImageOriginal())) {
             fileStorageService.delete(user.getProfileImageOriginal());
         }
         user.setProfileImageOriginal(fileId);

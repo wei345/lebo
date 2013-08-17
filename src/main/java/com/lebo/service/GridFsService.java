@@ -124,7 +124,8 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
         }
     }
 
-    public static String getContentUrl(String fileId, String suffix) {
+    @Override
+    public String getContentUrl(String fileId, String suffix) {
         if (isMongoId(fileId)) {
             String contentUrl = "/files/" + fileId;
             if (StringUtils.isNotBlank(suffix)) {
@@ -133,10 +134,6 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
             return contentUrl;
         }
         return fileId;
-    }
-
-    public static String getContentUrl(String fileId) {
-        return getContentUrl(fileId, null);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.lebo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lebo.service.GridFsService;
+import com.lebo.service.FileContentUrlUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -299,7 +299,7 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageUrl() {
-        return GridFsService.getContentUrl(profileImageNormal);
+        return FileContentUrlUtils.getContentUrl(profileImageNormal);
     }
 
     public String getProfileImage(){
@@ -311,7 +311,7 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageBiggerUrl() {
-        return GridFsService.getContentUrl(profileImageBigger);
+        return FileContentUrlUtils.getContentUrl(profileImageBigger);
     }
 
     public void setProfileImageBigger(String profileImageBigger) {
@@ -323,7 +323,7 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageOriginalUrl() {
-        return GridFsService.getContentUrl(profileImageOriginal);
+        return FileContentUrlUtils.getContentUrl(profileImageOriginal);
     }
 
     public void setProfileImageOriginal(String profileImageOriginal) {

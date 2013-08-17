@@ -22,7 +22,7 @@ public class StatusesController {
     private StatusService statusService;
 
     @RequestMapping(value = "show", method = RequestMethod.GET)
-    public String show(@RequestParam("id") String id, Model model){
+    public String show(@RequestParam("id") String id, Model model) {
         Post post = statusService.getPost(id);
         model.addAttribute("post", statusService.toBasicStatusDto(post));
         return "statuses/show";
