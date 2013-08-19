@@ -4,7 +4,7 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.MessageService;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.FileInfo;
+import com.lebo.entity.FileInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

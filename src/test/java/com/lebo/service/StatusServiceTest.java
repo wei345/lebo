@@ -3,7 +3,7 @@ package com.lebo.service;
 import com.google.common.collect.Maps;
 import com.lebo.SpringContextTestCase;
 import com.lebo.entity.Post;
-import com.lebo.service.param.FileInfo;
+import com.lebo.entity.FileInfo;
 import com.lebo.service.param.StatusFilterParam;
 import com.mongodb.gridfs.GridFSFile;
 import org.junit.Test;
@@ -62,7 +62,8 @@ public class StatusServiceTest extends SpringContextTestCase {
 
         String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(classPathResource.getFile());
         FileInfo fileInfo = new FileInfo(classPathResource.getInputStream(), contentType, classPathResource.getFile().length());
-        Post post = statusService.createPost("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(fileInfo), null, "test");
+        FileInfo fileInfo1 = new FileInfo(classPathResource.getInputStream(), contentType, classPathResource.getFile().length());
+        Post post = statusService.createPost("51d3221a1a883ebc140f7284", "测试发布视频", Arrays.asList(fileInfo,fileInfo1), null, null);
 
         assertNotNull(post);
     }

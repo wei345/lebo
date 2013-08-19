@@ -13,7 +13,6 @@ import com.lebo.rest.dto.StatusDto;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
-import com.lebo.web.FileServlet;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DBObject;
@@ -81,7 +80,7 @@ public class StatusService extends AbstractMongoService {
      * @throws IOException
      */
     public Post createPost(String userId, String text, List<FileInfo> fileInfos, Post originPost, String source) throws Exception {
-        List<String> fileIds = fileStorageService.saveFiles(fileInfos);
+        fileStorageService.save(fileInfos);
 
         Post post = new Post().initial();
         post.setUserId(userId);
@@ -90,7 +89,7 @@ public class StatusService extends AbstractMongoService {
         post.setText(text);
         post.setUserMentions(mentionUserIds(text));
         post.setHashtags(findHashtags(text, true));
-        post.setFiles(fileIds);
+        post.setFiles(fileInfos);
         post.setSearchTerms(buildSearchTerms(post));
 
         //转发
@@ -117,8 +116,8 @@ public class StatusService extends AbstractMongoService {
                 deleteReposts(id); //Twitter也会删除转发贴
             }
 
-            for (String fileId : post.getFiles()) {
-                fileStorageService.delete(fileId);
+            for (FileInfo fileInfo : post.getFiles()) {
+                fileStorageService.delete(fileInfo.getKey());
             }
 
             postDao.delete(post);
@@ -176,16 +175,8 @@ public class StatusService extends AbstractMongoService {
     public StatusDto toBasicStatusDto(Post post) {
         StatusDto dto = BeanMapper.map(post, StatusDto.class);
 
-        //原帖
-        if (post.getOriginPostId() == null) {
-            List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
-            for (String fileId : post.getFiles()) {
-                fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
-            }
-            dto.setFiles(fileInfoDtos);
-        }
         //转发贴
-        else {
+        if (post.getOriginPostId() != null) {
             Post originPost = postDao.findOne(post.getOriginPostId());
             dto.setOriginStatus(toBasicStatusDto(originPost));
         }
@@ -203,13 +194,6 @@ public class StatusService extends AbstractMongoService {
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post));
             dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
             dto.setCommentsCount(commentService.countPostComments(post.getId()));
-
-            //文件
-            List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
-            for (String fileId : post.getFiles()) {
-                fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, "?" + FileServlet.POST_ID_KEY + "=" + post.getId()));
-            }
-            dto.setFiles(fileInfoDtos);
 
             //前3条评论
             CommentListParam commentListParam = new CommentListParam();

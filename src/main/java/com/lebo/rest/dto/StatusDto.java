@@ -168,18 +168,9 @@ public class StatusDto {
     }
 
     public static class FileInfoDto {
-        protected String filename;
         protected long length;
         protected String contentType;
         protected String contentUrl;
-
-        public String getFilename() {
-            return filename;
-        }
-
-        public void setFilename(String filename) {
-            this.filename = filename;
-        }
 
         public long getLength() {
             return length;

@@ -1,6 +1,7 @@
 package com.lebo.web.setting;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.lebo.entity.FileInfo;
 import com.lebo.entity.Setting;
 import com.lebo.service.FileStorageService;
 import com.lebo.service.SettingService;
@@ -58,7 +59,7 @@ public class ChannelController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
         try {
-            String fileId = fileStorageService.save(image.getInputStream(), image.getContentType(), image.getSize());
+            String fileId = fileStorageService.save(new FileInfo(image.getInputStream(), image.getContentType(), image.getSize()));
             channel.setImage(fileId);
 
             Setting setting = settingService.getSetting();

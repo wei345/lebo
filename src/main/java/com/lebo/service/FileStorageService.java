@@ -1,7 +1,7 @@
 package com.lebo.service;
 
 import com.lebo.rest.dto.StatusDto;
-import com.lebo.service.param.FileInfo;
+import com.lebo.entity.FileInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,17 +13,22 @@ import java.util.List;
  * Time: PM2:52
  */
 public interface FileStorageService {
-    String save(InputStream in, String contentType, long contentLength) throws IOException;
+    /**
+     * 设置FileInfo#id，设置FileInfo#eTag(可选), 关闭FileInfo#content
+     * @param fileInfo
+     * @return id
+     */
+    String save(FileInfo fileInfo);
+
+    List<String> save(List<FileInfo> fileInfos);
 
     void increaseReferrerCount(String id);
 
     void decreaseReferrerCount(String id);
 
-    FileInfo getFileInfo(String id);
+    FileInfo get(String id);
 
     void delete(String id);
-
-    List<String> saveFiles(List<FileInfo> fileInfos);
 
     StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix);
 

@@ -5,8 +5,8 @@ import com.aliyun.openservices.oss.model.CannedAccessControlList;
 import com.aliyun.openservices.oss.model.OSSObject;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.openservices.oss.model.PutObjectResult;
+import com.lebo.entity.FileInfo;
 import com.lebo.rest.dto.StatusDto;
-import com.lebo.service.param.FileInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,23 +40,40 @@ public class ALiYunStorageService implements FileStorageService {
 
     private Logger logger = LoggerFactory.getLogger(ALiYunStorageService.class);
 
-    public String key() {
+    private String id() {
         //用MongoDB规则生成ID
         return new ObjectId().toString();
     }
 
-    @Override
+    /*@Override
     public String save(InputStream content, String contentType, long contentLength) throws IOException {
         long t1 = System.currentTimeMillis();
-        String key = key();
+        String id = id();
 
         ObjectMetadata meta = new ObjectMetadata();
         meta.setContentLength(contentLength);
         meta.setContentType(contentType);
-        PutObjectResult result = client.putObject(bucketName, key, content, meta);
+        client.putObject(bucketName, id, content, meta);
 
-        logger.info("保存文件成功, ETag : {}, {} ms", result.getETag(), (System.currentTimeMillis() - t1));
-        return key;
+        logger.info("保存文件成功, id : {}, {} ms", id, (System.currentTimeMillis() - t1));
+        return id;
+    }*/
+
+    @Override
+    public String save(FileInfo fileInfo) {
+        long t1 = System.currentTimeMillis();
+        String id = id();
+
+        ObjectMetadata meta = new ObjectMetadata();
+        meta.setContentLength(fileInfo.getLength());
+        meta.setContentType(fileInfo.getContentType());
+        PutObjectResult result = client.putObject(bucketName, id, fileInfo.getContent(), meta);
+        IOUtils.closeQuietly(fileInfo.getContent());
+
+        fileInfo.seteTag(result.getETag());
+        fileInfo.setKey(id);
+        logger.info("保存文件成功: {}, {} ms", fileInfo, (System.currentTimeMillis() - t1));
+        return id;
     }
 
     @Override
@@ -72,7 +87,7 @@ public class ALiYunStorageService implements FileStorageService {
     }
 
     @Override
-    public FileInfo getFileInfo(String id) {
+    public FileInfo get(String id) {
         // 获取Object，返回结果为OSSObject对象
         OSSObject object = client.getObject(bucketName, id);
         ObjectMetadata meta = object.getObjectMetadata();
@@ -82,18 +97,17 @@ public class ALiYunStorageService implements FileStorageService {
         fileInfo.setContent(object.getObjectContent());
         fileInfo.setLength(meta.getContentLength());
         fileInfo.setLastModified(meta.getLastModified().getTime());
-        fileInfo.setEtag("W/\"" + fileInfo.getLastModified() + "\"");
+        fileInfo.seteTag("W/\"" + fileInfo.getLastModified() + "\"");
         fileInfo.setContentType(meta.getContentType());
         return fileInfo;
     }
 
     @Override
-    public List<String> saveFiles(List<FileInfo> fileInfos) {
-        List<String> fileIds = new ArrayList<String>();
+    public List<String> save(List<FileInfo> fileInfos) {
+        List<String> fileIds = new ArrayList<String>(fileInfos.size());
         try {
             for (FileInfo fileInfo : fileInfos) {
-                fileIds.add(save(fileInfo.getContent(), fileInfo.getContentType(), fileInfo.getLength()));
-                IOUtils.closeQuietly(fileInfo.getContent());
+                fileIds.add(save(fileInfo));
             }
             return fileIds;
         } catch (Exception e) {
@@ -103,6 +117,7 @@ public class ALiYunStorageService implements FileStorageService {
             throw new ServiceException("存储文件失败", e);
         }
     }
+
 
     @Override
     public void delete(String id) {

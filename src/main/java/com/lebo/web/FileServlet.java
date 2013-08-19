@@ -5,7 +5,7 @@ import com.lebo.service.FileStorageService;
 import com.lebo.service.GridFsService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.FileInfo;
+import com.lebo.entity.FileInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -72,7 +72,7 @@ public class FileServlet extends HttpServlet {
         //获取请求内容的基本信息.
         FileInfo contentInfo;
         try {
-            contentInfo = fileStorageService.getFileInfo(fileId);
+            contentInfo = fileStorageService.get(fileId);
         } catch (Exception e) {
             logger.info("从MongoDB读取文件失败 - fileId : " + fileId + " - " + e.getMessage());
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -81,14 +81,14 @@ public class FileServlet extends HttpServlet {
 
         //根据Etag或ModifiedSince Header判断客户端的缓存文件是否有效, 如仍有效则设置返回码为304,直接返回.
         if (!Servlets.checkIfModifiedSince(request, response, contentInfo.getLastModified())
-                || !Servlets.checkIfNoneMatchEtag(request, response, contentInfo.getEtag())) {
+                || !Servlets.checkIfNoneMatchEtag(request, response, contentInfo.geteTag())) {
             return;
         }
 
         //设置Etag/过期时间
         Servlets.setExpiresHeader(response, Servlets.ONE_YEAR_SECONDS);
         Servlets.setLastModifiedHeader(response, contentInfo.getLastModified());
-        Servlets.setEtag(response, contentInfo.getEtag());
+        Servlets.setEtag(response, contentInfo.geteTag());
 
         //设置MIME类型
         response.setContentType(contentInfo.getContentType());

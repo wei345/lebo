@@ -1,4 +1,8 @@
-package com.lebo.service.param;
+package com.lebo.entity;
+
+import com.lebo.service.FileContentUrlUtils;
+import org.springframework.data.annotation.Transient;
+import org.springframework.util.Assert;
 
 import java.io.InputStream;
 
@@ -6,12 +10,14 @@ import java.io.InputStream;
  * 定义Content的基本信息.
  */
 public class FileInfo {
+    protected String key;
+    @Transient
     protected InputStream content;
     protected String filename;
-    protected long length;
+    protected Long length;
     protected String contentType;
-    protected long lastModified;
-    protected String etag;
+    protected Long lastModified;
+    protected String eTag;
 
     public FileInfo() {
     }
@@ -26,7 +32,8 @@ public class FileInfo {
         return content;
     }
 
-    public long getLength() {
+    public Long getLength() {
+        Assert.notNull(length);
         return length;
     }
 
@@ -38,8 +45,8 @@ public class FileInfo {
         return lastModified;
     }
 
-    public String getEtag() {
-        return etag;
+    public String geteTag() {
+        return eTag;
     }
 
     public void setContent(InputStream content) {
@@ -59,8 +66,8 @@ public class FileInfo {
         this.lastModified = lastModified;
     }
 
-    public void setEtag(String etag) {
-        this.etag = etag;
+    public void seteTag(String eTag) {
+        this.eTag = eTag;
     }
 
     public String getFilename() {
@@ -69,5 +76,30 @@ public class FileInfo {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public String getContentUrl(){
+        return FileContentUrlUtils.getContentUrl(key);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public String toString() {
+        return "FileInfo{" +
+                "id='" + key + '\'' +
+                ", content=" + content +
+                ", filename='" + filename + '\'' +
+                ", length=" + length +
+                ", contentType='" + contentType + '\'' +
+                ", lastModified=" + lastModified +
+                ", eTag='" + eTag + '\'' +
+                "} " + super.toString();
     }
 }

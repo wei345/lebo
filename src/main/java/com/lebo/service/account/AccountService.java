@@ -1,6 +1,7 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.Favorite;
+import com.lebo.entity.FileInfo;
 import com.lebo.entity.HotUser;
 import com.lebo.entity.User;
 import com.lebo.event.AfterUserCreateEvent;
@@ -334,8 +335,8 @@ public class AccountService extends AbstractMongoService {
         BufferedImage normal = ImageUtils.resizeImage(User.PROFILE_IMAGE_NORMAL_SIZE, originImage);
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(normal, "png", outputStream);
-        fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size());
+        fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
+                "image/png", outputStream.size()));
         if (isMongoId(user.getProfileImageNormal())) {
             fileStorageService.delete(user.getProfileImageNormal());
         }
@@ -345,8 +346,8 @@ public class AccountService extends AbstractMongoService {
         BufferedImage bigger = ImageUtils.resizeImage(User.PROFILE_IMAGE_BIGGER_SIZE, originImage);
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(bigger, "png", outputStream);
-        fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size());
+        fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
+                "image/png", outputStream.size()));
         if (isMongoId(user.getProfileImageBigger())) {
             fileStorageService.delete(user.getProfileImageBigger());
         }
@@ -355,8 +356,8 @@ public class AccountService extends AbstractMongoService {
         //origin size
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(originImage, "png", outputStream);
-        fileId = fileStorageService.save(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size());
+        fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
+                "image/png", outputStream.size()));
         if (isMongoId(user.getProfileImageOriginal())) {
             fileStorageService.delete(user.getProfileImageOriginal());
         }

@@ -11,7 +11,7 @@ import com.lebo.rest.dto.StatusDto;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
-import com.lebo.service.param.FileInfo;
+import com.lebo.entity.FileInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -46,7 +46,7 @@ public class CommentService extends AbstractMongoService {
      * @throws DuplicateException         当文件重复时
      */
     public Comment create(Comment comment, List<FileInfo> fileInfos) {
-        List<String> fileIds = fileStorageService.saveFiles(fileInfos);
+        List<String> fileIds = fileStorageService.save(fileInfos);
 
         comment.setMentions(statusService.mentionUserIds(comment.getText()));
         comment.setFiles(fileIds);
@@ -81,25 +81,11 @@ public class CommentService extends AbstractMongoService {
     }
 
     public CommentDto toBasicCommentDto(Comment comment) {
-        CommentDto dto = BeanMapper.map(comment, CommentDto.class);
-
-        List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
-        for (String fileId : comment.getFiles()) {
-            fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, null));
-        }
-        dto.setFiles(fileInfoDtos);
-
-        return dto;
+        return BeanMapper.map(comment, CommentDto.class);
     }
 
     public CommentDto toCommentDto(Comment comment) {
-        CommentDto dto = BeanMapper.map(comment, CommentDto.class);
-
-        List<StatusDto.FileInfoDto> fileInfoDtos = new ArrayList<StatusDto.FileInfoDto>(2);
-        for (String fileId : comment.getFiles()) {
-            fileInfoDtos.add(fileStorageService.getFileInfoDto(fileId, null));
-        }
-        dto.setFiles(fileInfoDtos);
+        CommentDto dto = toBasicCommentDto(comment);
 
         //评论的作者信息
         User user = accountService.getUser(comment.getUserId());

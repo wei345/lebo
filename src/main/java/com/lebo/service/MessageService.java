@@ -2,7 +2,7 @@ package com.lebo.service;
 
 import com.lebo.entity.Message;
 import com.lebo.repository.MessageDao;
-import com.lebo.service.param.FileInfo;
+import com.lebo.entity.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class MessageService extends AbstractMongoService {
     private MessageDao messageDao;
 
     public Message newMessage(String from, String to, String text, List<FileInfo> fileInfos, String source) {
-        List<String> fileIds = fileStorageService.saveFiles(fileInfos);
+        List<String> fileIds = fileStorageService.save(fileInfos);
 
         Message message = new Message();
         message.setFrom(from);

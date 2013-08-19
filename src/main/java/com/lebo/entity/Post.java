@@ -32,7 +32,7 @@ public class Post extends IdEntity {
     private String text;
     private boolean truncated;
     //引用文件id，可以存视频、图片、或其他上传的文件
-    private List<String> files;
+    private List<FileInfo> files;
     //来源，如：手机客户端、网页版
     private String source;
     @GeoSpatialIndexed
@@ -93,12 +93,11 @@ public class Post extends IdEntity {
         this.text = text;
     }
 
-
-    public List<String> getFiles() {
+    public List<FileInfo> getFiles() {
         return files;
     }
 
-    public void setFiles(List<String> files) {
+    public void setFiles(List<FileInfo> files) {
         this.files = files;
     }
 

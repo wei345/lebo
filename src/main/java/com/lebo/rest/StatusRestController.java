@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;

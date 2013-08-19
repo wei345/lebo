@@ -1,7 +1,7 @@
 package com.lebo.service;
 
+import com.lebo.entity.FileInfo;
 import com.lebo.rest.dto.StatusDto;
-import com.lebo.service.param.FileInfo;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
@@ -40,24 +40,37 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
      * @throws DuplicateException 当文件重复时
      */
     @Override
-    public String save(InputStream in, String contentType, long contentLength) throws IOException {
-        if (!in.markSupported()) {
-            in = new ByteArrayInputStream(IOUtils.toByteArray(in));
-        }
+    public String save(FileInfo fileInfo) {
+        InputStream in = null;
+        try {
+            in = fileInfo.getContent();
+            if (!fileInfo.getContent().markSupported()) {
+                in = new ByteArrayInputStream(IOUtils.toByteArray(fileInfo.getContent()));
+                IOUtils.closeQuietly(fileInfo.getContent());
+            }
 
-        in.mark(Integer.MAX_VALUE);
-        String md5 = Encodes.encodeHex(Digests.md5(in));
-        GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where(MD5_KEY).is(md5)));
+            in.mark(Integer.MAX_VALUE);
+            String md5 = Encodes.encodeHex(Digests.md5(in));
+            GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where(MD5_KEY).is(md5)));
 
-        if (file == null) {
-            in.reset();
-            GridFSFile gridFSFile = gridFsTemplate.store(in, "filename", contentType);
-            throwOnMongoError();
-            increaseReferrerCount(gridFSFile.getId().toString());
-            return gridFSFile.getId().toString();
-        } else {
-            increaseReferrerCount(file.getId().toString());
-            return file.getId().toString();
+            if (file == null) {
+                in.reset();
+                GridFSFile gridFSFile = gridFsTemplate.store(in, "filename", fileInfo.getContentType());
+                throwOnMongoError();
+                increaseReferrerCount(gridFSFile.getId().toString());
+                fileInfo.setKey(gridFSFile.getId().toString());
+                return fileInfo.getKey();
+            } else {
+                increaseReferrerCount(file.getId().toString());
+                fileInfo.setKey(file.getId().toString());
+                return fileInfo.getKey();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (in != null) {
+                IOUtils.closeQuietly(in);
+            }
         }
     }
 
@@ -74,7 +87,7 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
     }
 
     @Override
-    public FileInfo getFileInfo(String id) {
+    public FileInfo get(String id) {
         GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
 
         FileInfo fileInfo = new FileInfo();
@@ -83,7 +96,7 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
         fileInfo.setLength((int) file.getLength());
 
         fileInfo.setLastModified(file.getUploadDate().getTime());
-        fileInfo.setEtag("W/\"" + fileInfo.getLastModified() + "\"");
+        fileInfo.seteTag("W/\"" + fileInfo.getLastModified() + "\"");
 
         fileInfo.setContentType(file.getContentType());
         return fileInfo;
@@ -108,12 +121,11 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
     }
 
     @Override
-    public List<String> saveFiles(List<FileInfo> fileInfos) {
+    public List<String> save(List<FileInfo> fileInfos) {
         List<String> fileIds = new ArrayList<String>();
         try {
             for (FileInfo fileInfo : fileInfos) {
-                fileIds.add(save(fileInfo.getContent(), fileInfo.getContentType(), fileInfo.getLength()));
-                IOUtils.closeQuietly(fileInfo.getContent());
+                fileIds.add(save(fileInfo));
             }
             return fileIds;
         } catch (Exception e) {
@@ -144,7 +156,7 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
         dto.setContentType(file.getContentType());
         dto.setContentUrl(getContentUrl(id, contentUrlSuffix));
         dto.setLength((int) file.getLength());
-        dto.setFilename(file.getFilename());
+        dto.seteTag(file.getFilename());
 
         return dto;
     }
