@@ -126,7 +126,7 @@ public class FileServlet extends HttpServlet {
             Post post = statusService.getPost(postId);
             if (post != null && post.getFiles().contains(fileId)) {
                 statusService.increaseViewCount(postId);
-                accountService.increasePlaysCount(post.getUserId());
+                accountService.increaseViewCount(post.getUserId());
             }
         }
     }
