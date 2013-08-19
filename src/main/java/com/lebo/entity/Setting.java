@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import com.lebo.service.FileContentUrlUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -153,6 +154,10 @@ public class Setting extends IdEntity {
 
         public void setViewCount(Integer viewCount) {
             this.viewCount = viewCount;
+        }
+
+        public String getImageUrl(){
+            return FileContentUrlUtils.getContentUrl(getImage());
         }
     }
 }

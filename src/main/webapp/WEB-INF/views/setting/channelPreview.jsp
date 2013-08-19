@@ -1,3 +1,4 @@
+<%@ page import="com.lebo.service.FileContentUrlUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
@@ -29,7 +30,7 @@
                 <td>${channel.name}</td>
                 <td>${channel.title}</td>
                 <td>${channel.description}</td>
-                <td><img class="input-small" src="${ctx}/files/${channel.image}"/></td>
+                <td><img class="input-small" src="${channel.imageUrl}"/></td>
                 <td><span
                         style="background-color: ${channel.backgroundColor}; display: inline-block; width: 1em;">&nbsp;</span>${channel.backgroundColor}
                 </td>
