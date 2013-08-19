@@ -7,7 +7,10 @@ import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.*;
+import com.lebo.service.param.PaginationParam;
+import com.lebo.service.param.SearchParam;
+import com.lebo.service.param.StatusFilterParam;
+import com.lebo.service.param.TimelineParam;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -317,6 +320,18 @@ public class StatusRestController {
     public Object ranking(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
         return statusService.toStatusDtos(statusService.rankingPosts(page, size));
+    }
+
+    /**
+     * 视频播放次数+1
+     */
+    @RequestMapping(value = "increaseViewCountBatch", method = RequestMethod.POST)
+    @ResponseBody
+    public Object increaseViewCount(@RequestParam(value = "postIds") String postIds,
+                                    @RequestParam(value = "userIds") String userIds) {
+        statusService.increaseViewCount(Arrays.asList(postIds.split("\\s*,\\s*")));
+        accountService.increaseViewCount(Arrays.asList(userIds.split("\\s*,\\s*")));
+        return null;
     }
 
 }

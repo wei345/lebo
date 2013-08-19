@@ -455,9 +455,20 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.findOne(query, Post.class);
     }
 
-    //增长浏览数
+    /**
+     * 增长浏览数
+     */
     public void increaseViewCount(String id) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
+                new Update().inc(Post.VIEW_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    /**
+     * 批量增长浏览数
+     */
+    public void increaseViewCount(List<String> ids) {
+        mongoTemplate.updateMulti(new Query(new Criteria("_id").in(ids)),
                 new Update().inc(Post.VIEW_COUNT_KEY, 1),
                 Post.class);
     }

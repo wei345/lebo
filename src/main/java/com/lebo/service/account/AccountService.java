@@ -258,9 +258,20 @@ public class AccountService extends AbstractMongoService {
                 User.class);
     }
 
-    //增长播放计数
+    /**
+     * 增长播放计数
+     */
     public void increaseViewCount(String userId) {
         mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+                new Update().inc(User.VIEW_COUNT_KEY, 1),
+                User.class);
+    }
+
+    /**
+     * 批量增长播放计数
+     */
+    public void increaseViewCount(List<String> userIds) {
+        mongoTemplate.updateMulti(new Query(new Criteria("_id").in(userIds)),
                 new Update().inc(User.VIEW_COUNT_KEY, 1),
                 User.class);
     }

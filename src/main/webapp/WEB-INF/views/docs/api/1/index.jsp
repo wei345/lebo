@@ -181,10 +181,18 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/statuses/show" text="POST statuses/show"/>
+            <tags:link url="${ctx}/docs/api/1/get/statuses/show" text="GET statuses/show"/>
         </td>
         <td>
             返回由id参数指定的单个视频。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/statuses/increaseViewCountBatch" text="POST statuses/increaseViewCountBatch"/>
+        </td>
+        <td>
+            视频播放次数+1。
         </td>
     </tr>
 </table>
