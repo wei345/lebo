@@ -36,6 +36,8 @@ public class ALiYunStorageService implements FileStorageService {
     private String bucketName;
     @Value("${aliyun_oss.endpoint}")
     private String endpoint;
+    @Value("${aliyun_oss.baseurl}")
+    private String baseurl;
     private OSSClient client;
 
     private Logger logger = LoggerFactory.getLogger(ALiYunStorageService.class);
@@ -124,7 +126,7 @@ public class ALiYunStorageService implements FileStorageService {
     @Override
     public String getContentUrl(String id, String suffix) {
         if (!StringUtils.startsWithIgnoreCase(id, "http")) {
-            String contentUrl = String.format("http://%s.oss.aliyuncs.com/%s", bucketName, id);
+            String contentUrl = baseurl + "/" + id;
             if (StringUtils.isNotBlank(suffix)) {
                 contentUrl += suffix;
             }
