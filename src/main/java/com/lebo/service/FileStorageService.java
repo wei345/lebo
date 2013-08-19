@@ -1,10 +1,7 @@
 package com.lebo.service;
 
-import com.lebo.rest.dto.StatusDto;
 import com.lebo.entity.FileInfo;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -15,6 +12,7 @@ import java.util.List;
 public interface FileStorageService {
     /**
      * 设置FileInfo#id，设置FileInfo#eTag(可选), 关闭FileInfo#content
+     *
      * @param fileInfo
      * @return id
      */
@@ -29,8 +27,6 @@ public interface FileStorageService {
     FileInfo get(String id);
 
     void delete(String id);
-
-    StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix);
 
     String getContentUrl(String id, String suffix);
 }

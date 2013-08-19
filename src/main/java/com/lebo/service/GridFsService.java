@@ -147,17 +147,4 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
         }
         return fileId;
     }
-
-    @Override
-    public StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix) {
-        GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
-
-        StatusDto.FileInfoDto dto = new StatusDto.FileInfoDto();
-        dto.setContentType(file.getContentType());
-        dto.setContentUrl(getContentUrl(id, contentUrlSuffix));
-        dto.setLength((int) file.getLength());
-        dto.seteTag(file.getFilename());
-
-        return dto;
-    }
 }

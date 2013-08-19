@@ -126,19 +126,6 @@ public class ALiYunStorageService implements FileStorageService {
     }
 
     @Override
-    public StatusDto.FileInfoDto getFileInfoDto(String id, String contentUrlSuffix) {
-        OSSObject object = client.getObject(bucketName, id);
-        ObjectMetadata meta = object.getObjectMetadata();
-
-        StatusDto.FileInfoDto dto = new StatusDto.FileInfoDto();
-        dto.setContentType(meta.getContentType());
-        dto.setContentUrl(getContentUrl(id, contentUrlSuffix));
-        dto.setLength(meta.getContentLength());
-
-        return dto;
-    }
-
-    @Override
     public String getContentUrl(String id, String suffix) {
         if (!StringUtils.startsWithIgnoreCase(id, "http")) {
             String contentUrl = baseurl + "/" + id;
