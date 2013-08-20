@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<portable-config>
+    <config-file path="WEB-INF/web.xml">
+        <replace xpath="//param-value[@id='spring-profiles-default']">test</replace>
+    </config-file>
+</portable-config>

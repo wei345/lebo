@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<portable-config>
+    <config-file path="WEB-INF/web.xml">
+        <replace xpath="//param-value[@id='spring-profiles-default']">production</replace>
+    </config-file>
+
+    <config-file path="WEB-INF/classes/log4j.properties">
+        <replace key="log4j.rootLogger">WARN, RollingFile</replace>
+    </config-file>
+</portable-config>
