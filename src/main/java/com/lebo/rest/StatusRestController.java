@@ -176,9 +176,10 @@ public class StatusRestController {
 
         if (post != null) {
             statusService.destroyPost(post.getId());
+            return statusService.toBasicStatusDto(post);
         }
 
-        return statusService.toBasicStatusDto(post);
+        return null;
     }
 
     /**
