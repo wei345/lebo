@@ -78,7 +78,7 @@ public class FileInfo {
         this.filename = filename;
     }
 
-    public String getContentUrl(){
+    public String getContentUrl() {
         return FileContentUrlUtils.getContentUrl(key);
     }
 

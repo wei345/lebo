@@ -302,7 +302,7 @@ public class User extends IdEntity {
         return FileContentUrlUtils.getContentUrl(profileImageNormal);
     }
 
-    public String getProfileImage(){
+    public String getProfileImage() {
         return profileImageNormal;
     }
 

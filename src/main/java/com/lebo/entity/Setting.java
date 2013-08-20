@@ -156,7 +156,7 @@ public class Setting extends IdEntity {
             this.viewCount = viewCount;
         }
 
-        public String getImageUrl(){
+        public String getImageUrl() {
             return FileContentUrlUtils.getContentUrl(getImage());
         }
     }

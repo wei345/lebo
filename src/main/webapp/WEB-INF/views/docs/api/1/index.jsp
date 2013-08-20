@@ -189,7 +189,8 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/statuses/increaseViewCountBatch" text="POST statuses/increaseViewCountBatch"/>
+            <tags:link url="${ctx}/docs/api/1/post/statuses/increaseViewCountBatch"
+                       text="POST statuses/increaseViewCountBatch"/>
         </td>
         <td>
             视频播放次数+1。

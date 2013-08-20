@@ -1,8 +1,8 @@
 package com.lebo.service;
 
+import com.lebo.entity.FileInfo;
 import com.lebo.entity.Message;
 import com.lebo.repository.MessageDao;
-import com.lebo.entity.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

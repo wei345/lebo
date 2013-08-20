@@ -6,7 +6,6 @@ import com.aliyun.openservices.oss.model.OSSObject;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.openservices.oss.model.PutObjectResult;
 import com.lebo.entity.FileInfo;
-import com.lebo.rest.dto.StatusDto;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;

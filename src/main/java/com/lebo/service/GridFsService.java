@@ -1,7 +1,6 @@
 package com.lebo.service;
 
 import com.lebo.entity.FileInfo;
-import com.lebo.rest.dto.StatusDto;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
