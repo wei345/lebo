@@ -61,15 +61,16 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
             //响应文本
             if (StringUtils.indexOfAny(response.getContentType(), "json", "text") != -1) {
                 logger.debug("  response body length : {} characters", FileUtils.byteCountToDisplaySize(responseText.length()));
-                if (responseText.length() > 0) {
-                    String trimmed = responseText.trim();
-                    String text = StringUtils.substring(trimmed, 0, maxLoggingContentLength) + (trimmed.length() > maxLoggingContentLength ? "..." : "");
-                    logger.debug("      response content{} : {}", (responseText.equals(text) ? "" : "(trimmed)"), text);
-                }
             }
             //响应二进制
             else {
                 logger.debug("  response body length : {}", FileUtils.byteCountToDisplaySize(responseWrapper.getCopy().length));
+            }
+            //记录响应内容
+            if (responseText.length() > 0) {
+                String trimmed = responseText.trim();
+                String text = StringUtils.substring(trimmed, 0, maxLoggingContentLength) + (trimmed.length() > maxLoggingContentLength ? "..." : "");
+                logger.debug("      response content{} : {}", (responseText.equals(text) ? "" : "(trimmed)"), text);
             }
         }
     }

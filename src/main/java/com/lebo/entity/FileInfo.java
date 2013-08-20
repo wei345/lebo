@@ -10,14 +10,14 @@ import java.io.InputStream;
  * 定义Content的基本信息.
  */
 public class FileInfo {
-    protected String key;
+    private String key;
     @Transient
-    protected InputStream content;
-    protected String filename;
-    protected Long length;
-    protected String contentType;
-    protected Long lastModified;
-    protected String eTag;
+    private InputStream content;
+    private String filename;
+    private Long length;
+    private String contentType;
+    private Long lastModified;
+    private String eTag;
 
     public FileInfo() {
     }
