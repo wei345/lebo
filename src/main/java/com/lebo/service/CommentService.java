@@ -46,10 +46,10 @@ public class CommentService extends AbstractMongoService {
      * @throws DuplicateException         当文件重复时
      */
     public Comment create(Comment comment, List<FileInfo> fileInfos) {
-        List<String> fileIds = fileStorageService.save(fileInfos);
+        fileStorageService.save(fileInfos);
 
+        comment.setFiles(fileInfos);
         comment.setMentions(statusService.mentionUserIds(comment.getText()));
-        comment.setFiles(fileIds);
 
         //是否为视频回复
         comment.setHasVideo(false);

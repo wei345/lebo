@@ -21,7 +21,7 @@ public class Comment extends IdEntity {
     private String text;
     private boolean truncated;
     //引用文件id，可以存视频、图片、或其他上传的文件
-    private List<String> files;
+    private List<FileInfo> files;
     //来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
@@ -79,14 +79,6 @@ public class Comment extends IdEntity {
         this.truncated = truncated;
     }
 
-    public List<String> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<String> files) {
-        this.files = files;
-    }
-
     public String getSource() {
         return source;
     }
@@ -141,5 +133,13 @@ public class Comment extends IdEntity {
 
     public void setReplyCommentUserId(String replyCommentUserId) {
         this.replyCommentUserId = replyCommentUserId;
+    }
+
+    public List<FileInfo> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileInfo> files) {
+        this.files = files;
     }
 }
