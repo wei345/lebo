@@ -11,6 +11,7 @@ import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.SearchParam;
 import com.lebo.service.param.StatusFilterParam;
 import com.lebo.service.param.TimelineParam;
+import com.lebo.web.ControllerUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -65,8 +66,7 @@ public class StatusRestController {
             }
 
             List<FileInfo> fileInfos = Arrays.asList(
-                    new FileInfo(video.getInputStream(), video.getContentType(), video.getSize()),
-                    new FileInfo(image.getInputStream(), image.getContentType(), image.getSize()));
+                    ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image));
 
             Post post = statusService.createPost(accountService.getCurrentUserId(), text, fileInfos, null, source);
             return statusService.toStatusDto(post);

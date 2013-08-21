@@ -6,6 +6,7 @@ import com.aliyun.openservices.oss.model.OSSObject;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.openservices.oss.model.PutObjectResult;
 import com.lebo.entity.FileInfo;
+import com.lebo.util.ContentTypeMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -39,9 +40,15 @@ public class ALiYunStorageService implements FileStorageService {
 
     private Logger logger = LoggerFactory.getLogger(ALiYunStorageService.class);
 
-    private String id() {
-        //用MongoDB规则生成ID
-        return new ObjectId().toString();
+    private String key(FileInfo fileInfo) {
+        String ext = ContentTypeMap.getExtension(fileInfo.getContentType(), fileInfo.getFilename());
+        String key = new ObjectId().toString();
+
+        if(ext != null){
+            key = key + "." + ext;
+        }
+
+        return key;
     }
 
     /*@Override
@@ -61,7 +68,7 @@ public class ALiYunStorageService implements FileStorageService {
     @Override
     public String save(FileInfo fileInfo) {
         long t1 = System.currentTimeMillis();
-        String id = id();
+        String id = key(fileInfo);
 
         ObjectMetadata meta = new ObjectMetadata();
         meta.setContentLength(fileInfo.getLength());

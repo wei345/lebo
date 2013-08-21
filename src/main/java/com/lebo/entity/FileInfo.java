@@ -13,6 +13,7 @@ public class FileInfo {
     private String key;
     @Transient
     private InputStream content;
+    @Transient
     private String filename;
     private Long length;
     private String contentType;
@@ -22,10 +23,11 @@ public class FileInfo {
     public FileInfo() {
     }
 
-    public FileInfo(InputStream content, String contentType, long contentLength) {
+    public FileInfo(InputStream content, String contentType, long contentLength, String filename) {
         this.content = content;
         this.length = contentLength;
         this.contentType = contentType;
+        this.filename = filename;
     }
 
     public InputStream getContent() {

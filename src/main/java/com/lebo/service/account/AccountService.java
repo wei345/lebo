@@ -347,7 +347,7 @@ public class AccountService extends AbstractMongoService {
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(normal, "png", outputStream);
         fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size()));
+                "image/png", outputStream.size(), "profile_image_normal.png"));
         if (isMongoId(user.getProfileImageNormal())) {
             fileStorageService.delete(user.getProfileImageNormal());
         }
@@ -358,7 +358,7 @@ public class AccountService extends AbstractMongoService {
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(bigger, "png", outputStream);
         fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size()));
+                "image/png", outputStream.size(), "profile_image_bigger.png"));
         if (isMongoId(user.getProfileImageBigger())) {
             fileStorageService.delete(user.getProfileImageBigger());
         }
@@ -368,7 +368,7 @@ public class AccountService extends AbstractMongoService {
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(originImage, "png", outputStream);
         fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size()));
+                "image/png", outputStream.size(), "profile_image_origin.png"));
         if (isMongoId(user.getProfileImageOriginal())) {
             fileStorageService.delete(user.getProfileImageOriginal());
         }

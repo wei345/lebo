@@ -5,6 +5,7 @@ import com.lebo.entity.FileInfo;
 import com.lebo.entity.Setting;
 import com.lebo.service.FileStorageService;
 import com.lebo.service.SettingService;
+import com.lebo.web.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,7 +60,7 @@ public class ChannelController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
         try {
-            String fileId = fileStorageService.save(new FileInfo(image.getInputStream(), image.getContentType(), image.getSize()));
+            String fileId = fileStorageService.save(ControllerUtils.getFileInfo(image));
             channel.setImage(fileId);
 
             Setting setting = settingService.getSetting();

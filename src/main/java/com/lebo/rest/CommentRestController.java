@@ -9,6 +9,7 @@ import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
+import com.lebo.web.ControllerUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,8 +106,8 @@ public class CommentRestController {
                 if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
                     return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
                 }
-                fileInfos.add(new FileInfo(video.getInputStream(), video.getContentType(), video.getSize()));
-                fileInfos.add(new FileInfo(image.getInputStream(), image.getContentType(), image.getSize()));
+                fileInfos.add(ControllerUtils.getFileInfo(video));
+                fileInfos.add(ControllerUtils.getFileInfo(image));
             }
 
             comment.setUserId(accountService.getCurrentUserId());
