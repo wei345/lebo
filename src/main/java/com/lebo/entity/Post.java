@@ -18,7 +18,6 @@ import java.util.List;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "post_unique", def = "{'userId': 1, 'text': 1, 'files': 1, 'originPostId': 1}", unique = true),
         @CompoundIndex(name = "uid_1_opuid_1", def = "{'userId': 1, 'originPostUserId': 1}"),
         @CompoundIndex(name = "uid_1_opid_1", def = "{'userId': 1, 'originPostId': 1}")
 })
