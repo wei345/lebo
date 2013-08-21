@@ -16,6 +16,8 @@ public class StatusDto {
     private String text;
     //引用文件id，可以存视频、图片、或其他上传的文件
     private List<FileInfoDto> files = new ArrayList<FileInfoDto>(2);
+    private FileInfoDto video;
+    private String videoFirstFrameUrl;
     //该Tweet来源，如：手机客户端、网页版
     private String source;
     private Boolean favorited;
@@ -167,33 +169,19 @@ public class StatusDto {
         this.hotFavoritesCount = hotFavoritesCount;
     }
 
-    public static class FileInfoDto {
-        protected long length;
-        protected String contentType;
-        protected String contentUrl;
+    public FileInfoDto getVideo() {
+        return video;
+    }
 
-        public long getLength() {
-            return length;
-        }
+    public void setVideo(FileInfoDto video) {
+        this.video = video;
+    }
 
-        public void setLength(long length) {
-            this.length = length;
-        }
+    public String getVideoFirstFrameUrl() {
+        return videoFirstFrameUrl;
+    }
 
-        public String getContentType() {
-            return contentType;
-        }
-
-        public void setContentType(String contentType) {
-            this.contentType = contentType;
-        }
-
-        public String getContentUrl() {
-            return contentUrl;
-        }
-
-        public void setContentUrl(String contentUrl) {
-            this.contentUrl = contentUrl;
-        }
+    public void setVideoFirstFrameUrl(String videoFirstFrameUrl) {
+        this.videoFirstFrameUrl = videoFirstFrameUrl;
     }
 }

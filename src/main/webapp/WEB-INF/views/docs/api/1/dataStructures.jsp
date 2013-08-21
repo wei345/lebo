@@ -57,13 +57,35 @@
     </tr>
     <tr>
         <td>
-            files
+            files (已弃用)
         </td>
         <td>
             array
         </td>
         <td>
             第1个是视频，第2个是图片
+        </td>
+    </tr>
+    <tr>
+        <td>
+            video
+        </td>
+        <td>
+            object
+        </td>
+        <td>
+            视频
+        </td>
+    </tr>
+    <tr>
+        <td>
+            videoFirstFrameUrl
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            视频第一帧图片url
         </td>
     </tr>
     <tr>
@@ -110,7 +132,6 @@
             收藏数
         </td>
     </tr>
-
     <tr>
         <td>
             repostsCount

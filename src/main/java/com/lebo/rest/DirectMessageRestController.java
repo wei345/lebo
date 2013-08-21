@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import com.lebo.entity.FileInfo;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.MessageService;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 非公开、用户之间的消息。相互关注才能发私信。
@@ -53,16 +49,14 @@ public class DirectMessageRestController {
 
             userId = accountService.getUserId(userId, screenName);
 
-            List<FileInfo> fileInfos = new ArrayList<FileInfo>();
             if (video != null && image != null) {
                 if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
                     return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
                 }
-                fileInfos.add(ControllerUtils.getFileInfo(video));
-                fileInfos.add(ControllerUtils.getFileInfo(image));
             }
 
-            return messageService.newMessage(accountService.getCurrentUserId(), userId, text, fileInfos, source);
+            return messageService.newMessage(accountService.getCurrentUserId(), userId, text,
+                    ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image), source);
 
         } catch (DuplicateException e) {
             return ErrorDto.duplicate();

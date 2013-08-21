@@ -3,6 +3,7 @@ package com.lebo.entity;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,7 +22,10 @@ public class Message extends IdEntity {
     @Indexed
     private String to;
     private String text;
-    private List<String> files;
+    //视频(mp4)
+    private FileInfo video;
+    //视频第一帧(图片)
+    private FileInfo videoFirstFrame;
     private Date createdAt;
     //来源，如：手机客户端、网页版
     private String source;
@@ -51,14 +55,6 @@ public class Message extends IdEntity {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public List<String> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<String> files) {
-        this.files = files;
     }
 
     public Date getCreatedAt() {
@@ -91,5 +87,32 @@ public class Message extends IdEntity {
 
     public void setSearchTerms(LinkedHashSet<String> searchTerms) {
         this.searchTerms = searchTerms;
+    }
+
+    public List<FileInfo> getFiles(){
+        List<FileInfo> fileInfos = new ArrayList<FileInfo>(2);
+        if(video != null){
+            fileInfos.add(video);
+        }
+        if(videoFirstFrame != null){
+            fileInfos.add(videoFirstFrame);
+        }
+        return fileInfos;
+    }
+
+    public FileInfo getVideo() {
+        return video;
+    }
+
+    public void setVideo(FileInfo video) {
+        this.video = video;
+    }
+
+    public FileInfo getVideoFirstFrame() {
+        return videoFirstFrame;
+    }
+
+    public void setVideoFirstFrame(FileInfo videoFirstFrame) {
+        this.videoFirstFrame = videoFirstFrame;
     }
 }

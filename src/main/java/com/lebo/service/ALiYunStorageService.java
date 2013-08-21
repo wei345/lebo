@@ -109,8 +109,8 @@ public class ALiYunStorageService implements FileStorageService {
     }
 
     @Override
-    public List<String> save(List<FileInfo> fileInfos) {
-        List<String> fileIds = new ArrayList<String>(fileInfos.size());
+    public List<String> save(FileInfo... fileInfos) {
+        List<String> fileIds = new ArrayList<String>(fileInfos.length);
         try {
             for (FileInfo fileInfo : fileInfos) {
                 fileIds.add(save(fileInfo));

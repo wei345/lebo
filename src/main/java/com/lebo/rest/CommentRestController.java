@@ -1,7 +1,6 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Comment;
-import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.CommentService;
@@ -10,6 +9,7 @@ import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
 import com.lebo.web.ControllerUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 评论接口。
@@ -68,6 +66,13 @@ public class CommentRestController {
                                   @RequestParam(value = "postId", required = false) String postId,
                                   @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
         try {
+            logger.debug("正在发布新评论:");
+            logger.debug("           video : {}", FileUtils.byteCountToDisplaySize(video.getSize()));
+            logger.debug("           image : {}", FileUtils.byteCountToDisplaySize(image.getSize()));
+            logger.debug("            text : {}", text);
+            logger.debug("          postId : {}", postId);
+            logger.debug("  replyCommentId : {}", replyCommentId);
+
             if (StringUtils.isBlank(postId) && StringUtils.isBlank(replyCommentId)) {
                 return ErrorDto.badRequest("参数postId和replyCommentId不能都为空");
             }
@@ -100,21 +105,15 @@ public class CommentRestController {
                 }
             }
 
-            //文件
-            List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-            if (video != null && image != null) {
-                if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
-                    return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
-                }
-                fileInfos.add(ControllerUtils.getFileInfo(video));
-                fileInfos.add(ControllerUtils.getFileInfo(image));
+            //文件大小限制
+            if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
+                return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
             }
 
             comment.setUserId(accountService.getCurrentUserId());
             comment.setText(text);
-            comment.setCreatedAt(new Date());
 
-            comment = commentService.create(comment, fileInfos);
+            comment = commentService.create(comment, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image));
             return commentService.toCommentDto(comment);
 
         } catch (DuplicateException e) {

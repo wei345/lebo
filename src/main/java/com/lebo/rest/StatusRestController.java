@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
@@ -27,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -65,10 +63,9 @@ public class StatusRestController {
                 return ErrorDto.badRequest("上传的单个文件不能超过1M");
             }
 
-            List<FileInfo> fileInfos = Arrays.asList(
-                    ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image));
+            Post post = statusService.createPost(accountService.getCurrentUserId(), text, ControllerUtils.getFileInfo(video),
+                    ControllerUtils.getFileInfo(image), null, source);
 
-            Post post = statusService.createPost(accountService.getCurrentUserId(), text, fileInfos, null, source);
             return statusService.toStatusDto(post);
 
         } catch (DuplicateException e) {
@@ -154,7 +151,7 @@ public class StatusRestController {
             //转发
             Post post = statusService.getRepost(accountService.getCurrentUserId(), originPost);
             if (post == null) {
-                post = statusService.createPost(accountService.getCurrentUserId(), text, Collections.EMPTY_LIST, originPost, source);
+                post = statusService.createPost(accountService.getCurrentUserId(), text, null, null, originPost, source);
             }
             return statusService.toStatusDto(post);
 

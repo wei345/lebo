@@ -18,7 +18,7 @@ public interface FileStorageService {
      */
     String save(FileInfo fileInfo);
 
-    List<String> save(List<FileInfo> fileInfos);
+    List<String> save(FileInfo... fileInfos);
 
     void increaseReferrerCount(String id);
 

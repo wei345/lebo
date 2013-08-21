@@ -13,7 +13,9 @@ public class CommentDto {
     private String postId;
     private Date createdAt;
     private String text;
-    private List<StatusDto.FileInfoDto> files;
+    private List<FileInfoDto> files;
+    private FileInfoDto video;
+    private String videoFirstFrameUrl;
     private Boolean hasVideo;
     private UserDto user;
     private String replyCommentId;
@@ -35,11 +37,11 @@ public class CommentDto {
         this.text = text;
     }
 
-    public List<StatusDto.FileInfoDto> getFiles() {
+    public List<FileInfoDto> getFiles() {
         return files;
     }
 
-    public void setFiles(List<StatusDto.FileInfoDto> files) {
+    public void setFiles(List<FileInfoDto> files) {
         this.files = files;
     }
 
@@ -89,5 +91,21 @@ public class CommentDto {
 
     public void setPostId(String postId) {
         this.postId = postId;
+    }
+
+    public FileInfoDto getVideo() {
+        return video;
+    }
+
+    public void setVideo(FileInfoDto video) {
+        this.video = video;
+    }
+
+    public String getVideoFirstFrameUrl() {
+        return videoFirstFrameUrl;
+    }
+
+    public void setVideoFirstFrameUrl(String videoFirstFrameUrl) {
+        this.videoFirstFrameUrl = videoFirstFrameUrl;
     }
 }

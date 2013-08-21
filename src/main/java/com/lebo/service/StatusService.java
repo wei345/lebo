@@ -74,14 +74,13 @@ public class StatusService extends AbstractMongoService {
     /**
      * @param userId
      * @param text
-     * @param fileInfos
+     * @param video
+     * @param videoFirstFrame 视频第一帧
      * @param originPost 若是转发，为原Post ID，否则为null
      * @return
      * @throws IOException
      */
-    public Post createPost(String userId, String text, List<FileInfo> fileInfos, Post originPost, String source) throws Exception {
-        fileStorageService.save(fileInfos);
-
+    public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source) throws Exception {
         Post post = new Post().initial();
         post.setUserId(userId);
         post.setCreatedAt(new Date());
@@ -89,11 +88,16 @@ public class StatusService extends AbstractMongoService {
         post.setText(text);
         post.setUserMentions(mentionUserIds(text));
         post.setHashtags(findHashtags(text, true));
-        post.setFiles(fileInfos);
         post.setSearchTerms(buildSearchTerms(post));
 
-        //转发
-        if (originPost != null) {
+        //原始贴
+        if (originPost == null) {
+            fileStorageService.save(video, videoFirstFrame);
+            post.setVideo(video);
+            post.setVideoFirstFrame(videoFirstFrame);
+        }
+        //转发贴
+        else{
             post.setOriginPostId(originPost.getId());
             post.setOriginPostUserId(originPost.getUserId());
         }

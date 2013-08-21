@@ -3,6 +3,7 @@ package com.lebo.entity;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,8 +21,10 @@ public class Comment extends IdEntity {
     private Date createdAt;
     private String text;
     private boolean truncated;
-    //引用文件id，可以存视频、图片、或其他上传的文件
-    private List<FileInfo> files;
+    //视频(mp4)
+    private FileInfo video;
+    //视频第一帧(图片)
+    private FileInfo videoFirstFrame;
     //来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
@@ -135,11 +138,37 @@ public class Comment extends IdEntity {
         this.replyCommentUserId = replyCommentUserId;
     }
 
-    public List<FileInfo> getFiles() {
-        return files;
+    public List<FileInfo> getFiles(){
+        List<FileInfo> fileInfos = new ArrayList<FileInfo>(2);
+        if(video != null){
+            fileInfos.add(video);
+        }
+        if(videoFirstFrame != null){
+            fileInfos.add(videoFirstFrame);
+        }
+        return fileInfos;
     }
 
-    public void setFiles(List<FileInfo> files) {
-        this.files = files;
+    public FileInfo getVideo() {
+        return video;
+    }
+
+    public void setVideo(FileInfo video) {
+        this.video = video;
+    }
+
+    public FileInfo getVideoFirstFrame() {
+        return videoFirstFrame;
+    }
+
+    public void setVideoFirstFrame(FileInfo videoFirstFrame) {
+        this.videoFirstFrame = videoFirstFrame;
+    }
+
+    public String getVideoFirstFrameUrl(){
+        if(videoFirstFrame == null){
+            return null;
+        }
+        return videoFirstFrame.getContentUrl();
     }
 }

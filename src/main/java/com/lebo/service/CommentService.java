@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,20 +45,16 @@ public class CommentService extends AbstractMongoService {
      * @throws com.mongodb.MongoException 当存储数据失败时
      * @throws DuplicateException         当文件重复时
      */
-    public Comment create(Comment comment, List<FileInfo> fileInfos) {
-        fileStorageService.save(fileInfos);
+    public Comment create(Comment comment, FileInfo video, FileInfo videoFirstFrame) {
+        fileStorageService.save(video, videoFirstFrame);
 
-        comment.setFiles(fileInfos);
+        comment.setVideo(video);
+        comment.setVideoFirstFrame(videoFirstFrame);
         comment.setMentions(statusService.mentionUserIds(comment.getText()));
+        comment.setCreatedAt(new Date());
 
         //是否为视频回复
-        comment.setHasVideo(false);
-        for (FileInfo fileInfo : fileInfos) {
-            if (StringUtils.startsWith(fileInfo.getContentType(), "video/")) {
-                comment.setHasVideo(true);
-                break;
-            }
-        }
+        comment.setHasVideo(video != null);
 
         comment = commentDao.save(comment);
         throwOnMongoError();
