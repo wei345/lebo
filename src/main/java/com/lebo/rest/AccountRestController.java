@@ -9,6 +9,7 @@ import com.lebo.service.account.ShiroUser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,9 +30,6 @@ public class AccountRestController {
 
     @Autowired
     private AccountService accountService;
-
-    @Autowired
-    private FileStorageService fileStorageService;
 
     @RequestMapping(value = "updateProfile", method = RequestMethod.POST)
     @ResponseBody
@@ -55,7 +53,7 @@ public class AccountRestController {
             try {
                 accountService.saveUserWithProfileImage(user, image.getInputStream());
             } catch (IOException e) {
-                return ErrorDto.badRequest(new ServiceException("更新用户失败", e).getMessage());
+                return ErrorDto.badRequest(NestedExceptionUtils.buildMessage("更新用户失败", e));
             }
         } else {
             accountService.saveUser(user);
