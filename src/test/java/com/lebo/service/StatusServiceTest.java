@@ -153,4 +153,11 @@ public class StatusServiceTest extends SpringContextTestCase {
         statusService.refreshHotPosts();
     }
 
+    @Test
+    public void split() {
+        assertTrue("aa,bb,".split("\\s*,\\s*").length == 2);
+        assertTrue("aa,bb,".split(",").length == 2);
+        assertEquals("[aa, bb]", Arrays.asList("aa,bb,".split("\\s*,\\s*")).toString());
+    }
+
 }
