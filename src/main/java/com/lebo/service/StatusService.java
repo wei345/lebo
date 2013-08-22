@@ -495,6 +495,7 @@ public class StatusService extends AbstractMongoService {
     //TODO 精简代码
     //(follow || track) && page
     public List<Post> getChannelPosts(String name, PaginationParam paginationParam) {
+        //-- 解析follow和track begin --//
         //查找配置中的channel
         Setting.Channel channel = null;
         List<Setting.Channel> channels = settingService.getSetting().getChannels();
@@ -510,13 +511,16 @@ public class StatusService extends AbstractMongoService {
         //未配置的频道，返回含有hashtag的内容
         if (channel == null) {
             track = "#" + name + "#";
-            //配置过的频道
-        } else {
+        }
+        //配置过的频道
+        else {
             follow = channel.getFollow();
             track = channel.getTrack();
         }
 
         List<Criteria> criteriaList = new ArrayList<Criteria>(5);
+
+        //解析follow条件
         Criteria followCriteria = null;
         if (StringUtils.isNotBlank(follow)) {
             String[] userIds = follow.split("\\s*,\\s*");
@@ -524,6 +528,7 @@ public class StatusService extends AbstractMongoService {
             followCriteria = new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds));
         }
 
+        //解析track条件
         Criteria trackCriteria = null;
         if (StringUtils.isNotBlank(track)) {
             String[] phrases = track.split("\\s*,\\s*");
@@ -546,9 +551,11 @@ public class StatusService extends AbstractMongoService {
             }
         }
 
+        //follow + track --> 查询条件，or关系
         if (followCriteria != null && trackCriteria != null) {
             criteriaList.add(orOperator(Arrays.asList(followCriteria, trackCriteria)));
-        } else {
+        }
+        else {
             if (followCriteria != null) {
                 criteriaList.add(followCriteria);
             }
@@ -556,6 +563,10 @@ public class StatusService extends AbstractMongoService {
                 criteriaList.add(trackCriteria);
             }
         }
+        //-- 解析follow和track end --//
+
+        //频道不含转发贴
+        criteriaList.add(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
 
         //分页
         if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
@@ -565,14 +576,15 @@ public class StatusService extends AbstractMongoService {
             criteriaList.add(new Criteria("_id").gt(new ObjectId(paginationParam.getSinceId())));
         }
 
+        //各条件间是and关系
         Criteria queryCriteria = null;
         if (criteriaList.size() > 1) {
-            //各条件间是and关系
             queryCriteria = andOperator(criteriaList);
         } else if (criteriaList.size() == 1) {
             queryCriteria = criteriaList.get(0);
         }
 
+        //根据条件执行查询
         Query query = new Query();
         if (queryCriteria != null) {
             query.addCriteria(queryCriteria);
