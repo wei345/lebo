@@ -46,15 +46,18 @@ public class CommentService extends AbstractMongoService {
      * @throws DuplicateException         当文件重复时
      */
     public Comment create(Comment comment, FileInfo video, FileInfo videoFirstFrame) {
-        fileStorageService.save(video, videoFirstFrame);
+        comment.setHasVideo(false);
 
-        comment.setVideo(video);
-        comment.setVideoFirstFrame(videoFirstFrame);
+        //视频评论
+        if(video != null && videoFirstFrame != null){
+            fileStorageService.save(video, videoFirstFrame);
+            comment.setVideo(video);
+            comment.setVideoFirstFrame(videoFirstFrame);
+            comment.setHasVideo(true);
+        }
+
         comment.setMentions(statusService.mentionUserIds(comment.getText()));
         comment.setCreatedAt(new Date());
-
-        //是否为视频回复
-        comment.setHasVideo(video != null);
 
         comment = commentDao.save(comment);
         throwOnMongoError();

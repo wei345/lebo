@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 /**
  * 评论接口。
@@ -46,13 +45,63 @@ public class CommentRestController {
     /**
      * 文字评论
      */
+    //TODO 优化代码，视频评论和文字评论大部分重复
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseBody
     public Object create(@RequestParam(value = "text") String text,
                          @RequestParam(value = "postId", required = false) String postId,
                          @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
 
-        return createWithMedia(null, null, text, postId, replyCommentId);
+        try {
+            logger.debug("正在发布文字评论:");
+            logger.debug("            text : {}", text);
+            logger.debug("          postId : {}", postId);
+            logger.debug("  replyCommentId : {}", replyCommentId);
+
+            if (StringUtils.isBlank(postId) && StringUtils.isBlank(replyCommentId)) {
+                return ErrorDto.badRequest("参数postId和replyCommentId不能都为空");
+            }
+
+            Comment comment = new Comment();
+
+            //回复Comment
+            if (StringUtils.isNotBlank(replyCommentId)) {
+                Comment replyComment = commentService.getComment(replyCommentId);
+                if (replyComment == null) {
+                    return ErrorDto.badRequest(String.format("replyCommentId[%s]无效", replyCommentId));
+                }
+                comment.setReplyCommentId(replyCommentId);
+                comment.setReplyCommentUserId(replyComment.getUserId());
+                comment.setPostId(replyComment.getPostId());
+                //TODO 存被回复者screenName以提高性能
+            }
+            //回复Post
+            else {
+                Post post = statusService.getPost(postId);
+
+                if (post == null) {
+                    return ErrorDto.badRequest(String.format("postId[%s]不存在", postId));
+                }
+
+                if (post.getOriginPostId() == null) {
+                    comment.setPostId(postId);
+                } else {
+                    comment.setPostId(post.getOriginPostId());
+                }
+            }
+
+            comment.setUserId(accountService.getCurrentUserId());
+            comment.setText(text);
+
+            comment = commentService.create(comment, null, null);
+            return commentService.toCommentDto(comment);
+
+        } catch (DuplicateException e) {
+            return ErrorDto.duplicate();
+        } catch (Exception e) {
+            logger.info("发布评论失败", e);
+            return ErrorDto.internalServerError(e.getMessage());
+        }
     }
 
     /**
@@ -66,7 +115,7 @@ public class CommentRestController {
                                   @RequestParam(value = "postId", required = false) String postId,
                                   @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
         try {
-            logger.debug("正在发布新评论:");
+            logger.debug("正在发布视频评论:");
             logger.debug("           video : {}", FileUtils.byteCountToDisplaySize(video.getSize()));
             logger.debug("           image : {}", FileUtils.byteCountToDisplaySize(image.getSize()));
             logger.debug("            text : {}", text);
