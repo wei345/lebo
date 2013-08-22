@@ -1,7 +1,10 @@
 package com.lebo.rest;
 
+import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AbstractShiroLogin;
+import com.lebo.service.account.AccountService;
+import com.lebo.service.account.ShiroUser;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -27,6 +30,8 @@ public class HomeRestController {
 
     @Autowired
     private ServletContext context;
+    @Autowired
+    private AccountService accountService;
 
     //TODO 可通过grant登录
     @RequestMapping(value = "1/oauthLogin", method = RequestMethod.POST)
@@ -43,7 +48,7 @@ public class HomeRestController {
         // 登录
         try {
             currentUser.login(AbstractShiroLogin.useOAuthLogin(provider, token, context));
-            return SecurityUtils.getSubject().getPrincipal();
+            return accountService.toBasicUserDto(accountService.getUser(accountService.getCurrentUserId()));
         } catch (Exception e) {
             logger.info("登录失败", e);
             return ErrorDto.badRequest(e.getMessage());
@@ -54,10 +59,10 @@ public class HomeRestController {
     @ResponseBody
     public Object logout() {
         Subject currentUser = SecurityUtils.getSubject();
-        Object principal = currentUser.getPrincipal();
+        ShiroUser principal = (ShiroUser) currentUser.getPrincipal();
         if (principal != null) {
             currentUser.logout();
-            return principal;
+            return accountService.toBasicUserDto(accountService.getUser(principal.getId()));
         } else {
             return ErrorDto.unauthorized();
         }

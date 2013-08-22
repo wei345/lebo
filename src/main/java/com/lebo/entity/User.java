@@ -92,6 +92,10 @@ public class User extends IdEntity {
     private Integer digestCount;
     public static final String DIGEST_COUNT_KEY = "digestCount";
 
+    //用户视频数
+    private Integer statusesCount;
+    public static final String STATUSES_COUNT_KEY = "statusesCount";
+
     //Apple Push Notification Service Token
     private String apnsProductionToken;
     private String apnsDevelopmentToken;
@@ -107,6 +111,7 @@ public class User extends IdEntity {
         setFollowersCount(0);
         setViewCount(0);
         setBeFavoritedCount(0);
+        setStatusesCount(0);
         return this;
     }
 
@@ -328,6 +333,14 @@ public class User extends IdEntity {
 
     public void setProfileImageOriginal(String profileImageOriginal) {
         this.profileImageOriginal = profileImageOriginal;
+    }
+
+    public Integer getStatusesCount() {
+        return statusesCount;
+    }
+
+    public void setStatusesCount(Integer statusesCount) {
+        this.statusesCount = statusesCount;
     }
 
     @Override

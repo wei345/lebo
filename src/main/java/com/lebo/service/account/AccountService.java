@@ -161,7 +161,6 @@ public class AccountService extends AbstractMongoService {
     public UserDto toUserDto(User user) {
         UserDto dto = BeanMapper.map(user, UserDto.class);
 
-        dto.setStatusesCount(statusService.countUserStatus(user.getId()));
         if (!getCurrentUserId().equals(user.getId())) {
             dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), user.getId()));
             if (dto.getFollowing()) {
