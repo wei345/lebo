@@ -8,6 +8,7 @@ import java.util.Date;
  * Time: PM7:20
  */
 public class NotificationDto {
+    private String id;
     //触发通知的用户
     private UserDto sender;
     private String activityType;
@@ -64,5 +65,13 @@ public class NotificationDto {
 
     public void setRelatedComment(CommentDto relatedComment) {
         this.relatedComment = relatedComment;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
