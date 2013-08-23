@@ -69,8 +69,6 @@ public class StatusService extends AbstractMongoService {
     @Autowired
     private ApplicationEventBus eventBus;
 
-    private static final Sort hotPostsSort = new Sort(Sort.Direction.DESC, HotPost.HOT_FAVOURITES_COUNT_KEY);
-
     /**
      * @param userId
      * @param text
@@ -333,10 +331,11 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
-    /**
+    /*private static final Sort hotPostsSort = new Sort(Sort.Direction.DESC, HotPost.HOT_FAVOURITES_COUNT_KEY);
+    /*
      * 按2天内收到的红心数(收藏数)排序
      */
-    public List<StatusDto> hotPosts(Integer page, Integer size) {
+    /*public List<StatusDto> hotPosts(Integer page, Integer size) {
         List<HotPost> hotPosts = mongoTemplate.find(new Query().with(new PageRequest(page, size, hotPostsSort)), HotPost.class);
 
         List<StatusDto> dtos = new ArrayList<StatusDto>(hotPosts.size());
@@ -346,6 +345,18 @@ public class StatusService extends AbstractMongoService {
             dtos.add(dto);
         }
         return dtos;
+    }*/
+    private static final Sort hotPostsSort = new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY);
+    /**
+     * 热门:最近2天的帖子按红心数降序排序
+     */
+    public List<StatusDto> hotPosts(Integer page, Integer size) {
+        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
+        Query query = new Query(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        query.with(new PageRequest(page, size, hotPostsSort));
+        List<Post> posts = mongoTemplate.find(query, Post.class);
+        return toStatusDtos(posts);
     }
 
     public void refreshHotPosts() {

@@ -13,7 +13,7 @@
         <property name="triggers">
             <list>
                 <ref bean="hotUserTrigger"/>
-                <ref bean="hotPostTrigger"/>
+                <!--(弃用)<ref bean="hotPostTrigger"/>-->
             </list>
         </property>
         <!--  quartz配置文件路径, 指向cluster配置 -->
@@ -44,7 +44,7 @@
     </bean>
     <!-- 更新推荐关注列表 end -->
 
-    <!-- 更新热门帖子列表 begin -->
+    <!-- (弃用)更新热门帖子列表 begin -->
     <bean id="hotPostTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
         <property name="jobDetail" ref="hotPostJobDetail"/>
         <!-- 每次执行间隔5分钟 -->
@@ -56,6 +56,6 @@
         <property name="durability" value="true"/>
         <property name="jobClass" value="com.lebo.schedule.HotPostClusterableJob"/>
     </bean>
-    <!-- 更新热门帖子列表 end -->
+    <!-- (弃用)更新热门帖子列表 end -->
 
 </beans>

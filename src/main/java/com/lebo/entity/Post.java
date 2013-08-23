@@ -1,9 +1,6 @@
 package com.lebo.entity;
 
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -19,13 +16,13 @@ import java.util.List;
 @Document
 @CompoundIndexes({
         @CompoundIndex(name = "uid_1_opuid_1", def = "{'userId': 1, 'originPostUserId': 1}"),
-        @CompoundIndex(name = "uid_1_opid_1", def = "{'userId': 1, 'originPostId': 1}")
+        @CompoundIndex(name = "uid_1_opid_1", def = "{'userId': 1, 'originPostId': 1}"),
 })
 //TODO 增加是否转发字段，如果原始帖子被删除，则originPostId为null?
 public class Post extends IdEntity {
     private String userId;
     public static final String USER_ID_KEY = "userId";
-    @Indexed
+    @Indexed(direction = IndexDirection.DESCENDING)
     private Date createdAt;
     public static final String CREATED_AT_KEY = "createdAt";
 
@@ -55,6 +52,7 @@ public class Post extends IdEntity {
     private LinkedHashSet<String> searchTerms;
     public static final String SEARCH_TERMS_KEY = "searchTerms";
 
+    @Indexed(direction = IndexDirection.DESCENDING)
     private Integer favoritesCount;
     public static final String FAVOURITES_COUNT_KEY = "favoritesCount";
 
