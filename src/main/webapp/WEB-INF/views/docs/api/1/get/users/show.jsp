@@ -4,8 +4,8 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="查看用户" method="GET" action="${ctx}/api/1/users/show.json">
-    <tags:field name="userId" value="51e6124ea0eedbd1aad37b6b"/>
-    <tags:field name="sceenName" optional="xueeR_Z"/>
+    <tags:field name="userId" optional="true"/>
+    <tags:field name="screenName" optional="true"/>
 </tags:form>
 
 
