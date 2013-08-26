@@ -3,7 +3,7 @@
     <config-file path="WEB-INF/web.xml">
         <replace xpath="//param-value[@id='spring-profiles-default']">test</replace>
     </config-file>
-    <config-file path="WEB-INF/spring-mvc.xml">
+    <!--<config-file path="WEB-INF/spring-mvc.xml">
         <replace xpath="//value[@type='com.fasterxml.jackson.annotation.JsonInclude.Include']">ALWAYS</replace>
-    </config-file>
+    </config-file>-->
 </portable-config>
