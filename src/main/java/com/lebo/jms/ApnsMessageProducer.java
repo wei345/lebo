@@ -1,5 +1,7 @@
 package com.lebo.jms;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
@@ -13,6 +15,8 @@ import javax.jms.*;
  * @author calvin
  */
 public class ApnsMessageProducer {
+
+    private Logger logger  = LoggerFactory.getLogger(ApnsMessageProducer.class);
 
     private JmsTemplate jmsTemplate;
     private Destination notifyQueue;
@@ -37,6 +41,8 @@ public class ApnsMessageProducer {
                 return mapMessage;
             }
         });
+
+        logger.debug("添加到ios通知队列: deviceToken:{}, recipientId:{}, message:{}", deviceToken, recipientId, message);
     }
 
     public void setJmsTemplate(JmsTemplate jmsTemplate) {

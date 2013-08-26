@@ -59,6 +59,9 @@ public class ApnsService {
      * @param devices    a list or an array of tokens or devices: String[], List<String>, Device[], List<Device>, String or Device
      */
     private void pushMessage(String message, int badge, String sound, Object keystore, String password, Boolean production, Object devices) {
+        long t1 = System.currentTimeMillis();
+        logger.debug("正在发送推送通知.. message:{}, badge:{}, sound:{}, devices:{}", message, badge, sound, devices);
+
         try {
             // alert (message, keystore, password, production, devices): push a simple alert message
             // combined (message, badge, sound, keystore, password, production, devices): push a alert+badge+sound notification
@@ -89,6 +92,7 @@ public class ApnsService {
                 }
             }
 
+            logger.debug("发送推送通知成功，{} ms", System.currentTimeMillis() - t1);
         } catch (Exception e) {
             logger.warn("推送通知时出错", e);
         }

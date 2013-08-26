@@ -94,4 +94,17 @@ public class Notification extends IdEntity {
     public void setUnread(Boolean unread) {
         this.unread = unread;
     }
+
+    @Override
+    public String toString() {
+        return "Notification{" +
+                "recipientId='" + recipientId + '\'' +
+                ", senderId='" + senderId + '\'' +
+                ", activityType='" + activityType + '\'' +
+                ", objectType='" + objectType + '\'' +
+                ", objectId='" + objectId + '\'' +
+                ", createdAt=" + createdAt +
+                ", unread=" + unread +
+                "} " + super.toString();
+    }
 }
