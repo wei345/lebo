@@ -4,7 +4,11 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <tags:form name="更新APNS token" method="POST" action="${ctx}/api/1/account/updateApnsToken.json">
-    <tags:field name="apnsDevelopmentToken" optional="true"/>
+    <p>
+        设置或清除用户的APNS token。
+    </p>
+
+    <tags:field name="apnsDevelopmentToken" optional="true"/> APNS Development Token由于p12文件问题，暂不可用。
     <tags:field name="apnsProductionToken" optional="true"/>
 </tags:form>
 
