@@ -69,7 +69,7 @@ public class NotificationListener {
         if (event.getPost().getOriginPostId() != null) {
             Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPOST,
                     event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
-                    Notification.OBJECT_TYPE_POST, event.getPost().getId());
+                    Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId());
 
             sendNotificationQueue(notification, "%s 转播了你的视频");
         }
