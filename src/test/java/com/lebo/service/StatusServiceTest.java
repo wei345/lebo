@@ -75,20 +75,6 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void mentionNames() {
-        LinkedHashSet<String> names = statusService.mentionScreenNames("@@abc@@ @@def", true);
-        assertEquals(2, names.size());
-        assertTrue(names.contains("abc"));
-        assertTrue(names.contains("def"));
-
-        names = statusService.mentionScreenNames("@abc@bcd @efghijk", true);
-        assertEquals(3, names.size());
-        assertTrue(names.contains("abc"));
-        assertTrue(names.contains("bcd"));
-        assertTrue(names.contains("efghijk"));
-    }
-
-    @Test
     public void findTags() {
         LinkedHashSet<String> tags = statusService.findHashtags("##a#b#c##d##", true);
         assertEquals(3, tags.size());
@@ -158,6 +144,19 @@ public class StatusServiceTest extends SpringContextTestCase {
         assertTrue("aa,bb,".split("\\s*,\\s*").length == 2);
         assertTrue("aa,bb,".split(",").length == 2);
         assertEquals("[aa, bb]", Arrays.asList("aa,bb,".split("\\s*,\\s*")).toString());
+    }
+
+    @Test
+    public void findUserMentions(){
+        List<Post.UserMention> userMentions = statusService.findUserMentions("@涛涛_IT abc @明丫丫是个爷们 def @不存在d");
+        assertTrue(userMentions.size() == 2);
+        assertEquals("涛涛_IT", userMentions.get(0).getScreenName());
+        assertTrue(1 == userMentions.get(0).getIndices().get(0));
+        assertTrue(6 == userMentions.get(0).getIndices().get(1));
+
+        assertEquals("明丫丫是个爷们", userMentions.get(1).getScreenName());
+        assertTrue(12 == userMentions.get(1).getIndices().get(0));
+        assertTrue(19 == userMentions.get(1).getIndices().get(1));
     }
 
 }

@@ -75,7 +75,7 @@ public class NotificationListener {
         }
         //原帖，at通知
         else {
-            for (String userId : event.getPost().getUserMentions()) {
+            for (String userId : event.getPost().getMentionUserIds()) {
                 //自己at自己，不发at通知
                 if (event.getPost().getUserId().equals(userId)) {
                     continue;
@@ -113,7 +113,7 @@ public class NotificationListener {
         sendNotificationQueue(notification, "%s 回复了你的视频");
 
         //comment中at
-        for (String userId : event.getComment().getMentions()) {
+        for (String userId : event.getComment().getMentionUserIds()) {
             //自己at自己，不发at通知
             if (event.getComment().getUserId().equals(userId)) {
                 continue;

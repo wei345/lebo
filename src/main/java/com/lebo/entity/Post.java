@@ -43,7 +43,8 @@ public class Post extends IdEntity {
     public static final String ORIGIN_POST_USER_ID_KEY = "originPostUserId";
     //提到的用户的ID
     @Indexed
-    private LinkedHashSet<String> userMentions;
+    private LinkedHashSet<String> mentionUserIds;
+    private List<UserMention> userMentions;
     @Indexed
     private LinkedHashSet<String> hashtags;
     public static final String HASHTAGS_KEY = "hashtags";
@@ -62,6 +63,36 @@ public class Post extends IdEntity {
     // 是否精品
     private boolean digest;
     public static final String DIGEST_KEY = "digest";
+
+    public static class UserMention {
+        private String userId;
+        private String screenName;
+        private List<Integer> indices;
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getScreenName() {
+            return screenName;
+        }
+
+        public void setScreenName(String screenName) {
+            this.screenName = screenName;
+        }
+
+        public List<Integer> getIndices() {
+            return indices;
+        }
+
+        public void setIndices(List<Integer> indices) {
+            this.indices = indices;
+        }
+    }
 
     public Post initial() {
         setViewCount(0);
@@ -141,12 +172,12 @@ public class Post extends IdEntity {
         this.originPostId = originPostId;
     }
 
-    public LinkedHashSet<String> getUserMentions() {
-        return userMentions;
+    public LinkedHashSet<String> getMentionUserIds() {
+        return mentionUserIds;
     }
 
-    public void setUserMentions(LinkedHashSet<String> userMentions) {
-        this.userMentions = userMentions;
+    public void setMentionUserIds(LinkedHashSet<String> mentionUserIds) {
+        this.mentionUserIds = mentionUserIds;
     }
 
     public LinkedHashSet<String> getHashtags() {
@@ -197,21 +228,29 @@ public class Post extends IdEntity {
         this.originPostUserId = originPostUserId;
     }
 
-    public List<FileInfo> getFiles(){
+    public List<FileInfo> getFiles() {
         List<FileInfo> fileInfos = new ArrayList<FileInfo>(2);
-        if(video != null){
+        if (video != null) {
             fileInfos.add(video);
         }
-        if(videoFirstFrame != null){
+        if (videoFirstFrame != null) {
             fileInfos.add(videoFirstFrame);
         }
         return fileInfos;
     }
 
-    public String getVideoFirstFrameUrl(){
-        if(videoFirstFrame == null){
+    public String getVideoFirstFrameUrl() {
+        if (videoFirstFrame == null) {
             return null;
         }
         return videoFirstFrame.getContentUrl();
+    }
+
+    public List<UserMention> getUserMentions() {
+        return userMentions;
+    }
+
+    public void setUserMentions(List<UserMention> userMentions) {
+        this.userMentions = userMentions;
     }
 }

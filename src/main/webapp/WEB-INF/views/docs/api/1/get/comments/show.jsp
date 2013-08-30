@@ -29,7 +29,7 @@
             "source": null,
             "geoLocation": null,
             "postId": "51e6136ea0eedbd1aad37b71",
-            "mentions": []
+            "mentionUserIds": []
         }
     ]
 </tags:example>

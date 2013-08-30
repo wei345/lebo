@@ -37,7 +37,8 @@ public class Comment extends IdEntity {
     // 如果被评论post是转发的，则该评论也要归结到原始post上
     private String originId;
     @Indexed
-    private LinkedHashSet<String> mentions;
+    private LinkedHashSet<String> mentionUserIds;
+    private List<Post.UserMention> userMentions;
     @Indexed
     private Boolean hasVideo;
     public static final String HAS_VIDEO_KEY = "hasVideo";
@@ -98,12 +99,12 @@ public class Comment extends IdEntity {
         this.geoLocation = geoLocation;
     }
 
-    public LinkedHashSet<String> getMentions() {
-        return mentions;
+    public LinkedHashSet<String> getMentionUserIds() {
+        return mentionUserIds;
     }
 
-    public void setMentions(LinkedHashSet<String> mentions) {
-        this.mentions = mentions;
+    public void setMentionUserIds(LinkedHashSet<String> mentionUserIds) {
+        this.mentionUserIds = mentionUserIds;
     }
 
     public String getOriginId() {
@@ -170,5 +171,13 @@ public class Comment extends IdEntity {
             return null;
         }
         return videoFirstFrame.getContentUrl();
+    }
+
+    public List<Post.UserMention> getUserMentions() {
+        return userMentions;
+    }
+
+    public void setUserMentions(List<Post.UserMention> userMentions) {
+        this.userMentions = userMentions;
     }
 }

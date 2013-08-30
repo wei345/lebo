@@ -30,8 +30,38 @@ public class StatusDto {
     private StatusDto originStatus;
     //最近3条评论
     private List<CommentDto> comments;
-    private List<UserDto> userMentions;
+    private List<UserMentionDto> userMentions;
     private Boolean digest;//是否已被加精
+
+    public static class UserMentionDto {
+        private String userId;
+        private String screenName;
+        private List<Integer> indices;
+
+        public String getId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getScreenName() {
+            return screenName;
+        }
+
+        public void setScreenName(String screenName) {
+            this.screenName = screenName;
+        }
+
+        public List<Integer> getIndices() {
+            return indices;
+        }
+
+        public void setIndices(List<Integer> indices) {
+            this.indices = indices;
+        }
+    }
 
     public String getId() {
         return id;
@@ -145,11 +175,11 @@ public class StatusDto {
         this.comments = comments;
     }
 
-    public List<UserDto> getUserMentions() {
+    public List<UserMentionDto> getUserMentions() {
         return userMentions;
     }
 
-    public void setUserMentions(List<UserDto> userMentions) {
+    public void setUserMentions(List<UserMentionDto> userMentions) {
         this.userMentions = userMentions;
     }
 

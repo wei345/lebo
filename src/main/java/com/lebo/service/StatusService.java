@@ -10,7 +10,6 @@ import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.StatusDto;
-import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
 import com.mongodb.BasicDBObject;
@@ -29,7 +28,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springside.modules.mapper.BeanMapper;
 
 import java.io.IOException;
@@ -74,7 +72,7 @@ public class StatusService extends AbstractMongoService {
      * @param text
      * @param video
      * @param videoFirstFrame 视频第一帧
-     * @param originPost 若是转发，为原Post ID，否则为null
+     * @param originPost      若是转发，为原Post ID，否则为null
      * @return
      * @throws IOException
      */
@@ -84,7 +82,8 @@ public class StatusService extends AbstractMongoService {
         post.setCreatedAt(new Date());
         post.setSource(source);
         post.setText(text);
-        post.setUserMentions(mentionUserIds(text));
+        post.setUserMentions(findUserMentions(text));
+        post.setMentionUserIds(mentionUserIds(post.getUserMentions()));
         post.setHashtags(findHashtags(text, true));
         post.setSearchTerms(buildSearchTerms(post));
 
@@ -95,7 +94,7 @@ public class StatusService extends AbstractMongoService {
             post.setVideoFirstFrame(videoFirstFrame);
         }
         //转发贴
-        else{
+        else {
             post.setOriginPostId(originPost.getId());
             post.setOriginPostUserId(originPost.getUserId());
         }
@@ -154,7 +153,7 @@ public class StatusService extends AbstractMongoService {
 
     public List<Post> mentionsTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "The userId can not be null");
-        return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
+        return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param);
     }
 
     public Post getPost(String id) {
@@ -204,19 +203,6 @@ public class StatusService extends AbstractMongoService {
             commentListParam.setPostId(post.getId());
             List<Comment> comments = commentService.list(commentListParam);
             dto.setComments(commentService.toCommentDtos(comments));
-
-            //提到的用户
-            if (!CollectionUtils.isEmpty(post.getUserMentions())) {
-                List<UserDto> userMetions = new ArrayList<UserDto>(post.getUserMentions().size());
-                for (String userId : post.getUserMentions()) {
-                    User user = accountService.getUser(userId);
-                    UserDto userDto = new UserDto();
-                    userDto.setId(user.getId());
-                    userDto.setScreenName(user.getScreenName());
-                    userMetions.add(userDto);
-                }
-                dto.setUserMentions(userMetions);
-            }
 
             //是否被当前登录用户转发
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post));
@@ -347,6 +333,7 @@ public class StatusService extends AbstractMongoService {
         return dtos;
     }*/
     private static final Sort hotPostsSort = new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY);
+
     /**
      * 热门:最近2天的帖子按红心数降序排序
      */
@@ -383,29 +370,33 @@ public class StatusService extends AbstractMongoService {
 
     private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
 
-    public LinkedHashSet<String> mentionScreenNames(String text, boolean trimAt) {
-        if (StringUtils.isBlank(text)) {
-            return new LinkedHashSet<String>(1);
-        }
-        Matcher m = mentionPattern.matcher(text);
-        LinkedHashSet<String> names = new LinkedHashSet<String>();
-        while (m.find()) {
-            names.add(trimAt ? m.group(1) : m.group(0));
-        }
-        return names;
-    }
-
-    public LinkedHashSet<String> mentionUserIds(String text) {
+    public LinkedHashSet<String> mentionUserIds(List<Post.UserMention> userMentions) {
         LinkedHashSet<String> userIds = new LinkedHashSet<String>();
-
-        LinkedHashSet<String> names = mentionScreenNames(text, true);
-        for (String screenName : names) {
-            User user = userDao.findByScreenName(screenName);
-            if (user != null) {
-                userIds.add(user.getId());
-            }
+        for(Post.UserMention userMention : userMentions){
+            userIds.add(userMention.getUserId());
         }
         return userIds;
+    }
+
+    public List<Post.UserMention> findUserMentions(String text) {
+        if (StringUtils.isBlank(text)) {
+            return new ArrayList<Post.UserMention>(1);
+        }
+
+        List<Post.UserMention> userMentions = new ArrayList<Post.UserMention>(5);
+
+        Matcher m = mentionPattern.matcher(text);
+        while (m.find()) {
+            Post.UserMention userMention = new Post.UserMention();
+            userMention.setIndices(Arrays.asList(m.start(1), m.end(1)));
+            userMention.setScreenName(m.group(1));
+            User user = userDao.findByScreenName(userMention.getScreenName());
+            if (user != null) {
+                userMention.setUserId(user.getId());
+                userMentions.add(userMention);
+            }
+        }
+        return userMentions;
     }
 
     private Pattern tagPattern = Pattern.compile("#([^#@\\s]+)#");
@@ -436,7 +427,9 @@ public class StatusService extends AbstractMongoService {
     public LinkedHashSet<String> buildSearchTerms(Post post) {
         LinkedHashSet<String> words = new LinkedHashSet<String>();
         words.addAll(findHashtags(post.getText(), false));
-        words.addAll(mentionScreenNames(post.getText(), false));
+        for(Post.UserMention userMention : post.getUserMentions()){
+            words.add("@" + userMention.getScreenName());
+        }
         words.addAll(segmentation.findWords(post.getText()));
         return words;
     }
@@ -565,8 +558,7 @@ public class StatusService extends AbstractMongoService {
         //follow + track --> 查询条件，or关系
         if (followCriteria != null && trackCriteria != null) {
             criteriaList.add(orOperator(Arrays.asList(followCriteria, trackCriteria)));
-        }
-        else {
+        } else {
             if (followCriteria != null) {
                 criteriaList.add(followCriteria);
             }

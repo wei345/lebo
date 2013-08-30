@@ -56,7 +56,8 @@ public class CommentService extends AbstractMongoService {
             comment.setHasVideo(true);
         }
 
-        comment.setMentions(statusService.mentionUserIds(comment.getText()));
+        comment.setUserMentions(statusService.findUserMentions(comment.getText()));
+        comment.setMentionUserIds(statusService.mentionUserIds(comment.getUserMentions()));
         comment.setCreatedAt(new Date());
 
         comment = commentDao.save(comment);
