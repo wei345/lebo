@@ -40,8 +40,8 @@
     orderBy <input type="text" class="input-mini" name="orderBy" value="${orderBy}"
                    placeholder="followersCount/beFavoritedCount/viewCount">
     <select class="input-small" name="order">
-        <setting ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</setting>
-        <setting ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</setting>
+        <option ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</option>
+        <option ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</option>
     </select>
     <input type="text" class="input-mini" name="size" value="${size}">条/页
     <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
