@@ -2,8 +2,6 @@ package com.lebo.rest;
 
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.service.FileStorageService;
-import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.account.ShiroUser;
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +49,7 @@ public class AccountRestController {
 
         if (image != null && image.getSize() > 0) {
             try {
-                accountService.saveUserWithProfileImage(user, image.getInputStream());
+                accountService.updateUserWithProfileImage(user, image.getInputStream());
             } catch (IOException e) {
                 return ErrorDto.badRequest(NestedExceptionUtils.buildMessage("更新用户失败", e));
             }

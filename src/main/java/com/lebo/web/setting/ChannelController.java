@@ -3,6 +3,7 @@ package com.lebo.web.setting;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Setting;
+import com.lebo.service.AbstractMongoService;
 import com.lebo.service.FileStorageService;
 import com.lebo.service.SettingService;
 import com.lebo.web.ControllerUtils;
@@ -60,8 +61,10 @@ public class ChannelController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
         try {
-            String fileId = fileStorageService.save(ControllerUtils.getFileInfo(image));
-            channel.setImage(fileId);
+            FileInfo fileInfo = ControllerUtils.getFileInfo(image);
+            fileInfo.setKey(AbstractMongoService.generateFileId("setting/channel", "", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+            fileStorageService.save(fileInfo);
+            channel.setImage(fileInfo.getKey());
 
             Setting setting = settingService.getSetting();
 

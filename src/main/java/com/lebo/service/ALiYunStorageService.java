@@ -6,14 +6,13 @@ import com.aliyun.openservices.oss.model.OSSObject;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.openservices.oss.model.PutObjectResult;
 import com.lebo.entity.FileInfo;
-import com.lebo.util.ContentTypeMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -40,46 +39,20 @@ public class ALiYunStorageService implements FileStorageService {
 
     private Logger logger = LoggerFactory.getLogger(ALiYunStorageService.class);
 
-    private String key(FileInfo fileInfo) {
-        String ext = ContentTypeMap.getExtension(fileInfo.getContentType(), fileInfo.getFilename());
-        String key = new ObjectId().toString();
-
-        if(ext != null){
-            key = key + "." + ext;
-        }
-
-        return key;
-    }
-
-    /*@Override
-    public String save(InputStream content, String contentType, long contentLength) throws IOException {
-        long t1 = System.currentTimeMillis();
-        String id = id();
-
-        ObjectMetadata meta = new ObjectMetadata();
-        meta.setContentLength(contentLength);
-        meta.setContentType(contentType);
-        client.putObject(bucketName, id, content, meta);
-
-        logger.info("保存文件成功, id : {}, {} ms", id, (System.currentTimeMillis() - t1));
-        return id;
-    }*/
-
     @Override
     public String save(FileInfo fileInfo) {
+        Assert.hasText(fileInfo.getKey());
         long t1 = System.currentTimeMillis();
-        String id = key(fileInfo);
 
         ObjectMetadata meta = new ObjectMetadata();
         meta.setContentLength(fileInfo.getLength());
         meta.setContentType(fileInfo.getContentType());
-        PutObjectResult result = client.putObject(bucketName, id, fileInfo.getContent(), meta);
+        PutObjectResult result = client.putObject(bucketName, fileInfo.getKey(), fileInfo.getContent(), meta);
         IOUtils.closeQuietly(fileInfo.getContent());
 
         fileInfo.seteTag(result.getETag());
-        fileInfo.setKey(id);
-        logger.info("保存文件成功: {}, {} ms", fileInfo, (System.currentTimeMillis() - t1));
-        return id;
+        logger.info("保存文件成功: {}, {} ms", fileInfo.getKey(), (System.currentTimeMillis() - t1));
+        return fileInfo.getKey();
     }
 
     @Override

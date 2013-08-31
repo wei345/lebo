@@ -45,7 +45,7 @@ public class ProfileImageMessageListener implements MessageListener {
 
             httpURLConnection = (HttpURLConnection) new URL(user.getProfileImageOriginal()).openConnection();
 
-            accountService.saveUserWithProfileImage(user, httpURLConnection.getInputStream());
+            accountService.updateUserWithProfileImage(user, httpURLConnection.getInputStream());
 
             logger.info("完成用户头像保存到数据库, {} ms, userId : {}, profileImageOriginal : {}",
                     System.currentTimeMillis() - t1, userId, user.getProfileImageOriginal());

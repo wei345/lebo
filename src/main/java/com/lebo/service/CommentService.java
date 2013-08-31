@@ -40,25 +40,31 @@ public class CommentService extends AbstractMongoService {
     private AccountService accountService;
     @Autowired
     private ApplicationEventBus eventBus;
+    private static final String FILE_COLLECTION_NAME = "comment";
 
     /**
      * @throws com.mongodb.MongoException 当存储数据失败时
      * @throws DuplicateException         当文件重复时
      */
     public Comment create(Comment comment, FileInfo video, FileInfo videoFirstFrame) {
-        comment.setHasVideo(false);
+        comment.setCreatedAt(new Date());
+        comment.setId(newMongoId(comment.getCreatedAt()));
+        comment.setUserMentions(statusService.findUserMentions(comment.getText()));
+        comment.setMentionUserIds(statusService.mentionUserIds(comment.getUserMentions()));
 
         //视频评论
+        comment.setHasVideo(false);
         if(video != null && videoFirstFrame != null){
+            //设置唯一的文件名
+            video.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), video.getLength(), video.getContentType(), video.getFilename()));
+            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
+            //保存文件
             fileStorageService.save(video, videoFirstFrame);
+
             comment.setVideo(video);
             comment.setVideoFirstFrame(videoFirstFrame);
             comment.setHasVideo(true);
         }
-
-        comment.setUserMentions(statusService.findUserMentions(comment.getText()));
-        comment.setMentionUserIds(statusService.mentionUserIds(comment.getUserMentions()));
-        comment.setCreatedAt(new Date());
 
         comment = commentDao.save(comment);
         throwOnMongoError();

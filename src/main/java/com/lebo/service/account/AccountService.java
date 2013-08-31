@@ -77,6 +77,7 @@ public class AccountService extends AbstractMongoService {
     private BlockService blockService;
     @Autowired
     private ApplicationEventBus eventBus;
+    private static final String FILE_COLLECTION_NAME = "user";
 
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
@@ -111,6 +112,8 @@ public class AccountService extends AbstractMongoService {
     public User createUser(User user) {
         user.initial();
         user.setCreatedAt(dateProvider.getDate());
+        user.setId(newMongoId(user.getCreatedAt()));
+
         user = saveUser(user);
         eventBus.post(new AfterUserCreateEvent(user));
         return user;
@@ -336,42 +339,49 @@ public class AccountService extends AbstractMongoService {
      * @param profileImage InputStream of user's profile image
      * @throws IOException
      */
-    public void saveUserWithProfileImage(User user, InputStream profileImage) throws IOException {
+    public void updateUserWithProfileImage(User user, InputStream profileImage) throws IOException {
         BufferedImage originImage = ImageIO.read(profileImage);
         ByteArrayOutputStream outputStream;
         String fileId;
+        FileInfo fileInfo;
 
         //normal size
         BufferedImage normal = ImageUtils.resizeImage(User.PROFILE_IMAGE_NORMAL_SIZE, originImage);
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(normal, "png", outputStream);
-        fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size(), "profile_image_normal.png"));
-        if (isMongoId(user.getProfileImageNormal())) {
+        fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_normal.png");
+        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+        fileStorageService.save(fileInfo);
+        //删除旧文件
+        if (isFileId(user.getProfileImageNormal())) {
             fileStorageService.delete(user.getProfileImageNormal());
         }
-        user.setProfileImageNormal(fileId);
+        user.setProfileImageNormal(fileInfo.getKey());
 
         //bigger size
         BufferedImage bigger = ImageUtils.resizeImage(User.PROFILE_IMAGE_BIGGER_SIZE, originImage);
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(bigger, "png", outputStream);
-        fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size(), "profile_image_bigger.png"));
-        if (isMongoId(user.getProfileImageBigger())) {
+        fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_bigger.png");
+        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+        fileStorageService.save(fileInfo);
+        //删除旧文件
+        if (isFileId(user.getProfileImageBigger())) {
             fileStorageService.delete(user.getProfileImageBigger());
         }
-        user.setProfileImageBigger(fileId);
+        user.setProfileImageBigger(fileInfo.getKey());
 
         //origin size
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(originImage, "png", outputStream);
-        fileId = fileStorageService.save(new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()),
-                "image/png", outputStream.size(), "profile_image_origin.png"));
-        if (isMongoId(user.getProfileImageOriginal())) {
+        fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_origin.png");
+        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+        fileStorageService.save(fileInfo);
+        //删除旧文件
+        if (isFileId(user.getProfileImageOriginal())) {
             fileStorageService.delete(user.getProfileImageOriginal());
         }
-        user.setProfileImageOriginal(fileId);
+        user.setProfileImageOriginal(fileInfo.getKey());
 
         saveUser(user);
     }

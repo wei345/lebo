@@ -66,6 +66,7 @@ public class StatusService extends AbstractMongoService {
     private SettingService settingService;
     @Autowired
     private ApplicationEventBus eventBus;
+    private static final String FILE_COLLECTION_NAME = "post";
 
     /**
      * @param userId
@@ -78,8 +79,10 @@ public class StatusService extends AbstractMongoService {
      */
     public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source) throws Exception {
         Post post = new Post().initial();
+
         post.setUserId(userId);
         post.setCreatedAt(new Date());
+        post.setId(newMongoId(post.getCreatedAt()));
         post.setSource(source);
         post.setText(text);
         post.setUserMentions(findUserMentions(text));
@@ -89,7 +92,11 @@ public class StatusService extends AbstractMongoService {
 
         //原始贴
         if (originPost == null) {
+            video.setKey(generateFileId(FILE_COLLECTION_NAME, post.getId(), video.getLength(), video.getContentType(), video.getFilename()));
+            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, post.getId(), videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
+
             fileStorageService.save(video, videoFirstFrame);
+
             post.setVideo(video);
             post.setVideoFirstFrame(videoFirstFrame);
         }
