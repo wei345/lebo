@@ -62,7 +62,7 @@ public class ChannelController {
                          RedirectAttributes redirectAttributes) {
         try {
             FileInfo fileInfo = ControllerUtils.getFileInfo(image);
-            fileInfo.setKey(AbstractMongoService.generateFileId("setting/channel", "", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+            fileInfo.setKey(AbstractMongoService.generateFileId("setting/channel", "", null, fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
             fileStorageService.save(fileInfo);
             channel.setImage(fileInfo.getKey());
 

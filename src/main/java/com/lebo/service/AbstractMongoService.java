@@ -116,18 +116,27 @@ public abstract class AbstractMongoService {
      * {collectionName}/{commentId}-{length}byte.{ext}
      * </pre>
      */
-    public static String generateFileId(String fileCollectionName, String mongoId, long length, String contentType, String filename) {
+    public static String generateFileId(String fileCollectionName, String mongoId, String slug, long length, String contentType, String filename) {
+        Assert.hasText(fileCollectionName);
         Assert.hasText(mongoId);
 
-        String fileId = String.format("%s/%s-%s", fileCollectionName, mongoId, length);
+        StringBuilder sb = new StringBuilder(fileCollectionName + "/" + mongoId);
+
+        //slug
+        if(StringUtils.isNotBlank(slug)){
+            sb.append("-" + slug);
+        }
+
+        //长度,字节
+        sb.append("-" + length);
 
         //扩展名
         String ext = ContentTypeMap.getExtension(contentType, filename);
-        if (ext != null) {
-            fileId = fileId + "." + ext;
+        if (StringUtils.isNotBlank(ext)) {
+            sb.append("." + ext);
         }
 
-        return fileId;
+        return sb.toString();
     }
 
     public static boolean isFileId(String s) {

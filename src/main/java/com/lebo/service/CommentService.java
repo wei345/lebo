@@ -56,8 +56,8 @@ public class CommentService extends AbstractMongoService {
         comment.setHasVideo(false);
         if(video != null && videoFirstFrame != null){
             //设置唯一的文件名
-            video.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), video.getLength(), video.getContentType(), video.getFilename()));
-            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
+            video.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), null, video.getLength(), video.getContentType(), video.getFilename()));
+            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), null, videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
             //保存文件
             fileStorageService.save(video, videoFirstFrame);
 
