@@ -147,7 +147,7 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void findUserMentions(){
+    public void findUserMentions() {
         List<Post.UserMention> userMentions = statusService.findUserMentions("@涛涛_IT abc @明丫丫是个爷们 def @不存在d");
         assertTrue(userMentions.size() == 2);
         assertEquals("涛涛_IT", userMentions.get(0).getScreenName());

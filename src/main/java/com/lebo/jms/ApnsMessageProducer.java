@@ -16,7 +16,7 @@ import javax.jms.*;
  */
 public class ApnsMessageProducer {
 
-    private Logger logger  = LoggerFactory.getLogger(ApnsMessageProducer.class);
+    private Logger logger = LoggerFactory.getLogger(ApnsMessageProducer.class);
 
     private JmsTemplate jmsTemplate;
     private Destination notifyQueue;

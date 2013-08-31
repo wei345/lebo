@@ -6,209 +6,209 @@
 
 <strong>乐播</strong>
 <table class="table table-hover">
-    <tr>
-        <th class="input-large">字段</th>
-        <th class="input-small">类型</th>
-        <th>说明</th>
-    </tr>
-    <tr>
-        <td>
-            id
-        </td>
-        <td>
-            string
-        </td>
-        <td>
+<tr>
+    <th class="input-large">字段</th>
+    <th class="input-small">类型</th>
+    <th>说明</th>
+</tr>
+<tr>
+    <td>
+        id
+    </td>
+    <td>
+        string
+    </td>
+    <td>
 
-        </td>
-    </tr>
-    <tr>
-        <td>
-            user
-        </td>
-        <td>
-            object
-        </td>
-        <td>
+    </td>
+</tr>
+<tr>
+    <td>
+        user
+    </td>
+    <td>
+        object
+    </td>
+    <td>
 
-        </td>
-    </tr>
-    <tr>
-        <td>
-            createdAt
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            该乐播创建时间
-        </td>
-    </tr>
-    <tr>
-        <td>
-            text
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            描述
-        </td>
-    </tr>
-    <tr>
-        <td>
-            files (已弃用)
-        </td>
-        <td>
-            array
-        </td>
-        <td>
-            第1个是视频，第2个是图片
-        </td>
-    </tr>
-    <tr>
-        <td>
-            video
-        </td>
-        <td>
-            object
-        </td>
-        <td>
-            视频
-        </td>
-    </tr>
-    <tr>
-        <td>
-            videoFirstFrameUrl
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            视频第一帧图片url
-        </td>
-    </tr>
-    <tr>
-        <td>
-            source
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            来源：android客户端、ios客户端
-        </td>
-    </tr>
-    <tr>
-        <td>
-            favorited
-        </td>
-        <td>
-            boolean
-        </td>
-        <td>
-            该条乐播是否已被当前登录用户收藏
-        </td>
-    </tr>
-    <tr>
-        <td>
-            reposted
-        </td>
-        <td>
-            boolean
-        </td>
-        <td>
-            该条乐播是否已被当前登录用户转发
-        </td>
-    </tr>
-    <tr>
-        <td>
-            favoritesCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            收藏数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            repostsCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            转发数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            commentsCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            评论数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            viewCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            播放数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            originStatus
-        </td>
-        <td>
-            object
-        </td>
-        <td>
-            原始乐播，当该乐播是转发的才有值
-        </td>
-    </tr>
-    <tr>
-        <td>
-            comments
-        </td>
-        <td>
-            array
-        </td>
-        <td>
-            前3条评论
-        </td>
-    </tr>
-    <tr>
-        <td>
-            userMentions
-        </td>
-        <td>
-            array
-        </td>
-        <td>
-            提到的用户
-        </td>
-    </tr>
-    <tr>
-        <td>
-            digest
-        </td>
-        <td>
-            boolean
-        </td>
-        <td>
-            是否已被加精
-        </td>
-    </tr>
+    </td>
+</tr>
+<tr>
+    <td>
+        createdAt
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        该乐播创建时间
+    </td>
+</tr>
+<tr>
+    <td>
+        text
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        描述
+    </td>
+</tr>
+<tr>
+    <td>
+        files (已弃用)
+    </td>
+    <td>
+        array
+    </td>
+    <td>
+        第1个是视频，第2个是图片
+    </td>
+</tr>
+<tr>
+    <td>
+        video
+    </td>
+    <td>
+        object
+    </td>
+    <td>
+        视频
+    </td>
+</tr>
+<tr>
+    <td>
+        videoFirstFrameUrl
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        视频第一帧图片url
+    </td>
+</tr>
+<tr>
+    <td>
+        source
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        来源：android客户端、ios客户端
+    </td>
+</tr>
+<tr>
+    <td>
+        favorited
+    </td>
+    <td>
+        boolean
+    </td>
+    <td>
+        该条乐播是否已被当前登录用户收藏
+    </td>
+</tr>
+<tr>
+    <td>
+        reposted
+    </td>
+    <td>
+        boolean
+    </td>
+    <td>
+        该条乐播是否已被当前登录用户转发
+    </td>
+</tr>
+<tr>
+    <td>
+        favoritesCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        收藏数
+    </td>
+</tr>
+<tr>
+    <td>
+        repostsCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        转发数
+    </td>
+</tr>
+<tr>
+    <td>
+        commentsCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        评论数
+    </td>
+</tr>
+<tr>
+    <td>
+        viewCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        播放数
+    </td>
+</tr>
+<tr>
+    <td>
+        originStatus
+    </td>
+    <td>
+        object
+    </td>
+    <td>
+        原始乐播，当该乐播是转发的才有值
+    </td>
+</tr>
+<tr>
+    <td>
+        comments
+    </td>
+    <td>
+        array
+    </td>
+    <td>
+        前3条评论
+    </td>
+</tr>
+<tr>
+    <td>
+        userMentions
+    </td>
+    <td>
+        array
+    </td>
+    <td>
+        提到的用户
+    </td>
+</tr>
+<tr>
+    <td>
+        digest
+    </td>
+    <td>
+        boolean
+    </td>
+    <td>
+        是否已被加精
+    </td>
+</tr>
 </table>
 
 <strong>用户</strong>

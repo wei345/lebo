@@ -89,12 +89,12 @@ public class Message extends IdEntity {
         this.searchTerms = searchTerms;
     }
 
-    public List<FileInfo> getFiles(){
+    public List<FileInfo> getFiles() {
         List<FileInfo> fileInfos = new ArrayList<FileInfo>(2);
-        if(video != null){
+        if (video != null) {
             fileInfos.add(video);
         }
-        if(videoFirstFrame != null){
+        if (videoFirstFrame != null) {
             fileInfos.add(videoFirstFrame);
         }
         return fileInfos;

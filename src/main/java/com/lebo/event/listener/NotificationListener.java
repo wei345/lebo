@@ -128,7 +128,7 @@ public class NotificationListener {
 
     private void sendNotificationQueue(Notification notification, String messageFormat) {
         //自己对自己的操作，不发送通知
-        if(notification.getSenderId().equals(notification.getRecipientId())){
+        if (notification.getSenderId().equals(notification.getRecipientId())) {
             return;
         }
 

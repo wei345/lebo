@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AbstractShiroLogin;
 import com.lebo.service.account.AccountService;

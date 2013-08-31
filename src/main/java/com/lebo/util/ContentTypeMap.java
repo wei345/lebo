@@ -34,7 +34,7 @@ public class ContentTypeMap {
      * </pre>
      *
      * @param contentType MIME type  http://en.wikipedia.org/wiki/Internet_media_type
-     * @param filename file name
+     * @param filename    file name
      */
 
     public static String getExtension(String contentType, String filename) {
