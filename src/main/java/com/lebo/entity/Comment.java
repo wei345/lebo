@@ -34,8 +34,6 @@ public class Comment extends IdEntity {
     private String replyCommentId;
     //被回复的评论的作者id，冗余，为更好的性能
     private String replyCommentUserId;
-    // 如果被评论post是转发的，则该评论也要归结到原始post上
-    private String originId;
     @Indexed
     private LinkedHashSet<String> mentionUserIds;
     private List<Post.UserMention> userMentions;
@@ -105,14 +103,6 @@ public class Comment extends IdEntity {
 
     public void setMentionUserIds(LinkedHashSet<String> mentionUserIds) {
         this.mentionUserIds = mentionUserIds;
-    }
-
-    public String getOriginId() {
-        return originId;
-    }
-
-    public void setOriginId(String originId) {
-        this.originId = originId;
     }
 
     public Boolean getHasVideo() {
