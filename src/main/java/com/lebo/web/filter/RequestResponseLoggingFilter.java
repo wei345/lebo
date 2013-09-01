@@ -31,6 +31,7 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
      */
     @Override
     protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        long beginTime = System.currentTimeMillis();
         HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response);
 
         //直接输出参数、或用反射替换request inputStream 属性
@@ -72,6 +73,8 @@ public class RequestResponseLoggingFilter extends AbstractRequestLoggingFilter {
                 String text = StringUtils.substring(trimmed, 0, maxLoggingContentLength) + (trimmed.length() > maxLoggingContentLength ? "..." : "");
                 logger.debug("      response content{} : {}", (responseText.equals(text) ? "" : "(trimmed)"), text);
             }
+
+            logger.debug("  {} ms\n", System.currentTimeMillis() - beginTime);
         }
     }
 
