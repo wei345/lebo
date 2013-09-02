@@ -213,7 +213,7 @@
             <tags:link url="${ctx}/docs/api/1/post/comments/createWithMedia" text="POST comments/createWithMedia"/>
         </td>
         <td>
-            发视频评论，返回发布的评论。
+            发视频评论、语音评论，返回发布的评论。
         </td>
     </tr>
     <tr>
