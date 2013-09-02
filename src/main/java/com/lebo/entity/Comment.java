@@ -25,6 +25,8 @@ public class Comment extends IdEntity {
     private FileInfo video;
     //视频第一帧(图片)
     private FileInfo videoFirstFrame;
+    //语音(mp4, amr)
+    private FileInfo audio;
     //来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
@@ -169,5 +171,13 @@ public class Comment extends IdEntity {
 
     public void setUserMentions(List<Post.UserMention> userMentions) {
         this.userMentions = userMentions;
+    }
+
+    public FileInfo getAudio() {
+        return audio;
+    }
+
+    public void setAudio(FileInfo audio) {
+        this.audio = audio;
     }
 }

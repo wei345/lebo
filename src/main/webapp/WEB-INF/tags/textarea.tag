@@ -15,7 +15,7 @@
 
     <div class="controls">
         <textarea type="text" id="<%=name%>" name="<%=name%>" placeholder="Type something…" maxlength="140" cols="80"
-                  rows="4"><%=value%>
+                  rows="4" <%=optional ? "disabled='disabled'" : ""%>><%=value%>
         </textarea>
     </div>
 </div>

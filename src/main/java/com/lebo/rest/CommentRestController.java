@@ -1,6 +1,7 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Comment;
+import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.CommentService;
@@ -93,7 +94,7 @@ public class CommentRestController {
             comment.setUserId(accountService.getCurrentUserId());
             comment.setText(text);
 
-            comment = commentService.create(comment, null, null);
+            comment = commentService.create(comment, null, null, null);
             return commentService.toCommentDto(comment);
 
         } catch (DuplicateException e) {
@@ -109,25 +110,60 @@ public class CommentRestController {
      */
     @RequestMapping(value = "createWithMedia", method = RequestMethod.POST)
     @ResponseBody
-    public Object createWithMedia(@RequestParam(value = "video") MultipartFile video,
-                                  @RequestParam(value = "image") MultipartFile image,
+    public Object createWithMedia(@RequestParam(value = "video", required = false) MultipartFile video,
+                                  @RequestParam(value = "image", required = false) MultipartFile image,
+                                  @RequestParam(value = "audio", required = false) MultipartFile audio,
                                   @RequestParam(value = "text", required = false) String text,
                                   @RequestParam(value = "postId", required = false) String postId,
                                   @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
         try {
             logger.debug("正在发布视频评论:");
-            logger.debug("           video : {}", FileUtils.byteCountToDisplaySize(video.getSize()));
-            logger.debug("           image : {}", FileUtils.byteCountToDisplaySize(image.getSize()));
+            if (video != null) {
+                logger.debug("           video : {}", FileUtils.byteCountToDisplaySize(video.getSize()));
+            }
+            if (image != null) {
+                logger.debug("           image : {}", FileUtils.byteCountToDisplaySize(image.getSize()));
+            }
+            if (audio != null) {
+                logger.debug("           audio : {}", FileUtils.byteCountToDisplaySize(audio.getSize()));
+            }
             logger.debug("            text : {}", text);
             logger.debug("          postId : {}", postId);
             logger.debug("  replyCommentId : {}", replyCommentId);
 
+            //参数检查
             if (StringUtils.isBlank(postId) && StringUtils.isBlank(replyCommentId)) {
                 return ErrorDto.badRequest("参数postId和replyCommentId不能都为空");
             }
 
-            Comment comment = new Comment();
+            //文件大小限制
+            if (video != null && video.getSize() > StatusRestController.ONE_M_BYTE ||
+                    image != null && image.getSize() > StatusRestController.ONE_M_BYTE ||
+                    audio != null && audio.getSize() > StatusRestController.ONE_M_BYTE) {
+                return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
+            }
 
+            FileInfo videoFileInfo = null;
+            FileInfo imageFileInfo = null;
+            FileInfo audioFileInfo = null;
+
+            //视频评论
+            if (video != null && image != null) {
+                videoFileInfo = ControllerUtils.getFileInfo(video);
+                imageFileInfo = ControllerUtils.getFileInfo(image);
+            }
+            //音频评论
+            else if (audio != null) {
+                audioFileInfo = ControllerUtils.getFileInfo(audio);
+            }
+            //参数错误
+            else {
+                return ErrorDto.badRequest("参数必须满足这个条件：(video != null && image != null) || (audio != null)");
+            }
+
+            Comment comment = new Comment();
+            comment.setUserId(accountService.getCurrentUserId());
+            comment.setText(text);
             //回复Comment
             if (StringUtils.isNotBlank(replyCommentId)) {
                 Comment replyComment = commentService.getComment(replyCommentId);
@@ -142,27 +178,20 @@ public class CommentRestController {
             //回复Post
             else {
                 Post post = statusService.getPost(postId);
-
                 if (post == null) {
                     return ErrorDto.badRequest(String.format("postId[%s]不存在", postId));
                 }
-
+                //回复原始贴
                 if (post.getOriginPostId() == null) {
                     comment.setPostId(postId);
-                } else {
+                }
+                //回复转发贴，归结到原始贴上
+                else {
                     comment.setPostId(post.getOriginPostId());
                 }
             }
 
-            //文件大小限制
-            if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
-                return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
-            }
-
-            comment.setUserId(accountService.getCurrentUserId());
-            comment.setText(text);
-
-            comment = commentService.create(comment, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image));
+            comment = commentService.create(comment, videoFileInfo, imageFileInfo, audioFileInfo);
             return commentService.toCommentDto(comment);
 
         } catch (DuplicateException e) {

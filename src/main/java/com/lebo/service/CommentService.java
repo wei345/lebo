@@ -46,7 +46,7 @@ public class CommentService extends AbstractMongoService {
      * @throws com.mongodb.MongoException 当存储数据失败时
      * @throws DuplicateException         当文件重复时
      */
-    public Comment create(Comment comment, FileInfo video, FileInfo videoFirstFrame) {
+    public Comment create(Comment comment, FileInfo video, FileInfo videoFirstFrame, FileInfo audio) {
         comment.setCreatedAt(new Date());
         comment.setId(newMongoId(comment.getCreatedAt()));
         comment.setUserMentions(statusService.findUserMentions(comment.getText()));
@@ -56,14 +56,21 @@ public class CommentService extends AbstractMongoService {
         comment.setHasVideo(false);
         if(video != null && videoFirstFrame != null){
             //设置唯一的文件名
-            video.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), null, video.getLength(), video.getContentType(), video.getFilename()));
-            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), null, videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
+            video.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), "video", video.getLength(), video.getContentType(), video.getFilename()));
+            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), "video-first-frame", videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
             //保存文件
             fileStorageService.save(video, videoFirstFrame);
 
             comment.setVideo(video);
             comment.setVideoFirstFrame(videoFirstFrame);
             comment.setHasVideo(true);
+        }
+
+        //语音评论
+        if(audio != null){
+            audio.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), "audio", audio.getLength(), audio.getContentType(), audio.getFilename()));
+            fileStorageService.save(audio);
+            comment.setAudio(audio);
         }
 
         comment = commentDao.save(comment);

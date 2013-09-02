@@ -16,6 +16,7 @@ public class CommentDto {
     private List<FileInfoDto> files;
     private FileInfoDto video;
     private String videoFirstFrameUrl;
+    private FileInfoDto audio;
     private Boolean hasVideo;
     private UserDto user;
     private String replyCommentId;
@@ -107,5 +108,13 @@ public class CommentDto {
 
     public void setVideoFirstFrameUrl(String videoFirstFrameUrl) {
         this.videoFirstFrameUrl = videoFirstFrameUrl;
+    }
+
+    public FileInfoDto getAudio() {
+        return audio;
+    }
+
+    public void setAudio(FileInfoDto audio) {
+        this.audio = audio;
     }
 }
