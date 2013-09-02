@@ -72,7 +72,7 @@ public class DigestPostRecorder {
                 new Update().set(User.DIGEST_COUNT_KEY, digestCount), User.class);
     }
 
-    private boolean isMarkDigest(Post post) {
+    public boolean isMarkDigest(Post post) {
         return post.getOriginPostId() != null
                 && post.getUserId().equals(settingService.getSetting().getOfficialAccountId());
     }
