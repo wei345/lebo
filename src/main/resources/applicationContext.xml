@@ -22,7 +22,11 @@
     <mongo:repositories base-package="com.lebo.repository"/>
 
     <!-- MongoDB -->
-    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.dbname}" host="${mongo.host}" port="${mongo.port}"/>
+    <mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}">
+        <mongo:options connections-per-host="1000" threads-allowed-to-block-for-connection-multiplier="500"/>
+    </mongo:mongo>
+
+    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.dbname}" mongo-ref="mongo"/>
 
     <mongo:mapping-converter id="mongoConverter"/>
 
