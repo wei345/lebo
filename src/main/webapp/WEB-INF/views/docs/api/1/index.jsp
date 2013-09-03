@@ -265,7 +265,7 @@
             <tags:link url="${ctx}/docs/api/1/get/users/search" text="GET users/search"/>
         </td>
         <td>
-            返回符合条件的用户列表，可指定全部或部分screenName。
+            返回符合条件的用户列表，可指定全部或部分screenName。粉丝最多、最受喜欢、票房最高、导演排行。
         </td>
     </tr>
     <tr>

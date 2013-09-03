@@ -110,7 +110,6 @@ public class AccountService extends AbstractMongoService {
     }
 
     public User createUser(User user) {
-        user.initial();
         user.setCreatedAt(dateProvider.getDate());
         user.setId(newMongoId(user.getCreatedAt()));
 

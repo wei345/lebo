@@ -28,7 +28,7 @@ public class UserDto {
     //当前登录用户是否已将该用户加入黑名单
     private Boolean blocking;
     private Boolean bilateral;
-    private int level;
+    private Integer level;
 
     public String getId() {
         return id;
@@ -184,11 +184,11 @@ public class UserDto {
         this.profileImageOriginalUrl = profileImageOriginalUrl;
     }
 
-    public int getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 }

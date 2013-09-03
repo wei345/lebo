@@ -6,18 +6,26 @@
 <c:set var="FOLLOWERS_COUNT_KEY" value="<%=User.FOLLOWERS_COUNT_KEY%>"/>
 <c:set var="BE_FAVORITED_COUNT_KEY" value="<%=User.BE_FAVORITED_COUNT_KEY%>"/>
 <c:set var="VIEW_COUNT_KEY" value="<%=User.VIEW_COUNT_KEY%>"/>
+<c:set var="DIGEST_COUNT_KEY" value="<%=User.DIGEST_COUNT_KEY%>"/>
 
 <tags:form name="搜索用户" method="GET" action="${ctx}/api/1/users/search.json">
-    正则表达式查找screenName
+    查找screenName
     <tags:field name="q" value="麦" optional="true"/>
     每页大小5-200
     <tags:field name="size" value="5" optional="true"/>
     第几页，从0开始，0返回第1页数据
     <tags:field name="page" value="2" optional="true"/>
-    按什么字段排序：id,${FOLLOWERS_COUNT_KEY},${BE_FAVORITED_COUNT_KEY},${VIEW_COUNT_KEY}，缺省id
+    按什么字段排序：id, ${FOLLOWERS_COUNT_KEY}, ${BE_FAVORITED_COUNT_KEY}, ${VIEW_COUNT_KEY}, ${DIGEST_COUNT_KEY}, 缺省id
     <tags:field name="orderBy" value="<%=User.FOLLOWERS_COUNT_KEY%>" optional="true"/>
     顺序：desc或asc，缺省desc
     <tags:field name="order" value="desc" optional="true"/>
+
+    <ul>
+        <li>粉丝最多: <code>/api/1/users/search.json?orderBy=followersCount&order=desc</code></li>
+        <li>最受喜欢: <code>/api/1/users/search.json?orderBy=beFavoritedCount&order=desc</code></li>
+        <li>票房最高: <code>/api/1/users/search.json?orderBy=viewCount&order=desc</code></li>
+        <li>导演排行: <code>/api/1/users/search.json?orderBy=digestCount&order=desc</code></li>
+    </ul>
 </tags:form>
 
 

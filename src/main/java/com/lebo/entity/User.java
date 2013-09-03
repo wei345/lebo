@@ -101,18 +101,20 @@ public class User extends IdEntity {
     private String apnsDevelopmentToken;
 
     public User() {
+        initial();
     }
 
     public User(String id) {
+        initial();
         this.id = id;
     }
 
-    public User initial() {
-        setFollowersCount(0);
-        setViewCount(0);
-        setBeFavoritedCount(0);
-        setStatusesCount(0);
-        return this;
+    private void initial() {
+        followersCount = 0;
+        viewCount = 0;
+        beFavoritedCount = 0;
+        statusesCount = 0;
+        digestCount = 0;
     }
 
     public String getProfileImageNormal() {
