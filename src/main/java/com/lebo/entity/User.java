@@ -99,9 +99,6 @@ public class User extends IdEntity {
     //Apple Push Notification Service Token
     private String apnsProductionToken;
     private String apnsDevelopmentToken;
-    //等级
-    private int level;
-    public static final String LEVEL_KEY = "level";
 
     public User() {
     }
@@ -115,7 +112,6 @@ public class User extends IdEntity {
         setViewCount(0);
         setBeFavoritedCount(0);
         setStatusesCount(0);
-        level = 0;
         return this;
     }
 
@@ -347,12 +343,21 @@ public class User extends IdEntity {
         this.statusesCount = statusesCount;
     }
 
-    public int getLevel() {
-        return level;
-    }
+    public Integer getLevel() {
+        if(digestCount == null){
+            return null;
+        }
 
-    public void setLevel(int level) {
-        this.level = level;
+        int level = 0;
+        int count = 0;
+        while (count + level + 1 <= digestCount) {
+            level++;
+            count += level;
+            if (level == 60) { //目录最高60级
+                return level;
+            }
+        }
+        return level;
     }
 
     @Override
