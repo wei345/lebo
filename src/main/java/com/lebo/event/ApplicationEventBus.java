@@ -1,11 +1,8 @@
 package com.lebo.event;
 
 import com.google.common.eventbus.EventBus;
-import com.lebo.event.listener.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lebo.event.listener.FavoritesCountRecorder;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -13,7 +10,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 
 /**
  * 全局EventBus。
@@ -27,72 +26,45 @@ import java.net.URL;
 @Component
 public class ApplicationEventBus extends EventBus implements ApplicationContextAware {
     private ApplicationContext applicationContext;
-    private Logger logger = LoggerFactory.getLogger(ApplicationEventBus.class);
-
-    @Autowired
-    private AutoFollowOfficialAccountListener autoFollowOfficialAccountListener;
-    @Autowired
-    private DigestPostRecorder digestPostRecorder;
-    @Autowired
-    private FavoritesCountRecorder favoritesCountRecorder;
-    @Autowired
-    private FetchProfileImageListener fetchProfileImageListener;
-    @Autowired
-    private FollowerCountRecorder followerCountRecorder;
-    @Autowired
-    private HashtagRecorder hashtagRecorder;
-    @Autowired
-    private LastLoginTimeListener lastLoginTimeListener;
-    @Autowired
-    private NotificationListener notificationListener;
-    @Autowired
-    private StatusCountRecorder statusCountRecorder;
-    @Autowired
-    private UserLevelRecorder userLevelRecorder;
 
     /**
      * 遍历listener包里的每个类，注册到EventBus。
      */
     @PostConstruct
     private void registerHandlers() {
-        /* 自动查找会出错，找到target/test-classes
         //用class获得包名，是为了获得编译时检查
         registerHandlers(FavoritesCountRecorder.class.getPackage().getName());
-        //如果有子package，写在下面..
-        */
-        register(autoFollowOfficialAccountListener);
-        register(digestPostRecorder);
-        register(favoritesCountRecorder);
-        register(fetchProfileImageListener);
-        register(followerCountRecorder);
-        register(hashtagRecorder);
-        register(lastLoginTimeListener);
-        register(notificationListener);
-        register(statusCountRecorder);
-        register(userLevelRecorder);
+        //如果有子package或其他package，写在下面..
     }
 
     private void registerHandlers(String packageName) {
-        // Prepare.
-        URL root = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));
+        Enumeration<URL> resources;
+        try {
+            resources = Thread.currentThread().getContextClassLoader().getResources(packageName.replace(".", "/"));
+        } catch (IOException e) {
+            throw new RuntimeException("ApplicationEventBus#registerHandlers出错", e);
+        }
 
-        // Filter .class files.
-        File[] files = new File(root.getFile()).listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".class");
-            }
-        });
-
-        // Find classes implementing ICommand.
-        for (File file : files) {
-            String className = file.getName().replaceAll(".class$", "");
-            try {
-                Class<?> cls = Class.forName(packageName + "." + className);
-                if (cls.isAnnotationPresent(Component.class)) {
-                    register(applicationContext.getBean(cls));
+        while (resources.hasMoreElements()) {
+            URL root = resources.nextElement();
+            // Filter .class files.
+            File[] files = new File(root.getFile()).listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".class");
                 }
-            } catch (ClassNotFoundException e) {
-                logger.warn("注册事件处理器出错", e);
+            });
+
+            // Find classes implementing ICommand.
+            for (File file : files) {
+                String className = file.getName().replaceAll(".class$", "");
+                try {
+                    Class<?> cls = Class.forName(packageName + "." + className);
+                    if (cls.isAnnotationPresent(Component.class)) {
+                        register(applicationContext.getBean(cls));
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException("ApplicationEventBus#registerHandlers出错", e);
+                }
             }
         }
     }
