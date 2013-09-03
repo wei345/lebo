@@ -4,7 +4,11 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<strong>乐播</strong>
+<style>
+    h2.noborder {border-bottom : 0}
+</style>
+
+<h2 class="noborder">乐播</h2>
 <table class="table table-hover">
 <tr>
     <th class="input-large">字段</th>
@@ -211,7 +215,7 @@
 </tr>
 </table>
 
-<strong>用户</strong>
+<h2 class="noborder">用户</h2>
 <table class="table table-hover">
     <tr>
         <th class="input-large">字段</th>
@@ -406,9 +410,108 @@
             当前登录用户是否已将该用户加入黑名单
         </td>
     </tr>
+    <tr>
+        <td>
+            level
+        </td>
+        <td>
+            int32
+        </td>
+        <td>
+            导演等级
+        </td>
+    </tr>
 </table>
 
-<strong>error</strong>
+<h2 class="noborder">评论</h2>
+<table class="table table-hover">
+    <tr>
+        <th class="input-large">字段</th>
+        <th class="input-small">类型</th>
+        <th>说明</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>string</td>
+        <td>该评论的id</td>
+    </tr>
+    <tr>
+        <td>postId</td>
+        <td>string</td>
+        <td>该评论所属帖子id</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>string</td>
+        <td>该评论创建时间</td>
+    </tr>
+    <tr>
+        <td>text</td>
+        <td>string</td>
+        <td>该评论的文字内容</td>
+    </tr>
+    <tr>
+        <td>video</td>
+        <td>object</td>
+        <td>该评论的视频文件信息，该评论为视频评论时有此字段</td>
+    </tr>
+    <tr>
+        <td>videoFirstFrameUrl</td>
+        <td>string</td>
+        <td>视频第一帧图片URL</td>
+    </tr>
+    <tr>
+        <td>audio</td>
+        <td>object</td>
+        <td>该评论的语音文件信息，该评论为语音评论时有此字段</td>
+    </tr>
+    <tr>
+        <td>hasVideo (已弃用)</td>
+        <td>boolean</td>
+        <td>该评论是否含有视频</td>
+    </tr>
+    <tr>
+        <td>user</td>
+        <td>object</td>
+        <td>该评论的作者信息</td>
+    </tr>
+    <tr>
+        <td>replyCommentId</td>
+        <td>string</td>
+        <td>如果该评论回复另外一条评论，会有此字段，值为另外一条评论的id</td>
+    </tr>
+    <tr>
+        <td>replyCommentUser</td>
+        <td>object</td>
+        <td>如果该评论回复另外一条评论，会有此字段，值为另外一条评论的作者信息</td>
+    </tr>
+</table>
+
+<h2 class="noborder">文件信息</h2>
+<table class="table table-hover">
+    <tr>
+        <th class="input-large">字段</th>
+        <th class="input-small">类型</th>
+        <th>说明</th>
+    </tr>
+    <tr>
+        <td>length</td>
+        <td>int64</td>
+        <td>文件字节数</td>
+    </tr>
+    <tr>
+        <td>contentType</td>
+        <td>string</td>
+        <td>内容类型，Mime-Type格式，如：video/mp4</td>
+    </tr>
+    <tr>
+        <td>contentUrl</td>
+        <td>string</td>
+        <td>文件内容URL</td>
+    </tr>
+</table>
+
+<h2>Error</h2>
 
 <p><code>200&lt;=HTTP状态码<300为成功，否则失败</code></p>
 
