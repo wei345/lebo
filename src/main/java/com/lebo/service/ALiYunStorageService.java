@@ -16,7 +16,9 @@ import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: Wei Liu
@@ -47,6 +49,13 @@ public class ALiYunStorageService implements FileStorageService {
         ObjectMetadata meta = new ObjectMetadata();
         meta.setContentLength(fileInfo.getLength());
         meta.setContentType(fileInfo.getContentType());
+        //保存视频、音频时长
+        if (fileInfo.getDuration() != null) {
+            Map<String, String> userMeta = new HashMap<String, String>(1);
+            userMeta.put("duration", fileInfo.getDuration().toString());
+            meta.setUserMetadata(userMeta);
+        }
+
         PutObjectResult result = client.putObject(bucketName, fileInfo.getKey(), fileInfo.getContent(), meta);
         IOUtils.closeQuietly(fileInfo.getContent());
 

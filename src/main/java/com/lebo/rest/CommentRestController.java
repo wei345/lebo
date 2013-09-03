@@ -113,6 +113,7 @@ public class CommentRestController {
     public Object createWithMedia(@RequestParam(value = "video", required = false) MultipartFile video,
                                   @RequestParam(value = "image", required = false) MultipartFile image,
                                   @RequestParam(value = "audio", required = false) MultipartFile audio,
+                                  @RequestParam(value = "audioDuration", required = false) Long audioDuration,
                                   @RequestParam(value = "text", required = false) String text,
                                   @RequestParam(value = "postId", required = false) String postId,
                                   @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
@@ -152,9 +153,10 @@ public class CommentRestController {
                 videoFileInfo = ControllerUtils.getFileInfo(video);
                 imageFileInfo = ControllerUtils.getFileInfo(image);
             }
-            //音频评论
+            //语音评论
             else if (audio != null) {
                 audioFileInfo = ControllerUtils.getFileInfo(audio);
+                audioFileInfo.setDuration(audioDuration);
             }
             //参数错误
             else {

@@ -17,37 +17,44 @@
     <tags:field name="video" type="file" optional="true"/>
     <tags:field name="image" type="file" optional="true"/>
     <tags:field name="audio" type="file" optional="true"/>
+    <p>
+        语音时长，整数
+    </p>
+    <tags:field name="audioDuration" optional="true"/>
     <tags:textarea name="text" value="视频评论" optional="true"/>
 </tags:form>
 
 <tags:example method="POST" url="http://localhost:8080/api/1/comments/createWithMedia.json">
     {
-        id: "52245b3b1a880df943893ebb",
-        postId: "5221f1a91a88cad717f90245",
-        createdAt: "Mon Sep 02 17:32:43 +0800 2013",
-        text: "语音评论",
+        id: "5225c8e51a88004a2f8fafa8",
+        postId: "52204fab1a887135cbd8b484",
+        createdAt: "Tue Sep 03 19:32:53 +0800 2013",
+        text: "216秒语音评论",
         files: [ ],
         audio: {
             length: 346470,
             contentType: "audio/amr",
-            contentUrl: "http://file.dev.lebooo.com/comment/52245b3b1a880df943893ebb-audio-346470.amr"
+            contentUrl: "http://file.dev.lebooo.com/comment/5225c8e51a88004a2f8fafa8-audio-346470.amr",
+            duration: 216
         },
         hasVideo: false,
         user: {
-            id: "5216d0dc1a8829c4ae1bbec3",
-            screenName: "涛涛_IT",
-            profileImageUrl: "http://file.dev.lebooo.com/5216d0dc1a8829c4ae1bbec4.png",
-            profileImageBiggerUrl: "http://file.dev.lebooo.com/5216d0dd1a8829c4ae1bbec5.png",
-            profileImageOriginalUrl: "http://file.dev.lebooo.com/5216d0de1a8829c4ae1bbec6.png",
-            createdAt: "Fri Aug 23 11:02:52 +0800 2013",
+            id: "5211e1821a88ec201fd94f26",
+            screenName: "明丫丫是个爷们",
+            profileImageUrl: "http://file.dev.lebooo.com/5211e1831a88ec201fd94f27",
+            profileImageBiggerUrl: "http://file.dev.lebooo.com/5211e1841a88ec201fd94f28",
+            profileImageOriginalUrl: "http://file.dev.lebooo.com/5211e1841a88ec201fd94f29",
+            createdAt: "Mon Aug 19 17:12:34 +0800 2013",
             followersCount: 0,
             friendsCount: 0,
-            statusesCount: 3,
+            statusesCount: 5,
             favoritesCount: 0,
             beFavoritedCount: 0,
             viewCount: 0,
+            digestCount: 0,
             weiboVerified: false,
-            blocking: false
+            blocking: false,
+            level: 0
         }
     }
 </tags:example>

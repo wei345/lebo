@@ -4,6 +4,7 @@ public class FileInfoDto {
     protected long length;
     protected String contentType;
     protected String contentUrl;
+    private Long duration;
 
     public long getLength() {
         return length;
@@ -27,5 +28,13 @@ public class FileInfoDto {
 
     public void setContentUrl(String contentUrl) {
         this.contentUrl = contentUrl;
+    }
+
+    public Long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
     }
 }

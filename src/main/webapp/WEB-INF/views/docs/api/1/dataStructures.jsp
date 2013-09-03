@@ -509,6 +509,11 @@
         <td>string</td>
         <td>文件内容URL</td>
     </tr>
+    <tr>
+        <td>duration</td>
+        <td>int64</td>
+        <td>视频、音频时长</td>
+    </tr>
 </table>
 
 <h2>Error</h2>
