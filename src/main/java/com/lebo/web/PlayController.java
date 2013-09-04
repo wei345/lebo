@@ -1,0 +1,61 @@
+package com.lebo.web;
+
+import com.lebo.entity.Post;
+import com.lebo.rest.dto.StatusDto;
+import com.lebo.service.FileContentUrlUtils;
+import com.lebo.service.SettingService;
+import com.lebo.service.StatusService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Properties;
+import java.util.regex.Pattern;
+
+/**
+ * @author: Wei Liu
+ * Date: 13-8-17
+ * Time: PM4:15
+ */
+@RequestMapping("/play")
+@Controller
+public class PlayController {
+
+    @Autowired
+    private StatusService statusService;
+    @Autowired
+    private Properties applicationProperties;
+    @Autowired
+    private SettingService settingService;
+
+    private Pattern mobilePattern = Pattern.compile("Android|webOS|iPhone|iPad|iPod|BlackBerry");
+
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public String show(@PathVariable("id") String id, @RequestHeader("User-Agent") String userAgent, Model model) {
+        Post post = statusService.getPost(id);
+
+        if(post == null){
+            return "play/not-found";
+        }
+
+        StatusDto dto = statusService.toStatusDto(post);
+        model.addAttribute("post", dto.getOriginStatus() == null ? dto : dto.getOriginStatus());
+        model.addAttribute("baseurl", applicationProperties.get("app.baseurl"));
+        model.addAttribute("image_dl_iphone_app_url", FileContentUrlUtils.getContentUrl("images/btn-dl-lebo-iphone.png"));
+        model.addAttribute("image_dl_android_app_url", FileContentUrlUtils.getContentUrl("images/btn-dl-lebo-android.png"));
+        model.addAttribute("appStoreLeboUrl", settingService.getSetting().getAppStoreLeboUrl());
+        model.addAttribute("leboAppAndroidDownloadUrl", settingService.getSetting().getLeboAppAndroidDownloadUrl());
+
+        //移动版页面
+        if(mobilePattern.matcher(userAgent).find()){
+            return "play/video-mobile";
+        }
+        //桌面版页面
+        else{
+            return "play/video-desktop";
+        }
+
+    }
+}

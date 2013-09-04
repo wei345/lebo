@@ -306,6 +306,10 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageUrl() {
+        //TODO 待用户头像全部迁移，删除这个if
+        if(profileImageNormal == null){
+            return FileContentUrlUtils.getContentUrl(profileImageOriginal);
+        }
         return FileContentUrlUtils.getContentUrl(profileImageNormal);
     }
 
@@ -318,6 +322,10 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageBiggerUrl() {
+        //TODO 待用户头像全部迁移，删除这个if
+        if(profileImageNormal == null){
+            return FileContentUrlUtils.getContentUrl(profileImageOriginal);
+        }
         return FileContentUrlUtils.getContentUrl(profileImageBigger);
     }
 

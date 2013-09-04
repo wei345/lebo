@@ -22,6 +22,10 @@ public class Setting extends IdEntity {
     private Integer digestDays = 2;
     private Integer hotDays = 2;
 
+    //TODO 乐播app下载地址可配置
+    private String appStoreLeboUrl = "https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8";
+    private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
+
     public String getOfficialAccountId() {
         return officialAccountId;
     }
@@ -52,6 +56,22 @@ public class Setting extends IdEntity {
 
     public void setHotDays(Integer hotDays) {
         this.hotDays = hotDays;
+    }
+
+    public String getAppStoreLeboUrl() {
+        return appStoreLeboUrl;
+    }
+
+    public void setAppStoreLeboUrl(String appStoreLeboUrl) {
+        this.appStoreLeboUrl = appStoreLeboUrl;
+    }
+
+    public String getLeboAppAndroidDownloadUrl() {
+        return leboAppAndroidDownloadUrl;
+    }
+
+    public void setLeboAppAndroidDownloadUrl(String leboAppAndroidDownloadUrl) {
+        this.leboAppAndroidDownloadUrl = leboAppAndroidDownloadUrl;
     }
 
     public static class Channel {
