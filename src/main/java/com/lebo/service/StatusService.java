@@ -182,6 +182,7 @@ public class StatusService extends AbstractMongoService {
 
     public StatusDto toBasicStatusDto(Post post) {
         StatusDto dto = BeanMapper.map(post, StatusDto.class);
+        dto.setUser(accountService.toBasicUserDto(accountService.getUser(post.getUserId())));
 
         //转发贴
         if (post.getOriginPostId() != null) {

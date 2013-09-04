@@ -25,8 +25,8 @@
     <meta name='width' content='500px'/>
     <meta name='height' content='500px'/>
     <meta name='viewport' content='width=device-width, initial-scale=1.0,user-scalable=no'/>
-    <link rel='shortcut icon' href='/favicon.ico'/>
-    <link rel='apple-touch-icon' href='/apple-touch-icon.png'/>
+    <%--<link rel='shortcut icon' href='/favicon.ico'/>--%>
+    <%--<link rel='apple-touch-icon' href='/apple-touch-icon.png'/>--%>
     <style type='text/css'>
     body {
         background-color: #19212d;
