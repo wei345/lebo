@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <portable-config>
     <config-file path="WEB-INF/web.xml">
-        <replace xpath="//param-value[@id='spring-profiles-default']">test</replace>
+        <replace xpath="//param-value[text()='production']">test</replace>
     </config-file>
     <!--<config-file path="WEB-INF/spring-mvc.xml">
         <replace xpath="//value[@type='com.fasterxml.jackson.annotation.JsonInclude.Include']">ALWAYS</replace>

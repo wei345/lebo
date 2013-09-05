@@ -13,7 +13,7 @@
     </context-param>
     <context-param>
         <param-name>spring.profiles.default</param-name>
-        <param-value id="spring-profiles-default">production</param-value>
+        <param-value>production</param-value>
     </context-param>
 
     <listener>
