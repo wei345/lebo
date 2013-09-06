@@ -8,6 +8,10 @@
     <p>
         返回当前登录用户的通知(消息)列表。
     </p>
+    <p>
+        unread=true，只返回未读通知。
+    </p>
+    <tags:field name="unread" value="true" optional="true"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>

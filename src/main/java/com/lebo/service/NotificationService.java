@@ -40,6 +40,10 @@ public class NotificationService extends AbstractMongoService {
         return notificationDao.find(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
     }
 
+    public List<Notification> findUnread(String recipientId, PaginationParam paginationParam) {
+        return notificationDao.findUnread(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
+    }
+
     public Notification create(Notification notification) {
         return notificationDao.save(notification);
     }

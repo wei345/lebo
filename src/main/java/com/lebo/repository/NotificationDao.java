@@ -15,4 +15,7 @@ import java.util.List;
 public interface NotificationDao extends MongoRepository<Notification, String> {
     @Query(value = "{ recipientId : ?0, _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
     List<Notification> find(String recipientId, String maxId, String sinceId, Pageable pageable);
+
+    @Query(value = "{ recipientId : ?0, unread : true, _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
+    List<Notification> findUnread(String recipientId, String maxId, String sinceId, Pageable pageable);
 }

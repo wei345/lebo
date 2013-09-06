@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
@@ -31,8 +32,16 @@ public class NotificationRestController {
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(@Valid PaginationParam param) {
-        List<Notification> notifications = notificationService.find(accountService.getCurrentUserId(), param);
+    public Object list(@Valid PaginationParam param, @RequestParam(value = "unread", required = false) Boolean unread) {
+        List<Notification> notifications;
+        //在全部通知中查找，不区分是否未读
+        if (unread == null) {
+            notifications = notificationService.find(accountService.getCurrentUserId(), param);
+        }
+        //只查找未读的通知
+        else {
+            notifications = notificationService.findUnread(accountService.getCurrentUserId(), param);
+        }
         notificationService.markRead(notifications);
         return notificationService.toNotificationDtos(notifications);
     }
