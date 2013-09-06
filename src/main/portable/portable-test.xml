@@ -6,4 +6,7 @@
     <!--<config-file path="WEB-INF/spring-mvc.xml">
         <replace xpath="//value[@type='com.fasterxml.jackson.annotation.JsonInclude.Include']">ALWAYS</replace>
     </config-file>-->
+    <config-file path="WEB-INF/classes/log4j.properties">
+        <replace key="log4j.rootLogger">WARN, RollingFile</replace>
+    </config-file>
 </portable-config>
