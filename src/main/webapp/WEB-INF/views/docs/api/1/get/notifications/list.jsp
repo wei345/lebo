@@ -17,67 +17,174 @@
     <tags:field name="sinceId" optional="true"/>
 </tags:form>
 
-<strong>返回结果中的activityType</strong>
 <table class="table table-hover">
     <tr>
-        <th class="input-medium">值</th>
+        <th class="input-large">字段</th>
+        <th class="input-small">类型</th>
         <th>说明</th>
     </tr>
     <tr>
         <td>
-            <%=Notification.ACTIVITY_TYPE_FOLLOW%>
+            id
         </td>
         <td>
-            用户被关注。
+            string
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            sender
+        </td>
+        <td>
+            object
+        </td>
+        <td>
+            触发通知的用户
         </td>
     </tr>
     <tr>
+        <td>
+            activityType
+        </td>
+        <td>
+           string
+        </td>
+        <td>
+            通知类型
+        </td>
+    </tr>
+    <tr>
+        <td>
+            relatedStatus
+        </td>
+        <td>
+           object
+        </td>
+        <td>
+            相关的视频
+        </td>
+    </tr>
+    <tr>
+        <td>
+            relatedComment
+        </td>
+        <td>
+            object
+        </td>
+        <td>
+            相关的评论
+        </td>
+    </tr>
+    <tr>
+        <td>
+            createdAt
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            该通知创建日期
+        </td>
+    </tr>
+    <tr>
+        <td>
+            unread
+        </td>
+        <td>
+            boolean
+        </td>
+        <td>
+            true: 未读，false: 已读
+        </td>
+    </tr>
+</table>
+
+<strong>类型</strong>
+<table class="table table-hover">
+    <tr>
+        <th>类型</th>
+        <th>activityType</th>
+        <th>sender</th>
+        <th>relatedStatus</th>
+        <th>relatedComment</th>
+    </tr>
+    <tr>
+        <td>
+            用户被关注
+        </td>
+        <td>
+            <%=Notification.ACTIVITY_TYPE_FOLLOW%>
+        </td>
+        <td>谁关注了该用户</td>
+        <td>无</td>
+        <td>无</td>
+    </tr>
+    <tr>
+        <td>
+            用户的视频被转播
+        </td>
         <td>
             <%=Notification.ACTIVITY_TYPE_REPOST%>
         </td>
-        <td>
-            用户的视频被转播。
-        </td>
+        <td>谁转播了该用户的视频</td>
+        <td>被转播的视频(原贴)</td>
+        <td>无</td>
     </tr>
     <tr>
+        <td>
+            用户的视频被回复
+        </td>
         <td>
             <%=Notification.ACTIVITY_TYPE_REPLY_POST%>
         </td>
-        <td>
-            用户的视频被回复。
-        </td>
+        <td>谁回复了该用户的视频</td>
+        <td>被回复的视频</td>
+        <td>回复视频的评论</td>
     </tr>
     <tr>
+        <td>
+            用户的评论被回复
+        </td>
         <td>
             <%=Notification.ACTIVITY_TYPE_REPLY_COMMENT%>
         </td>
-        <td>
-            用户的评论被回复。
-        </td>
+        <td>谁回复了该用户的评论</td>
+        <td>评论所属视频</td>
+        <td>回复评论的评论</td>
     </tr>
     <tr>
+        <td>
+            用户的视频被喜欢
+        </td>
         <td>
             <%=Notification.ACTIVITY_TYPE_FAVORITE%>
         </td>
-        <td>
-            用户的视频被喜欢。
-        </td>
+        <td>谁喜欢了该用户的视频</td>
+        <td>被喜欢的视频</td>
+        <td>无</td>
     </tr>
     <tr>
+        <td>
+            用户被别人的视频描述<code>@</code>
+        </td>
         <td>
             <%=Notification.ACTIVITY_TYPE_POST_AT%>
         </td>
-        <td>
-            用户被别人的视频<code>@</code>。
-        </td>
+        <td>谁在视频描述里<code>@</code>了该用户</td>
+        <td><code>@</code>了该用户的视频</td>
+        <td>无</td>
     </tr>
     <tr>
         <td>
-            <%=Notification.ACTIVITY_TYPE_COMMENT_AT%>
+            用户被别人的评论<code>@</code>
         </td>
         <td>
-            用户被别人的评论<code>@</code>。
+            <%=Notification.ACTIVITY_TYPE_COMMENT_AT%>
         </td>
+        <td>谁在评论里<code>@</code>了该用户</td>
+        <td>评论所属视频</td>
+        <td><code>@</code>了该用户的评论</td>
     </tr>
 </table>
 
