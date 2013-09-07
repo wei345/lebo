@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<portable-config>
-    <!-- web.xml中spring.profiles.default值为production, 所以这里不再设置 -->
-
-    <config-file path="WEB-INF/classes/log4j.properties">
-        <replace key="log4j.rootLogger">WARN, RollingFile</replace>
-    </config-file>
-</portable-config>

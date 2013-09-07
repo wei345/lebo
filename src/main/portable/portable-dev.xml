@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 集成开发环境 -->
+<portable-config>
+    <!-- web.xml中spring.profiles.default默认为development，无需修改 -->
+
+    <!-- JSON输出所有字段用于开发调试。注意：这种情况下，因为null值问题，iOS客户端可能会崩溃 -->
+    <!--<config-file path="WEB-INF/spring-mvc.xml">
+        <replace xpath="//value[@type='com.fasterxml.jackson.annotation.JsonInclude.Include']">ALWAYS</replace>
+    </config-file>-->
+
+    <config-file path="WEB-INF/classes/log4j.properties">
+        <replace key="log4j.rootLogger">WARN, RollingFile</replace>
+    </config-file>
+
+    <config-file path="WEB-INF/classes/application.properties">
+        <!-- mongodb settings -->
+        <replace key="mongo.host">localhost</replace>
+
+        <!-- activemq settings -->
+        <replace key="jms.broker_url">vm://lebo?broker.persistent=false&amp;broker.useJmx=false&amp;broker.schedulerSupport=false</replace>
+
+        <!-- memcached settings -->
+        <replace key="memcached.url">10.160.8.62:11211</replace>
+
+        <!-- cluster settings -->
+        <replace key="server.node_name">app1</replace>
+        <replace key="server.addr">121.199.48.160</replace>
+
+        <!-- ALiYun Storage -->
+        <replace key="aliyun_oss.endpoint">http://oss-internal.aliyuncs.com</replace>
+        <replace key="aliyun_oss.bucketName">lebo-dev</replace>
+        <replace key="aliyun_oss.baseurl">http://file.dev.lebooo.com</replace>
+
+        <!-- app -->
+        <!-- http://{host}:{port}{context} -->
+        <replace key="app.baseurl">http://app.dev.lebooo.com:8080</replace>
+    </config-file>
+</portable-config>

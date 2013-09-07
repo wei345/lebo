@@ -621,26 +621,23 @@
 
         <!-- 在打包时，修改部分配置 -->
         <profile>
-            <id>production</id>
+            <id>app0</id>
             <properties>
-                <portableConfig>src/main/portable/portable-production.xml</portableConfig>
+                <portableConfig>src/main/portable/portable-app0.xml</portableConfig>
             </properties>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <excludes>
-                            <exclude>application.test.properties</exclude>
-                        </excludes>
-                    </resource>
-                </resources>
-            </build>
         </profile>
 
         <profile>
-            <id>test</id>
+            <id>app1</id>
             <properties>
-                <portableConfig>src/main/portable/portable-test.xml</portableConfig>
+                <portableConfig>src/main/portable/portable-app1.xml</portableConfig>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <properties>
+                <portableConfig>src/main/portable/portable-dev.xml</portableConfig>
             </properties>
         </profile>
 
