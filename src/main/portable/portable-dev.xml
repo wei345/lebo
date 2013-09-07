@@ -35,4 +35,9 @@
         <!-- http://{host}:{port}{context} -->
         <replace key="app.baseurl">http://app.dev.lebooo.com:8080</replace>
     </config-file>
+
+    <!-- quartz-cluster.properties -->
+    <config-file path="WEB-INF/classes/schedule/quartz-cluster.properties">
+        <replace key="org.quartz.jobStore.addresses">localhost</replace>
+    </config-file>
 </portable-config>

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- 生产环境，节点app0 -->
 <portable-config>
+    <!-- web.xml -->
     <config-file path="WEB-INF/web.xml">
         <replace xpath="//param-value[text()='development']">production</replace>
     </config-file>
 
+    <!-- log4j.properties -->
     <config-file path="WEB-INF/classes/log4j.properties">
         <replace key="log4j.rootLogger">WARN, RollingFile</replace>
     </config-file>
 
+    <!-- application.properties -->
     <config-file path="WEB-INF/classes/application.properties">
         <!-- mongodb settings -->
         <replace key="mongo.host">10.160.8.62</replace>
@@ -31,5 +34,10 @@
         <!-- app -->
         <!-- http://{host}:{port}{context} -->
         <replace key="app.baseurl">http://app.lebooo.com</replace>
+    </config-file>
+
+    <!-- quartz-cluster.properties -->
+    <config-file path="WEB-INF/classes/schedule/quartz-cluster.properties">
+        <replace key="org.quartz.jobStore.addresses">10.160.8.62</replace>
     </config-file>
 </portable-config>
