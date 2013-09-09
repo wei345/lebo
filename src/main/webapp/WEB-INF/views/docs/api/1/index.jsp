@@ -320,6 +320,14 @@
             返回由userId或screenName指定的用户的粉丝列表。
         </td>
     </tr>
+    <tr>
+        <td>
+            <tags:link url="${ctx}/docs/api/1/get/friends/weiboFriends" text="GET friends/weiboFriends"/>
+        </td>
+        <td>
+            返回新浪微博好友。
+        </td>
+    </tr>
     <%--未用到 <tr>
         <td>
             <tags:link url="${ctx}/docs/api/1/get/friends/bilateral" text="GET friends/bilateral"/>

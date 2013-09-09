@@ -100,6 +100,14 @@ public class User extends IdEntity {
     private String apnsProductionToken;
     private String apnsDevelopmentToken;
 
+    private String weiboToken; //用微博账号登录的token
+    private String renrenToken;//用人人账号登录的token
+
+    //查找好友功能用到的token
+    private String findFriendWeiboToken;
+    private String findFriendWeiboUid;
+    private String findFriendRenrenToken;
+
     public User() {
         initial();
     }
@@ -368,6 +376,46 @@ public class User extends IdEntity {
             }
         }
         return level;
+    }
+
+    public String getWeiboToken() {
+        return weiboToken;
+    }
+
+    public void setWeiboToken(String weiboToken) {
+        this.weiboToken = weiboToken;
+    }
+
+    public String getRenrenToken() {
+        return renrenToken;
+    }
+
+    public void setRenrenToken(String renrenToken) {
+        this.renrenToken = renrenToken;
+    }
+
+    public String getFindFriendWeiboToken() {
+        return findFriendWeiboToken;
+    }
+
+    public void setFindFriendWeiboToken(String findFriendWeiboToken) {
+        this.findFriendWeiboToken = findFriendWeiboToken;
+    }
+
+    public String getFindFriendWeiboUid() {
+        return findFriendWeiboUid;
+    }
+
+    public void setFindFriendWeiboUid(String findFriendWeiboUid) {
+        this.findFriendWeiboUid = findFriendWeiboUid;
+    }
+
+    public String getFindFriendRenrenToken() {
+        return findFriendRenrenToken;
+    }
+
+    public void setFindFriendRenrenToken(String findFriendRenrenToken) {
+        this.findFriendRenrenToken = findFriendRenrenToken;
     }
 
     @Override

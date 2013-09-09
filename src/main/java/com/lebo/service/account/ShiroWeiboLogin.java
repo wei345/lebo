@@ -1,8 +1,7 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
@@ -18,9 +17,10 @@ import java.util.Map;
 @Service
 public class ShiroWeiboLogin extends AbstractOAuthLogin {
 
-    private Logger logger = LoggerFactory.getLogger(ShiroWeiboLogin.class);
-
     public static final String PROVIDER = "weibo";
+
+    @Autowired
+    private WeiboService weiboService;
 
     /*private String weibo_redirect_uri = "/weibo_callback";
 
@@ -29,12 +29,12 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
     }*/
 
     public User getUser(String token) {
-        String uid = getUid(token);
+        String uid = weiboService.getUid(token);
         User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
         // 第一次登录，创建用户
         if (user == null) {
-            Map userInfo = getUserInfo(token, uid);
+            Map userInfo = weiboService.getUserInfo(token, uid);
 
             user = new User();
             user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
@@ -46,26 +46,19 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
             user.setWeiboVerified((Boolean) userInfo.get("verified"));
+            user.setWeiboToken(token);
 
             user = accountService.createUser(user);
         }
+        //更新token
+        else {
+            if (!token.equals(user.getWeiboToken())) {
+                user.setWeiboToken(token);
+                accountService.saveUser(user);
+            }
+        }
 
         return user;
-    }
-
-    private String getUid(String token) {
-        String url = String.format("https://api.weibo.com/2/account/get_uid.json?access_token=" + token);
-        return restTemplate.getForObject(url, Map.class).get("uid").toString();
-    }
-
-    private Map getUserInfo(String token, String uid) {
-        String url = String.format("https://api.weibo.com/2/users/show.json?uid=%s&access_token=%s", uid, token);
-        Map userInfo = restTemplate.getForObject(url, Map.class);
-
-        if (userInfo == null || userInfo.get("name") == null) {
-            throw new RuntimeException("获取用户信息发生错误");
-        }
-        return userInfo;
     }
 
     @Override

@@ -16,7 +16,6 @@ import java.util.Map;
  */
 @Service
 public class ShiroRenRenLogin extends AbstractOAuthLogin {
-    private Logger logger = LoggerFactory.getLogger(ShiroWeiboLogin.class);
     public static String PROVIDER = "renren";
 
     @Override
@@ -39,8 +38,16 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
             LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
             oAuthIds.add(oAuthId(PROVIDER, uid));
             user.setoAuthIds(oAuthIds);
+            user.setRenrenToken(token);
 
             user = accountService.createUser(user);
+        }
+        //更新token
+        else {
+            if (!token.equals(user.getRenrenToken())) {
+                user.setRenrenToken(token);
+                accountService.saveUser(user);
+            }
         }
         return user;
     }

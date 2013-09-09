@@ -556,7 +556,7 @@
     <li>5xx - 服务器错误</li>
 </ul>
 
-<table class="table table-hover">
+<table id="error_code" class="table table-hover">
     <tr>
         <th class="input-medium">HTTP状态码</th>
         <th class="input-medium">code</th>
@@ -673,6 +673,34 @@
         </td>
         <td>
             <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY.getError().getMessage()%>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <%=ErrorDto.FIND_WEIBO_FRIEND_NO_TOKEN.getHttpStatus().value()%>
+        </td>
+        <td>
+            <%=ErrorDto.FIND_WEIBO_FRIEND_NO_TOKEN.getError().getCode()%>
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <%=ErrorDto.FIND_WEIBO_FRIEND_NO_TOKEN.getError().getMessage()%>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <%=ErrorDto.FIND_WEIBO_FRIEND_ERROR_TOKEN.getHttpStatus().value()%>
+        </td>
+        <td>
+            <%=ErrorDto.FIND_WEIBO_FRIEND_ERROR_TOKEN.getError().getCode()%>
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <%=ErrorDto.FIND_WEIBO_FRIEND_ERROR_TOKEN.getError().getMessage()%>
         </td>
     </tr>
     <tr>

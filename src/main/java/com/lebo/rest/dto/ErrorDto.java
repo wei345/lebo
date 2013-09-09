@@ -1,5 +1,6 @@
 package com.lebo.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lebo.service.ServiceException;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,8 @@ public class ErrorDto {
     public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_BLOCKING = new ErrorDto("不能关注该用户，因为对方在你的黑名单中", 10429, HttpStatus.BAD_REQUEST);
     public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_TOO_MANY = new ErrorDto("不能关注该用户，因为你关注的人数已达到上限", 10430, HttpStatus.BAD_REQUEST);
     public static final ErrorDto INTERNAL_SERVER_ERROR = new ErrorDto("Internal Server Error", 10500, HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final ErrorDto FIND_WEIBO_FRIEND_NO_TOKEN = new ErrorDto("没有微博token", 10431, HttpStatus.BAD_REQUEST);
+    public static final ErrorDto FIND_WEIBO_FRIEND_ERROR_TOKEN = new ErrorDto("token不正确或已过期", 10432, HttpStatus.BAD_REQUEST);
 
     private static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
     private String json;
@@ -116,6 +119,11 @@ public class ErrorDto {
             json = jsonMapper.toJson(this);
         }
         return json;
+    }
+
+    @JsonIgnore
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
     public static class Error {

@@ -38,7 +38,7 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
 
     private Logger logger = LoggerFactory.getLogger(AbstractOAuthLogin.class);
 
-    String oAuthId(String provider, String uid) {
+    public static String oAuthId(String provider, String uid) {
         return provider + "/" + uid;
     }
 
