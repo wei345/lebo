@@ -104,13 +104,16 @@ public class NotificationListener {
 
             sendNotificationQueue(notification, "%s 回复了你的评论");
         }
+
         //回复post
         Post post = statusService.getPost(event.getComment().getPostId());
-        Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPLY_POST,
-                post.getUserId(), event.getComment().getUserId(),
-                Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
+        if (!post.getUserId().equals(event.getComment().getUserId())) {//回复自己帖子不通知自己
+            Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPLY_POST,
+                    post.getUserId(), event.getComment().getUserId(),
+                    Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
 
-        sendNotificationQueue(notification, "%s 回复了你的视频");
+            sendNotificationQueue(notification, "%s 回复了你的视频");
+        }
 
         //comment中at
         for (String userId : event.getComment().getMentionUserIds()) {
@@ -118,7 +121,7 @@ public class NotificationListener {
             if (event.getComment().getUserId().equals(userId)) {
                 continue;
             }
-            notification = createNotification(Notification.ACTIVITY_TYPE_COMMENT_AT,
+            Notification notification = createNotification(Notification.ACTIVITY_TYPE_COMMENT_AT,
                     userId, event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
 
