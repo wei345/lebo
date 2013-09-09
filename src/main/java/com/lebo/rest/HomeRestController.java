@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.rest.dto.CheckVersionDto;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.account.AbstractShiroLogin;
 import com.lebo.service.account.AccountService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletContext;
+import java.util.Date;
 
 /**
  * @author: Wei Liu
@@ -85,6 +87,25 @@ public class HomeRestController {
             logger.info("登录失败", e);
             return ErrorDto.badRequest(e.getMessage());
         }
+    }
+
+    /**
+     * 返回客户端最新版本号，及告知客户端是否强制升级。
+     */
+    @RequestMapping(value = "1/checkVersion")
+    @ResponseBody
+    public Object checkVersion(@RequestParam("os") String os,  //android or ios
+                               @RequestParam("osVersion") String osVersion,
+                               @RequestParam("version") String version) {
+        CheckVersionDto dto = new CheckVersionDto();
+
+        dto.setDownloadUrl("https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8");
+        dto.setForceUpgrade(false);
+        dto.setReleaseAt(new Date());
+        dto.setReleaseNotes(String.format("test %s %s %s", os, osVersion, version));
+        dto.setVersion("1.2.3");
+
+        return dto;
     }
 
     @RequestMapping(value = "")

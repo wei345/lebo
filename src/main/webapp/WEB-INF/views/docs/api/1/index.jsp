@@ -438,6 +438,18 @@
     </tr>
 </table>
 
+<strong>版本</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/checkVersion" text="POST checkVersion"/>
+        </td>
+        <td>
+            返回客户端最新版本信息，以及是否需要强制升级。
+        </td>
+    </tr>
+</table>
+
 <hr/>
 
 <p>
