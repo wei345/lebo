@@ -52,11 +52,13 @@ public class NotificationListener {
      */
     @Subscribe
     public void afterFavoriteCreate(AfterFavoriteCreateEvent event) {
-        Notification notification = createNotification(Notification.ACTIVITY_TYPE_FAVORITE,
-                event.getFavorite().getPostUserId(), event.getFavorite().getUserId(),
-                Notification.OBJECT_TYPE_POST, event.getFavorite().getPostId());
+        if (!event.getFavorite().getPostUserId().equals(event.getFavorite().getUserId())) {//自己收藏自己的帖子，不发通知
+            Notification notification = createNotification(Notification.ACTIVITY_TYPE_FAVORITE,
+                    event.getFavorite().getPostUserId(), event.getFavorite().getUserId(),
+                    Notification.OBJECT_TYPE_POST, event.getFavorite().getPostId());
 
-        sendNotificationQueue(notification, "%s 喜欢你的视频");
+            sendNotificationQueue(notification, "%s 喜欢你的视频");
+        }
     }
 
     /**
@@ -67,11 +69,13 @@ public class NotificationListener {
     public void afterPostCreate(AfterPostCreateEvent event) {
         //转发
         if (event.getPost().getOriginPostId() != null) {
-            Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPOST,
-                    event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
-                    Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId());
+            if (!event.getPost().getOriginPostUserId().equals(event.getPost().getUserId())) { //转发自己的帖子不发通知
+                Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPOST,
+                        event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
+                        Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId());
 
-            sendNotificationQueue(notification, "%s 转播了你的视频");
+                sendNotificationQueue(notification, "%s 转播了你的视频");
+            }
         }
         //原帖，at通知
         else {
