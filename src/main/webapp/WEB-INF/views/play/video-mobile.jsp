@@ -75,11 +75,10 @@
     </div>
 
 </div>
-
+<script type='text/javascript'>
+    if( /iPhone|iPad|iPod/i.test(navigator.userAgent)) {window.location.href='lebo://topic/${post.id}'}
+    var vdesc = document.getElementById('video_desc');
+    if (vdesc) vdesc.innerHTML = document.getElementById('video_desc').innerHTML.replace(/^\s+|\s+$/, '').replace(/^(#[^#\n]+?#)/, '<span class="channel">$1</span>');
+</script>
 </body>
 </html>
-<script type='text/javascript'>
-if( /iPhone|iPad|iPod/i.test(navigator.userAgent)) {window.location.href='lebo://topic/${post.id}'}
-var vdesc = document.getElementById('video_desc');
-if (vdesc) vdesc.innerHTML = document.getElementById('video_desc').innerHTML.replace(/^\s+|\s+$/, '').replace(/^(#[^#\n]+?#)/, '<span class="channel">$1</span>');
-</script>

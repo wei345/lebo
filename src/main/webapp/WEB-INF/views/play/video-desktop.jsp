@@ -153,10 +153,10 @@
         </div>
     </div>
 </div>
-</body>
-</html>
 <script>
     var vinst = document.getElementById('video_instruction');
     if (vinst)
         vinst.innerHTML = document.getElementById('video_instruction').innerHTML.replace(/^\s+|\s+$/, '').replace(/^(#[^#\n]+?#)/, '<span class="channel">$1</span>');
 </script>
+</body>
+</html>
