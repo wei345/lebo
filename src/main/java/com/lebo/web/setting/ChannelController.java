@@ -1,27 +1,20 @@
 package com.lebo.web.setting;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.lebo.entity.Channel;
 import com.lebo.entity.FileInfo;
-import com.lebo.entity.Setting;
 import com.lebo.service.AbstractMongoService;
 import com.lebo.service.FileStorageService;
 import com.lebo.service.SettingService;
 import com.lebo.web.ControllerUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springside.modules.mapper.JsonMapper;
-import org.springside.modules.utils.Collections3;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -33,86 +26,78 @@ import java.util.List;
 public class ChannelController {
     @Autowired
     private SettingService settingService;
-
     @Autowired
     private FileStorageService fileStorageService;
 
-    private JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
-
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
-        Setting setting = settingService.getSetting();
-        model.addAttribute("channels", setting.getChannels());
-
-        jsonMapper.getMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
-        String json = jsonMapper.toJson(setting.getChannels());
-
-        model.addAttribute("channelsJson", json);
+        model.addAttribute("channels", settingService.getAllChannels());
         return "setting/channelList";
     }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
-    public String form() {
+    public String createForm() {
         return "setting/channelForm";
     }
 
-    @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String create(@Valid Channel channel,
-                         @RequestParam(value = "channelImage") MultipartFile image,
-                         @RequestParam(value = "slug") String slug,
+    @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+    public String updateForm(@PathVariable("id") String id, Model model) {
+        model.addAttribute("channel", settingService.getChannel(id));
+        return "setting/channelForm";
+    }
+
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public String update(@Valid @ModelAttribute("channel") Channel channel,
+                         @RequestParam(value = "channelImage", required = false) MultipartFile image,
                          Model model,
                          RedirectAttributes redirectAttributes) {
         try {
-            FileInfo fileInfo = ControllerUtils.getFileInfo(image);
-            fileInfo.setKey(AbstractMongoService.generateFileId("images/channels/", null, slug, fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
-            fileStorageService.save(fileInfo);
-            channel.setImage(fileInfo.getKey());
+            if (image != null) {
+                //保存新文件
+                FileInfo fileInfo = ControllerUtils.getFileInfo(image);
+                fileInfo.setKey(AbstractMongoService.generateFileId("images/channels/", null, channel.getSlug(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+                fileStorageService.save(fileInfo);
 
-            Setting setting = settingService.getSetting();
-
-            for (Channel c : setting.getChannels()) {
-                if (channel.getName().equals(c.getName())) {
-                    redirectAttributes.addFlashAttribute("error", "重复 " + channel.getName());
-                    return "redirect:/admin/channels";
+                //删除旧文件
+                if (channel.getImage() != null && !channel.getImage().equals(fileInfo.getKey())) {
+                    fileStorageService.delete(channel.getImage());
                 }
+
+                channel.setImage(fileInfo.getKey());
             }
-
-            setting.getChannels().add(channel);
-            settingService.saveSetting(setting);
-
+            settingService.saveChannel(channel);
             redirectAttributes.addFlashAttribute("success", "已创建 " + channel.getName());
             return "redirect:/admin/channels";
         } catch (Exception e) {
             model.addAttribute("error", e);
+            model.addAttribute("channel", channel);
             return "setting/channelForm";
         }
     }
 
-    @RequestMapping(value = "preview", method = RequestMethod.POST)
-    public String preview(@RequestParam("channels") String json, Model model) {
-        List<Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Channel.class));
-        model.addAttribute("channels", channels);
-
-        return "setting/channelPreview";
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
+    public String delete(@PathVariable(value = "id") String id,
+                         RedirectAttributes redirectAttributes) {
+        try {
+            //删除图片
+            Channel channel = settingService.getChannel(id);
+            if (StringUtils.isNotBlank(channel.getImage())) {
+                fileStorageService.delete(channel.getImage());
+            }
+            //删除频道
+            settingService.deleteChannel(id);
+            redirectAttributes.addFlashAttribute("success", "已删除 id=" + id);
+            return "redirect:/admin/channels";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "删除失败 id=" + id);
+            return "redirect:/admin/channels";
+        }
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@RequestParam("channels") String json, RedirectAttributes redirectAttributes) {
-        List<Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Channel.class));
-        Setting setting = settingService.getSetting();
-
-        //删除已不用的图片
-        List<String> oldImages = Collections3.extractToList(setting.getChannels(), "image");
-        List<String> newImages = Collections3.extractToList(channels, "image");
-        for (String fileId : oldImages) {
-            if (!newImages.contains(fileId)) {
-                fileStorageService.delete(fileId);
-            }
+    @ModelAttribute
+    public void getUser(@RequestParam(value = "id", required = false) String id, Model model) {
+        if (id != null) {
+            model.addAttribute("channel", settingService.getChannel(id));
         }
-
-        redirectAttributes.addFlashAttribute("success", "保存成功");
-        setting.setChannels(channels);
-        settingService.saveSetting(setting);
-        return "redirect:/admin/channels";
     }
 }

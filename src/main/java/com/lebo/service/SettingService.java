@@ -1,7 +1,9 @@
 package com.lebo.service;
 
+import com.lebo.entity.Channel;
 import com.lebo.entity.Setting;
 import com.lebo.jms.SettingMessageProducer;
+import com.lebo.repository.ChannelDao;
 import com.lebo.repository.SettingDao;
 import com.lebo.rest.dto.ChannelDto;
 import com.lebo.rest.dto.SettingDto;
@@ -9,8 +11,12 @@ import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springside.modules.mapper.BeanMapper;
+
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -22,6 +28,8 @@ import org.springside.modules.mapper.BeanMapper;
 public class SettingService extends AbstractMongoService {
     @Autowired
     private SettingDao settingDao;
+    @Autowired
+    private ChannelDao channelDao;
     @Autowired
     private SettingMessageProducer settingMessageProducer;
     private Setting setting;
@@ -56,5 +64,21 @@ public class SettingService extends AbstractMongoService {
             channelDto.setImageUrl(FileContentUrlUtils.getContentUrl(channelDto.getImage()));
         }
         return dto;
+    }
+
+    public List<Channel> getAllChannels(){
+        return channelDao.findAll(new Sort(Sort.Direction.ASC, Channel.ORDER_KEY));
+    }
+
+    public void saveChannel(Channel channel){
+        channelDao.save(channel);
+    }
+
+    public void deleteChannel(String id){
+        channelDao.delete(id);
+    }
+
+    public Channel getChannel(String id){
+        return channelDao.findOne(id);
     }
 }

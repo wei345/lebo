@@ -14,7 +14,6 @@ import java.util.List;
  */
 @Document(collection = "settings")
 public class Setting extends IdEntity {
-    private List<Channel> channels = new ArrayList<Channel>();
     private String officialAccountId;
 
     private Integer digestDays = 2;
@@ -30,14 +29,6 @@ public class Setting extends IdEntity {
 
     public void setOfficialAccountId(String officialAccountId) {
         this.officialAccountId = officialAccountId;
-    }
-
-    public List<Channel> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(List<Channel> channels) {
-        this.channels = channels;
     }
 
     public Integer getDigestDays() {

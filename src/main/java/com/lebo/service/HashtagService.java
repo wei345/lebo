@@ -2,7 +2,6 @@ package com.lebo.service;
 
 import com.lebo.entity.Channel;
 import com.lebo.entity.Hashtag;
-import com.lebo.entity.Setting;
 import com.lebo.repository.HashtagDao;
 import com.lebo.rest.dto.ChannelDto;
 import com.lebo.service.param.SearchParam;
@@ -88,7 +87,7 @@ public class HashtagService extends AbstractMongoService {
     }
 
     public ChannelDto toChannelDto(Hashtag hashtag) {
-        List<Channel> channels = settingService.getSetting().getChannels();
+        List<Channel> channels = settingService.getAllChannels();
         for (Channel channel : channels) {
             if (channel.getName().equals(hashtag.getName())) {
                 ChannelDto dto = BeanMapper.map(channel, ChannelDto.class);

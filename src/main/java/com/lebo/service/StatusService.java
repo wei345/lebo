@@ -510,7 +510,7 @@ public class StatusService extends AbstractMongoService {
         //-- 解析follow和track begin --//
         //查找配置中的channel
         Channel channel = null;
-        List<Channel> channels = settingService.getSetting().getChannels();
+        List<Channel> channels = settingService.getAllChannels();
         for (Channel c : channels) {
             if (name.equals(c.getTitle())) {
                 channel = c;

@@ -3,47 +3,51 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<a href="${ctx}/admin/channels/create" class="pull-right">新建频道</a>
+<a href="${ctx}/admin/channels/create" class="pull-right">+ 新建频道</a>
 
-<ul class="nav nav-tabs" id="myTab">
-    <li class="active"><a href="#preview">预览</a></li>
-    <li><a href="#edit">编辑</a></li>
-</ul>
-
-<form id="channelsForm" method="POST" action="${ctx}/admin/channels/update">
-    <div class="tab-content">
-        <div class="tab-pane active" id="preview">
-            <%@include file="channelPreview.jsp" %>
-        </div>
-        <div class="tab-pane" id="edit">
-            <textarea name="channels" style="width: 800px; height: 300px">${channelsJson}</textarea>
-        </div>
+<c:if test="${channels == null}">
+    <div class="alert alert-error controls">
+        <button class="close" data-dismiss="alert">×</button>
+        JSON格式错误
     </div>
-    <div>
-        <button type="reset" class="btn">重置</button>
-        <button type="submit" class="btn">保存</button>
-    </div>
-</form>
-
-<script>
-    $(function () {
-        $('#myTab a').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-
-        $('a[href=#preview]').on('show', function (e) {
-            $('#preview').html('加载中..');
-            $.ajax({
-                type: 'POST',
-                url: '${ctx}/admin/channels/preview',
-                data: $('#channelsForm').serialize(),
-                success: function (html) {
-                    $('#preview').html(html);
-                }
-            });
-        });
-    });
-
-</script>
+</c:if>
+<c:if test="${channels != null}">
+    <table id="contentTable" class="table table-striped table-bordered table-condensed table-hover">
+        <thead>
+        <tr>
+            <th class="input-small">频道名</th>
+            <th class="input-small">显示名</th>
+            <th class="input-large">描述</th>
+            <th class="input-small">图片</th>
+            <th class="input-mini">背景颜色</th>
+            <th class="input-small">follow</th>
+            <th class="input-small">track</th>
+            <th class="input-small">顺序</th>
+            <th class="input-mini">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach items="${channels}" var="channel">
+            <tr>
+                <td>${channel.name}</td>
+                <td>${channel.title}</td>
+                <td>${channel.description}</td>
+                <td style="background-color: ${channel.backgroundColor}"><img class="input-small" src="${channel.imageUrl}"/></td>
+                <td><span
+                        style="background-color: ${channel.backgroundColor}; display: inline-block; width: 1em;">&nbsp;</span>${channel.backgroundColor}
+                </td>
+                <td>${channel.follow}</td>
+                <td>${channel.track}</td>
+                <td>${channel.order}</td>
+                <td>
+                    <a class="btn" href="${ctx}/admin/channels/update/${channel.id}">编辑</a>
+                    <form method="post" action="${ctx}/admin/channels/delete/${channel.id}">
+                        <button class="btn" type="submit">删除</button>
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+</c:if>
 
