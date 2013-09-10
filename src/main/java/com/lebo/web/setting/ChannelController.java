@@ -66,7 +66,7 @@ public class ChannelController {
                 channel.setImage(fileInfo.getKey());
             }
             settingService.saveChannel(channel);
-            redirectAttributes.addFlashAttribute("success", "已创建 " + channel.getName());
+            redirectAttributes.addFlashAttribute("success", "已保存 " + channel.getName());
             return "redirect:/admin/channels";
         } catch (Exception e) {
             model.addAttribute("error", e);
