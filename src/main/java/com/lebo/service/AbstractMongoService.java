@@ -121,15 +121,22 @@ public abstract class AbstractMongoService {
 
     public static String generateFileId(String fileCollectionName, String mongoId, String slug, long length, String contentType, String filename) {
         Assert.hasText(fileCollectionName);
-        Assert.hasText(mongoId);
 
-        String datePath = sdf.format(new ObjectId(mongoId).getTime());
+        StringBuilder sb = new StringBuilder(fileCollectionName + "/");
 
-        StringBuilder sb = new StringBuilder(fileCollectionName + "/" + datePath + "/" + mongoId);
+        //日期/mongoId
+        if (StringUtils.isNotBlank(mongoId)) {
+            String datePath = sdf.format(new ObjectId(mongoId).getTime());
+            sb.append(datePath + "/" + mongoId);
+        }
 
         //slug
         if (StringUtils.isNotBlank(slug)) {
-            sb.append("-" + slug);
+            if (sb.toString().endsWith("/")) {
+                sb.append(slug);
+            } else {
+                sb.append("-" + slug);
+            }
         }
 
         //长度,字节

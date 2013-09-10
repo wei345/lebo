@@ -31,8 +31,8 @@ public class MessageService extends AbstractMongoService {
         message.setSource(source);
 
         if (video != null && videoFirstFrame != null) {
-            video.setKey(generateFileId(FILE_COLLECTION_NAME, message.getId(), null, video.getLength(), video.getContentType(), video.getFilename()));
-            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, message.getId(), null, videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
+            video.setKey(generateFileId(FILE_COLLECTION_NAME, message.getId(), "video", video.getLength(), video.getContentType(), video.getFilename()));
+            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, message.getId(), "video-first-frame", videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
 
             fileStorageService.save(video, videoFirstFrame);
             message.setVideo(video);

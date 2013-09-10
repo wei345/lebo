@@ -43,6 +43,14 @@
         </div>
 
         <div class="control-group">
+            <label for="slug" class="control-label">slug:</label>
+            <div class="controls">
+                <input type="text" id="slug" name="slug" value="${slug}" class="input-large"/>
+                由小写字母、数字、连字符(-)组成，用于图片保存路径
+            </div>
+        </div>
+
+        <div class="control-group">
             <label for="description" class="control-label">描述:</label>
 
             <div class="controls">

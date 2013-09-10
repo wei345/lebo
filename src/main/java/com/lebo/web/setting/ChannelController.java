@@ -58,11 +58,12 @@ public class ChannelController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String create(@Valid Setting.Channel channel,
                          @RequestParam(value = "channelImage") MultipartFile image,
+                         @RequestParam(value = "slug") String slug,
                          Model model,
                          RedirectAttributes redirectAttributes) {
         try {
             FileInfo fileInfo = ControllerUtils.getFileInfo(image);
-            fileInfo.setKey(AbstractMongoService.generateFileId("setting/channel", "", null, fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+            fileInfo.setKey(AbstractMongoService.generateFileId("images/channels/", null, slug, fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
             fileStorageService.save(fileInfo);
             channel.setImage(fileInfo.getKey());
 
