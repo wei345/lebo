@@ -348,7 +348,7 @@ public class AccountService extends AbstractMongoService {
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(normal, "png", outputStream);
         fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_normal.png");
-        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "profile-image-normal", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "normal", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
         fileStorageService.save(fileInfo);
         //删除旧文件
         if (isFileId(user.getProfileImageNormal())) {
@@ -361,7 +361,7 @@ public class AccountService extends AbstractMongoService {
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(bigger, "png", outputStream);
         fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_bigger.png");
-        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "profile-image-bigger", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "bigger", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
         fileStorageService.save(fileInfo);
         //删除旧文件
         if (isFileId(user.getProfileImageBigger())) {
@@ -373,7 +373,7 @@ public class AccountService extends AbstractMongoService {
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(originImage, "png", outputStream);
         fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_origin.png");
-        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "profile-image-original", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "original", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
         fileStorageService.save(fileInfo);
         //删除旧文件
         if (isFileId(user.getProfileImageOriginal())) {

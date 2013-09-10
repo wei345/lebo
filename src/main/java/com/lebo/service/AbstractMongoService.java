@@ -15,6 +15,7 @@ import org.springside.modules.utils.DateProvider;
 import org.springside.modules.utils.Reflections;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -116,14 +117,18 @@ public abstract class AbstractMongoService {
      * {collectionName}/{commentId}-{length}byte.{ext}
      * </pre>
      */
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     public static String generateFileId(String fileCollectionName, String mongoId, String slug, long length, String contentType, String filename) {
         Assert.hasText(fileCollectionName);
         Assert.hasText(mongoId);
 
-        StringBuilder sb = new StringBuilder(fileCollectionName + "/" + mongoId);
+        String datePath = sdf.format(new ObjectId(mongoId).getTime());
+
+        StringBuilder sb = new StringBuilder(fileCollectionName + "/" + datePath + "/" + mongoId);
 
         //slug
-        if(StringUtils.isNotBlank(slug)){
+        if (StringUtils.isNotBlank(slug)) {
             sb.append("-" + slug);
         }
 
