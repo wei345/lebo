@@ -94,6 +94,20 @@ public class ChannelController {
         }
     }
 
+    @RequestMapping(value = "enableChannel/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String enableChannel(@PathVariable(value = "id") String id) {
+        settingService.updateChannelEnabled(id, true);
+        return "ok";
+    }
+
+    @RequestMapping(value = "disableChannel/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String disableChannel(@PathVariable(value = "id") String id) {
+        settingService.updateChannelEnabled(id, false);
+        return "ok";
+    }
+
     @ModelAttribute
     public void getUser(@RequestParam(value = "id", required = false) String id, Model model) {
         if (id != null) {

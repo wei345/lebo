@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springside.modules.mapper.BeanMapper;
 
@@ -96,5 +97,11 @@ public class SettingService extends AbstractMongoService {
             dtos.add(toChannelDto(channel));
         }
         return dtos;
+    }
+
+    public void updateChannelEnabled(String id, boolean enabled) {
+        mongoTemplate.updateFirst(new Query(new Criteria(Channel.ID_KEY).is(id)),
+                new Update().set(Channel.ENABLED_KEY, enabled),
+                Channel.class);
     }
 }
