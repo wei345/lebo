@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springside.modules.mapper.BeanMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,11 +60,7 @@ public class SettingService extends AbstractMongoService {
     }
 
     public SettingDto toSettingDto(Setting setting) {
-        SettingDto dto = BeanMapper.map(setting, SettingDto.class);
-        for (ChannelDto channelDto : dto.getChannels()) {
-            channelDto.setImageUrl(FileContentUrlUtils.getContentUrl(channelDto.getImage()));
-        }
-        return dto;
+        return BeanMapper.map(setting, SettingDto.class);
     }
 
     public List<Channel> getAllChannels(){
@@ -80,5 +77,17 @@ public class SettingService extends AbstractMongoService {
 
     public Channel getChannel(String id){
         return channelDao.findOne(id);
+    }
+
+    public ChannelDto toChannelDto(Channel channel){
+        return BeanMapper.map(channel, ChannelDto.class);
+    }
+
+    public List<ChannelDto> toChannelDtos(List<Channel> channels){
+        List<ChannelDto> dtos = new ArrayList<ChannelDto>(channels.size());
+        for(Channel channel : channels){
+            dtos.add(toChannelDto(channel));
+        }
+        return dtos;
     }
 }

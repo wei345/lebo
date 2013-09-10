@@ -29,7 +29,6 @@ public class SettingRestController {
     @RequestMapping(value = "channels", method = RequestMethod.GET)
     @ResponseBody
     public Object channels() {
-        Setting setting = settingService.getSetting();
-        return settingService.toSettingDto(setting).getChannels();
+        return settingService.toChannelDtos(settingService.getAllChannels());
     }
 }
