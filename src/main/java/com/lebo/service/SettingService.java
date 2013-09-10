@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springside.modules.mapper.BeanMapper;
@@ -63,29 +64,35 @@ public class SettingService extends AbstractMongoService {
         return BeanMapper.map(setting, SettingDto.class);
     }
 
-    public List<Channel> getAllChannels(){
+    public List<Channel> getEnabledChannels() {
+        Query query = new Query(new Criteria(Channel.ENABLED_KEY).is(true))
+                .with(new Sort(Sort.Direction.ASC, Channel.ORDER_KEY));
+        return mongoTemplate.find(query, Channel.class);
+    }
+
+    public List<Channel> getAllChannels() {
         return channelDao.findAll(new Sort(Sort.Direction.ASC, Channel.ORDER_KEY));
     }
 
-    public void saveChannel(Channel channel){
+    public void saveChannel(Channel channel) {
         channelDao.save(channel);
     }
 
-    public void deleteChannel(String id){
+    public void deleteChannel(String id) {
         channelDao.delete(id);
     }
 
-    public Channel getChannel(String id){
+    public Channel getChannel(String id) {
         return channelDao.findOne(id);
     }
 
-    public ChannelDto toChannelDto(Channel channel){
+    public ChannelDto toChannelDto(Channel channel) {
         return BeanMapper.map(channel, ChannelDto.class);
     }
 
-    public List<ChannelDto> toChannelDtos(List<Channel> channels){
+    public List<ChannelDto> toChannelDtos(List<Channel> channels) {
         List<ChannelDto> dtos = new ArrayList<ChannelDto>(channels.size());
-        for(Channel channel : channels){
+        for (Channel channel : channels) {
             dtos.add(toChannelDto(channel));
         }
         return dtos;

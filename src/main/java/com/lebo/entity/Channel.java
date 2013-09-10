@@ -12,6 +12,7 @@ public class Channel extends IdEntity{
     private String image;
     private String backgroundColor;
     private boolean enabled;
+    public static final String ENABLED_KEY = "enabled";
     private String follow;
     private String track;
     private Integer postsCount;
