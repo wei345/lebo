@@ -509,9 +509,9 @@ public class StatusService extends AbstractMongoService {
     public List<Post> getChannelPosts(String name, PaginationParam paginationParam) {
         //-- 解析follow和track begin --//
         //查找配置中的channel
-        Setting.Channel channel = null;
-        List<Setting.Channel> channels = settingService.getSetting().getChannels();
-        for (Setting.Channel c : channels) {
+        Channel channel = null;
+        List<Channel> channels = settingService.getSetting().getChannels();
+        for (Channel c : channels) {
             if (name.equals(c.getTitle())) {
                 channel = c;
                 break;

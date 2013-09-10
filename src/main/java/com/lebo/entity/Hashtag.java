@@ -11,7 +11,7 @@ import java.util.Date;
  * Date: 13-7-31
  * Time: PM3:48
  */
-@Document
+@Document(collection = "hashtags")
 public class Hashtag extends IdEntity {
     @Indexed(unique = true)
     private String name;

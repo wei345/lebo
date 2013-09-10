@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 13-7-14
  * Time: PM5:56
  */
-@Document
+@Document(collection = "messages")
 public class Message extends IdEntity {
     @Indexed
     private String from;

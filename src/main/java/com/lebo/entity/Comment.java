@@ -13,7 +13,7 @@ import java.util.List;
  * Date: 13-7-4
  * Time: PM4:34
  */
-@Document
+@Document(collection = "comments")
 public class Comment extends IdEntity {
     public static final String POST_ID_KEY = "postId";
     @Indexed

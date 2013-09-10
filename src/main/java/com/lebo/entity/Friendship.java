@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Date: 13-8-8
  * Time: PM2:06
  */
-@Document
+@Document(collection = "friendships")
 @CompoundIndexes({
         @CompoundIndex(name = "a_1_b_1_unique", def = "{a : 1, b : 1}", unique = true),
         @CompoundIndex(name = "a_1_bFa_1", def = "{a : 1, bFa : 1}"),

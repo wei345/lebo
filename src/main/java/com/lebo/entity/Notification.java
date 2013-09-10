@@ -12,7 +12,7 @@ import java.util.Date;
  * Date: 13-8-8
  * Time: PM5:57
  */
-@Document
+@Document(collection = "notifications")
 public class Notification extends IdEntity {
     public static final String ACTIVITY_TYPE_FOLLOW = "follow";
     public static final String ACTIVITY_TYPE_FAVORITE = "favorite";

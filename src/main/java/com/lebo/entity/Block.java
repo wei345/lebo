@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Date: 13-7-23
  * Time: PM3:46
  */
-@Document
+@Document(collection = "blocks")
 @CompoundIndexes({
         @CompoundIndex(name = "block_unique", def = "{'userId': 1, 'blockingId': 1}", unique = true)
 })

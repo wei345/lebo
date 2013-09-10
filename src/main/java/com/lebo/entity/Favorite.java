@@ -15,7 +15,7 @@ import java.util.Date;
  * Date: 13-7-4
  * Time: PM5:50
  */
-@Document
+@Document(collection = "favorites")
 @CompoundIndexes({
         @CompoundIndex(name = "user_favorite_unique", def = "{'userId': 1, 'postId': 1}", unique = true)
 })

@@ -1,6 +1,7 @@
 package com.lebo.web.setting;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.lebo.entity.Channel;
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Setting;
 import com.lebo.service.AbstractMongoService;
@@ -56,7 +57,7 @@ public class ChannelController {
     }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String create(@Valid Setting.Channel channel,
+    public String create(@Valid Channel channel,
                          @RequestParam(value = "channelImage") MultipartFile image,
                          @RequestParam(value = "slug") String slug,
                          Model model,
@@ -69,7 +70,7 @@ public class ChannelController {
 
             Setting setting = settingService.getSetting();
 
-            for (Setting.Channel c : setting.getChannels()) {
+            for (Channel c : setting.getChannels()) {
                 if (channel.getName().equals(c.getName())) {
                     redirectAttributes.addFlashAttribute("error", "重复 " + channel.getName());
                     return "redirect:/admin/channels";
@@ -89,7 +90,7 @@ public class ChannelController {
 
     @RequestMapping(value = "preview", method = RequestMethod.POST)
     public String preview(@RequestParam("channels") String json, Model model) {
-        List<Setting.Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Setting.Channel.class));
+        List<Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Channel.class));
         model.addAttribute("channels", channels);
 
         return "setting/channelPreview";
@@ -97,7 +98,7 @@ public class ChannelController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@RequestParam("channels") String json, RedirectAttributes redirectAttributes) {
-        List<Setting.Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Setting.Channel.class));
+        List<Channel> channels = jsonMapper.fromJson(json, jsonMapper.createCollectionType(ArrayList.class, Channel.class));
         Setting setting = settingService.getSetting();
 
         //删除已不用的图片

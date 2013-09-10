@@ -1,5 +1,6 @@
 package com.lebo.service;
 
+import com.lebo.entity.Channel;
 import com.lebo.entity.Hashtag;
 import com.lebo.entity.Setting;
 import com.lebo.repository.HashtagDao;
@@ -87,8 +88,8 @@ public class HashtagService extends AbstractMongoService {
     }
 
     public ChannelDto toChannelDto(Hashtag hashtag) {
-        List<Setting.Channel> channels = settingService.getSetting().getChannels();
-        for (Setting.Channel channel : channels) {
+        List<Channel> channels = settingService.getSetting().getChannels();
+        for (Channel channel : channels) {
             if (channel.getName().equals(hashtag.getName())) {
                 ChannelDto dto = BeanMapper.map(channel, ChannelDto.class);
                 dto.setImageUrl(FileContentUrlUtils.getContentUrl(channel.getImage()));

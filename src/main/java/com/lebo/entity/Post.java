@@ -13,7 +13,7 @@ import java.util.List;
  * Date: 13-7-3
  * Time: PM12:22
  */
-@Document
+@Document(collection = "posts")
 @CompoundIndexes({
         @CompoundIndex(name = "uid_1_opuid_1", def = "{'userId': 1, 'originPostUserId': 1}"),
         @CompoundIndex(name = "uid_1_opid_1", def = "{'userId': 1, 'originPostId': 1}"),

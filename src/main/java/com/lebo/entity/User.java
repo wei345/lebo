@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Wei Liu
  */
-@Document
+@Document(collection = "users")
 public class User extends IdEntity {
     @Indexed(unique = true)
     private String screenName;
