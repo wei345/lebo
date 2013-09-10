@@ -33,6 +33,7 @@ public class PlayController {
     private SettingService settingService;
 
     private Pattern mobilePattern = Pattern.compile("Android|webOS|iPhone|iPad|iPod|BlackBerry");
+    private Pattern desktopPattern = Pattern.compile("Mozilla|MSIE|Windows NT|Mac OS X");
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String play(@PathVariable("id") String id, @RequestHeader("User-Agent") String userAgent, Model model) {
@@ -55,9 +56,10 @@ public class PlayController {
             return "play/video-mobile";
         }
         //桌面版页面
-        else {
+        if (desktopPattern.matcher(userAgent).find()) {
             return "play/video-desktop";
         }
-
+        //默认手机版
+        return "play/video-mobile";
     }
 }
