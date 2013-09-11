@@ -40,4 +40,9 @@
     <config-file path="WEB-INF/classes/schedule/quartz-cluster.properties">
         <replace key="org.quartz.jobStore.addresses">10.160.8.62</replace>
     </config-file>
+
+    <!-- applicationContext-shiro.xml -->
+    <config-file path="WEB-INF/classes/security/applicationContext-shiro.xml">
+        <replace xpath="//bean[@id='userFilter']/@class">com.lebo.service.account.ShiroUserFilter</replace>
+    </config-file>
 </portable-config>

@@ -1,6 +1,7 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -38,6 +39,10 @@ public class ShiroRealm extends AuthorizingRealm implements ApplicationContextAw
 
         ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
         User user = accountService.getUser(shiroUser.getId());
+        if (user == null) {//用户不存在，可能已被删除，退出登录
+            SecurityUtils.getSubject().logout();
+            return null;
+        }
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addRoles(user.getRoles());
         return info;
