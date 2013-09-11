@@ -106,11 +106,11 @@
         %>
         <div class="control-group">
             <div class="controls">
-                <input type="text" id="username" name="username" value="test@lebooo.com" class="input-medium required"
-                       placeholder="用户名"/>
+                <input type="text" id="username" name="username" value="" class="input-medium required"
+                       placeholder="email"/>
             </div>
             <div class="controls">
-                <input type="password" id="password" name="password" value="user" class="input-medium required"
+                <input type="password" id="password" name="password" value="" class="input-medium required"
                        placeholder="密码"/>
             </div>
             <div class="controls">
