@@ -69,6 +69,10 @@ public class FavoriteService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Favorite.USER_ID_KEY).is(userId)), Favorite.class);
     }
 
+    public int countUserBeFavorites(String userId) {
+        return (int) mongoTemplate.count(new Query(new Criteria(Favorite.POST_USERID_KEY).is(userId)), Favorite.class);
+    }
+
     public int countPostFavorites(String postId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Favorite.POST_ID_KEY).is(postId)), Favorite.class);
     }

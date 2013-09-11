@@ -20,14 +20,16 @@ import java.util.Date;
         @CompoundIndex(name = "user_favorite_unique", def = "{'userId': 1, 'postId': 1}", unique = true)
 })
 public class Favorite extends IdEntity {
+    @Indexed //索引用于查用户收藏数
     private String userId;
     public static final String USER_ID_KEY = "userId";
+    @Indexed //索引用于查帖子被收藏数
     private String postId;
     public static final String POST_ID_KEY = "postId";
-    @Indexed
+    @Indexed //索引用于查用户帖子被收藏总数
     private String postUserId;
     public static final String POST_USERID_KEY = "postUserId";
-    @Indexed(direction = IndexDirection.DESCENDING)
+    @Indexed(direction = IndexDirection.DESCENDING) //索引用于计算热门用户：按2天内收到红心数排序
     private Date createdAt;
     public static final String CREATED_AT_KEY = "createdAt";
 
