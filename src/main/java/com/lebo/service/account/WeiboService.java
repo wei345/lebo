@@ -101,12 +101,13 @@ public class WeiboService {
     }
 
     public static class WeiboUser{
-        String id;
-        String screen_name;
-        String name;
-        String gender;
-        Boolean verified;
-        String profile_image_url;
+        private String id;
+        private String screen_name;
+        private String name;
+        private String gender;
+        private Boolean verified;
+        private String profile_image_url;
+        private String description;
 
         public String getId() {
             return id;
@@ -154,6 +155,14 @@ public class WeiboService {
 
         public void setProfile_image_url(String profile_image_url) {
             this.profile_image_url = profile_image_url;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
     }
 }

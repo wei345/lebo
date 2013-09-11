@@ -17,14 +17,7 @@
     </p>
 
     <tags:field name="token" value="" optional="true"/>
-    <p>
-        每页返回多少条，默认50
-    </p>
-    <tags:field name="count" value="" optional="true"/>
-    <p>
-        返回结果的游标，下一页用返回值里的nextCursor，默认为0
-    </p>
-    <tags:field name="cursor" value="" optional="true"/>
+    <tags:fields-page-size />
 </tags:form>
 
 <p>

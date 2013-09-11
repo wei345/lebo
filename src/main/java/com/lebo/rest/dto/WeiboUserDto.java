@@ -1,49 +1,14 @@
 package com.lebo.rest.dto;
 
-import java.util.List;
-
-/**
- * @author: Wei Liu
- * Date: 13-9-9
- * Time: AM11:10
- */
-public class WeiboFriendDto {
-    private List<WeiboUserDto> users;
-    private int nextCursor;
-    private int totalNumber;
-
-    public List<WeiboUserDto> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<WeiboUserDto> users) {
-        this.users = users;
-    }
-
-    public int getNextCursor() {
-        return nextCursor;
-    }
-
-    public void setNextCursor(int nextCursor) {
-        this.nextCursor = nextCursor;
-    }
-
-    public int getTotalNumber() {
-        return totalNumber;
-    }
-
-    public void setTotalNumber(int totalNumber) {
-        this.totalNumber = totalNumber;
-    }
-
-    public static class WeiboUserDto{
-        String userId; //乐播用户id
-        String weiboId;
-        String screenName;
-        String name;
-        String gender; //f,m
-        Boolean verified;
-        String profileImageUrl;
+public class WeiboUserDto{
+        private String userId; //乐播用户id
+        private String weiboId;
+        private String screenName;
+        private String name;
+        private String gender; //f,m
+        private Boolean verified;
+        private String profileImageUrl;
+        private String description;
 
         public String getUserId() {
             return userId;
@@ -100,5 +65,12 @@ public class WeiboFriendDto {
         public void setProfileImageUrl(String profileImageUrl) {
             this.profileImageUrl = profileImageUrl;
         }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
     }
-}

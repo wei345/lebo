@@ -2,10 +2,11 @@ package com.lebo.rest;
 
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.rest.dto.WeiboFriendDto;
+import com.lebo.rest.dto.WeiboUserDto;
 import com.lebo.service.FriendshipService;
 import com.lebo.service.account.AbstractOAuthLogin;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.account.ShiroWeiboLogin;
 import com.lebo.service.account.WeiboService;
 import com.lebo.service.param.PageRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -78,8 +79,7 @@ public class FriendRestController {
     @RequestMapping(value = "weiboFriends", method = RequestMethod.GET)
     @ResponseBody
     public Object weiboFriends(@RequestParam(value = "token", required = false) String token,
-                               @RequestParam(value = "count", defaultValue = "50") int count,
-                               @RequestParam(value = "cursor", defaultValue = "0") int cursor) {
+                               PageRequest pageRequest) {
         User user = accountService.getUser(accountService.getCurrentUserId());
 
         if (token == null) {
@@ -109,19 +109,15 @@ public class FriendRestController {
         }
 
         //获取微博好友
-        WeiboService.WeiboFriend weiboFriend = weiboService.getFriends(token, weiboUid, count, cursor);
+        WeiboService.WeiboFriend weiboFriend = weiboService.getFriends(token, weiboUid, pageRequest.getPageSize(), pageRequest.getOffset());
 
-        WeiboFriendDto dto = new WeiboFriendDto(); //返回结果
-        dto.setNextCursor(weiboFriend.getNext_cursor());
-        dto.setTotalNumber(weiboFriend.getTotal_number());
-
-        List<WeiboFriendDto.WeiboUserDto> weiboUserDtos = new ArrayList<WeiboFriendDto.WeiboUserDto>(weiboFriend.getUsers().size());
+        List<WeiboUserDto> weiboUserDtos = new ArrayList<WeiboUserDto>(weiboFriend.getUsers().size());
         //遍历新浪微博好友
         for (WeiboService.WeiboUser weiboUser : weiboFriend.getUsers()) {
             //微博用户 -> 乐播用户
-            User user1 = accountService.findByOAuthId(AbstractOAuthLogin.oAuthId("weibo", weiboUser.getId()));
+            User user1 = accountService.findByOAuthId(AbstractOAuthLogin.oAuthId(ShiroWeiboLogin.PROVIDER, weiboUser.getId()));
 
-            WeiboFriendDto.WeiboUserDto weiboUserDto = new WeiboFriendDto.WeiboUserDto();
+            WeiboUserDto weiboUserDto = new WeiboUserDto();
             //该微博用户也在乐播中
             if (user1 != null) {
                 weiboUserDto.setUserId(user1.getId());
@@ -132,10 +128,10 @@ public class FriendRestController {
             weiboUserDto.setGender(weiboUser.getGender());
             weiboUserDto.setProfileImageUrl(weiboUser.getProfile_image_url());
             weiboUserDto.setVerified(weiboUser.getVerified());
+            weiboUserDto.setDescription(weiboUser.getDescription());
 
             weiboUserDtos.add(weiboUserDto);
         }
-        dto.setUsers(weiboUserDtos);
 
         //更新用户的findFriendWeiboToken
         if (!token.equals(user.getFindFriendWeiboToken())) {
@@ -144,6 +140,6 @@ public class FriendRestController {
             accountService.saveUser(user);
         }
 
-        return dto;
+        return weiboUserDtos;
     }
 }
