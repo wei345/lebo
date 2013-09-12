@@ -1,7 +1,10 @@
 package com.lebo.rest;
 
+import com.lebo.entity.User;
+import com.lebo.rest.dto.AccountSettingDto;
 import com.lebo.rest.dto.CheckVersionDto;
 import com.lebo.rest.dto.ErrorDto;
+import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AbstractShiroLogin;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.account.ShiroUser;
@@ -15,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springside.modules.mapper.BeanMapper;
 
 import javax.servlet.ServletContext;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author: Wei Liu
@@ -49,7 +53,26 @@ public class HomeRestController {
         // 登录
         try {
             currentUser.login(AbstractShiroLogin.useOAuthLogin(provider, token, context));
-            return accountService.toBasicUserDto(accountService.getUser(accountService.getCurrentUserId()));
+
+            //返回用户设置和用户信息
+            User user = accountService.getUser(accountService.getCurrentUserId());
+            UserDto userDto = accountService.toBasicUserDto(user);
+            AccountSettingDto settingDto = accountService.toAccountSettingDto(user);
+            Map<String, Object> ret = new HashMap<String, Object>();
+            BeanMapper.copy(userDto, ret);
+            BeanMapper.copy(settingDto, ret);
+            //去掉null值
+            List<String> deletes = new ArrayList<String>();
+            for (Map.Entry<String, Object> entry : ret.entrySet()) {
+                if (entry.getValue() == null) {
+                    deletes.add(entry.getKey());
+                }
+            }
+            for (String key : deletes) {
+                ret.remove(key);
+            }
+
+            return ret;
         } catch (Exception e) {
             logger.info("登录失败", e);
             return ErrorDto.badRequest(e.getMessage());
