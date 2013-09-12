@@ -45,6 +45,7 @@
         notifyOnFavorite: false,
         notifyOnFollow: false,
         notifySound: true,
+        notifyVibrator: false,
         apnsProductionToken: "",
         apnsDevelopmentToken: ""
     }

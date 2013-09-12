@@ -9,15 +9,17 @@
 
 <tags:example method="GET" url="http://localhost:8080/api/1/account/settings.json">
     {
-        id: "5216d0dc1a8829c4ae1bbec3",
-        screenName: "涛涛_IT",
-        profileImageUrl: "http://file.dev.lebooo.com/5216d0dc1a8829c4ae1bbec4.png",
-        profileImageBiggerUrl: "http://file.dev.lebooo.com/5216d0dd1a8829c4ae1bbec5.png",
-        profileImageOriginalUrl: "http://file.dev.lebooo.com/5216d0de1a8829c4ae1bbec6.png",
-        notifyOnReplyPost: false,
-        notifyOnFavorite: false,
-        notifyOnFollow: false,
-        notifySound: true,
+        id: "5211ebb90cf2bd294d22e3ff",
+        screenName: "明丫丫是个爷们",
+        description: "abc",
+        profileImageUrl: "http://file.dev.lebooo.com/5211ebba0cf2bd294d22e401",
+        profileImageBiggerUrl: "http://file.dev.lebooo.com/5211ebba0cf2bd294d22e401",
+        profileImageOriginalUrl: "http://file.dev.lebooo.com/5211ebba0cf2bd294d22e402",
+        notifyOnReplyPost: true,
+        notifyOnFavorite: true,
+        notifyOnFollow: true,
+        notifySound: false,
+        notifyVibrator: false,
         apnsProductionToken: "",
         apnsDevelopmentToken: ""
     }
