@@ -44,7 +44,7 @@
             <tags:link url="${ctx}/docs/api/1/get/settings/settings" text="GET settings"/>
         </td>
         <td>
-            返回全部设置。
+            返回应用基本设置。
         </td>
     </tr>
     <tr>
@@ -238,6 +238,22 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/account/settings" text="GET account/settings"/>
+        </td>
+        <td>
+            返回当前登录用户的设置。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/account/settings" text="POST account/settings"/>
+        </td>
+        <td>
+            更新用户设置，如APNS token、通知设置。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/account/updateProfile" text="POST account/updateProfile"/>
         </td>
         <td>
@@ -250,14 +266,6 @@
         </td>
         <td>
             检查screenName是否可用。
-        </td>
-    </tr>
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/account/updateApnsToken" text="POST account/updateApnsToken"/>
-        </td>
-        <td>
-            更新APNS(Apple Push Notification Service) token，返回用户信息。
         </td>
     </tr>
     <tr>

@@ -134,13 +134,28 @@ public class NotificationListener {
     }
 
     private void sendNotificationQueue(Notification notification, String messageFormat) {
-        //自己对自己的操作，不发送通知
-        if (notification.getSenderId().equals(notification.getRecipientId())) {
-            return;
+        User recipient = accountService.getUser(notification.getRecipientId());
+        //如果用户设置不接收，则不发推送通知
+        if (notification.getActivityType().equals(Notification.ACTIVITY_TYPE_FOLLOW)) {
+            if (recipient.getNotifyOnFollow() != null && !recipient.getNotifyOnFollow()) {
+                return;
+            }
+        }
+        //如果用户设置不接收，则不发推送通知
+        if (notification.getActivityType().equals(Notification.ACTIVITY_TYPE_FAVORITE)) {
+            if (recipient.getNotifyOnFavorite() != null && !recipient.getNotifyOnFavorite()) {
+                return;
+            }
+        }
+        //如果用户设置不接收，则不发推送通知
+        if (notification.getActivityType().equals(Notification.ACTIVITY_TYPE_REPLY_POST)) {
+            if (recipient.getNotifyOnReplyPost() != null && !recipient.getNotifyOnReplyPost()) {
+                return;
+            }
         }
 
         User sender = accountService.getUser(notification.getSenderId());
-        User recipient = accountService.getUser(notification.getRecipientId());
+
         if (StringUtils.isNotBlank(recipient.getApnsProductionToken())) {
             apnsMessageProducer.sendNotificationQueue(String.format(messageFormat, sender.getScreenName()),
                     recipient.getApnsProductionToken(), recipient.getId());

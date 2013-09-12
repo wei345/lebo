@@ -34,6 +34,7 @@ public class User extends IdEntity {
     private String name;
     // The user-defined describing their account.
     private String description;
+    public static final String DESCRIPTION_KEY = "description";
     //normal
     private String profileImageNormal;
     public static final String PROFILE_IMAGE_NORMAL_KEY = "profileImageNormal";
@@ -97,8 +98,10 @@ public class User extends IdEntity {
     public static final String STATUSES_COUNT_KEY = "statusesCount";
 
     //Apple Push Notification Service Token
-    private String apnsProductionToken;
-    private String apnsDevelopmentToken;
+    private String apnsProductionToken = "";
+    public static final String APNS_PRODUCTION_TOKEN_KEY = "apnsProductionToken";
+    private String apnsDevelopmentToken = ""; //APNS Development Token由于p12文件问题，暂不可用。
+    public static final String APNS_DEVELOPMENT_TOKEN_KEY = "apnsDevelopmentToken";
 
     private String weiboToken; //用微博账号登录的token
     private String renrenToken;//用人人账号登录的token
@@ -107,6 +110,17 @@ public class User extends IdEntity {
     private String findFriendWeiboToken;
     private String findFriendWeiboUid;
     private String findFriendRenrenToken;
+
+    private Boolean notifyOnReplyPost;//用户帖子被回复时发送通知
+    public static final String NOTIFY_ON_REPLY_POST_KEY = "notifyOnReplyPost";
+    private Boolean notifyOnFavorite;//用户帖子被喜欢时发送通知
+    public static final String NOTIFY_ON_FAVORITE_KEY = "notifyOnFavorite";
+    private Boolean notifyOnFollow;//用户被关注时发送通知
+    public static final String NOTIFY_ON_FOLLOW_KEY = "notifyOnFollow";
+    private Boolean notifySound; //用户设备收到通知时是否有提示音
+    public static final String NOTIFY_SOUND_KEY = "notifySound";
+    private Boolean notifyVibrator; //用户设备收到通知时是否震动
+    public static final String NOTIFY_VIBRATOR_KEY = "notifyVibrator";
 
     public User() {
         initial();
@@ -123,6 +137,11 @@ public class User extends IdEntity {
         beFavoritedCount = 0;
         statusesCount = 0;
         digestCount = 0;
+        notifyOnReplyPost = true;
+        notifyOnFavorite = true;
+        notifyOnFollow = true;
+        notifySound = false;
+        notifyVibrator = false;
     }
 
     public String getProfileImageNormal() {
@@ -315,8 +334,8 @@ public class User extends IdEntity {
 
     public String getProfileImageUrl() {
         //TODO 待用户头像全部迁移，删除这个if
-        if(profileImageNormal == null){
-            return FileContentUrlUtils.getContentUrl(profileImageOriginal);
+        if (profileImageNormal == null) {
+            return getProfileImageOriginalUrl();
         }
         return FileContentUrlUtils.getContentUrl(profileImageNormal);
     }
@@ -331,8 +350,8 @@ public class User extends IdEntity {
 
     public String getProfileImageBiggerUrl() {
         //TODO 待用户头像全部迁移，删除这个if
-        if(profileImageNormal == null){
-            return FileContentUrlUtils.getContentUrl(profileImageOriginal);
+        if (profileImageBigger == null) {
+            return getProfileImageOriginalUrl();
         }
         return FileContentUrlUtils.getContentUrl(profileImageBigger);
     }
@@ -346,6 +365,9 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageOriginalUrl() {
+        if(profileImageOriginal == null){
+            return null;
+        }
         return FileContentUrlUtils.getContentUrl(profileImageOriginal);
     }
 
@@ -362,7 +384,7 @@ public class User extends IdEntity {
     }
 
     public Integer getLevel() {
-        if(digestCount == null){
+        if (digestCount == null) {
             return null;
         }
 
@@ -416,6 +438,46 @@ public class User extends IdEntity {
 
     public void setFindFriendRenrenToken(String findFriendRenrenToken) {
         this.findFriendRenrenToken = findFriendRenrenToken;
+    }
+
+    public Boolean getNotifyOnReplyPost() {
+        return notifyOnReplyPost;
+    }
+
+    public void setNotifyOnReplyPost(Boolean notifyOnReplyPost) {
+        this.notifyOnReplyPost = notifyOnReplyPost;
+    }
+
+    public Boolean getNotifyOnFavorite() {
+        return notifyOnFavorite;
+    }
+
+    public void setNotifyOnFavorite(Boolean notifyOnFavorite) {
+        this.notifyOnFavorite = notifyOnFavorite;
+    }
+
+    public Boolean getNotifyOnFollow() {
+        return notifyOnFollow;
+    }
+
+    public void setNotifyOnFollow(Boolean notifyOnFollow) {
+        this.notifyOnFollow = notifyOnFollow;
+    }
+
+    public Boolean getNotifySound() {
+        return notifySound;
+    }
+
+    public void setNotifySound(Boolean notifySound) {
+        this.notifySound = notifySound;
+    }
+
+    public Boolean getNotifyVibrator() {
+        return notifyVibrator;
+    }
+
+    public void setNotifyVibrator(Boolean notifyVibrator) {
+        this.notifyVibrator = notifyVibrator;
     }
 
     @Override

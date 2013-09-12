@@ -30,7 +30,7 @@ public class ApnsService {
     @Value("${apns.password}")
     private String password;
     @Value("${apns.production}")
-    private boolean production;
+    boolean production;
 
     public void pushMessage(String message, int badge, String deviceToken) {
         try {

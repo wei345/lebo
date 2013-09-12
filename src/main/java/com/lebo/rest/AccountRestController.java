@@ -9,10 +9,8 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -76,29 +74,24 @@ public class AccountRestController {
         }
     }
 
-    @RequestMapping(value = "updateApnsToken", method = RequestMethod.POST)
+    /**
+     * 更新当前用户账号设置，返回当前用户账号设置。
+     */
+    @RequestMapping(value = "settings", method = RequestMethod.POST)
     @ResponseBody
-    public Object updateApnsToken(@RequestParam(value = "apnsDevelopmentToken", required = false) String apnsDevelopmentToken,
-                                  @RequestParam(value = "apnsProductionToken", required = false) String apnsProductionToken) {
-        if (StringUtils.isBlank(apnsDevelopmentToken) && StringUtils.isBlank(apnsProductionToken)) {
-            return ErrorDto.badRequest("参数apnsDevelopmentToken、apnsProductionToken不能都为空");
-        }
+    public Object updateSettings(@ModelAttribute("userSettings") User user) {
+        accountService.updateUserSettings(user);
+        return accountService.toAccountSettingDto(user);
+    }
 
-        User user = accountService.getUser(accountService.getCurrentUserId());
-        if (apnsDevelopmentToken != null) {
-            user.setApnsDevelopmentToken(apnsDevelopmentToken);
-        }
-        if (apnsProductionToken != null) {
-            user.setApnsProductionToken(apnsProductionToken);
-        }
-        accountService.saveUser(user);
-
-        User dto = new User();
-        dto.setRoles(null);
-        dto.setId(user.getId());
-        dto.setApnsDevelopmentToken(user.getApnsDevelopmentToken());
-        dto.setApnsProductionToken(user.getApnsProductionToken());
-        return dto;
+    /**
+     * 返回当前登录账号的设置。
+     */
+    @RequestMapping(value = "settings", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getSettings() {
+        User user = accountService.getUserSettings(accountService.getCurrentUserId());
+        return accountService.toAccountSettingDto(user);
     }
 
     /**
@@ -108,5 +101,11 @@ public class AccountRestController {
         ShiroUser shiroUser = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
         shiroUser.screenName = user.getScreenName();
         shiroUser.profileImageUrl = user.getProfileImageUrl();
+    }
+
+    @ModelAttribute
+    public void getUser(Model model) {
+        User user = accountService.getUserSettings(accountService.getCurrentUserId());
+        model.addAttribute("userSettings", user);
     }
 }

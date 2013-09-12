@@ -7,6 +7,7 @@ import com.lebo.entity.User;
 import com.lebo.event.AfterUserCreateEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.UserDao;
+import com.lebo.rest.dto.AccountSettingDto;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.*;
 import com.lebo.service.param.SearchParam;
@@ -383,4 +384,53 @@ public class AccountService extends AbstractMongoService {
 
         saveUser(user);
     }
+
+    /**
+     * @param userId 查询该用户的通知设置
+     * @return 返回用户通知设置
+     */
+    public User getUserSettings(String userId){
+        Query query = new Query(new Criteria(User.ID_KEY).is(userId));
+        query.fields().include(User.SCREEN_NAME_KEY);
+        query.fields().include(User.DESCRIPTION_KEY);
+        query.fields().include(User.PROFILE_IMAGE_NORMAL_KEY);
+        query.fields().include(User.PROFILE_IMAGE_BIGGER_KEY);
+        query.fields().include(User.PROFILE_IMAGE_ORIGIN_KEY);
+
+        query.fields().include(User.NOTIFY_ON_FOLLOW_KEY);
+        query.fields().include(User.NOTIFY_ON_FAVORITE_KEY);
+        query.fields().include(User.NOTIFY_ON_REPLY_POST_KEY);
+
+        query.fields().include(User.NOTIFY_SOUND_KEY);
+        query.fields().include(User.NOTIFY_VIBRATOR_KEY);
+
+        query.fields().include(User.APNS_PRODUCTION_TOKEN_KEY);
+        query.fields().include(User.APNS_DEVELOPMENT_TOKEN_KEY);
+
+
+        return mongoTemplate.findOne(query, User.class);
+    }
+
+    public void updateUserSettings(User user){
+        Query query = new Query(new Criteria(User.ID_KEY).is(user.getId()));
+        Update update = new Update();
+        update.set(User.DESCRIPTION_KEY, user.getDescription());
+
+        update.set(User.NOTIFY_ON_FOLLOW_KEY, user.getNotifyOnFollow());
+        update.set(User.NOTIFY_ON_FAVORITE_KEY, user.getNotifyOnFavorite());
+        update.set(User.NOTIFY_ON_REPLY_POST_KEY, user.getNotifyOnReplyPost());
+
+        update.set(User.NOTIFY_SOUND_KEY, user.getNotifySound());
+        update.set(User.NOTIFY_VIBRATOR_KEY, user.getNotifyVibrator());
+
+        update.set(User.APNS_PRODUCTION_TOKEN_KEY, user.getApnsProductionToken());
+        update.set(User.APNS_DEVELOPMENT_TOKEN_KEY, user.getApnsDevelopmentToken());
+
+        mongoTemplate.updateFirst(query, update, User.class);
+    }
+
+    public AccountSettingDto toAccountSettingDto(User user){
+        return BeanMapper.map(user, AccountSettingDto.class);
+    }
+
 }

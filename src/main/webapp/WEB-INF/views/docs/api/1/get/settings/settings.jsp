@@ -6,7 +6,7 @@
 <p>
     获取应用设置，包括频道列表、精华内容URL。
 </p>
-<tags:form name="选项" method="GET" action="${ctx}/api/1/settings.json">
+<tags:form name="应用设置" method="GET" action="${ctx}/api/1/settings.json">
 </tags:form>
 
 <tags:example method="GET" url="http://localhost:8080/api/1/settings.json">
