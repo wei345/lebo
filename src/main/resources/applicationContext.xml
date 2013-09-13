@@ -61,4 +61,5 @@
     <import resource="cache/applicationContext-memcached.xml"/>
     <import resource="schedule/applicationContext-quartz-timer-cluster.xml"/>
     <import resource="jms/applicationContext-jms.xml"/>
+    <import resource="jmx/applicationContext-jmx.xml"/>
 </beans>

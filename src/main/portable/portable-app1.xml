@@ -34,6 +34,9 @@
         <!-- app -->
         <!-- http://{host}:{port}{context} -->
         <replace key="app.baseurl">http://app.lebooo.com</replace>
+
+        <!-- jmx -->
+        <replace key="jmx.rmi_port">9099</replace>
     </config-file>
 
     <!-- quartz-cluster.properties -->
