@@ -122,6 +122,9 @@ public class User extends IdEntity {
     private Boolean notifyVibrator; //用户设备收到通知时是否震动
     public static final String NOTIFY_VIBRATOR_KEY = "notifyVibrator";
 
+    //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
+    private String pikeId;
+
     public User() {
         initial();
     }
@@ -478,6 +481,14 @@ public class User extends IdEntity {
 
     public void setNotifyVibrator(Boolean notifyVibrator) {
         this.notifyVibrator = notifyVibrator;
+    }
+
+    public String getPikeId() {
+        return pikeId;
+    }
+
+    public void setPikeId(String pikeId) {
+        this.pikeId = pikeId;
     }
 
     @Override
