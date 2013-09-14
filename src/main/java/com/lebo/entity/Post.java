@@ -64,6 +64,9 @@ public class Post extends IdEntity {
     private boolean digest;
     public static final String DIGEST_KEY = "digest";
 
+    //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
+    private String pikeId;
+
     public static class UserMention {
         private String userId;
         private String screenName;
@@ -252,5 +255,13 @@ public class Post extends IdEntity {
 
     public void setUserMentions(List<UserMention> userMentions) {
         this.userMentions = userMentions;
+    }
+
+    public String getPikeId() {
+        return pikeId;
+    }
+
+    public void setPikeId(String pikeId) {
+        this.pikeId = pikeId;
     }
 }

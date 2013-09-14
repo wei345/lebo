@@ -43,6 +43,9 @@ public class Comment extends IdEntity {
     private Boolean hasVideo;
     public static final String HAS_VIDEO_KEY = "hasVideo";
 
+    //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
+    private String pikeId;
+
     public String getPostId() {
         return postId;
     }
@@ -179,5 +182,13 @@ public class Comment extends IdEntity {
 
     public void setAudio(FileInfo audio) {
         this.audio = audio;
+    }
+
+    public String getPikeId() {
+        return pikeId;
+    }
+
+    public void setPikeId(String pikeId) {
+        this.pikeId = pikeId;
     }
 }
