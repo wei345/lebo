@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import com.lebo.service.FileContentUrlUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -19,9 +20,23 @@ public class Setting extends IdEntity {
     private Integer digestDays = 2;
     private Integer hotDays = 2;
 
-    //TODO 乐播app下载地址可配置
     private String appStoreLeboUrl = "https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8";
     private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
+
+    //红人榜 -> 粉丝最多
+    private String hotuser_button1_backgroundColor;
+    private String hotuser_button1_imageKey;
+    private String hotuser_button1_text;
+
+    //红人榜 -> 最受喜欢
+    private String hotuser_button2_backgroundColor;
+    private String hotuser_button2_imageKey;
+    private String hotuser_button2_text;
+
+    //红人榜 -> 导演排行
+    private String hotuser_button3_backgroundColor;
+    private String hotuser_button3_imageKey;
+    private String hotuser_button3_text;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -61,5 +76,87 @@ public class Setting extends IdEntity {
 
     public void setLeboAppAndroidDownloadUrl(String leboAppAndroidDownloadUrl) {
         this.leboAppAndroidDownloadUrl = leboAppAndroidDownloadUrl;
+    }
+
+    public String getHotuser_button1_backgroundColor() {
+        return hotuser_button1_backgroundColor;
+    }
+
+    public void setHotuser_button1_backgroundColor(String hotuser_button1_backgroundColor) {
+        this.hotuser_button1_backgroundColor = hotuser_button1_backgroundColor;
+    }
+
+    public String getHotuser_button1_imageKey() {
+        return hotuser_button1_imageKey;
+    }
+
+    public void setHotuser_button1_imageKey(String hotuser_button1_imageKey) {
+        this.hotuser_button1_imageKey = hotuser_button1_imageKey;
+    }
+
+    public String getHotuser_button1_text() {
+        return hotuser_button1_text;
+    }
+
+    public void setHotuser_button1_text(String hotuser_button1_text) {
+        this.hotuser_button1_text = hotuser_button1_text;
+    }
+
+    public String getHotuser_button2_backgroundColor() {
+        return hotuser_button2_backgroundColor;
+    }
+
+    public void setHotuser_button2_backgroundColor(String hotuser_button2_backgroundColor) {
+        this.hotuser_button2_backgroundColor = hotuser_button2_backgroundColor;
+    }
+
+    public String getHotuser_button2_imageKey() {
+        return hotuser_button2_imageKey;
+    }
+
+    public void setHotuser_button2_imageKey(String hotuser_button2_imageKey) {
+        this.hotuser_button2_imageKey = hotuser_button2_imageKey;
+    }
+
+    public String getHotuser_button2_text() {
+        return hotuser_button2_text;
+    }
+
+    public void setHotuser_button2_text(String hotuser_button2_text) {
+        this.hotuser_button2_text = hotuser_button2_text;
+    }
+
+    public String getHotuser_button3_backgroundColor() {
+        return hotuser_button3_backgroundColor;
+    }
+
+    public void setHotuser_button3_backgroundColor(String hotuser_button3_backgroundColor) {
+        this.hotuser_button3_backgroundColor = hotuser_button3_backgroundColor;
+    }
+
+    public String getHotuser_button3_imageKey() {
+        return hotuser_button3_imageKey;
+    }
+
+    public void setHotuser_button3_imageKey(String hotuser_button3_imageKey) {
+        this.hotuser_button3_imageKey = hotuser_button3_imageKey;
+    }
+
+    public String getHotuser_button3_text() {
+        return hotuser_button3_text;
+    }
+
+    public void setHotuser_button3_text(String hotuser_button3_text) {
+        this.hotuser_button3_text = hotuser_button3_text;
+    }
+
+    public String getHotuser_button1_imageUrl(){
+        return FileContentUrlUtils.getContentUrl(hotuser_button1_imageKey);
+    }
+    public String getHotuser_button2_imageUrl(){
+        return FileContentUrlUtils.getContentUrl(hotuser_button2_imageKey);
+    }
+    public String getHotuser_button3_imageUrl(){
+        return FileContentUrlUtils.getContentUrl(hotuser_button3_imageKey);
     }
 }
