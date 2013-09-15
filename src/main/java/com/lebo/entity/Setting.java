@@ -24,19 +24,19 @@ public class Setting extends IdEntity {
     private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
 
     //红人榜 -> 粉丝最多
-    private String hotuser_button1_backgroundColor;
+    private String hotuser_button1_backgroundColor = "#123456";
     private String hotuser_button1_imageKey;
-    private String hotuser_button1_text;
+    private String hotuser_button1_text = "粉丝最多";
 
     //红人榜 -> 最受喜欢
-    private String hotuser_button2_backgroundColor;
+    private String hotuser_button2_backgroundColor = "#abcdef";
     private String hotuser_button2_imageKey;
-    private String hotuser_button2_text;
+    private String hotuser_button2_text = "最受喜欢";
 
     //红人榜 -> 导演排行
-    private String hotuser_button3_backgroundColor;
+    private String hotuser_button3_backgroundColor = "#abc123";
     private String hotuser_button3_imageKey;
-    private String hotuser_button3_text;
+    private String hotuser_button3_text= "导演排行";
 
     public String getOfficialAccountId() {
         return officialAccountId;
