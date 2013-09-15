@@ -13,6 +13,8 @@ import com.lebo.service.NotificationService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +38,8 @@ public class NotificationListener {
     @Autowired
     private StatusService statusService;
 
+    private Logger logger = LoggerFactory.getLogger(NotificationListener.class);
+
     /**
      * 用户被关注时，通知被关注的用户。
      */
@@ -44,7 +48,7 @@ public class NotificationListener {
         Notification notification = createNotification(Notification.ACTIVITY_TYPE_FOLLOW,
                 event.getFollowingId(), event.getUserId(), null, null);
 
-        sendNotificationQueue(notification, "%s 关注了你");
+        sendNotificationQueue(notification);
     }
 
     /**
@@ -57,7 +61,7 @@ public class NotificationListener {
                     event.getFavorite().getPostUserId(), event.getFavorite().getUserId(),
                     Notification.OBJECT_TYPE_POST, event.getFavorite().getPostId());
 
-            sendNotificationQueue(notification, "%s 喜欢你的视频");
+            sendNotificationQueue(notification);
         }
     }
 
@@ -74,7 +78,7 @@ public class NotificationListener {
                         event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
                         Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId());
 
-                sendNotificationQueue(notification, "%s 转播了你的视频");
+                sendNotificationQueue(notification);
             }
         }
         //原帖，at通知
@@ -88,7 +92,7 @@ public class NotificationListener {
                         userId, event.getPost().getUserId(),
                         Notification.OBJECT_TYPE_POST, event.getPost().getId());
 
-                sendNotificationQueue(notification, "%s at了你");
+                sendNotificationQueue(notification);
             }
         }
     }
@@ -106,7 +110,7 @@ public class NotificationListener {
                     event.getComment().getReplyCommentUserId(), event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
 
-            sendNotificationQueue(notification, "%s 回复了你的评论");
+            sendNotificationQueue(notification);
         }
 
         //回复post
@@ -116,7 +120,7 @@ public class NotificationListener {
                     post.getUserId(), event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
 
-            sendNotificationQueue(notification, "%s 回复了你的视频");
+            sendNotificationQueue(notification);
         }
 
         //comment中at
@@ -129,27 +133,30 @@ public class NotificationListener {
                     userId, event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
 
-            sendNotificationQueue(notification, "%s at了你");
+            sendNotificationQueue(notification);
         }
     }
 
-    private void sendNotificationQueue(Notification notification, String messageFormat) {
+    private void sendNotificationQueue(Notification notification) {
         User recipient = accountService.getUser(notification.getRecipientId());
         //如果用户设置不接收，则不发推送通知
         if (notification.getActivityType().equals(Notification.ACTIVITY_TYPE_FOLLOW)) {
             if (recipient.getNotifyOnFollow() != null && !recipient.getNotifyOnFollow()) {
+                logger.debug("不发送APNS通知: {}({}) 已设置不接收被关注通知", recipient.getScreenName(), recipient.getId());
                 return;
             }
         }
         //如果用户设置不接收，则不发推送通知
         if (notification.getActivityType().equals(Notification.ACTIVITY_TYPE_FAVORITE)) {
             if (recipient.getNotifyOnFavorite() != null && !recipient.getNotifyOnFavorite()) {
+                logger.debug("不发送APNS通知: {}({}) 已设置不接收被喜欢通知", recipient.getScreenName(), recipient.getId());
                 return;
             }
         }
         //如果用户设置不接收，则不发推送通知
         if (notification.getActivityType().equals(Notification.ACTIVITY_TYPE_REPLY_POST)) {
             if (recipient.getNotifyOnReplyPost() != null && !recipient.getNotifyOnReplyPost()) {
+                logger.debug("不发送APNS通知: {}({}) 已设置不接收被回复通知", recipient.getScreenName(), recipient.getId());
                 return;
             }
         }
@@ -157,8 +164,27 @@ public class NotificationListener {
         User sender = accountService.getUser(notification.getSenderId());
 
         if (StringUtils.isNotBlank(recipient.getApnsProductionToken())) {
-            apnsMessageProducer.sendNotificationQueue(String.format(messageFormat, sender.getScreenName()),
-                    recipient.getApnsProductionToken(), recipient.getId());
+
+            String message = "";
+            if (Notification.ACTIVITY_TYPE_FOLLOW.equals(notification.getActivityType())) {
+                message = String.format("%s 关注了你", sender.getScreenName());
+            } else if (Notification.ACTIVITY_TYPE_FAVORITE.equals(notification.getActivityType())) {
+                message = String.format("%s 喜欢你的视频", sender.getScreenName());
+            } else if (Notification.ACTIVITY_TYPE_REPOST.equals(notification.getActivityType())) {
+                message = String.format("%s 转播了你的视频", sender.getScreenName());
+            } else if (Notification.ACTIVITY_TYPE_POST_AT.equals(notification.getActivityType())) {
+                message = String.format("%s @了你", sender.getScreenName());
+            } else if (Notification.ACTIVITY_TYPE_REPLY_COMMENT.equals(notification.getActivityType())) {
+                message = String.format("%s 回复了你的评论", sender.getScreenName());
+            } else if (Notification.ACTIVITY_TYPE_REPLY_POST.equals(notification.getActivityType())) {
+                message = String.format("%s 回复了你的视频", sender.getScreenName());
+            } else if (Notification.ACTIVITY_TYPE_COMMENT_AT.equals(notification.getActivityType())) {
+                message = String.format("%s @了你", sender.getScreenName());
+            }
+
+            apnsMessageProducer.sendNotificationQueue(message, recipient.getApnsProductionToken(), recipient.getId());
+        } else {
+            logger.debug("不发送APNS通知: {}({}) 没有APNS token", recipient.getScreenName(), recipient.getId());
         }
     }
 
