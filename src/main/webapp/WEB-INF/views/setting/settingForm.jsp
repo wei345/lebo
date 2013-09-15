@@ -26,6 +26,15 @@
             </div>
         </div>
 
+        <div class="control-group">
+            <label for="digestDays" class="control-label">热门:</label>
+            <div class="controls">
+                <input type="text" id="hotDays" name="hotDays" value="${setting.hotDays}"
+                       class="input-large required"/>
+                最近几天的帖子按红心数降序排序
+            </div>
+        </div>
+
         <div class="form-actions">
             <input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
             <input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;
