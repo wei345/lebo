@@ -53,8 +53,6 @@
             </div>
         </div>
 
-
-
         <h2>红人榜</h2>
 
         <h3>粉丝最多按钮</h3>
@@ -131,9 +129,6 @@
                        class="input-large required"/>
             </div>
         </div>
-
-
-
 
         <div class="form-actions">
             <input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
