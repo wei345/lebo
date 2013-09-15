@@ -19,9 +19,23 @@ public class Setting extends IdEntity {
     private Integer digestDays = 2;
     private Integer hotDays = 2;
 
-    //TODO 乐播app下载地址可配置
     private String appStoreLeboUrl = "https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8";
     private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
+
+    //红人榜 -> 粉丝最多
+    private String hotuser_button1_backgroundColor;
+    private String hotuser_button1_imageKey;
+    private String hotuser_button1_text;
+
+    //红人榜 -> 最受喜欢
+    private String hotuser_button2_backgroundColor;
+    private String hotuser_button2_imageKey;
+    private String hotuser_button2_text;
+
+    //红人榜 -> 导演排行
+    private String hotuser_button3_backgroundColor;
+    private String hotuser_button3_imageKey;
+    private String hotuser_button3_text;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -61,5 +75,35 @@ public class Setting extends IdEntity {
 
     public void setLeboAppAndroidDownloadUrl(String leboAppAndroidDownloadUrl) {
         this.leboAppAndroidDownloadUrl = leboAppAndroidDownloadUrl;
+    }
+
+    public static class HotUserButton{
+        private String backgroundColor;
+        private String imageKey;
+        private String text;
+
+        public String getBackgroundColor() {
+            return backgroundColor;
+        }
+
+        public void setBackgroundColor(String backgroundColor) {
+            this.backgroundColor = backgroundColor;
+        }
+
+        public String getImageKey() {
+            return imageKey;
+        }
+
+        public void setImageKey(String imageKey) {
+            this.imageKey = imageKey;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
     }
 }

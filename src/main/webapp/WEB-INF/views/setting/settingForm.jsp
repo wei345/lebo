@@ -27,11 +27,29 @@
         </div>
 
         <div class="control-group">
-            <label for="digestDays" class="control-label">热门:</label>
+            <label for="hotDays" class="control-label">热门:</label>
             <div class="controls">
                 <input type="text" id="hotDays" name="hotDays" value="${setting.hotDays}"
                        class="input-large required"/>
                 最近几天的帖子按红心数降序排序
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="appStoreLeboUrl" class="control-label">ios乐播app下载:</label>
+            <div class="controls">
+                <input type="text" id="appStoreLeboUrl" name="appStoreLeboUrl" value="${setting.appStoreLeboUrl}"
+                       class="input-large required"/>
+                ios乐播app下载地址/下载页面
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="leboAppAndroidDownloadUrl" class="control-label">android乐播app下载:</label>
+            <div class="controls">
+                <input type="text" id="leboAppAndroidDownloadUrl" name="leboAppAndroidDownloadUrl" value="${setting.leboAppAndroidDownloadUrl}"
+                       class="input-large required"/>
+                android乐播app下载地址/下载页面
             </div>
         </div>
 
