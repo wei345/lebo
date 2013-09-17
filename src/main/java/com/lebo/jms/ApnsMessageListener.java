@@ -15,7 +15,7 @@ import javax.jms.MessageListener;
  * <p/>
  * 使用Spring的MessageListenerContainer侦听消息并调用本Listener进行处理.
  *
- * @author calvin
+ * @author Wei Liu
  */
 public class ApnsMessageListener implements MessageListener {
 

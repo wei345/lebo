@@ -13,7 +13,7 @@ import javax.jms.*;
  * <p/>
  * 使用jmsTemplate将用户变更消息分别发送到queue与topic.
  *
- * @author calvin
+ * @author Wei Liu
  */
 public class ApnsMessageProducer {
 
