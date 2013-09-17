@@ -182,7 +182,7 @@ public class NotificationListener {
                 message = String.format("%s @了你", sender.getScreenName());
             }
 
-            apnsMessageProducer.sendNotificationQueue(message, recipient.getApnsProductionToken(), recipient.getId());
+            apnsMessageProducer.sendNotificationQueue(message, recipient.getApnsProductionToken(), recipient);
         } else {
             logger.debug("不发送APNS通知: {}({}) 没有APNS token", recipient.getScreenName(), recipient.getId());
         }

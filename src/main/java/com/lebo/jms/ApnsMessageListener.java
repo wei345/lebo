@@ -34,13 +34,17 @@ public class ApnsMessageListener implements MessageListener {
             MapMessage mapMessage = (MapMessage) message;
 
             if ("notification".equals(mapMessage.getStringProperty("objectType"))) {
+                logger.debug("正在发送APNS通知, 接收者 : {}({}), 内容 : {}, deviceToken : {}",
+                        mapMessage.getString("recipientScreenName"), mapMessage.getString("recipientId"),
+                        mapMessage.getString("message"), mapMessage.getString("deviceToken"));
+
                 apnsService.pushMessage(mapMessage.getString("message"),
                         notificationService.countUnreadNotifications(mapMessage.getString("recipientId")),
                         mapMessage.getString("deviceToken"));
             }
 
         } catch (Exception e) {
-            logger.error("处理消息时发生异常.", e);
+            logger.error("发送APNS通知时发生异常.", e);
         }
     }
 }

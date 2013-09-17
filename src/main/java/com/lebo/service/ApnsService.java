@@ -60,7 +60,7 @@ public class ApnsService {
      */
     private void pushMessage(String message, int badge, String sound, Object keystore, String password, Boolean production, Object devices) {
         long t1 = System.currentTimeMillis();
-        logger.debug("正在发送推送通知.. message:{}, badge:{}, sound:{}, devices:{}", message, badge, sound, devices);
+        logger.debug("正在发送推送通知.. message : {}, badge : {}, sound : {}, devices : {}", message, badge, sound, devices);
 
         try {
             // alert (message, keystore, password, production, devices): push a simple alert message

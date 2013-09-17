@@ -1,5 +1,6 @@
 package com.lebo.jms;
 
+import com.lebo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
@@ -24,9 +25,10 @@ public class ApnsMessageProducer {
     /**
      * @param message     ios通知内容
      * @param deviceToken ios设备token
+     * @param recipient
      */
     //使用jmsTemplate的send/MessageCreator()发送Map类型的消息并在Message中附加属性用于消息过滤.
-    public void sendNotificationQueue(final String message, final String deviceToken, final String recipientId) {
+    public void sendNotificationQueue(final String message, final String deviceToken, final User recipient) {
         jmsTemplate.send(notifyQueue, new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
@@ -34,7 +36,8 @@ public class ApnsMessageProducer {
                 MapMessage mapMessage = session.createMapMessage();
                 mapMessage.setString("message", message);
                 mapMessage.setString("deviceToken", deviceToken);
-                mapMessage.setString("recipientId", recipientId);
+                mapMessage.setString("recipientId", recipient.getId());
+                mapMessage.setString("recipientScreenName", recipient.getScreenName());
 
                 mapMessage.setStringProperty("objectType", "notification");
 
@@ -42,7 +45,8 @@ public class ApnsMessageProducer {
             }
         });
 
-        logger.debug("添加到ios通知队列: deviceToken:{}, recipientId:{}, message:{}", deviceToken, recipientId, message);
+        logger.debug("添加到APNS通知队列: recipient : {}({}), message : {}, deviceToken : {}",
+                recipient.getScreenName(), recipient.getId(), message, deviceToken);
     }
 
     public void setJmsTemplate(JmsTemplate jmsTemplate) {
