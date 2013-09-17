@@ -4,7 +4,7 @@
 
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <c:set var="title"
-       value="<a href='${ctx}/docs/api/1'>REST API v1</a> <a href='${ctx}/docs/api/1/dataStructures'>返回对象数据结构</a> <a href='${ctx}/docs/api/1/pagination'>分页</a>"/>
+       value="<a href='${ctx}/docs/api/1'>REST API v1</a> <a href='${ctx}/docs/api/1/dataStructures'>返回对象数据结构</a> <a href='${ctx}/docs/api/1/pagination'>分页</a> <a href='${ctx}/docs/api/1/environments'>环境</a>"/>
 
 <!DOCTYPE html>
 <html>
