@@ -32,6 +32,16 @@
                    class="input-large required"/>
         </div>
     </div>
+
+    <div class="control-group">
+        <label for="editorAccountId" class="control-label">编辑账号ID:</label>
+
+        <div class="controls">
+            <input type="text" id="editorAccountId" name="editorAccountId" value="${setting.editorAccountId}"
+                   class="input-large required"/>
+            该账号发的视频将显示在小编制作频道
+        </div>
+    </div>
     <%--查询时未使用该参数
     <div class="control-group">
         <label for="digestDays" class="control-label">"精华"几天内的内容:</label>
@@ -52,8 +62,10 @@
         </div>
     </div>
 
+
+    <h2>下载地址</h2>
     <p>
-        在视频播放页面回用到乐播APP下载地址.
+        在视频播放页面会用到乐播APP下载地址.
     </p>
 
     <div class="control-group">

@@ -20,7 +20,7 @@
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="icon-user"><c:if test="${profileImageUrl != null}"><img
                                 src="${profileImageUrl}"/></c:if></i>
-                        <shiro:principal property="name"/>
+                        <shiro:principal property="screenName"/>
                         <span class="caret"></span>
                     </a>
 

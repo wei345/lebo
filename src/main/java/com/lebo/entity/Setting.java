@@ -16,6 +16,7 @@ import java.util.List;
 @Document(collection = "settings")
 public class Setting extends IdEntity {
     private String officialAccountId;
+    private String editorAccountId;//编辑id，编辑发的视频将显示在小编制作频道
 
     private Integer digestDays = 2;
     private Integer hotDays = 2;
@@ -158,5 +159,13 @@ public class Setting extends IdEntity {
     }
     public String getHotuser_button3_imageUrl(){
         return FileContentUrlUtils.getContentUrl(hotuser_button3_imageKey);
+    }
+
+    public String getEditorAccountId() {
+        return editorAccountId;
+    }
+
+    public void setEditorAccountId(String editorAccountId) {
+        this.editorAccountId = editorAccountId;
     }
 }
