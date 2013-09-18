@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * 用户管理类.
@@ -431,6 +432,12 @@ public class AccountService extends AbstractMongoService {
 
     public AccountSettingDto toAccountSettingDto(User user){
         return BeanMapper.map(user, AccountSettingDto.class);
+    }
+
+    //4-24位字符，支持中文、英文、数字、"-"、"_"
+    Pattern screenNamePattern =  Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{4,24}");
+    public boolean isScreenNameValid(String screenName){
+        return screenNamePattern.matcher(screenName).matches();
     }
 
 }

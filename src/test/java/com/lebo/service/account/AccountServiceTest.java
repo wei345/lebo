@@ -44,4 +44,22 @@ public class AccountServiceTest extends SpringContextTestCase {
         assertTrue(accountService.isMongoId("51DFD3D21A8855744379891F"));
         assertFalse(accountService.isMongoId("51DFD3D21A8855744379891F."));
     }
+
+    @Test
+    public void isScreenNameValid(){
+        //合法字符
+        assertTrue(accountService.isScreenNameValid("中文_-abc0A"));
+        //不能少于4个字符
+        assertFalse(accountService.isScreenNameValid("中文_"));
+        //不能多于24个字符
+        assertFalse(accountService.isScreenNameValid("0123456789012345678901234"));
+        //不能带有Emoji
+        assertFalse(accountService.isScreenNameValid("中文_-abc0A\uD83D\uDC94"));
+
+        //.能匹配Emoji
+        assertTrue("\uD83D\uDC94".matches(".+"));
+        //中文不匹配Emoji
+        assertFalse("\uD83D\uDC94".matches("[\u4e00-\u9fa5]+"));
+
+    }
 }

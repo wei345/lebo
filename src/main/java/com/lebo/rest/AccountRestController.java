@@ -35,6 +35,9 @@ public class AccountRestController {
         User user = accountService.getUser(accountService.getCurrentUserId());
 
         if (StringUtils.isNotBlank(screenName)) {
+            if (!accountService.isScreenNameValid(screenName)) {
+                return ErrorDto.badRequest(String.format("%s 无效，合法screenName为4-24位字符，支持中文、英文、数字、\"-\"、\"_\"", screenName));
+            }
             if (!accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {
                 return ErrorDto.badRequest(String.format("%s 已被占用", screenName));
             }
@@ -108,4 +111,6 @@ public class AccountRestController {
         User user = accountService.getUserSettings(accountService.getCurrentUserId());
         model.addAttribute("userSettings", user);
     }
+
+
 }
