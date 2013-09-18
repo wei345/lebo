@@ -4,16 +4,17 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <p>
-    返回红人榜按钮图片地址、按钮背景颜色、按钮文字。
+    返回红人榜按钮设置 & 推荐用户。
 </p>
-<tags:form name="红人榜设置" method="GET" action="${ctx}/api/1/settings/hotUserList.json">
+<tags:form name="红人榜设置" method="GET" action="${ctx}/api/1/users/hotUserList.json">
     <p>
-        同时返回指定数量的推荐用户，以减少客户端请求次数。默认 0 条。
+        true - 返回结果带有按钮设置，false - 返回结果不带按钮设置，默认false。
     </p>
-    <tags:field name="count" optional="true"/>
+    <tags:field name="btn" optional="true"/>
+    <tags:fields-page-size />
 </tags:form>
 
-<tags:example method="GET" url="http://localhost:8080/api/1/settings/hotUserList.json?count=2">
+<tags:example method="GET" url="http://localhost:8080/api/1/users/hotUserList.json?btn=true">
     {
         hotuser_button1_backgroundColor: "#7E5CDA",
         hotuser_button1_imageUrl: "http://file.lebooo.com/images/hotuser/btn1.png",

@@ -55,14 +55,6 @@
             返回频道列表。
         </td>
     </tr>
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/settings/hotUserList" text="GET settings/hotUserList"/>
-        </td>
-        <td>
-            返回红人榜按钮图片地址、按钮背景颜色、按钮文字。
-        </td>
-    </tr>
 </table>
 
 <strong>时间线</strong>
@@ -294,10 +286,10 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/users/suggestions/hot" text="GET users/suggestions/hot"/>
+            <tags:link url="${ctx}/docs/api/1/get/users/hotUserList" text="GET users/hotUserList"/>
         </td>
         <td>
-            返回推荐关注的用户列表。
+            返回红人榜按钮设置 & 推荐用户。
         </td>
     </tr>
 </table>

@@ -1,8 +1,13 @@
 package com.lebo.rest;
 
+import com.lebo.entity.Setting;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
+import com.lebo.rest.dto.HotUserListDto;
+import com.lebo.rest.dto.UserDto;
+import com.lebo.service.SettingService;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.param.PageRequest;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springside.modules.mapper.BeanMapper;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,6 +35,8 @@ import java.util.List;
 public class UserRestController {
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private SettingService settingService;
 
     //TODO 搜索用户，除了名字还查找位置和公司？
     @RequestMapping(value = "search", method = RequestMethod.GET)
@@ -79,10 +88,23 @@ public class UserRestController {
         return accountService.toUserDto(user);
     }
 
-    @RequestMapping(value = "suggestions/hot", method = RequestMethod.GET)
+    /**
+     * 红人榜页
+     *
+     * @param btn true - 返回结果带有按钮设置，false - 返回结果不带按钮设置，默认false
+     */
+    @RequestMapping(value = "hotUserList", method = RequestMethod.GET)
     @ResponseBody
-    public Object suggestionsHot(@RequestParam(value = "page", defaultValue = "0") int page,
-                                 @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        return accountService.getHotUsers(page, size);
+    public Object hotUserList(@Valid PageRequest pageRequest,
+                              @RequestParam(value = "btn", defaultValue = "false") boolean btn) {
+        HotUserListDto dto = new HotUserListDto();
+        if (btn) {
+            Setting setting = settingService.getSetting();
+            BeanMapper.copy(setting, dto);
+        }
+
+        List<UserDto> users = accountService.getHotUsers(pageRequest.getPage(), pageRequest.getSize());
+        dto.setUsers(users);
+        return dto;
     }
 }

@@ -4,11 +4,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 红人榜按钮设置 & 推荐用户.
+ *
  * @author: Wei Liu
  * Date: 13-9-18
  * Time: PM1:30
  */
-public class HotUserListSettingDto {
+public class HotUserListDto {
     //红人榜 -> 粉丝最多
     private String hotuser_button1_backgroundColor;
     private String hotuser_button1_imageUrl;
@@ -24,6 +26,7 @@ public class HotUserListSettingDto {
     private String hotuser_button3_imageUrl;
     private String hotuser_button3_text;
 
+    //推荐用户
     private List<UserDto> users = Collections.emptyList();
 
     public String getHotuser_button1_backgroundColor() {
