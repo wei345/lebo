@@ -5,6 +5,7 @@ import com.lebo.rest.dto.AccountSettingDto;
 import com.lebo.rest.dto.CheckVersionDto;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.UserDto;
+import com.lebo.service.FriendshipService;
 import com.lebo.service.account.AbstractShiroLogin;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.account.ShiroUser;
@@ -37,6 +38,8 @@ public class HomeRestController {
     private ServletContext context;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private FriendshipService friendshipService;
 
     //TODO 可通过grant登录
     @RequestMapping(value = "1/oauthLogin", method = RequestMethod.POST)
@@ -58,9 +61,12 @@ public class HomeRestController {
             User user = accountService.getUser(accountService.getCurrentUserId());
             UserDto userDto = accountService.toBasicUserDto(user);
             AccountSettingDto settingDto = accountService.toAccountSettingDto(user);
+
             Map<String, Object> ret = new HashMap<String, Object>();
             BeanMapper.copy(userDto, ret);
             BeanMapper.copy(settingDto, ret);
+            //关注数
+            ret.put(UserDto.FRIENDS_COUNT_KEY, friendshipService.countFollowings(user.getId()));
             //去掉null值
             List<String> deletes = new ArrayList<String>();
             for (Map.Entry<String, Object> entry : ret.entrySet()) {
