@@ -16,6 +16,7 @@
         .preview-image{
             width: 30px;
             height: 30px;
+            display: inline-block;
         }
     </style>
 </head>
@@ -111,7 +112,7 @@
             <input type="text" id="hotuser_button1_imageKey" name="hotuser_button1_imageKey"
                    value="${setting.hotuser_button1_imageKey}"
                    class="input-large required"/>
-            <img class="preview-image" src="${hotuser_button1_imageUrl}"/>
+            <span class="preview-image" style="background-color:${setting.hotuser_button1_backgroundColor}"><img src="${setting.hotuser_button1_imageUrl}"/></span>
         </div>
     </div>
 
@@ -145,7 +146,7 @@
             <input type="text" id="hotuser_button2_imageKey" name="hotuser_button2_imageKey"
                    value="${setting.hotuser_button2_imageKey}"
                    class="input-large required"/>
-            <img class="preview-image" src="${hotuser_button2_imageUrl}"/>
+            <span class="preview-image" style="background-color:${setting.hotuser_button2_backgroundColor}"><img src="${setting.hotuser_button2_imageUrl}"/></span>
         </div>
     </div>
 
@@ -179,7 +180,7 @@
             <input type="text" id="hotuser_button3_imageKey" name="hotuser_button3_imageKey"
                    value="${setting.hotuser_button3_imageKey}"
                    class="input-large required"/>
-            <img class="preview-image" src="${hotuser_button3_imageUrl}"/>
+            <span class="preview-image" style="background-color:${setting.hotuser_button3_backgroundColor}"><img src="${setting.hotuser_button3_imageUrl}"/></span>
         </div>
     </div>
 

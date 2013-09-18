@@ -55,6 +55,14 @@
             返回频道列表。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/settings/hotUserList" text="GET settings/hotUserList"/>
+        </td>
+        <td>
+            返回红人榜按钮图片地址、按钮背景颜色、按钮文字。
+        </td>
+    </tr>
 </table>
 
 <strong>时间线</strong>
