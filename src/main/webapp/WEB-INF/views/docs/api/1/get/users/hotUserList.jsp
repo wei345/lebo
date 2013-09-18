@@ -3,10 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<p>
-    返回红人榜按钮设置 & 推荐用户。
-</p>
-<tags:form name="红人榜设置" method="GET" action="${ctx}/api/1/users/hotUserList.json">
+<tags:form name="红人榜按钮设置 & 推荐用户" method="GET" action="${ctx}/api/1/users/hotUserList.json">
     <p>
         true - 返回结果带有按钮设置，false - 返回结果不带按钮设置，默认false。
     </p>
