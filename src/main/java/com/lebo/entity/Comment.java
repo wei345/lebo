@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -31,6 +32,7 @@ public class Comment extends IdEntity {
     private String source;
     private GeoLocation geoLocation;
     // 被评论的post
+    @Indexed(direction = IndexDirection.DESCENDING)
     private String postId;
     //被回复的评论id，可能为null，不会被级联删除
     private String replyCommentId;
