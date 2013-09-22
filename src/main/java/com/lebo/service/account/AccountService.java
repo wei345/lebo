@@ -97,7 +97,13 @@ public class AccountService extends AbstractMongoService {
     }
 
     public User getUser(String id) {
-        return userDao.findOne(id);
+        String key = String.format("user:%s", id);
+        User user = spyMemcachedClient.get(key);
+        if (user == null) {
+            user = userDao.findOne(id);
+            spyMemcachedClient.set(key, 60 * 5, user);
+        }
+        return user;
     }
 
     public User saveUser(User user) {
@@ -390,7 +396,7 @@ public class AccountService extends AbstractMongoService {
      * @param userId 查询该用户的通知设置
      * @return 返回用户通知设置
      */
-    public User getUserSettings(String userId){
+    public User getUserSettings(String userId) {
         Query query = new Query(new Criteria(User.ID_KEY).is(userId));
         query.fields().include(User.SCREEN_NAME_KEY);
         query.fields().include(User.DESCRIPTION_KEY);
@@ -412,7 +418,7 @@ public class AccountService extends AbstractMongoService {
         return mongoTemplate.findOne(query, User.class);
     }
 
-    public void updateUserSettings(User user){
+    public void updateUserSettings(User user) {
         Query query = new Query(new Criteria(User.ID_KEY).is(user.getId()));
         Update update = new Update();
         update.set(User.DESCRIPTION_KEY, user.getDescription());
@@ -430,13 +436,14 @@ public class AccountService extends AbstractMongoService {
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public AccountSettingDto toAccountSettingDto(User user){
+    public AccountSettingDto toAccountSettingDto(User user) {
         return BeanMapper.map(user, AccountSettingDto.class);
     }
 
     //4-24位字符，支持中文、英文、数字、"-"、"_"
-    Pattern screenNamePattern =  Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{4,24}");
-    public boolean isScreenNameValid(String screenName){
+    Pattern screenNamePattern = Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{4,24}");
+
+    public boolean isScreenNameValid(String screenName) {
         return screenNamePattern.matcher(screenName).matches();
     }
 
