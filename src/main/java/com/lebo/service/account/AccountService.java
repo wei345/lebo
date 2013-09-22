@@ -390,7 +390,7 @@ public class AccountService extends AbstractMongoService {
      * @param userId 查询该用户的通知设置
      * @return 返回用户通知设置
      */
-    public User getUserSettings(String userId){
+    public User getUserSettings(String userId) {
         Query query = new Query(new Criteria(User.ID_KEY).is(userId));
         query.fields().include(User.SCREEN_NAME_KEY);
         query.fields().include(User.DESCRIPTION_KEY);
@@ -412,7 +412,7 @@ public class AccountService extends AbstractMongoService {
         return mongoTemplate.findOne(query, User.class);
     }
 
-    public void updateUserSettings(User user){
+    public void updateUserSettings(User user) {
         Query query = new Query(new Criteria(User.ID_KEY).is(user.getId()));
         Update update = new Update();
         update.set(User.DESCRIPTION_KEY, user.getDescription());
@@ -430,7 +430,7 @@ public class AccountService extends AbstractMongoService {
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public AccountSettingDto toAccountSettingDto(User user){
+    public AccountSettingDto toAccountSettingDto(User user) {
         return BeanMapper.map(user, AccountSettingDto.class);
     }
 

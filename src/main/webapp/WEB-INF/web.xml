@@ -47,6 +47,15 @@
     </filter-mapping>
 
     <filter>
+        <filter-name>requestTimeLoggerFilter</filter-name>
+        <filter-class>com.lebo.web.filter.RequestTimeLoggerFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>requestTimeLoggerFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>shiroFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <init-param>

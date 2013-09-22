@@ -16,7 +16,6 @@ import java.util.List;
  */
 @Document(collection = "comments")
 public class Comment extends IdEntity {
-    public static final String POST_ID_KEY = "postId";
     @Indexed
     private String userId;
     private Date createdAt;
@@ -34,6 +33,7 @@ public class Comment extends IdEntity {
     // 被评论的post
     @Indexed(direction = IndexDirection.DESCENDING)
     private String postId;
+    public static final String POST_ID_KEY = "postId";
     //被回复的评论id，可能为null，不会被级联删除
     private String replyCommentId;
     //被回复的评论的作者id，冗余，为更好的性能
