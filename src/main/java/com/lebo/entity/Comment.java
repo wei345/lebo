@@ -31,6 +31,7 @@ public class Comment extends IdEntity {
     private String source;
     private GeoLocation geoLocation;
     // 被评论的post
+    @Indexed
     private String postId;
     //被回复的评论id，可能为null，不会被级联删除
     private String replyCommentId;
