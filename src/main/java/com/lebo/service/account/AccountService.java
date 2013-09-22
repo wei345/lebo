@@ -435,7 +435,7 @@ public class AccountService extends AbstractMongoService {
     }
 
     //4-24位字符，支持中文、英文、数字、"-"、"_"
-    Pattern screenNamePattern =  Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{4,24}");
+    Pattern screenNamePattern =  Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{2,24}");
     public boolean isScreenNameValid(String screenName){
         return screenNamePattern.matcher(screenName).matches();
     }
