@@ -55,6 +55,14 @@
             返回频道列表。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/settings/recommendedApps" text="GET settings/recommendedApps"/>
+        </td>
+        <td>
+            返回推荐应用列表。
+        </td>
+    </tr>
 </table>
 
 <strong>时间线</strong>
