@@ -65,6 +65,8 @@ public class RequestTimeLogger {
         long methodElapsed = time - methodBeginTime;
 
         log("end", methodElapsed);
+
+        contextTL.get().clear();
     }
 
     private static String getRequestId() {
@@ -97,29 +99,37 @@ public class RequestTimeLogger {
         return lately + "ms/" + (methodElapsed == null ? "enter/" : methodElapsed + "ms/") + total + "ms";
     }
 
+    public boolean isEnable() {
+        return contextTL.get().get(START) != null;
+    }
+
     @Pointcut("execution(* com.lebo.rest.*Controller.*(..)) || execution(* com.lebo.service.*Service.*(..)) || execution(* com.lebo.repository.*Dao.*(..))")
     private void controllerServiceDaoMethod() {
     }
 
     @Before("controllerServiceDaoMethod()")
     public void beforeControllerServiceDao(JoinPoint joinPoint) {
-        // 计算花费时间时，使用一致的“现在时间”
-        long time = System.currentTimeMillis();
-        contextTL.get().put(NOW, time);
-        // 用于计算在一个方法中花费了多少时间
-        contextTL.get().put(joinPoint.getSignature().toLongString() + " begin", time);
-        log(joinPoint.getSignature().toShortString(), null);
+        if (isEnable()) {
+            // 计算花费时间时，使用一致的“现在时间”
+            long time = System.currentTimeMillis();
+            contextTL.get().put(NOW, time);
+            // 用于计算在一个方法中花费了多少时间
+            contextTL.get().put(joinPoint.getSignature().toLongString() + " begin", time);
+            log(joinPoint.getSignature().toShortString(), null);
+        }
     }
 
     @After("controllerServiceDaoMethod()")
     public void afterControllerServiceDao(JoinPoint joinPoint) {
-        // 计算花费时间时，使用一致的“现在时间”
-        long time = System.currentTimeMillis();
-        contextTL.get().put(NOW, time);
-        // 方法中花费的时间
-        long methodBeginTime = (Long) contextTL.get().get(joinPoint.getSignature().toLongString() + " begin");
-        long methodElapsed = time - methodBeginTime;
+        if (isEnable()) {
+            // 计算花费时间时，使用一致的“现在时间”
+            long time = System.currentTimeMillis();
+            contextTL.get().put(NOW, time);
+            // 方法中花费的时间
+            long methodBeginTime = (Long) contextTL.get().get(joinPoint.getSignature().toLongString() + " begin");
+            long methodElapsed = time - methodBeginTime;
 
-        log(joinPoint.getSignature().toShortString(), methodElapsed);
+            log(joinPoint.getSignature().toShortString(), methodElapsed);
+        }
     }
 }
