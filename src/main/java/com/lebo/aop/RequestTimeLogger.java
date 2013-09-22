@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -44,16 +43,12 @@ public class RequestTimeLogger {
         contextTL.get().put(START, time);
         contextTL.get().put(LAST, time);
 
-        logger.debug("begin {}", request.getRequestURI());
+        logger.debug("---- begin {}", request.getRequestURI());
     }
 
     public static void end() {
-        // 方法中花费的时间
-        long time = System.currentTimeMillis();
-        long methodBeginTime = (Long) contextTL.get().get(START);
-        long methodElapsed = time - methodBeginTime;
-
-        logger.debug("end {} ms {}", methodElapsed, contextTL.get().get(REQUEST_URI));
+        logger.debug(String.format("%6s ms    end    %s", System.currentTimeMillis() - (Long) contextTL.get().get(START),
+                contextTL.get().get(REQUEST_URI)));
 
         contextTL.get().clear();
     }
@@ -74,6 +69,9 @@ public class RequestTimeLogger {
             contextTL.get().put(joinPoint.getSignature().toLongString(), time);
             // 记录最后时间点
             contextTL.get().put(LAST, time);
+
+            /*logger.debug(String.format("%6s ms %9s  -->  %s", time - (Long) contextTL.get().get(START),
+                    "", joinPoint.getSignature().toShortString()));*/
         }
     }
 
@@ -87,7 +85,8 @@ public class RequestTimeLogger {
             // 记录最后时间点
             contextTL.get().put(LAST, time);
 
-            logger.debug("{} ms {}", methodElapsed, joinPoint.getSignature().toShortString());
+            logger.debug(String.format("%6s ms %6s ms  <--  %s", time - (Long) contextTL.get().get(START),
+                    methodElapsed, joinPoint.getSignature().toShortString()));
         }
     }
 }
