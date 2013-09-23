@@ -78,6 +78,11 @@ public class User extends IdEntity {
     private Integer followersCount;
     public static final String FOLLOWERS_COUNT_KEY = "followersCount";
 
+    //用户的好友数(关注数)
+    @Indexed(direction = IndexDirection.DESCENDING)
+    private Integer friendsCount;
+    public static final String FRIENDS_COUNT = "friendsCount";
+
     //用户Posts被收藏的次数
     @Indexed(direction = IndexDirection.DESCENDING)
     private Integer beFavoritedCount;
@@ -136,6 +141,7 @@ public class User extends IdEntity {
 
     private void initial() {
         followersCount = 0;
+        friendsCount = 0;
         viewCount = 0;
         beFavoritedCount = 0;
         statusesCount = 0;
@@ -491,6 +497,14 @@ public class User extends IdEntity {
         this.pikeId = pikeId;
     }
 
+    public Integer getFriendsCount() {
+        return friendsCount;
+    }
+
+    public void setFriendsCount(Integer friendsCount) {
+        this.friendsCount = friendsCount;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -498,6 +512,8 @@ public class User extends IdEntity {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", profileImageNormal='" + profileImageNormal + '\'' +
+                ", profileImageBigger='" + profileImageBigger + '\'' +
+                ", profileImageOriginal='" + profileImageOriginal + '\'' +
                 ", createdAt=" + createdAt +
                 ", verified=" + verified +
                 ", weiboVerified=" + weiboVerified +
@@ -512,11 +528,24 @@ public class User extends IdEntity {
                 ", salt='" + salt + '\'' +
                 ", roles=" + roles +
                 ", followersCount=" + followersCount +
+                ", friendsCount=" + friendsCount +
                 ", beFavoritedCount=" + beFavoritedCount +
                 ", viewCount=" + viewCount +
                 ", digestCount=" + digestCount +
+                ", statusesCount=" + statusesCount +
                 ", apnsProductionToken='" + apnsProductionToken + '\'' +
                 ", apnsDevelopmentToken='" + apnsDevelopmentToken + '\'' +
+                ", weiboToken='" + weiboToken + '\'' +
+                ", renrenToken='" + renrenToken + '\'' +
+                ", findFriendWeiboToken='" + findFriendWeiboToken + '\'' +
+                ", findFriendWeiboUid='" + findFriendWeiboUid + '\'' +
+                ", findFriendRenrenToken='" + findFriendRenrenToken + '\'' +
+                ", notifyOnReplyPost=" + notifyOnReplyPost +
+                ", notifyOnFavorite=" + notifyOnFavorite +
+                ", notifyOnFollow=" + notifyOnFollow +
+                ", notifySound=" + notifySound +
+                ", notifyVibrator=" + notifyVibrator +
+                ", pikeId='" + pikeId + '\'' +
                 "} " + super.toString();
     }
 }

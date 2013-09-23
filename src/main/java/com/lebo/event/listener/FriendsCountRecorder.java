@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * Time: PM2:01
  */
 @Component
-public class FollowerCountRecorder {
+public class FriendsCountRecorder {
     @Autowired
     private AccountService accountService;
 
@@ -21,11 +21,13 @@ public class FollowerCountRecorder {
     @Subscribe
     public void increase(AfterFollowingCreatEvent e) {
         accountService.updateFollowersCount(e.getFollowingId());
+        accountService.updateFriendsCount(e.getUserId());
         //TODO 维护双向关注数量(还未用到2013.8.14)
     }
 
     @Subscribe
     public void decrease(AfterFollowingDestroyEvent e) {
         accountService.updateFollowersCount(e.getFollowingId());
+        accountService.updateFriendsCount(e.getUserId());
     }
 }

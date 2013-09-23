@@ -154,7 +154,7 @@ public class AccountService extends AbstractMongoService {
     }
 
     public void updateLastSignInAt(User user) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(user.getId()))),
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(new ObjectId(user.getId()))),
                 new Update().set(User.USER_LAST_SIGN_IN_AT_KEY, dateProvider.getDate()), User.class);
     }
 
@@ -173,7 +173,6 @@ public class AccountService extends AbstractMongoService {
                 dto.setBilateral(false);
             }
         }
-        dto.setFriendsCount(friendshipService.countFollowings(user.getId()));
         dto.setFavoritesCount(favoriteService.countUserFavorites(user.getId()));
         dto.setBlocking(blockService.isBlocking(getCurrentUserId(), user.getId()));
 
@@ -213,14 +212,14 @@ public class AccountService extends AbstractMongoService {
 
     //增长粉丝计数
     public void increaseFollowersCount(String userId) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().inc(User.FOLLOWERS_COUNT_KEY, 1),
                 User.class);
     }
 
     //减少粉丝计数
     public void decreaseFollowersCount(String userId) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().inc(User.FOLLOWERS_COUNT_KEY, -1),
                 User.class);
     }
@@ -228,14 +227,22 @@ public class AccountService extends AbstractMongoService {
     //更新粉丝数
     public void updateFollowersCount(String userId) {
         int count = friendshipService.countFollowers(userId);
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().set(User.FOLLOWERS_COUNT_KEY, count),
+                User.class);
+    }
+
+    //更新好友(关注)数
+    public void updateFriendsCount(String userId) {
+        int count = friendshipService.countFriends(userId);
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
+                new Update().set(User.FRIENDS_COUNT, count),
                 User.class);
     }
 
     //增长收藏计数
     public void increaseFavoritesCount(String userId) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().inc(User.BE_FAVORITED_COUNT_KEY, 1),
                 User.class);
     }
@@ -256,7 +263,7 @@ public class AccountService extends AbstractMongoService {
      * @param count  收藏计数减少多少，应为正数
      */
     public void decreaseFavoritesCount(String userId, int count) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().inc(User.BE_FAVORITED_COUNT_KEY, count * -1),
                 User.class);
     }
@@ -265,7 +272,7 @@ public class AccountService extends AbstractMongoService {
      * 增长播放计数
      */
     public void increaseViewCount(String userId) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(userId)),
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().inc(User.VIEW_COUNT_KEY, 1),
                 User.class);
     }
@@ -274,7 +281,7 @@ public class AccountService extends AbstractMongoService {
      * 批量增长播放计数
      */
     public void increaseViewCount(List<String> userIds) {
-        mongoTemplate.updateMulti(new Query(new Criteria("_id").in(userIds)),
+        mongoTemplate.updateMulti(new Query(new Criteria(User.ID_KEY).in(userIds)),
                 new Update().inc(User.VIEW_COUNT_KEY, 1),
                 User.class);
     }
@@ -287,7 +294,7 @@ public class AccountService extends AbstractMongoService {
 
         Criteria criteria = new Criteria(User.SCREEN_NAME_KEY).is(screenName);
         if (StringUtils.isNotBlank(userId)) {
-            criteria.and("_id").ne(userId);
+            criteria.and(User.ID_KEY).ne(userId);
         }
         return mongoTemplate.count(new Query(criteria), User.class) == 0;
     }
@@ -434,9 +441,10 @@ public class AccountService extends AbstractMongoService {
         return BeanMapper.map(user, AccountSettingDto.class);
     }
 
-    //4-24位字符，支持中文、英文、数字、"-"、"_"
-    Pattern screenNamePattern =  Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{2,24}");
-    public boolean isScreenNameValid(String screenName){
+    //2-24位字符，支持中文、英文、数字、"-"、"_"
+    Pattern screenNamePattern = Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{2,24}");
+
+    public boolean isScreenNameValid(String screenName) {
         return screenNamePattern.matcher(screenName).matches();
     }
 

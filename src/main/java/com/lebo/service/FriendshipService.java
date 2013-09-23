@@ -34,7 +34,7 @@ public class FriendshipService extends AbstractMongoService {
     /**
      * 允许关注的人数上限，太多可能会很慢。
      */
-    private int maxFollowingCount = 2000;
+    private int maxFriendsCount = 2000;
 
     /**
      * userId关注followingId。
@@ -58,7 +58,7 @@ public class FriendshipService extends AbstractMongoService {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING);
             }
 
-            if (countFollowings(userId) > maxFollowingCount) {
+            if (countFriends(userId) > maxFriendsCount) {
                 throw new ServiceException(ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY);
             }
 
@@ -129,7 +129,7 @@ public class FriendshipService extends AbstractMongoService {
         return (int) mongoTemplate.count(query, Friendship.class);
     }
 
-    public int countFollowings(String userId) {
+    public int countFriends(String userId) {
         List<Criteria> criterias = new ArrayList<Criteria>(2);
         criterias.add(new Criteria(Friendship.A_KEY).is(userId).and(Friendship.AFB_KEY).is(true));
         criterias.add(new Criteria(Friendship.B_KEY).is(userId).and(Friendship.BFA_KEY).is(true));

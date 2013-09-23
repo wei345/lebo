@@ -18,7 +18,6 @@ public class UserDto {
     private Boolean following;
     private Integer followersCount;
     private Integer friendsCount;
-    public static final String FRIENDS_COUNT_KEY = "friendsCount";
     private Integer statusesCount;
     private Integer favoritesCount;
     private Integer beFavoritedCount;

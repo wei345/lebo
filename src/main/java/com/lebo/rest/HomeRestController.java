@@ -65,8 +65,6 @@ public class HomeRestController {
             Map<String, Object> ret = new HashMap<String, Object>();
             BeanMapper.copy(userDto, ret);
             BeanMapper.copy(settingDto, ret);
-            //关注数
-            ret.put(UserDto.FRIENDS_COUNT_KEY, friendshipService.countFollowings(user.getId()));
             //去掉null值
             List<String> deletes = new ArrayList<String>();
             for (Map.Entry<String, Object> entry : ret.entrySet()) {
