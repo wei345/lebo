@@ -168,18 +168,30 @@ public class AccountService extends AbstractMongoService {
     public UserDto toUserDto(User user) {
         UserDto dto = BeanMapper.map(user, UserDto.class);
 
-        if (!getCurrentUserId().equals(user.getId())) {
-            dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), user.getId()));
+        dtoSetFollowing(dto);
+        dtoSetBlocking(dto);
+        dtoSetFavoritesCount(dto);
+
+        return dto;
+    }
+
+    public void dtoSetFollowing(UserDto dto) {
+        if (!getCurrentUserId().equals(dto.getId())) {
+            dto.setFollowing(friendshipService.isFollowing(getCurrentUserId(), dto.getId()));
             if (dto.getFollowing()) {
-                dto.setBilateral(friendshipService.isBilateral(getCurrentUserId(), user.getId()));
+                dto.setBilateral(friendshipService.isBilateral(getCurrentUserId(), dto.getId()));
             } else {
                 dto.setBilateral(false);
             }
         }
-        dto.setFavoritesCount(favoriteService.countUserFavorites(user.getId()));
-        dto.setBlocking(blockService.isBlocking(getCurrentUserId(), user.getId()));
+    }
 
-        return dto;
+    public void dtoSetBlocking(UserDto dto) {
+        dto.setBlocking(blockService.isBlocking(getCurrentUserId(), dto.getId()));
+    }
+
+    public void dtoSetFavoritesCount(UserDto dto) {
+        dto.setFavoritesCount(favoriteService.countUserFavorites(dto.getId()));
     }
 
     public List<UserDto> toUserDtos(List<User> users) {
