@@ -239,7 +239,7 @@ public class AccountService extends AbstractMongoService {
     public void updateFriendsCount(String userId) {
         int count = friendshipService.countFriends(userId);
         mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
-                new Update().set(User.FRIENDS_COUNT, count),
+                new Update().set(User.FRIENDS_COUNT_KEY, count),
                 User.class);
     }
 

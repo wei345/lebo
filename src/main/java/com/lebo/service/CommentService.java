@@ -102,7 +102,7 @@ public class CommentService extends AbstractMongoService {
 
         //评论的作者信息
         User user = accountService.getUser(comment.getUserId());
-        dto.setUser(accountService.toUserDto(user));
+        dto.setUser(accountService.toBasicUserDto(user));
 
         //回复评论的作者信息
         if (StringUtils.isNotBlank(comment.getReplyCommentUserId())) {

@@ -80,7 +80,7 @@ public class User extends IdEntity {
 
     //用户的好友数(关注数)
     private Integer friendsCount;
-    public static final String FRIENDS_COUNT = "friendsCount";
+    public static final String FRIENDS_COUNT_KEY = "friendsCount";
 
     //用户Posts被收藏的次数
     @Indexed(direction = IndexDirection.DESCENDING)
