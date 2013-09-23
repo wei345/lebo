@@ -29,6 +29,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springside.modules.cache.memcached.SpyMemcachedClient;
@@ -52,6 +54,7 @@ import java.util.regex.Pattern;
  *
  * @author Wei Liu
  */
+@ManagedResource(objectName = "lebo:name=AccountService", description = "Account Service Management Bean")
 @Component
 public class AccountService extends AbstractMongoService {
 
@@ -446,6 +449,23 @@ public class AccountService extends AbstractMongoService {
 
     public boolean isScreenNameValid(String screenName) {
         return screenNamePattern.matcher(screenName).matches();
+    }
+
+    //---- JMX ----
+    @ManagedOperation
+    public void updateAllUserFriendsCount() {
+        logger.debug("更新所有用户好友数 : 开始");
+        Query query = new Query();
+        query.fields().include(User.ID_KEY);
+        logger.debug("更新所有用户好友数 : 正在获取所有用户ID");
+        List<User> users = mongoTemplate.find(query, User.class);
+        logger.debug("更新所有用户好友数 : 共 {} 用户", users.size());
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            logger.debug("更新所有用户好友数 : 正在更新 {}/{}, userId : {}", i + 1, users.size(), user.getId());
+            updateFriendsCount(user.getId());
+        }
+        logger.debug("更新所有用户好友数 : 完成");
     }
 
 }
