@@ -43,11 +43,11 @@ public class RequestTimeLogger {
         contextTL.get().put(START, time);
         contextTL.get().put(LAST, time);
 
-        logger.debug("---- begin {}", request.getRequestURI());
+        logger.debug("    begin  {}", request.getRequestURI());
     }
 
     public static void end() {
-        logger.debug(String.format("%6s ms    end    %s", System.currentTimeMillis() - (Long) contextTL.get().get(START),
+        logger.debug(String.format("%6s ms       end       %s", System.currentTimeMillis() - (Long) contextTL.get().get(START),
                 contextTL.get().get(REQUEST_URI)));
 
         contextTL.get().clear();
@@ -70,7 +70,8 @@ public class RequestTimeLogger {
             // 记录最后时间点
             contextTL.get().put(LAST, time);
 
-            /*logger.debug(String.format("%6s ms %9s  -->  %s", time - (Long) contextTL.get().get(START),
+            /*可随时开启打印进入方法的时间
+            logger.debug(String.format("%6s ms %9s  -->  %s", time - (Long) contextTL.get().get(START),
                     "", joinPoint.getSignature().toShortString()));*/
         }
     }
