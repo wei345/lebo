@@ -79,7 +79,6 @@ public class User extends IdEntity {
     public static final String FOLLOWERS_COUNT_KEY = "followersCount";
 
     //用户的好友数(关注数)
-    @Indexed(direction = IndexDirection.DESCENDING)
     private Integer friendsCount;
     public static final String FRIENDS_COUNT = "friendsCount";
 
