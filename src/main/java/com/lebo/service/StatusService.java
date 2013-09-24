@@ -184,13 +184,19 @@ public class StatusService extends AbstractMongoService {
         dto.setId(post.getId());
         dto.setCreatedAt(post.getCreatedAt());
         dto.setText(post.getText());
-        dto.setFiles(FileInfo.toDtos(post.getFiles()));
-        dto.setVideo(post.getVideo().toDto());
+        if (post.getFiles() != null) {
+            dto.setFiles(FileInfo.toDtos(post.getFiles()));
+        }
+        if (post.getVideo() != null) {
+            dto.setVideo(post.getVideo().toDto());
+        }
         dto.setVideoFirstFrameUrl(post.getVideoFirstFrameUrl());
         dto.setSource(post.getSource());
         dto.setFavoritesCount(post.getFavoritesCount());
         dto.setViewCount(post.getViewCount());
-        dto.setUserMentions(Post.UserMention.toDtos(post.getUserMentions()));
+        if (post.getUserMentions() != null) {
+            dto.setUserMentions(Post.UserMention.toDtos(post.getUserMentions()));
+        }
         dto.setDigest(post.getDigest());
         return dto;
     }

@@ -98,10 +98,16 @@ public class CommentService extends AbstractMongoService {
         dto.setPostId(comment.getPostId());
         dto.setCreatedAt(comment.getCreatedAt());
         dto.setText(comment.getText());
-        dto.setFiles(FileInfo.toDtos(comment.getFiles()));
-        dto.setVideo(comment.getVideo().toDto());
+        if (comment.getFiles() != null) {
+            dto.setFiles(FileInfo.toDtos(comment.getFiles()));
+        }
+        if (comment.getVideo() != null) {
+            dto.setVideo(comment.getVideo().toDto());
+        }
         dto.setVideoFirstFrameUrl(comment.getVideoFirstFrameUrl());
-        dto.setAudio(comment.getAudio().toDto());
+        if (comment.getAudio() != null) {
+            dto.setAudio(comment.getAudio().toDto());
+        }
         dto.setHasVideo(comment.getHasVideo());
         dto.setReplyCommentId(comment.getReplyCommentId());
         return dto;

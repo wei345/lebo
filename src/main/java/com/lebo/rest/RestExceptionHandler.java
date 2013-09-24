@@ -3,6 +3,8 @@ package com.lebo.rest;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public final ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
@@ -34,6 +38,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     public final ResponseEntity<?> handleAllException(Exception ex, WebRequest request) {
+        logger.warn(ex.getMessage(), ex);
         return ErrorDto.badRequest(NestedExceptionUtils.buildMessage(ex.getMessage(), ex));
     }
 
