@@ -28,7 +28,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springside.modules.mapper.BeanMapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -180,8 +179,24 @@ public class StatusService extends AbstractMongoService {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
     }
 
+    public StatusDto mapStatusDto(Post post) {
+        StatusDto dto = new StatusDto();
+        dto.setId(post.getId());
+        dto.setCreatedAt(post.getCreatedAt());
+        dto.setText(post.getText());
+        dto.setFiles(FileInfo.toDtos(post.getFiles()));
+        dto.setVideo(post.getVideo().toDto());
+        dto.setVideoFirstFrameUrl(post.getVideoFirstFrameUrl());
+        dto.setSource(post.getSource());
+        dto.setFavoritesCount(post.getFavoritesCount());
+        dto.setViewCount(post.getViewCount());
+        dto.setUserMentions(Post.UserMention.toDtos(post.getUserMentions()));
+        dto.setDigest(post.getDigest());
+        return dto;
+    }
+
     public StatusDto toBasicStatusDto(Post post) {
-        StatusDto dto = BeanMapper.map(post, StatusDto.class);
+        StatusDto dto = mapStatusDto(post);
         dto.setUser(accountService.toBasicUserDto(accountService.getUser(post.getUserId())));
 
         //转发贴
@@ -194,7 +209,7 @@ public class StatusService extends AbstractMongoService {
     }
 
     public StatusDto toStatusDto(Post post) {
-        StatusDto dto = BeanMapper.map(post, StatusDto.class);
+        StatusDto dto = mapStatusDto(post);
         dto.setUser(accountService.toBasicUserDto(accountService.getUser(post.getUserId())));
         accountService.dtoSetFollowing(dto.getUser());
 
@@ -219,8 +234,7 @@ public class StatusService extends AbstractMongoService {
         //转发贴
         else {
             Post originPost = postDao.findOne(post.getOriginPostId());
-            StatusDto originStatusDto = toStatusDto(originPost);
-            dto.setOriginStatus(originStatusDto);
+            dto.setOriginStatus(toStatusDto(originPost));
         }
 
         return dto;
@@ -381,7 +395,7 @@ public class StatusService extends AbstractMongoService {
 
     public LinkedHashSet<String> mentionUserIds(List<Post.UserMention> userMentions) {
         LinkedHashSet<String> userIds = new LinkedHashSet<String>();
-        for(Post.UserMention userMention : userMentions){
+        for (Post.UserMention userMention : userMentions) {
             userIds.add(userMention.getUserId());
         }
         return userIds;
@@ -436,7 +450,7 @@ public class StatusService extends AbstractMongoService {
     public LinkedHashSet<String> buildSearchTerms(Post post) {
         LinkedHashSet<String> words = new LinkedHashSet<String>();
         words.addAll(findHashtags(post.getText(), false));
-        for(Post.UserMention userMention : post.getUserMentions()){
+        for (Post.UserMention userMention : post.getUserMentions()) {
             words.add("@" + userMention.getScreenName());
         }
         words.addAll(segmentation.findWords(post.getText()));

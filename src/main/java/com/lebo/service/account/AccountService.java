@@ -162,7 +162,23 @@ public class AccountService extends AbstractMongoService {
     }
 
     public UserDto toBasicUserDto(User user) {
-        return BeanMapper.map(user, UserDto.class);
+        UserDto dto = new UserDto();
+        dto.setId(user.getId());
+        dto.setScreenName(user.getScreenName());
+        dto.setDescription(user.getDescription());
+        dto.setProfileImageUrl(user.getProfileImageUrl());
+        dto.setProfileImageBiggerUrl(user.getProfileImageBiggerUrl());
+        dto.setProfileImageOriginalUrl(user.getProfileImageOriginalUrl());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setFollowersCount(user.getFollowersCount());
+        dto.setFriendsCount(user.getFriendsCount());
+        dto.setStatusesCount(user.getStatusesCount());
+        dto.setBeFavoritedCount(user.getBeFavoritedCount());
+        dto.setViewCount(user.getViewCount());
+        dto.setDigestCount(user.getDigestCount());
+        dto.setWeiboVerified(user.getWeiboVerified());
+        dto.setLevel(user.getLevel());
+        return dto;
     }
 
     public UserDto toUserDto(User user) {

@@ -1,10 +1,13 @@
 package com.lebo.entity;
 
+import com.lebo.rest.dto.FileInfoDto;
 import com.lebo.service.FileContentUrlUtils;
 import org.springframework.data.annotation.Transient;
 import org.springframework.util.Assert;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 定义Content的基本信息.
@@ -99,6 +102,23 @@ public class FileInfo {
 
     public void setDuration(Long duration) {
         this.duration = duration;
+    }
+
+    public FileInfoDto toDto() {
+        FileInfoDto dto = new FileInfoDto();
+        dto.setContentType(getContentType());
+        dto.setContentUrl(getContentUrl());
+        dto.setDuration(getDuration());
+        dto.setLength(getLength());
+        return dto;
+    }
+
+    public static List<FileInfoDto> toDtos(List<FileInfo> fileInfos) {
+        List<FileInfoDto> dtos = new ArrayList<FileInfoDto>(fileInfos.size());
+        for (FileInfo fileInfo : fileInfos) {
+            dtos.add(fileInfo.toDto());
+        }
+        return dtos;
     }
 
     @Override

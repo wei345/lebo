@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springside.modules.mapper.BeanMapper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +53,7 @@ public class CommentService extends AbstractMongoService {
 
         //视频评论
         comment.setHasVideo(false);
-        if(video != null && videoFirstFrame != null){
+        if (video != null && videoFirstFrame != null) {
             //设置唯一的文件名
             video.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), "video", video.getLength(), video.getContentType(), video.getFilename()));
             videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), "video-first-frame", videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
@@ -67,7 +66,7 @@ public class CommentService extends AbstractMongoService {
         }
 
         //语音评论
-        if(audio != null){
+        if (audio != null) {
             audio.setKey(generateFileId(FILE_COLLECTION_NAME, comment.getId(), "audio", audio.getLength(), audio.getContentType(), audio.getFilename()));
             fileStorageService.save(audio);
             comment.setAudio(audio);
@@ -94,7 +93,18 @@ public class CommentService extends AbstractMongoService {
     }
 
     public CommentDto toBasicCommentDto(Comment comment) {
-        return BeanMapper.map(comment, CommentDto.class);
+        CommentDto dto = new CommentDto();
+        dto.setId(comment.getId());
+        dto.setPostId(comment.getPostId());
+        dto.setCreatedAt(comment.getCreatedAt());
+        dto.setText(comment.getText());
+        dto.setFiles(FileInfo.toDtos(comment.getFiles()));
+        dto.setVideo(comment.getVideo().toDto());
+        dto.setVideoFirstFrameUrl(comment.getVideoFirstFrameUrl());
+        dto.setAudio(comment.getAudio().toDto());
+        dto.setHasVideo(comment.getHasVideo());
+        dto.setReplyCommentId(comment.getReplyCommentId());
+        return dto;
     }
 
     public CommentDto toCommentDto(Comment comment) {

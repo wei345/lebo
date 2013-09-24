@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import com.lebo.rest.dto.StatusDto;
 import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -94,6 +95,22 @@ public class Post extends IdEntity {
 
         public void setIndices(List<Integer> indices) {
             this.indices = indices;
+        }
+
+        public StatusDto.UserMentionDto toDto() {
+            StatusDto.UserMentionDto dto = new StatusDto.UserMentionDto();
+            dto.setUserId(getUserId());
+            dto.setScreenName(getScreenName());
+            dto.setIndices(getIndices());
+            return dto;
+        }
+
+        public static List<StatusDto.UserMentionDto> toDtos(List<UserMention> userMentions) {
+            List<StatusDto.UserMentionDto> dtos = new ArrayList<StatusDto.UserMentionDto>(userMentions.size());
+            for (UserMention userMention : userMentions) {
+                dtos.add(userMention.toDto());
+            }
+            return dtos;
         }
     }
 
