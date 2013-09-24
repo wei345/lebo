@@ -232,7 +232,7 @@ public class StatusService extends AbstractMongoService {
             commentListParam.setCount(3);
             commentListParam.setPostId(post.getId());
             List<Comment> comments = commentService.list(commentListParam);
-            dto.setComments(commentService.toCommentDtos(comments));
+            dto.setComments(commentService.toBasicCommentDtos(comments));
 
             //是否被当前登录用户转发
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post));

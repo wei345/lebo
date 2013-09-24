@@ -110,16 +110,10 @@ public class CommentService extends AbstractMongoService {
         }
         dto.setHasVideo(comment.getHasVideo());
         dto.setReplyCommentId(comment.getReplyCommentId());
-        return dto;
-    }
-
-    public CommentDto toCommentDto(Comment comment) {
-        CommentDto dto = toBasicCommentDto(comment);
 
         //评论的作者信息
         User user = accountService.getUser(comment.getUserId());
         dto.setUser(accountService.toBasicUserDto(user));
-        accountService.dtoSetFollowing(dto.getUser());
 
         //回复评论的作者信息
         if (StringUtils.isNotBlank(comment.getReplyCommentUserId())) {
@@ -130,7 +124,20 @@ public class CommentService extends AbstractMongoService {
             replyCommentUserDto.setId(replyCommentUser.getId());
             dto.setReplyCommentUser(replyCommentUserDto);
         }
+        return dto;
+    }
 
+    public List<CommentDto> toBasicCommentDtos(List<Comment> comments){
+        List<CommentDto> dtos = new ArrayList<CommentDto>(comments.size());
+        for(Comment comment : comments){
+            dtos.add(toBasicCommentDto(comment));
+        }
+        return dtos;
+    }
+
+    public CommentDto toCommentDto(Comment comment) {
+        CommentDto dto = toBasicCommentDto(comment);
+        accountService.dtoSetFollowing(dto.getUser());
         return dto;
     }
 
