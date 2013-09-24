@@ -368,41 +368,46 @@ public class AccountService extends AbstractMongoService {
         FileInfo fileInfo;
 
         //normal size
+        //新头像
         BufferedImage normal = ImageUtils.resizeImage(User.PROFILE_IMAGE_NORMAL_SIZE, originImage);
+        //删除旧头像
+        if (isFileId(user.getProfileImageNormal())) {
+            fileStorageService.delete(user.getProfileImageNormal());
+        }
+        //保存新头像
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(normal, "png", outputStream);
         fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_normal.png");
         fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "normal", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
         fileStorageService.save(fileInfo);
-        //删除旧文件
-        if (isFileId(user.getProfileImageNormal())) {
-            fileStorageService.delete(user.getProfileImageNormal());
-        }
         user.setProfileImageNormal(fileInfo.getKey());
 
         //bigger size
+        //新头像
         BufferedImage bigger = ImageUtils.resizeImage(User.PROFILE_IMAGE_BIGGER_SIZE, originImage);
+        //删除旧头像
+        if (isFileId(user.getProfileImageBigger())) {
+            fileStorageService.delete(user.getProfileImageBigger());
+        }
+        //保存新头像
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(bigger, "png", outputStream);
         fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_bigger.png");
         fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "bigger", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
         fileStorageService.save(fileInfo);
-        //删除旧文件
-        if (isFileId(user.getProfileImageBigger())) {
-            fileStorageService.delete(user.getProfileImageBigger());
-        }
         user.setProfileImageBigger(fileInfo.getKey());
 
         //origin size
+        //删除旧头像
+        if (isFileId(user.getProfileImageOriginal())) {
+            fileStorageService.delete(user.getProfileImageOriginal());
+        }
+        //保存新头像
         outputStream = new ByteArrayOutputStream();
         ImageIO.write(originImage, "png", outputStream);
         fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile_image_origin.png");
         fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "original", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
         fileStorageService.save(fileInfo);
-        //删除旧文件
-        if (isFileId(user.getProfileImageOriginal())) {
-            fileStorageService.delete(user.getProfileImageOriginal());
-        }
         user.setProfileImageOriginal(fileInfo.getKey());
 
         saveUser(user);
