@@ -13,11 +13,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = "friendships")
 @CompoundIndexes({
-        @CompoundIndex(name = "a_1_b_1_unique", def = "{a : 1, b : 1}", unique = true),
-        @CompoundIndex(name = "a_1_bFa_1", def = "{a : 1, bFa : 1}"),
-        @CompoundIndex(name = "b_1_bFa_1", def = "{b : 1, bFa : 1}"),
-        @CompoundIndex(name = "a_1_aFb_1_bFa_1", def = "{a : 1, aFb : 1, bFa : 1}"),
-        @CompoundIndex(name = "b_1_aFb_1_bFa_1", def = "{b : 1, aFb : 1, bFa : 1}")
+        @CompoundIndex(name = "a_1_b_1_unique", def = "{a : 1, b : 1}", unique = true), //唯一索引 & 是否关注索引
+        @CompoundIndex(name = "a_1_bFa_1", def = "{a : 1, bFa : 1}"), //粉丝索引
+        @CompoundIndex(name = "b_1_bFa_1", def = "{b : 1, bFa : 1}"), //好友索引
+        @CompoundIndex(name = "a_1_aFb_1_bFa_1", def = "{a : 1, aFb : 1, bFa : 1}"),  //双向关注索引 & 好友索引
+        @CompoundIndex(name = "b_1_aFb_1_bFa_1", def = "{b : 1, aFb : 1, bFa : 1}")   //双向关注索引 & 粉丝索引
 })
 public class Friendship extends IdEntity {
     // 一个用户id，a < b
