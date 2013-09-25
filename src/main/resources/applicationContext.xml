@@ -21,10 +21,9 @@
     <!-- JSR303 Validator定义 -->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-    <!-- Activate Spring Data MongoDB repository support -->
+    <!-- MongoDB -->
     <mongo:repositories base-package="com.lebo.repository"/>
 
-    <!-- MongoDB -->
     <mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}">
         <mongo:options connections-per-host="1000" threads-allowed-to-block-for-connection-multiplier="500"/>
     </mongo:mongo>
@@ -47,8 +46,29 @@
         <constructor-arg ref="mongoConverter"/>
     </bean>
 
+    <!-- Redis -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxActive" value="${redis.maxActive}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${redis.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${redis.minEvictableIdleTimeMillis}"/>
+    </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg ref="jedisPoolConfig"/>
+        <constructor-arg value="${redis.host}"/>
+        <constructor-arg value="${redis.port}"/>
+        <constructor-arg value="${redis.timeout}"/>
+    </bean>
+
+    <bean id="jedisTemplate" class="org.springside.modules.nosql.redis.JedisTemplate">
+        <constructor-arg ref="jedisPool"/>
+    </bean>
+
+    <!-- utils -->
     <bean class="com.lebo.service.FileContentUrlUtils" lazy-init="false"/>
 
+    <!-- aop -->
     <aop:aspectj-autoproxy />
 
     <!-- expose specific properties to application  -->
@@ -61,8 +81,10 @@
         </property>
     </bean>
 
+    <!-- properties -->
     <context:property-placeholder location="classpath*:/application.properties"/>
 
+    <!-- Components -->
     <import resource="cache/applicationContext-memcached.xml"/>
     <import resource="schedule/applicationContext-quartz-timer-cluster.xml"/>
     <import resource="jms/applicationContext-jms.xml"/>
