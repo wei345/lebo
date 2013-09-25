@@ -17,9 +17,10 @@
 
     git clone https://github.com/springside/springside4.git
     cd springside4
-    git co V4.0.1.GA
+    git co V4.1.0.GA
     cd modules
     mvn clean install -Dmaven.test.skip=true
+    mvn source:jar install
 
 看到“BUILD SUCCESS”，说明SpringSide4安装成功。
 
@@ -28,6 +29,7 @@
     git clone https://github.com/wks/ik-analyzer.git
     cd ik-analyzer
     mvn clean install -Dmaven.test.skip=true
+    mvn source:jar install
 
 ### Lebo
 
