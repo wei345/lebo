@@ -466,6 +466,18 @@
     </tr>
 </table>
 
+<strong>小应用:每日十个</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/everyday10/list" text="GET everyday10/list"/>
+        </td>
+        <td>
+            返回<code>每天笑十次</code>用户最近发的10个帖子。
+        </td>
+    </tr>
+</table>
+
 <hr/>
 
 <p>

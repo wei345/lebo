@@ -214,6 +214,14 @@ public class StatusService extends AbstractMongoService {
         return dto;
     }
 
+    public List<StatusDto> toBasicStatusDtos(List<Post> posts){
+        List<StatusDto> dtos = new ArrayList<StatusDto>(posts.size());
+        for(Post post : posts){
+            dtos.add(toBasicStatusDto(post));
+        }
+        return dtos;
+    }
+
     public StatusDto toStatusDto(Post post) {
         StatusDto dto = mapStatusDto(post);
         dto.setUser(accountService.toBasicUserDto(accountService.getUser(post.getUserId())));
