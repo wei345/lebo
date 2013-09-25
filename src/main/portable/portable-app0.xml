@@ -16,6 +16,9 @@
         <!-- mongodb settings -->
         <replace key="mongo.host">10.160.8.62</replace>
 
+        <!-- redis settings -->
+        <replace key="redis.host">10.160.8.62</replace>
+
         <!-- activemq settings -->
         <replace key="jms.broker_url">tcp://localhost:61616</replace>
 
