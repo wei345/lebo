@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springside.modules.nosql.redis.JedisTemplate;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class FriendRestController {
     private AccountService accountService;
     @Autowired
     private WeiboService weiboService;
+    @Autowired
+    private JedisTemplate jedisTemplate;
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
@@ -121,6 +124,10 @@ public class FriendRestController {
             //该微博用户也在乐播中
             if (user1 != null) {
                 weiboUserDto.setUserId(user1.getId());
+            }
+            //跳过未加入乐播的新浪好友
+            else {
+                continue;
             }
             weiboUserDto.setWeiboId(weiboUser.getId());
             weiboUserDto.setScreenName(weiboUser.getScreen_name());
