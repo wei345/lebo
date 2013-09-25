@@ -136,17 +136,6 @@ public class Comment extends IdEntity {
         this.replyCommentUserId = replyCommentUserId;
     }
 
-    public List<FileInfo> getFiles() {
-        List<FileInfo> fileInfos = new ArrayList<FileInfo>(2);
-        if (video != null) {
-            fileInfos.add(video);
-        }
-        if (videoFirstFrame != null) {
-            fileInfos.add(videoFirstFrame);
-        }
-        return fileInfos;
-    }
-
     public FileInfo getVideo() {
         return video;
     }

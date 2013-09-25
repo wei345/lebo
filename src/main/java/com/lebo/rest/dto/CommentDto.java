@@ -13,7 +13,6 @@ public class CommentDto {
     private String postId;
     private Date createdAt;
     private String text;
-    private List<FileInfoDto> files;
     private FileInfoDto video;
     private String videoFirstFrameUrl;
     private FileInfoDto audio;
@@ -36,14 +35,6 @@ public class CommentDto {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public List<FileInfoDto> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<FileInfoDto> files) {
-        this.files = files;
     }
 
     public UserDto getUser() {

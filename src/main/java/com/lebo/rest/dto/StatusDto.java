@@ -14,8 +14,6 @@ public class StatusDto {
     private UserDto user;
     private Date createdAt;
     private String text;
-    //引用文件id，可以存视频、图片、或其他上传的文件
-    private List<FileInfoDto> files = new ArrayList<FileInfoDto>(2);
     private FileInfoDto video;
     private String videoFirstFrameUrl;
     //该Tweet来源，如：手机客户端、网页版
@@ -93,14 +91,6 @@ public class StatusDto {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public List<FileInfoDto> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<FileInfoDto> files) {
-        this.files = files;
     }
 
     public String getSource() {

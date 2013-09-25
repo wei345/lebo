@@ -248,17 +248,6 @@ public class Post extends IdEntity {
         this.originPostUserId = originPostUserId;
     }
 
-    public List<FileInfo> getFiles() {
-        List<FileInfo> fileInfos = new ArrayList<FileInfo>(2);
-        if (video != null) {
-            fileInfos.add(video);
-        }
-        if (videoFirstFrame != null) {
-            fileInfos.add(videoFirstFrame);
-        }
-        return fileInfos;
-    }
-
     public String getVideoFirstFrameUrl() {
         if (videoFirstFrame == null) {
             return null;

@@ -124,7 +124,7 @@ public class FileServlet extends HttpServlet {
         //增长用户视频被播放次数
         if (StringUtils.startsWith(contentInfo.getContentType(), "video/") && postId != null) {
             Post post = statusService.getPost(postId);
-            if (post != null && post.getFiles().contains(fileId)) {
+            if (post != null && post.getVideo() != null && post.getVideo().getKey().equals(fileId)) {
                 statusService.increaseViewCount(postId);
                 accountService.increaseViewCount(post.getUserId());
             }

@@ -123,8 +123,11 @@ public class StatusService extends AbstractMongoService {
                 deleteReposts(id); //Twitter也会删除转发贴
             }
 
-            for (FileInfo fileInfo : post.getFiles()) {
-                fileStorageService.delete(fileInfo.getKey());
+            if (post.getVideo() != null) {
+                fileStorageService.delete(post.getVideo().getKey());
+            }
+            if (post.getVideoFirstFrame() != null) {
+                fileStorageService.delete(post.getVideoFirstFrame().getKey());
             }
 
             postDao.delete(post);
@@ -184,9 +187,6 @@ public class StatusService extends AbstractMongoService {
         dto.setId(post.getId());
         dto.setCreatedAt(post.getCreatedAt());
         dto.setText(post.getText());
-        if (post.getFiles() != null) {
-            dto.setFiles(FileInfo.toDtos(post.getFiles()));
-        }
         if (post.getVideo() != null) {
             dto.setVideo(post.getVideo().toDto());
         }
@@ -214,9 +214,9 @@ public class StatusService extends AbstractMongoService {
         return dto;
     }
 
-    public List<StatusDto> toBasicStatusDtos(List<Post> posts){
+    public List<StatusDto> toBasicStatusDtos(List<Post> posts) {
         List<StatusDto> dtos = new ArrayList<StatusDto>(posts.size());
-        for(Post post : posts){
+        for (Post post : posts) {
             dtos.add(toBasicStatusDto(post));
         }
         return dtos;
