@@ -201,6 +201,8 @@ public class StatusService extends AbstractMongoService {
         return dto;
     }
 
+    //不含Perspectival属性(和当前登录用户相关，如是否收藏)
+    //Perspectival来自Twitter，见https://dev.twitter.com/discussions/1053
     public StatusDto toBasicStatusDto(Post post) {
         StatusDto dto = mapStatusDto(post);
         dto.setUser(accountService.toBasicUserDto(accountService.getUser(post.getUserId())));
