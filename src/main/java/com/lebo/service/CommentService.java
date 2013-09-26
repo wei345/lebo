@@ -124,9 +124,9 @@ public class CommentService extends AbstractMongoService {
         return dto;
     }
 
-    public List<CommentDto> toBasicCommentDtos(List<Comment> comments){
+    public List<CommentDto> toBasicCommentDtos(List<Comment> comments) {
         List<CommentDto> dtos = new ArrayList<CommentDto>(comments.size());
-        for(Comment comment : comments){
+        for (Comment comment : comments) {
             dtos.add(toBasicCommentDto(comment));
         }
         return dtos;
@@ -147,8 +147,11 @@ public class CommentService extends AbstractMongoService {
     }
 
     public void deleteByPostId(String postId) {
-        mongoTemplate.remove(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)),
+        List<Comment> comments = mongoTemplate.find(new Query(new Criteria(Comment.POST_ID_KEY).is(postId)),
                 Comment.class);
+        for (Comment comment : comments) {
+            deleteComment(comment);
+        }
     }
 
     public Comment getComment(String id) {
@@ -158,6 +161,15 @@ public class CommentService extends AbstractMongoService {
     public void deleteComment(Comment comment) {
         Assert.notNull(comment);
 
+        if (comment.getVideo() != null) {
+            fileStorageService.delete(comment.getVideo().getKey());
+        }
+        if (comment.getVideoFirstFrame() != null) {
+            fileStorageService.delete(comment.getVideoFirstFrame().getKey());
+        }
+        if (comment.getAudio() != null) {
+            fileStorageService.delete(comment.getAudio().getKey());
+        }
         commentDao.delete(comment);
         eventBus.post(new AfterCommentDestroyEvent(comment));
     }
