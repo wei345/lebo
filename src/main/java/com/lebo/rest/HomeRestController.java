@@ -126,11 +126,12 @@ public class HomeRestController {
                                @RequestParam("version") String version) {
         CheckVersionDto dto = new CheckVersionDto();
 
-        dto.setDownloadUrl("https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8");
         dto.setForceUpgrade(false);
+        /*TODO checkVersion 读取数据库返回真实版本号
+        dto.setDownloadUrl("https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8");
         dto.setReleaseAt(new Date());
         dto.setReleaseNotes(String.format("test %s %s %s", os, osVersion, version));
-        dto.setVersion("1.2.3");
+        dto.setVersion("1.2.3");*/
 
         return dto;
     }
