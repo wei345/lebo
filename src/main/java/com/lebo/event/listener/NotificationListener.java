@@ -106,16 +106,29 @@ public class NotificationListener {
     public void afterCommentCreate(AfterCommentCreateEvent event) {
         //回复comment
         if (event.getComment().getReplyCommentId() != null) {
-            Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPLY_COMMENT,
-                    event.getComment().getReplyCommentUserId(), event.getComment().getUserId(),
-                    Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
+            if (event.getComment().getUserId().equals(event.getComment().getReplyCommentUserId())) {
+                //回复自己的评论，不发通知
+            } else {
+                Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPLY_COMMENT,
+                        event.getComment().getReplyCommentUserId(), event.getComment().getUserId(),
+                        Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
 
-            sendNotificationQueue(notification);
+                sendNotificationQueue(notification);
+            }
         }
 
         //回复post
         Post post = statusService.getPost(event.getComment().getPostId());
-        if (!post.getUserId().equals(event.getComment().getUserId())) {//回复自己帖子不通知自己
+        if (event.getComment().getReplyCommentUserId() != null
+                && event.getComment().getReplyCommentUserId().equals(post.getUserId())) {
+
+            //被回复的评论作者和帖子作者是同一个人，不发回复帖子通知
+
+        } else if (post.getUserId().equals(event.getComment().getUserId())) {
+
+            //回复自己帖子不通知自己
+
+        } else {
             Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPLY_POST,
                     post.getUserId(), event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
@@ -125,7 +138,7 @@ public class NotificationListener {
 
         //comment中at
         for (String userId : event.getComment().getMentionUserIds()) {
-            //自己at自己，不发at通知
+            //自己at自己，不发通知
             if (event.getComment().getUserId().equals(userId)) {
                 continue;
             }
