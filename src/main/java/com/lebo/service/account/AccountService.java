@@ -152,6 +152,11 @@ public class AccountService extends AbstractMongoService {
         return user.id;
     }
 
+    public String getRedisSessionKey(){
+        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+        return new StringBuilder("session:").append(user.id).append(".").append(user.sessionId).toString();
+    }
+
     public User findByOAuthId(String oAuthId) {
         return userDao.findByOAuthIds(oAuthId);
     }

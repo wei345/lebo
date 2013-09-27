@@ -41,7 +41,7 @@ public abstract class AbstractShiroLogin {
         }
         //不支持的登录类型
         else {
-            throw new ServiceException(String.format("不支持的登录类型，provider : $s, token : %s", provider, token));
+            throw new ServiceException(String.format("不支持的登录类型，provider : %s, token : %s", provider, token));
         }
     }
 

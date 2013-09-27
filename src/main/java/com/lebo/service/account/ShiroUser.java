@@ -2,6 +2,7 @@ package com.lebo.service.account;
 
 import com.google.common.base.Objects;
 import com.lebo.service.FileContentUrlUtils;
+import org.apache.shiro.SecurityUtils;
 
 import java.io.Serializable;
 
@@ -15,6 +16,7 @@ public class ShiroUser implements Serializable {
     public String name;
     public String profileImageUrl;
     public String provider;
+    public String sessionId;
 
     public ShiroUser(String id, String screenName, String name, String profileImageUrl, String provider) {
         this.id = id;
@@ -22,6 +24,7 @@ public class ShiroUser implements Serializable {
         this.name = name;
         this.profileImageUrl = profileImageUrl;
         this.provider = provider;
+        sessionId = String.valueOf(SecurityUtils.getSubject().getSession().getId());
     }
 
     /**
@@ -75,5 +78,9 @@ public class ShiroUser implements Serializable {
 
     public String getProvider() {
         return provider;
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 }
