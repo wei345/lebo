@@ -10,6 +10,7 @@ package com.lebo.rest.dto;
 public class RecommendedAppDto {
     private String name;
     private String url;
+    private String description;
     private String imageUrl;
     private String backgroundColor;
     private String version;
@@ -61,5 +62,13 @@ public class RecommendedAppDto {
 
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
