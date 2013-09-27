@@ -39,7 +39,7 @@
 
     <filter>
         <filter-name>requestLoggingFilter</filter-name>
-        <filter-class>com.lebo.web.filter.RequestResponseLoggingFilter</filter-class>
+        <filter-class>com.lebo.filter.RequestResponseLoggingFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>requestLoggingFilter</filter-name>
@@ -48,7 +48,7 @@
 
     <filter>
         <filter-name>requestTimeLoggerFilter</filter-name>
-        <filter-class>com.lebo.web.filter.RequestTimeLoggerFilter</filter-class>
+        <filter-class>com.lebo.filter.RequestTimeLoggerFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>requestTimeLoggerFilter</filter-name>

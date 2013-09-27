@@ -1,4 +1,4 @@
-package com.lebo.web.filter;
+package com.lebo.filter;
 
 import com.lebo.aop.RequestTimeLogger;
 import org.apache.shiro.web.servlet.OncePerRequestFilter;
