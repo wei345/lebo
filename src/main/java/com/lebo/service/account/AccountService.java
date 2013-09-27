@@ -33,10 +33,11 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import org.springside.modules.cache.memcached.SpyMemcachedClient;
 import org.springside.modules.mapper.BeanMapper;
+import org.springside.modules.nosql.redis.JedisTemplate;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
+import redis.clients.jedis.Jedis;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -63,6 +64,8 @@ public class AccountService extends AbstractMongoService {
     public static final String HASH_ALGORITHM = "SHA-1";
     public static final int HASH_INTERATIONS = 1024;
     private static final int SALT_SIZE = 8;
+    public static final String REDIS_SESSION_WEIBO_FRIEND_CURSOR_KEY = "weibo.friends.cursor";
+    public static final int REDIS_SESSION_EXPIRE_SECONDS = 60 * 60 * 24 * 90;
 
     @Autowired
     private UserDao userDao;
@@ -73,8 +76,6 @@ public class AccountService extends AbstractMongoService {
     @Autowired
     private FriendshipService friendshipService;
     @Autowired
-    private SpyMemcachedClient spyMemcachedClient;
-    @Autowired
     private FileStorageService fileStorageService;
     @Autowired
     private FavoriteService favoriteService;
@@ -83,6 +84,8 @@ public class AccountService extends AbstractMongoService {
     @Autowired
     private ApplicationEventBus eventBus;
     private static final String FILE_COLLECTION_NAME = "user";
+    @Autowired
+    private JedisTemplate jedisTemplate;
 
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
@@ -142,19 +145,6 @@ public class AccountService extends AbstractMongoService {
             }
             return user.getId();
         }
-    }
-
-    /**
-     * 取出Shiro中的当前用户Id.
-     */
-    public String getCurrentUserId() {
-        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-        return user.id;
-    }
-
-    public String getRedisSessionKey(){
-        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-        return new StringBuilder("session:").append(user.id).append(".").append(user.sessionId).toString();
     }
 
     public User findByOAuthId(String oAuthId) {
@@ -487,6 +477,47 @@ public class AccountService extends AbstractMongoService {
 
     public boolean isScreenNameValid(String screenName) {
         return screenNamePattern.matcher(screenName).matches();
+    }
+
+    //-- Session --
+
+    /**
+     * 取出Shiro中的当前用户Id.
+     */
+    public String getCurrentUserId() {
+        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+        return user.id;
+    }
+
+    /**
+     * 跨节点session存储在redis中
+     */
+    public String getRedisSessionKey() {
+        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+        return new StringBuilder("session:").append(user.id).append(".").append(user.sessionId).toString();
+    }
+
+    public String getRedisSessionAttribute(final String attr) {
+        return jedisTemplate.execute(new JedisTemplate.JedisAction<String>() {
+            @Override
+            public String action(Jedis jedis) {
+                String key = getRedisSessionKey();
+                String value = jedis.hget(key, attr);
+                jedis.expire(key, REDIS_SESSION_EXPIRE_SECONDS);
+                return value;
+            }
+        });
+    }
+
+    public void setRedisSessionAttribute(final String attr, final String value) {
+        jedisTemplate.execute(new JedisTemplate.JedisActionNoResult() {
+            @Override
+            public void action(Jedis jedis) {
+                String key = getRedisSessionKey();
+                jedis.hset(key, attr, value);
+                jedis.expire(key, REDIS_SESSION_EXPIRE_SECONDS);
+            }
+        });
     }
 
     //---- JMX ----
