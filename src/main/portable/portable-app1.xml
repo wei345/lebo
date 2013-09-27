@@ -22,9 +22,6 @@
         <!-- activemq settings -->
         <replace key="jms.broker_url">tcp://10.132.40.139:61616</replace>
 
-        <!-- memcached settings -->
-        <replace key="memcached.url">10.160.8.62:11211</replace>
-
         <!-- cluster settings -->
         <replace key="server.node_name">app1</replace>
         <replace key="server.addr">121.199.48.160</replace>

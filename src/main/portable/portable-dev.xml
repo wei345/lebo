@@ -19,11 +19,8 @@
         <!-- activemq settings -->
         <replace key="jms.broker_url">vm://lebo?broker.persistent=false&amp;broker.useJmx=false&amp;broker.schedulerSupport=false</replace>
 
-        <!-- memcached settings -->
-        <replace key="memcached.url">10.160.8.62:11211</replace>
-
         <!-- cluster settings -->
-        <replace key="server.node_name">app1</replace>
+        <replace key="server.node_name">dev</replace>
         <replace key="server.addr">121.199.48.160</replace>
 
         <!-- ALiYun Storage -->

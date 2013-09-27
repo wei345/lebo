@@ -55,10 +55,10 @@
     </bean>
 
     <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
-        <constructor-arg ref="jedisPoolConfig"/>
-        <constructor-arg value="${redis.host}"/>
-        <constructor-arg value="${redis.port}"/>
-        <constructor-arg value="${redis.timeout}"/>
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="${redis.host}"/>
+        <constructor-arg index="2" value="${redis.port}"/>
+        <constructor-arg index="3" value="${redis.timeout}"/>
     </bean>
 
     <bean id="jedisTemplate" class="org.springside.modules.nosql.redis.JedisTemplate">
@@ -85,7 +85,6 @@
     <context:property-placeholder location="classpath*:/application.properties"/>
 
     <!-- Components -->
-    <import resource="cache/applicationContext-memcached.xml"/>
     <import resource="schedule/applicationContext-quartz-timer-cluster.xml"/>
     <import resource="jms/applicationContext-jms.xml"/>
     <import resource="jmx/applicationContext-jmx.xml"/>
