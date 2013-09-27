@@ -57,7 +57,7 @@ public class RequestTimeLogger {
         return contextTL.get().get(START) != null;
     }
 
-    @Pointcut("execution(* com.lebo.rest.*Controller.*(..)) || execution(* com.lebo.service.*Service.*(..)) || execution(* com.lebo.repository.*Dao.*(..))")
+    @Pointcut("execution(* com.lebo.rest.*Controller.*(..)) || execution(* com.lebo.rest.*.*Controller.*(..)) || execution(* com.lebo.service.*Service.*(..)) || execution(* com.lebo.service.*.*Service.*(..)) || execution(* com.lebo.repository.*Dao.*(..))")
     private void controllerServiceDaoMethod() {
     }
 
