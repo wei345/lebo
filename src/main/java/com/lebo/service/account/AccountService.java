@@ -64,15 +64,12 @@ public class AccountService extends AbstractMongoService {
     public static final String HASH_ALGORITHM = "SHA-1";
     public static final int HASH_INTERATIONS = 1024;
     private static final int SALT_SIZE = 8;
-    public static final String REDIS_SESSION_WEIBO_FRIEND_CURSOR_KEY = "weibo.friends.cursor";
     public static final int REDIS_SESSION_EXPIRE_SECONDS = 60 * 60 * 24 * 90;
 
     @Autowired
     private UserDao userDao;
     @Autowired
     private MongoTemplate mongoTemplate;
-    @Autowired
-    private StatusService statusService;
     @Autowired
     private FriendshipService friendshipService;
     @Autowired
