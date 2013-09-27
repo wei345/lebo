@@ -83,12 +83,19 @@ public class AccountService extends AbstractMongoService {
     private static final String FILE_COLLECTION_NAME = "user";
     @Autowired
     private JedisTemplate jedisTemplate;
+    @Autowired
+    private SettingService settingService;
 
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
 
         if (StringUtils.isNotBlank(param.getQ())) {
             query.addCriteria(new Criteria(User.SCREEN_NAME_KEY).regex(param.getQ(), "i"));
+        }
+        //TODO 写单独的粉丝最多接口
+        //红人榜 -> 粉丝最多 不显示乐播账号
+        else if (settingService.getSetting().getOfficialAccountId() != null) {
+            query.addCriteria(new Criteria(User.ID_KEY).ne(settingService.getSetting().getOfficialAccountId()));
         }
 
         query.with(param);
