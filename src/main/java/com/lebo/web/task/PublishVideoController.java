@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
-@RequestMapping(value = "/admin/tasks/publish-video")
+@RequestMapping(value = "/admin/task/publish-video")
 public class PublishVideoController {
     @Autowired
     private TaskService taskService;
@@ -78,7 +78,7 @@ public class PublishVideoController {
                                @RequestParam(value = "publishTime", required = false) String publishTime,
                                RedirectAttributes redirectAttributes) {
         //无论成功或失败都返回同一view
-        String view = "redirect:/admin/tasks/publish-video";
+        String view = "redirect:/admin/task/publish-video";
 
         boolean isSchedule = StringUtils.isNotBlank(publishDate);
 

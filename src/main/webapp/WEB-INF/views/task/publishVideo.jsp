@@ -27,7 +27,7 @@
 
 <h2>发布视频</h2>
 
-<form id="publishVideoForm" action="${ctx}/admin/tasks/publish-video" method="post" enctype="multipart/form-data">
+<form id="publishVideoForm" action="${ctx}/admin/task/publish-video" method="post" enctype="multipart/form-data">
 
     <div>
         发布到:<br/>
@@ -162,7 +162,7 @@
     function deleteTask(id, btn) {
         if (confirm('确定删除吗?')) {
             $.ajax({
-                url: '${ctx}/admin/tasks/publish-video/delete/' + id,
+                url: '${ctx}/admin/task/publish-video/delete/' + id,
                 type: 'POST',
                 success: function (data) {
                     if (data == 'ok') {
