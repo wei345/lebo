@@ -45,9 +45,8 @@
         </repository>
 
         <repository>
-            <id>spy</id>
-            <name>Spy Repository</name>
-            <url>http://files.couchbase.com/maven2/</url>
+            <id>xuggle repo</id>
+            <url>http://xuggle.googlecode.com/svn/trunk/repo/share/java/</url>
         </repository>
 
         <repository>
