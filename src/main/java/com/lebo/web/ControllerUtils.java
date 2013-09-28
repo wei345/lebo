@@ -13,6 +13,7 @@ import java.io.IOException;
 public class ControllerUtils {
     public static final String MODEL_ERROR_KEY = "error";
     public static final String MODEL_SUCCESS_KEY = "success";
+    public static final String AJAX_OK = "ok";
 
     public static FileInfo getFileInfo(MultipartFile multipartFile) throws IOException {
         return new FileInfo(multipartFile.getInputStream(),

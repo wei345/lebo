@@ -5,6 +5,7 @@ import com.lebo.entity.Task;
 import com.lebo.repository.TaskDao;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -88,6 +89,26 @@ public class TaskService extends AbstractMongoService {
         task.setVideoSource(source);
 
         taskDao.save(task);
+    }
+
+    public List<Task> getPublishVideoTodoTask() {
+        Query query = new Query();
+        query.addCriteria(new Criteria(Task.STATUS_KEY).is(Task.STATUS_VALUE_TODO));
+        query.addCriteria(new Criteria(Task.TYPE_KEY).is(Task.TYPE_VALUE_PUBLISH_VIDEO));
+        query.with(new Sort(Sort.Direction.ASC, Task.SCHEDULED_AT_KEY));
+        return mongoTemplate.find(query, Task.class);
+    }
+
+    public void deleteTaskPublishVideo(String id) {
+        Task task = taskDao.findOne(id);
+        if (task.getType().equals(Task.TYPE_VALUE_PUBLISH_VIDEO)) {
+            //注意: 已完成的任务视频key已指向帖子视频，不可删除视频文件
+            if (task.getStatus().equals(Task.STATUS_VALUE_TODO)) {
+                fileStorageService.delete(task.getVideo().getKey());
+                fileStorageService.delete(task.getVideoFirstFrame().getKey());
+            }
+            taskDao.delete(id);
+        }
     }
 
 }

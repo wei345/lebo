@@ -7,6 +7,20 @@
 <html>
 <head>
     <title>发布视频</title>
+    <style type="text/css">
+        #todoTable th {
+            text-align: center;
+        }
+
+        #todoTable td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        #todoTable .text {
+            width: 400px;
+        }
+    </style>
 </head>
 
 <body>
@@ -46,6 +60,53 @@
         <input type="submit" value="发布" class="btn-primary btn"/>
     </div>
 </form>
+
+<h2>定时</h2>
+
+<table id="todoTable" class="table table-hover">
+    <tr>
+        <th style="width:20px;">
+            #
+        </th>
+        <th style="width: 100px;">
+            视频
+        </th>
+        <th>
+            描述
+        </th>
+        <th>
+            发布到
+        </th>
+        <th>
+            发布时间
+        </th>
+        <th>
+            操作
+        </th>
+    </tr>
+    <c:forEach items="${tasks}" var="task">
+        <tr>
+            <td></td>
+            <td>
+                <a href="${task.videoUrl}">
+                    <img src="${task.videoFirstFrameUrl}"/>
+                </a>
+            </td>
+            <td class="text">
+                    ${task.text}
+            </td>
+            <td class="screenName">
+                    ${task.screenName}
+            </td>
+            <td class="scheduledAt">
+                    ${task.scheduledAt}
+            </td>
+            <td>
+                <input type="button" value="删除" class="btn btn-danger" onclick="deleteTask('${task.id}', this)"/>
+            </td>
+        </tr>
+    </c:forEach>
+</table>
 
 <script>
 
@@ -92,7 +153,25 @@
                 $('#publishDateTimeInputGroup').hide();
             }
         });
+
+        $('#todoTable tr:gt(0)').each(function (index) {
+            $('td:first', this).html(index + 1);
+        });
     });
+
+    function deleteTask(id, btn) {
+        if (confirm('确定删除吗?')) {
+            $.ajax({
+                url: '${ctx}/admin/tasks/publish-video/delete/' + id,
+                type: 'POST',
+                success: function (data) {
+                    if (data == 'ok') {
+                        $(btn).parents('tr').remove();
+                    }
+                }
+            });
+        }
+    }
 </script>
 
 

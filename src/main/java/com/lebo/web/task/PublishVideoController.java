@@ -2,6 +2,8 @@ package com.lebo.web.task;
 
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Task;
+import com.lebo.entity.User;
+import com.lebo.service.FileContentUrlUtils;
 import com.lebo.service.StatusService;
 import com.lebo.service.TaskService;
 import com.lebo.service.account.AccountService;
@@ -14,9 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,7 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/admin/tasks/publish-video")
@@ -44,7 +45,25 @@ public class PublishVideoController {
      * 发布视频，表单
      */
     @RequestMapping(method = RequestMethod.GET)
-    public String publishVideoForm() {
+    public String publishVideoForm(Model model) {
+        List<Task> tasks = taskService.getPublishVideoTodoTask();
+
+        List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(tasks.size());
+        for (Task task : tasks) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("videoUrl", FileContentUrlUtils.getContentUrl(task.getVideo().getKey()));
+            map.put("videoFirstFrameUrl", FileContentUrlUtils.getContentUrl(task.getVideoFirstFrame().getKey()));
+            //TODO 优化性能，只查screenName
+            User user = accountService.getUser(task.getVideoUserId());
+            map.put("screenName", user.getScreenName());
+            map.put("text", task.getVideoText());
+            map.put("scheduledAt", scheduleDateFormat.format(task.getScheduledAt()));
+            map.put("id", task.getId());
+
+            maps.add(map);
+        }
+
+        model.addAttribute("tasks", maps);
         return "task/publishVideo";
     }
 
@@ -125,6 +144,13 @@ public class PublishVideoController {
             redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, "发布视频失败，请重试");
             return view;
         }
+    }
+
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public Object deletePublishVideoTask(@PathVariable(value = "id") String id){
+        taskService.deleteTaskPublishVideo(id);
+        return ControllerUtils.AJAX_OK;
     }
 
 }
