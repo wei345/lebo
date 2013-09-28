@@ -140,7 +140,7 @@ public class AccountService extends AbstractMongoService {
             throw new ServiceException("Providing either screenName or userId is required.");
         }
 
-        if (!StringUtils.isBlank(userId)) {
+        if (StringUtils.isNotBlank(userId)) {
             return userId;
         } else {
             User user = findUserByScreenName(screenName);

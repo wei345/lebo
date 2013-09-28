@@ -675,4 +675,23 @@ public class StatusService extends AbstractMongoService {
 
         return mongoTemplate.find(query, Post.class);
     }
+
+    //-- 帖子管理 --//
+
+    /**
+     * 查找指定用户的帖子(不包含转发), 如果userId为null，则忽略该条件
+     */
+    public List<Post> findOriginPosts(String userId, PaginationParam paginationParam) {
+        Query query = new Query();
+        //原帖
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //指定用户
+        if (userId != null) {
+            query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
+        }
+        //分页、排序
+        paginationById(query, paginationParam);
+        //查找
+        return mongoTemplate.find(query, Post.class);
+    }
 }

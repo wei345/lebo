@@ -8,4 +8,5 @@
     <li><a href="${ctx}/admin/channels">频道管理</a></li>
     <li><a href="${ctx}/admin/user">用户管理</a></li>
     <li><a href="${ctx}/admin/task/publish-video">发布视频</a></li>
+    <li><a href="${ctx}/admin/post/list">管理视频</a></li>
 </ul>
