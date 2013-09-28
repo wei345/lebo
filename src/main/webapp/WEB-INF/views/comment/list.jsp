@@ -5,7 +5,7 @@
 
 <html>
 <head>
-    <title>管理帖子</title>
+    <title>管理评论</title>
     <style type="text/css">
         #contentTable th {
             text-align: center;
@@ -24,14 +24,11 @@
 <body>
 
 <form id="searchForm" class="form-search pull-left" method="GET" action="">
-    <input type="search" class="input-medium search-query" id="screenName" name="screenName" value="${screenName}" placeholder="用户名字">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=screenName]').val('')"></span>
-或
-    <input type="search" class="input-medium search-query" id="userId" name="userId" value="${userId}" placeholder="用户ID">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=userId]').val('')"></span>
+    <input type="search" class="input-large search-query" id="postId" name="postId" value="${postId}" placeholder="帖子ID">
+    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=postId]').val('')"></span>
 
     <input type="text" class="input-mini" name="count" value="${count}">条
-    <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
+    <button type="submit" class="btn" style="margin-left: 2em;">提交</button>
 </form>
 
 <table id="contentTable" class="table table-hover">
@@ -40,10 +37,10 @@
             #
         </th>
         <th style="width: 100px;">
-            视频
+            视频/语音
         </th>
         <th>
-            描述
+            文字
         </th>
         <th>
             作者
@@ -55,12 +52,15 @@
             操作
         </th>
     </tr>
-    <c:forEach items="${posts}" var="item">
+    <c:forEach items="${comments}" var="item">
         <tr>
             <td></td>
             <td>
-                <a href="${item.videoUrl}" target="_blank">
-                    <img src="${item.videoFirstFrameUrl}"/>
+                <c:if test="${item.mediaLinkText == null}">
+                    无
+                </c:if>
+                <a href="${item.mediaUrl}" target="_blank">
+                    ${item.mediaLinkText}
                 </a>
             </td>
             <td class="text">
@@ -73,7 +73,6 @@
                     ${item.createdAt}
             </td>
             <td>
-                <a href="${ctx}/admin/comment/list?postId=${item.id}" target="_blank">查看评论</a>
                 <input type="button" value="删除" class="btn btn-link" onclick="deletePost('${item.id}', this)"/>
             </td>
         </tr>
@@ -92,7 +91,7 @@
     function deletePost(id, btn) {
         if (confirm('确定删除吗?')) {
             $.ajax({
-                url: '${ctx}/admin/post/delete/' + id,
+                url: '${ctx}/admin/comment/delete/' + id,
                 type: 'POST',
                 success: function (data) {
                     if (data == 'ok') {

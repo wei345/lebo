@@ -57,7 +57,7 @@
         <th>邮件地址</th>
         <th>姓名</th>
         <th>注册时间
-        <th>管理</th>
+        <th>操作</th>
     </tr>
     </thead>
     <tbody>
@@ -70,7 +70,7 @@
             <td>
                 <fmt:formatDate value="${user.createdAt}" pattern="yyyy年MM月dd日  HH时mm分ss秒"/>
             </td>
-            <td><a href="${ctx}/admin/user/delete/${user.id}">删除</a></td>
+            <td><a href="${ctx}/admin/post/list?userId=${user.id}" target="_blank">查看帖子</a></td>
         </tr>
     </c:forEach>
     </tbody>
