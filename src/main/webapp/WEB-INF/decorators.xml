@@ -3,8 +3,8 @@
     <excludes>
         <pattern>/static/*</pattern>
         <pattern>/api/*</pattern>
-        <pattern>/admin/channels/preview</pattern>
         <pattern>/play/*</pattern>
+        <pattern>/isalive.html</pattern>
     </excludes>
 
     <decorator name="apidocs" page="apidocs.jsp">

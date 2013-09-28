@@ -35,10 +35,11 @@
         <property name="filterChainDefinitions">
             <value>
                 /404 = anon
-                /login = authc
-                /logout = logout
+                /isalive.html = anon
                 /static/** = anon
                 /favicon.ico = anon
+                /login = authc
+                /logout = logout
                 /play/** = anon
                 /api/*/everyday10/** = anon
                 /api/*/login.json = anon

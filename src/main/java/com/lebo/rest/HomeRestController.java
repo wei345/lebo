@@ -5,7 +5,6 @@ import com.lebo.rest.dto.AccountSettingDto;
 import com.lebo.rest.dto.CheckVersionDto;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.UserDto;
-import com.lebo.service.FriendshipService;
 import com.lebo.service.account.AbstractShiroLogin;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.account.ShiroUser;
@@ -22,7 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springside.modules.mapper.BeanMapper;
 
 import javax.servlet.ServletContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: Wei Liu
@@ -38,8 +40,6 @@ public class HomeRestController {
     private ServletContext context;
     @Autowired
     private AccountService accountService;
-    @Autowired
-    private FriendshipService friendshipService;
 
     //TODO 可通过grant登录
     @RequestMapping(value = "1/oauthLogin", method = RequestMethod.POST)
@@ -134,12 +134,6 @@ public class HomeRestController {
         dto.setVersion("1.2.3");*/
 
         return dto;
-    }
-
-    @RequestMapping(value = "")
-    @ResponseBody
-    public Object index() {
-        return "It works";
     }
 
     @RequestMapping(value = "**")
