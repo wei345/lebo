@@ -17,7 +17,7 @@ import java.util.List;
 @Document(collection = "posts")
 @CompoundIndexes({
         @CompoundIndex(name = "uid_1_opuid_1", def = "{'userId': 1, 'originPostUserId': 1}"),
-        @CompoundIndex(name = "uid_1_opid_1", def = "{'userId': 1, 'originPostId': 1}"),
+        @CompoundIndex(name = "uid_1_opid_1", def = "{'userId': 1, 'originPostId': 1}")
 })
 //TODO 增加是否转发字段，如果原始帖子被删除，则originPostId为null?
 public class Post extends IdEntity {
