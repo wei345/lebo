@@ -20,7 +20,7 @@
     <script src="${ctx}/static/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-validation/1.11.0/jquery.validate.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-validation/1.11.0/messages_bs_zh.js" type="text/javascript"></script>
-
+    <script src="${ctx}/static/application.js" type="text/javascript"></script>
 
     <sitemesh:head/>
 </head>

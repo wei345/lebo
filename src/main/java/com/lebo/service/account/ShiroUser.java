@@ -73,7 +73,7 @@ public class ShiroUser implements Serializable {
     }
 
     public String getProfileImageUrl() {
-        return FileContentUrlUtils.getContentUrl(profileImageUrl);
+        return profileImageUrl;
     }
 
     public String getProvider() {

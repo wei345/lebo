@@ -76,7 +76,7 @@ public class StatusService extends AbstractMongoService {
      * @return
      * @throws IOException
      */
-    public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source) throws Exception {
+    public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source) {
         Post post = new Post().initial();
 
         post.setUserId(userId);

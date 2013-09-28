@@ -59,6 +59,24 @@
 
     <!-- 依赖项定义 -->
     <dependencies>
+        <!-- XUGGLE begin -->
+        <dependency>
+            <groupId>xuggle</groupId>
+            <artifactId>xuggle-xuggler</artifactId>
+            <version>5.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- XUGGLE end -->
+
         <!--AOP begin -->
         <dependency>
             <groupId>org.aspectj</groupId>

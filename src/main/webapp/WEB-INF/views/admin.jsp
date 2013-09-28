@@ -7,4 +7,5 @@
     <li><a href="${ctx}/admin/settings">基本设置</a></li>
     <li><a href="${ctx}/admin/channels">频道管理</a></li>
     <li><a href="${ctx}/admin/user">用户管理</a></li>
+    <li><a href="${ctx}/admin/tasks/publish-video">发布视频</a></li>
 </ul>

@@ -14,6 +14,7 @@
             <list>
                 <ref bean="hotUserTrigger"/>
                 <!--(弃用)<ref bean="hotPostTrigger"/>-->
+                <ref bean="publishVideoTrigger"/>
             </list>
         </property>
         <!--  quartz配置文件路径, 指向cluster配置 -->
@@ -55,5 +56,18 @@
         <property name="jobClass" value="com.lebo.schedule.HotPostClusterableJob"/>
     </bean>
     更新热门帖子列表 end -->
+
+    <!-- 定时发布视频 begin -->
+    <bean id="publishVideoTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="publishVideoJobDetail"/>
+        <!-- 每次执行间隔1分钟 -->
+        <property name="repeatInterval" value="60000"/>
+    </bean>
+
+    <bean id="publishVideoJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="durability" value="true"/>
+        <property name="jobClass" value="com.lebo.schedule.PublishVideoClusterableJob"/>
+    </bean>
+    <!-- 定时发布视频 end -->
 
 </beans>
