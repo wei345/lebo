@@ -31,7 +31,7 @@
 
     <div>
         发布到:<br/>
-        <input name="screenName" type="text" value="${param.screenName}" placeholder="用户名字" class="required"/>
+        <input name="screenName" type="text" value="${screenName}" placeholder="用户名字" class="required"/>
     </div>
 
     <div style="margin-top: 1em;">
@@ -41,7 +41,7 @@
 
     <div>
         <textarea name="text" maxlength="140" placeholder="描述.." class="required"
-                  style="width:540px;height:100px;">${param.text}</textarea>
+                  style="width:540px;height:100px;">${text}</textarea>
     </div>
 
     <div style="padding-top: 10px">
