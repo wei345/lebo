@@ -1,4 +1,7 @@
 <%@ page import="org.apache.shiro.web.filter.authc.FormAuthenticationFilter" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="java.util.Properties" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
@@ -12,7 +15,15 @@
     });
 </script>
 --%>
+<%
+    ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
+    Properties properties = (Properties)applicationContext.getBean("applicationProperties");
+    request.setAttribute("nodeName", properties.get("server.node_name"));
+    request.setAttribute("default", "default");
+    request.setAttribute("dev", "dev");
+%>
 
+<c:if test="${nodeName == default || nodeName == dev}">
 <form id="loginForm" onsubmit="login();return false;">
     <fieldset>
         <legend>OAuth登录</legend>
@@ -89,6 +100,7 @@
         $('#token-name').html(btn.innerHTML);
     }
 </script>
+</c:if>
 
 <form method="POST" action="${ctx}/login">
     <fieldset>

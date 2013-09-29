@@ -45,7 +45,8 @@
     </config-file>
 
     <!-- applicationContext-shiro.xml -->
+    <!-- 1. 要显示登录页，因为编辑用  2. 登录页面在非开发环境已不显示OAuthId快速登录
     <config-file path="WEB-INF/classes/security/applicationContext-shiro.xml">
         <replace xpath="//bean[@id='userFilter']/@class">com.lebo.service.account.ShiroUserFilter</replace>
-    </config-file>
+    </config-file>-->
 </portable-config>
