@@ -25,7 +25,6 @@ import java.util.Map;
  * Date: 13-8-17
  * Time: PM12:20
  */
-@Service
 public class ALiYunStorageService implements FileStorageService {
     @Value("${aliyun_oss.accessKeyId}")
     private String accessKeyId;

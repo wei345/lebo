@@ -65,6 +65,9 @@
         <constructor-arg ref="jedisPool"/>
     </bean>
 
+    <!-- FileStorageService -->
+    <bean id="fileStorageService" class="${file_storage_service}"/>
+
     <!-- utils -->
     <bean class="com.lebo.service.FileContentUrlUtils" lazy-init="false"/>
 

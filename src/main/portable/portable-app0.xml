@@ -26,6 +26,9 @@
         <replace key="server.node_name">app0</replace>
         <replace key="server.addr">121.199.35.120</replace>
 
+        <!-- file storage settings -->
+        <replace key="file_storage_service">com.lebo.service.ALiYunStorageService</replace>
+
         <!-- ALiYun Storage -->
         <replace key="aliyun_oss.endpoint">http://oss-internal.aliyuncs.com</replace>
         <replace key="aliyun_oss.bucketName">lebo</replace>
