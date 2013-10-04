@@ -26,11 +26,11 @@ import java.util.Map;
  * Time: PM12:20
  */
 public class ALiYunStorageService implements FileStorageService {
-    @Value("${aliyun_oss.accessKeyId}")
+    @Value("${aliyun_oss.access_key_id}")
     private String accessKeyId;
-    @Value("${aliyun_oss.accessKeySecret}")
+    @Value("${aliyun_oss.access_key_secret}")
     private String accessKeySecret;
-    @Value("${aliyun_oss.bucketName}")
+    @Value("${aliyun_oss.bucket_name}")
     private String bucketName;
     @Value("${aliyun_oss.endpoint}")
     private String endpoint;

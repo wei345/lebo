@@ -28,7 +28,7 @@
 
         <!-- ALiYun Storage -->
         <replace key="aliyun_oss.endpoint">http://oss-internal.aliyuncs.com</replace>
-        <replace key="aliyun_oss.bucketName">lebo-dev</replace>
+        <replace key="aliyun_oss.bucket_name">lebo-dev</replace>
         <replace key="aliyun_oss.baseurl">http://file.dev.lebooo.com</replace>
 
         <!-- app -->
