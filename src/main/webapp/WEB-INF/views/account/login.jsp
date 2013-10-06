@@ -18,12 +18,11 @@
 <%
     ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
     Properties properties = (Properties)applicationContext.getBean("applicationProperties");
-    request.setAttribute("nodeName", properties.get("server.node_name"));
-    request.setAttribute("default", "default");
-    request.setAttribute("dev", "dev");
+    String nodeName = (String)properties.get("server.node_name");
+    request.setAttribute("quickLogin", ("default".equals(nodeName) || "dev".equals(nodeName)));
 %>
 
-<c:if test="${nodeName == default || nodeName == dev}">
+<c:if test="${quickLogin}">
 <form id="loginForm" onsubmit="login();return false;">
     <fieldset>
         <legend>OAuth登录</legend>
