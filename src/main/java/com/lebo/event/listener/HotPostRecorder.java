@@ -27,7 +27,7 @@ public class HotPostRecorder {
     @Subscribe
     public void deleteOnPostDestroy(AfterPostDestroyEvent event) {
         if (event.getPost().getOriginPostId() == null) {
-            mongoTemplate.remove(new Query(new Criteria(HotPost.ID_KEY).is(event.getPost().getId())), HotPost.class);
+            mongoTemplate.remove(new Query(new Criteria(HotPost.POST_ID_KEY).is(event.getPost().getId())), HotPost.class);
         }
     }
 }

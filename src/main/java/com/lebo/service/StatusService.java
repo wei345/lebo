@@ -23,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -36,6 +38,7 @@ import java.util.regex.Pattern;
  * Date: 13-7-2
  * Time: PM4:32
  */
+@ManagedResource(objectName = "lebo:name=StatusService", description = "Status Service Management Bean")
 @Service
 public class StatusService extends AbstractMongoService {
     public static final int MAX_TEXT_LENGTH = 140;
@@ -373,12 +376,12 @@ public class StatusService extends AbstractMongoService {
      */
     public List<StatusDto> hotPosts(Integer page, Integer size) {
         List<HotPost> hotPosts = mongoTemplate.find(
-                new Query().with(new PageRequest(page, size, PaginationParam.ID_DESC_SORT)),
+                new Query().with(new PageRequest(page, size, new Sort(Sort.Direction.ASC, HotPost.ID_KEY))),
                 HotPost.class);
 
         List<StatusDto> dtos = new ArrayList<StatusDto>(hotPosts.size());
         for (HotPost hotPost : hotPosts) {
-            StatusDto dto = toStatusDto(getPost(hotPost.getId()));
+            StatusDto dto = toStatusDto(getPost(hotPost.getPostId()));
             dtos.add(dto);
         }
         return dtos;
@@ -388,6 +391,7 @@ public class StatusService extends AbstractMongoService {
      * 刷新热门帖子列表:最近2天的帖子按红心数降序排序
      * 为避免刷屏，每用户只可上榜2条
      */
+    @ManagedOperation(description = "刷新热门帖子列表")
     public void refreshHotPosts() {
         logger.debug("更新热门帖子 : 开始");
 
@@ -417,7 +421,7 @@ public class StatusService extends AbstractMongoService {
             }
 
             if (count < max) {
-                hotPosts.add(new HotPost(post.getId()));
+                hotPosts.add(new HotPost(hotPosts.size() + 1, post.getId()));
                 userId2count.put(post.getUserId(), count + 1);
             }
         }
