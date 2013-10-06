@@ -96,7 +96,7 @@ public class UserRestController {
     @RequestMapping(value = "hotUserList", method = RequestMethod.GET)
     @ResponseBody
     public Object hotUserList(@Valid PageRequest pageRequest,
-                              @RequestParam(value = "btn", defaultValue = "false") boolean btn) {
+                              @RequestParam(value = "btn", defaultValue = "true") boolean btn) {
         HotUserListDto dto = new HotUserListDto();
         if (btn) {
             Setting setting = settingService.getSetting();
