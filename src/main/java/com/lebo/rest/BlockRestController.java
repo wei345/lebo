@@ -61,7 +61,7 @@ public class BlockRestController {
     public Object list(@RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size,
                        @RequestParam(value = "page", defaultValue = "0") int page) {
         List<User> users = blockService.list(accountService.getCurrentUserId(),
-                new PageRequest(page, size, PaginationParam.DEFAULT_SORT));
+                new PageRequest(page, size, PaginationParam.ID_DESC_SORT));
         return accountService.toUserDtos(users);
     }
 }

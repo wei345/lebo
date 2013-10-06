@@ -1,9 +1,6 @@
 package com.lebo.entity;
 
-import org.springframework.data.mongodb.core.index.IndexDirection;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * 热门帖子。
@@ -12,25 +9,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * Date: 13-8-14
  * Time: PM7:32
  */
-@Document(collection = "mr.hotposts")
-public class HotPost extends IdEntity {
-    @Indexed(direction = IndexDirection.DESCENDING)
-    @Field("value")
-    private Integer hotFavoritesCount;
-    public static final String HOT_FAVOURITES_COUNT_KEY = "value";
+@Document(collection = "ar.hotposts") //ar - analysis result 的缩写 - 分析结果
+public class HotPost extends Post {
+    //只存帖子ID
 
-    public Integer getHotFavoritesCount() {
-        return hotFavoritesCount;
+    public HotPost() {
     }
 
-    public void setHotFavoritesCount(Integer hotFavoritesCount) {
-        this.hotFavoritesCount = hotFavoritesCount;
-    }
-
-    @Override
-    public String toString() {
-        return "HotPost{" +
-                "hotFavoritesCount=" + hotFavoritesCount +
-                "} " + super.toString();
+    public HotPost(String id) {
+        this.id = id;
     }
 }

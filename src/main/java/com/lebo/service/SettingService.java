@@ -51,7 +51,7 @@ public class SettingService extends AbstractMongoService {
     }
 
     public Setting reloadSetting() {
-        PageRequest pageRequest = new PageRequest(0, 1, PaginationParam.DEFAULT_SORT);
+        PageRequest pageRequest = new PageRequest(0, 1, PaginationParam.ID_DESC_SORT);
         Page<Setting> page = settingDao.findAll(pageRequest);
         if (page.getContent().size() == 0) {
             setting = new Setting();

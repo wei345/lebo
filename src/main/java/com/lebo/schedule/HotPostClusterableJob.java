@@ -40,6 +40,6 @@ public class HotPostClusterableJob extends QuartzJobBean {
         statusService.refreshHotPosts();
         String nodeName = (String) config.get("nodeName");
 
-        logger.info("hotPosts updated, by quartz cluster job on node {}.", nodeName);
+        logger.info("热门帖子已更新, by quartz cluster job on node {}.", nodeName);
     }
 }

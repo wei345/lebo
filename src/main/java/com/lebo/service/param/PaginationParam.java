@@ -25,7 +25,7 @@ public class PaginationParam implements Pageable, Serializable {
     /**
      * 按ID降序
      */
-    public static final Sort DEFAULT_SORT = new Sort(new Sort.Order(Sort.Direction.DESC, "_id"));
+    public static final Sort ID_DESC_SORT = new Sort(new Sort.Order(Sort.Direction.DESC, "_id"));
 
     /**
      * 当maxId和sinceId都为空时，返回true，否则返回false
@@ -88,6 +88,6 @@ public class PaginationParam implements Pageable, Serializable {
 
     @Override
     public Sort getSort() {
-        return (sort == null ? DEFAULT_SORT : sort);
+        return (sort == null ? ID_DESC_SORT : sort);
     }
 }

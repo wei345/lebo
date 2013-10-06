@@ -13,7 +13,7 @@
         <property name="triggers">
             <list>
                 <ref bean="hotUserTrigger"/>
-                <!--(弃用)<ref bean="hotPostTrigger"/>-->
+                <ref bean="hotPostTrigger"/>
                 <ref bean="publishVideoTrigger"/>
             </list>
         </property>
@@ -45,7 +45,7 @@
     </bean>
     <!-- 更新推荐关注列表 end -->
 
-    <!-- (弃用)更新热门帖子列表 begin
+    <!-- 更新热门帖子列表 begin -->
     <bean id="hotPostTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
         <property name="jobDetail" ref="hotPostJobDetail"/>
         <property name="repeatInterval" value="300000"/>
@@ -55,7 +55,7 @@
         <property name="durability" value="true"/>
         <property name="jobClass" value="com.lebo.schedule.HotPostClusterableJob"/>
     </bean>
-    更新热门帖子列表 end -->
+    <!-- 更新热门帖子列表 end -->
 
     <!-- 定时发布视频 begin -->
     <bean id="publishVideoTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">

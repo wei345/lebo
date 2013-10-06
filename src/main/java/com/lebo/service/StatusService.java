@@ -12,10 +12,7 @@ import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
-import com.mongodb.BasicDBObject;
-import com.mongodb.CommandResult;
-import com.mongodb.DBObject;
-import com.mongodb.QueryBuilder;
+import com.mongodb.DBCollection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bson.types.ObjectId;
@@ -324,7 +321,7 @@ public class StatusService extends AbstractMongoService {
         if (!param.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
             criteriaList.add(new Criteria("_id").gt(new ObjectId(param.getSinceId())));
         }
-        query.with(PaginationParam.DEFAULT_SORT).limit(param.getCount());
+        query.with(PaginationParam.ID_DESC_SORT).limit(param.getCount());
 
         //查询
         Criteria queryCriteria = null;
@@ -356,56 +353,113 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
-    /*private static final Sort hotPostsSort = new Sort(Sort.Direction.DESC, HotPost.HOT_FAVOURITES_COUNT_KEY);
-    /*
-     * 按2天内收到的红心数(收藏数)排序
-     */
-    /*public List<StatusDto> hotPosts(Integer page, Integer size) {
-        List<HotPost> hotPosts = mongoTemplate.find(new Query().with(new PageRequest(page, size, hotPostsSort)), HotPost.class);
-
-        List<StatusDto> dtos = new ArrayList<StatusDto>(hotPosts.size());
-        for (HotPost hotPost : hotPosts) {
-            StatusDto dto = toStatusDto(getPost(hotPost.getId()));
-            dto.setHotFavoritesCount(hotPost.getHotFavoritesCount());
-            dtos.add(dto);
-        }
-        return dtos;
-    }*/
     private static final Sort hotPostsSort = new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY);
 
+    /* 为避免刷屏，每用户只可上榜2条，不能这么简单的查询了
     /**
      * 热门:最近2天的帖子按红心数降序排序
      */
-    public List<StatusDto> hotPosts(Integer page, Integer size) {
+    /*public List<StatusDto> hotPosts(Integer page, Integer size) {
         Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
         Query query = new Query(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
         query.with(new PageRequest(page, size, hotPostsSort));
         List<Post> posts = mongoTemplate.find(query, Post.class);
         return toStatusDtos(posts);
+    }*/
+
+    /**
+     * 读取热门帖子
+     */
+    public List<StatusDto> hotPosts(Integer page, Integer size) {
+        List<HotPost> hotPosts = mongoTemplate.find(
+                new Query().with(new PageRequest(page, size, PaginationParam.ID_DESC_SORT)),
+                HotPost.class);
+
+        List<StatusDto> dtos = new ArrayList<StatusDto>(hotPosts.size());
+        for (HotPost hotPost : hotPosts) {
+            StatusDto dto = toStatusDto(getPost(hotPost.getId()));
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
+    /**
+     * 刷新热门帖子列表:最近2天的帖子按红心数降序排序
+     * 为避免刷屏，每用户只可上榜2条
+     */
     public void refreshHotPosts() {
+        logger.debug("更新热门帖子 : 开始");
+
         Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
-        String mapFunction = String.format("function(){ emit(this.%s, 1); }", Favorite.POST_ID_KEY);
-        String reduceFunction = "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }";
 
-        //因为不需要返回结果，所有不用mongoTemplate#mapReduce
-        DBObject dbObject = new BasicDBObject();
-        dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
-        dbObject.put("map", mapFunction);
-        dbObject.put("reduce", reduceFunction);
-        dbObject.put("out", mongoTemplate.getCollectionName(HotPost.class));
-        dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(daysAgo).get());
-        dbObject.put("verbose", true);
+        //2天内
+        Query query = new Query(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
+        //原贴
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //按红心数降序排序，取出2000条
+        query.with(new PageRequest(0, 2000, hotPostsSort));
 
-        logger.debug("正在刷新热门帖子: {}", dbObject);
+        List<Post> posts = mongoTemplate.find(query, Post.class);
+        logger.debug("更新热门帖子 : 正在处理 {} 个帖子", posts.size());
 
-        CommandResult result = mongoTemplate.executeCommand(dbObject);
-        result.throwOnError();
+        //为避免刷屏，每用户只可上榜2条
+        int max = 2;
+        Map<String, Integer> userId2count = new HashMap<String, Integer>(1000);
 
-        logger.debug("完成刷新热门帖子，result: {}", result);
+        List<HotPost> hotPosts = new ArrayList<HotPost>(1000);
+        for (Post post : posts) {
+            Integer count = userId2count.get(post.getUserId());
+
+            if (count == null) {
+                count = 0;
+                userId2count.put(post.getUserId(), 0);
+            }
+
+            if (count < max) {
+                hotPosts.add(new HotPost(post.getId()));
+                userId2count.put(post.getUserId(), count + 1);
+            }
+        }
+        logger.debug("更新热门帖子 : 处理后得到 {} 个帖子", hotPosts.size());
+
+        //更新热门帖子
+        String collectionName = mongoTemplate.getCollectionName(HotPost.class);
+        DBCollection tmpCollection = mongoTemplate.createCollection(String.format("%s.%s", collectionName, new ObjectId().toString()));
+
+        mongoTemplate.insert(hotPosts, tmpCollection.getName());
+        //重命名集合，原子性操作
+        logger.debug("更新热门帖子 : 正在重命名集合 {} -> {}", tmpCollection.getName(), collectionName);
+        tmpCollection.rename(collectionName, true);
+
+        logger.debug("更新热门帖子 : 完成");
     }
+
+    /* 不使用这种算法
+    /**
+     * 刷新热门帖子列表:最近2天被收藏的帖子按2天内的收藏数排序
+     public void refreshHotPosts() {
+     Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
+     String mapFunction = String.format("function(){ emit(this.%s, 1); }", Favorite.POST_ID_KEY);
+     String reduceFunction = "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }";
+
+     //因为不需要返回结果，所有不用mongoTemplate#mapReduce
+     DBObject dbObject = new BasicDBObject();
+     dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
+     dbObject.put("map", mapFunction);
+     dbObject.put("reduce", reduceFunction);
+     dbObject.put("out", mongoTemplate.getCollectionName(HotPost.class));
+     dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(daysAgo).get());
+     dbObject.put("verbose", true);
+
+     logger.debug("正在刷新热门帖子: {}", dbObject);
+
+     CommandResult result = mongoTemplate.executeCommand(dbObject);
+     result.throwOnError();
+
+     logger.debug("完成刷新热门帖子，result: {}", result);
+     }
+     */
 
     private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
 
@@ -631,7 +685,7 @@ public class StatusService extends AbstractMongoService {
         if (queryCriteria != null) {
             query.addCriteria(queryCriteria);
         }
-        query.with(PaginationParam.DEFAULT_SORT).limit(paginationParam.getCount());
+        query.with(PaginationParam.ID_DESC_SORT).limit(paginationParam.getCount());
 
         return mongoTemplate.find(query, Post.class);
     }
