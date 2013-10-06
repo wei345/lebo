@@ -41,6 +41,7 @@ public class SettingRestController {
     public Object recommendedApps() {
         List<RecommendedAppDto> dtos = new ArrayList<RecommendedAppDto>();
 
+        /*TODO 推荐应用:从数据库读取数据
         RecommendedAppDto dto = new RecommendedAppDto();
         dto.setImageUrl("http://file.lebooo.com/images/logo.png");
         dto.setName("乐播");
@@ -57,7 +58,7 @@ public class SettingRestController {
         dto.setUrl("http://file.dev.lebooo.com/images/btn-dl-lebo-iphone.png");
         dto.setVersion("2.4");
         dto.setBackgroundColor("#123456");
-        dtos.add(dto);
+        dtos.add(dto);*/
 
         return dtos;
     }
