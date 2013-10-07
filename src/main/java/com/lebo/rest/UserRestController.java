@@ -97,6 +97,9 @@ public class UserRestController {
     @ResponseBody
     public Object hotUserList(@Valid PageRequest pageRequest,
                               @RequestParam(value = "btn", defaultValue = "true") boolean btn) {
+        //bugfix:总是返回按钮设置，解决ios客户端因为自身bug导致崩溃问题
+        btn = true;
+
         HotUserListDto dto = new HotUserListDto();
         if (btn) {
             Setting setting = settingService.getSetting();
