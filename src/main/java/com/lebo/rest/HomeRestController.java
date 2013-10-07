@@ -89,6 +89,12 @@ public class HomeRestController {
         Subject currentUser = SecurityUtils.getSubject();
         ShiroUser principal = (ShiroUser) currentUser.getPrincipal();
         if (principal != null) {
+            //注销设备
+            User user = accountService.getUserSettings(accountService.getCurrentUserId());
+            user.setApnsProductionToken("");
+            user.setApnsDevelopmentToken("");
+            accountService.updateUserSettings(user);
+            //退出
             currentUser.logout();
             return accountService.toBasicUserDto(accountService.getUser(principal.getId()));
         } else {
