@@ -1,14 +1,12 @@
 package com.lebo.service;
 
 import com.lebo.entity.FileInfo;
-import com.lebo.util.ContentTypeMap;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -31,8 +29,6 @@ import java.util.List;
 public class GridFsService extends AbstractMongoService implements FileStorageService {
     @Autowired
     private GridFsTemplate gridFsTemplate;
-    @Value("${app.baseurl}")
-    private String baseurl;
 
     public static final String GRID_FS_FILES_COLLECTION_NAME = "fs.files";
     public static final String MD5_KEY = "md5";
@@ -141,11 +137,8 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
 
     @Override
     public String getContentUrl(String fileId, String suffix) {
-        //获取文件类型，查了一次数据库，仅用于开发
-        GridFSDBFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(fileId))));
-
         if (isMongoId(fileId)) {
-            String contentUrl = String.format("%s/files/%s.%s", baseurl, fileId, ContentTypeMap.getExtension(file.getContentType(), null));
+            String contentUrl = "/files/" + fileId;
             if (StringUtils.isNotBlank(suffix)) {
                 contentUrl += suffix;
             }

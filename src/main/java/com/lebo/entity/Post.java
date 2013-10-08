@@ -31,7 +31,6 @@ public class Post extends IdEntity {
     private boolean truncated;
     //视频(mp4)
     private FileInfo video;
-    public static final String VIDEO_KEY = "video";
     //视频第一帧(图片)
     private FileInfo videoFirstFrame;
     //来源，如：手机客户端、网页版

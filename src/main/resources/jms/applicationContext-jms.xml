@@ -113,26 +113,4 @@
     <bean id="profileImageMessageListener" class="com.lebo.jms.ProfileImageMessageListener"/>
     <!-- FETCH PROFILE IMAGE end -->
 
-    <!-- CONVERT VIDEO begin -->
-    <bean id="convertVideoQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="q.convertVideo"/>
-    </bean>
-
-    <bean id="convertVideoMessageProducer" class="com.lebo.jms.ConvertVideoMessageProducer">
-        <property name="jmsTemplate" ref="advancedJmsTemplate"/>
-        <property name="convertVideoQueue" ref="convertVideoQueue"/>
-    </bean>
-
-    <bean id="convertVideoMessageListener" class="com.lebo.jms.ConvertVideoMessageListener"/>
-
-    <bean id="convertVideoQueueContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-        <property name="connectionFactory" ref="advancedConnectionFactory"/>
-        <property name="destination" ref="convertVideoQueue"/>
-        <property name="messageListener" ref="convertVideoMessageListener"/>
-        <property name="concurrentConsumers" value="1"/>
-        <property name="maxConcurrentConsumers" value="1"/>
-        <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>
-    </bean>
-    <!-- CONVERT VIDEO end -->
-
 </beans>

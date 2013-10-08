@@ -23,7 +23,6 @@ public class Comment extends IdEntity {
     private boolean truncated;
     //视频(mp4)
     private FileInfo video;
-    public static final String VIDEO_KEY = "video";
     //视频第一帧(图片)
     private FileInfo videoFirstFrame;
     //语音(mp4, amr)

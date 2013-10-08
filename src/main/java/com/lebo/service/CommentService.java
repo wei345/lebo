@@ -39,8 +39,7 @@ public class CommentService extends AbstractMongoService {
     private AccountService accountService;
     @Autowired
     private ApplicationEventBus eventBus;
-    public static final String FILE_COLLECTION_NAME = "comment";
-    public static final String SLUG_VIDEO = "video";
+    private static final String FILE_COLLECTION_NAME = "comment";
 
     /**
      * @throws com.mongodb.MongoException 当存储数据失败时

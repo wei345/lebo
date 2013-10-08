@@ -42,7 +42,6 @@
                 /login = authc
                 /logout = logout
                 /play/** = anon
-                /files/** = anon
                 /api/*/everyday10/** = anon
                 /api/*/login.json = anon
                 /api/*/oauthLogin.json = anon
