@@ -20,13 +20,13 @@ import java.io.IOException;
  * Time: PM7:54
  */
 public class VideoUtils {
+    private static Logger logger = LoggerFactory.getLogger(VideoUtils.class);
 
+    //-- 获取视频首帧图 --//
     public static final double SECONDS_BETWEEN_FRAMES = 10;
 
     public static final long MICRO_SECONDS_BETWEEN_FRAMES =
             (long) (Global.DEFAULT_PTS_PER_SECOND * SECONDS_BETWEEN_FRAMES);
-
-    private static Logger logger = LoggerFactory.getLogger(VideoUtils.class);
 
     public static void writeVideoFirstFrame(File video, File firstFrame) {
         IMediaReader mediaReader = ToolFactory.makeReader(video.getAbsolutePath());
@@ -108,6 +108,20 @@ public class VideoUtils {
 
     static class Done extends RuntimeException {
 
+    }
+
+    //-- 视频转码 --//
+
+    /**
+     * 解决ios客户端发布的视频android无法播放的问题
+     */
+    public static void convertVideo(String url, String target) {
+        long begin = System.currentTimeMillis();
+        logger.debug("转换视频 : 开始 {} -> {}", url, target);
+        IMediaReader reader = ToolFactory.makeReader(url);
+        reader.addListener(ToolFactory.makeWriter(target, reader));
+        while (reader.readPacket() == null) ;
+        logger.debug("转换视频 : 结束 用时 : {} ms", System.currentTimeMillis() - begin);
     }
 
     public static void main(String[] args) {

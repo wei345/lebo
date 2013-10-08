@@ -66,7 +66,7 @@ public class FileServlet extends HttpServlet {
         //取得参数
         Assert.isTrue(request.getPathInfo().length() > 1, "Incorrect Request Path");
 
-        String fileId = request.getPathInfo().substring(1);
+        String fileId = StringUtils.substringBeforeLast(request.getPathInfo().substring(1), ".");
         String postId = request.getParameter(POST_ID_KEY);
 
         //获取请求内容的基本信息.
@@ -157,7 +157,7 @@ public class FileServlet extends HttpServlet {
     public void init() throws ServletException {
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
-        fileStorageService = applicationContext.getBean(GridFsService.class);
+        fileStorageService = applicationContext.getBean(FileStorageService.class);
         accountService = applicationContext.getBean(AccountService.class);
         statusService = applicationContext.getBean(StatusService.class);
     }

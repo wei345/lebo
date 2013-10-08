@@ -6,6 +6,7 @@ import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.event.BeforePostCreateEvent;
+import com.lebo.jms.ConvertVideoMessageProducer;
 import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
@@ -65,7 +66,9 @@ public class StatusService extends AbstractMongoService {
     private SettingService settingService;
     @Autowired
     private ApplicationEventBus eventBus;
-    private static final String FILE_COLLECTION_NAME = "post";
+    public static final String FILE_COLLECTION_NAME = "post";
+    public static final String SLUG_VIDEO = "video";
+    public static final String SLUG_VIDEO_FIRST_FRAME = "video-first-frame";
 
     /**
      * @param userId
@@ -91,8 +94,8 @@ public class StatusService extends AbstractMongoService {
 
         //原始贴
         if (originPost == null) {
-            video.setKey(generateFileId(FILE_COLLECTION_NAME, post.getId(), "video", video.getLength(), video.getContentType(), video.getFilename()));
-            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, post.getId(), "video-first-frame", videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
+            video.setKey(generateFileId(FILE_COLLECTION_NAME, post.getId(), SLUG_VIDEO, video.getLength(), video.getContentType(), video.getFilename()));
+            videoFirstFrame.setKey(generateFileId(FILE_COLLECTION_NAME, post.getId(), SLUG_VIDEO_FIRST_FRAME, videoFirstFrame.getLength(), videoFirstFrame.getContentType(), videoFirstFrame.getFilename()));
 
             fileStorageService.save(video, videoFirstFrame);
 
