@@ -153,6 +153,6 @@ public abstract class AbstractMongoService {
 
     public static boolean isFileId(String s) {
         //不是url路径，即认为是文件id
-        return !StringUtils.startsWithAny(s.toLowerCase(), "http://", "https://");
+        return (s != null) && !StringUtils.startsWithAny(s.toLowerCase(), "http://", "https://");
     }
 }
