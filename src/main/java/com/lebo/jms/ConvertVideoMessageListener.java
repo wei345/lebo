@@ -80,7 +80,7 @@ public class ConvertVideoMessageListener implements MessageListener {
         long begin = System.currentTimeMillis();
         logger.debug("视频转码 : 开始 {}", oldVideoUrl);
         File tmpFileOldVideo = fetchUrlForFile(oldVideoUrl);
-        VideoUtils.convertVideo(tmpFileOldVideo.getAbsolutePath(), tmpFileNewVideo.getAbsolutePath());
+        VideoUtils.convertVideo2mpeg4(tmpFileOldVideo.getAbsolutePath(), tmpFileNewVideo.getAbsolutePath());
 
         //保存新视频
         FileInfo video = new FileInfo(new FileInputStream(tmpFileNewVideo), "video/mp4", tmpFileNewVideo.length(), tmpFileNewVideo.getName());
@@ -117,7 +117,7 @@ public class ConvertVideoMessageListener implements MessageListener {
         long begin = System.currentTimeMillis();
         logger.debug("视频转码 : 开始 {}", oldVideoUrl);
         File tmpFileOldVideo = fetchUrlForFile(oldVideoUrl);
-        VideoUtils.convertVideo(tmpFileOldVideo.getAbsolutePath(), tmpFileNewVideo.getAbsolutePath());
+        VideoUtils.convertVideo2mpeg4(tmpFileOldVideo.getAbsolutePath(), tmpFileNewVideo.getAbsolutePath());
 
         //保存新视频
         FileInfo video = new FileInfo(new FileInputStream(tmpFileNewVideo), "video/mp4", tmpFileNewVideo.length(), tmpFileNewVideo.getName());
