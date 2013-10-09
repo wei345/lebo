@@ -6,7 +6,6 @@ import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.event.AfterPostDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.event.BeforePostCreateEvent;
-import com.lebo.jms.ConvertVideoMessageProducer;
 import com.lebo.repository.MongoConstant;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
@@ -192,6 +191,9 @@ public class StatusService extends AbstractMongoService {
         dto.setText(post.getText());
         if (post.getVideo() != null) {
             dto.setVideo(post.getVideo().toDto());
+        }
+        if(post.getVideoConverted() != null){
+            dto.setVideoConverted(post.getVideoConverted().toDto());
         }
         dto.setVideoFirstFrameUrl(post.getVideoFirstFrameUrl());
         dto.setSource(post.getSource());

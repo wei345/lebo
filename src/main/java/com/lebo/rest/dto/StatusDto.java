@@ -15,6 +15,7 @@ public class StatusDto {
     private Date createdAt;
     private String text;
     private FileInfoDto video;
+    private FileInfoDto videoConverted;
     private String videoFirstFrameUrl;
     //该Tweet来源，如：手机客户端、网页版
     private String source;
@@ -203,5 +204,13 @@ public class StatusDto {
 
     public void setVideoFirstFrameUrl(String videoFirstFrameUrl) {
         this.videoFirstFrameUrl = videoFirstFrameUrl;
+    }
+
+    public FileInfoDto getVideoConverted() {
+        return videoConverted;
+    }
+
+    public void setVideoConverted(FileInfoDto videoConverted) {
+        this.videoConverted = videoConverted;
     }
 }

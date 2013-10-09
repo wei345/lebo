@@ -466,6 +466,18 @@
     </tr>
 </table>
 
+<strong>反馈</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/feedback/videoCanotPlay" text="POST feedback/videoCanotPlay"/>
+        </td>
+        <td>
+            向服务签报告不能播放的视频，服务器会做转码处理。
+        </td>
+    </tr>
+</table>
+
 <strong>小应用:每日十个</strong>
 <table class="table table-hover">
     <tr>

@@ -32,6 +32,11 @@ public class Post extends IdEntity {
     //视频(mp4)
     private FileInfo video;
     public static final String VIDEO_KEY = "video";
+    private FileInfo videoConverted;
+    public static final String VIDEO_CONVERTED_KEY = "videoConverted";
+    private String videoConvertStatus;
+    public static final String VIDEO_CONVERT_STATUS_KEY = "videoConvertStatus";
+
     //视频第一帧(图片)
     private FileInfo videoFirstFrame;
     //来源，如：手机客户端、网页版
@@ -270,5 +275,21 @@ public class Post extends IdEntity {
 
     public void setPikeId(String pikeId) {
         this.pikeId = pikeId;
+    }
+
+    public String getVideoConvertStatus() {
+        return videoConvertStatus;
+    }
+
+    public void setVideoConvertStatus(String videoConvertStatus) {
+        this.videoConvertStatus = videoConvertStatus;
+    }
+
+    public FileInfo getVideoConverted() {
+        return videoConverted;
+    }
+
+    public void setVideoConverted(FileInfo videoConverted) {
+        this.videoConverted = videoConverted;
     }
 }

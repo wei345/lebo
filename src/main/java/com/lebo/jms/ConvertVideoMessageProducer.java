@@ -16,9 +16,6 @@ public class ConvertVideoMessageProducer {
     private JmsTemplate jmsTemplate;
     private Destination convertVideoQueue;
 
-    public static final String OBJECT_TYPE_POST = "post";
-    public static final String OBJECT_TYPE_COMMENT = "comment";
-
     public void sendQueue(final String objectType, final String objectId) {
         jmsTemplate.send(convertVideoQueue, new MessageCreator() {
             @Override
