@@ -14,12 +14,16 @@ public class VideoUtilsTest {
 
     @Test
     public void convertVideo2mpeg4() throws Exception {
-//        VideoUtils.convertVideo2mpeg4("http://file.lebooo.com/post/2013-10-08/5253ae270cf21c0e09f49bd6-video-656865.mp4", "target/convert.mp4");
         VideoUtils.convertVideo2mpeg4("/Users/liuwei/Downloads/5253c70d0cf2afcb04d5d47b-video-621825.mp4", "target/convert.mp4");
     }
 
     @Test
-    public void test(){
+    public void convertVideo(){
+        VideoUtils.convertVideo("http://file.lebooo.com/post/2013-10-08/5253ae270cf21c0e09f49bd6-video-656865.mp4", "target/convert.mp4");
+    }
+
+    @Test
+    public void printVideoInfo(){
         printVideoInfo("/Users/liuwei/Downloads/5253c70d0cf2afcb04d5d47b-video-621825.mp4", "android不可播放");
         printVideoInfo("/Users/liuwei/Downloads/52542e660cf29782abefb958-video-973351.mp4", "android可播放");
         printVideoInfo("target/convert.mp4", "android可播放");
@@ -46,8 +50,6 @@ public class VideoUtilsTest {
         System.out.printf("readRetryCount    : %s\n", reader.getContainer().getReadRetryCount());
         System.out.printf("startTime    : %s\n", reader.getContainer().getStartTime());
         System.out.printf("outputDefaultVideoCodec    : %s\n", reader.getContainer().getContainerFormat().getOutputDefaultVideoCodec());
-
-
 
         reader.close();
     }

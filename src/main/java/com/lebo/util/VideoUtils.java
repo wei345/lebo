@@ -120,15 +120,25 @@ public class VideoUtils {
      */
     public static void convertVideo2mpeg4(String url, String target) {
         long begin = System.currentTimeMillis();
-        logger.debug("转换视频 : 开始 {} -> {}", url, target);
-        IMediaReader reader = ToolFactory.makeReader(url);
-
         if (!target.endsWith(".mp4")) {
             target = StringUtils.substringBeforeLast(target, ".") + ".mp4";
         }
+        logger.debug("转换视频 : 开始 {} -> {}", url, target);
+
+        IMediaReader reader = ToolFactory.makeReader(url);
         IMediaWriter writer = ToolFactory.makeWriter(target, reader);
         writer.getContainer().setForcedVideoCodec(ICodec.ID.CODEC_ID_MPEG4);
 
+        reader.addListener(writer);
+        while (reader.readPacket() == null) ;
+        logger.debug("转换视频 : 结束 用时 : {} ms", System.currentTimeMillis() - begin);
+    }
+
+    public static void convertVideo(String url, String target) {
+        long begin = System.currentTimeMillis();
+        logger.debug("转换视频 : 开始 {} -> {}", url, target);
+        IMediaReader reader = ToolFactory.makeReader(url);
+        IMediaWriter writer = ToolFactory.makeWriter(target, reader);
         reader.addListener(writer);
         while (reader.readPacket() == null) ;
         logger.debug("转换视频 : 结束 用时 : {} ms", System.currentTimeMillis() - begin);
