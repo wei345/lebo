@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 import org.springside.modules.mapper.BeanMapper;
 
@@ -27,6 +29,7 @@ import java.util.List;
  * Time: PM5:27
  */
 //TODO 定时计算频道总帖子数、红心(收藏)数、浏览数
+@ManagedResource(objectName = "lebo:name=SettingService", description = "Setting Service Management Bean")
 @Service
 public class SettingService extends AbstractMongoService {
     @Autowired
@@ -103,5 +106,11 @@ public class SettingService extends AbstractMongoService {
         mongoTemplate.updateFirst(new Query(new Criteria(Channel.ID_KEY).is(id)),
                 new Update().set(Channel.ENABLED_KEY, enabled),
                 Channel.class);
+    }
+
+    //-- JMX --//
+    @ManagedOperation(description = "发送JMS Topic通知所有节点重新加载设置。适用于直接修改数据库，让应用重新加载")
+    public void sendTopicReloadSetting() {
+        settingMessageProducer.sendTopic();
     }
 }

@@ -689,14 +689,19 @@ public class StatusService extends AbstractMongoService {
         //TODO 让新版客户端做banner功能，去掉在"九九重阳节"置顶视频
         //临时在"九九重阳节"频道置顶视频，因为新版客户端忘记做banner功能
         if ("九九重阳节".equals(name) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
-            query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
-            List<Post> posts = mongoTemplate.find(query, Post.class);
+            if(settingService.getSetting().getJiuJiuChongYangJieTopPostId() != null){
+                Post topPost = getPost(settingService.getSetting().getJiuJiuChongYangJieTopPostId());
+                if(topPost != null){
+                    query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
+                    List<Post> posts = mongoTemplate.find(query, Post.class);
 
-            if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
-                posts.add(0, getPost("5254f99e0cf279c4c00d2990"));
+                    if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
+                        posts.add(0, topPost);
+                    }
+
+                    return posts;
+                }
             }
-
-            return posts;
         }
         //-- 临时置顶视频 end --//
 
