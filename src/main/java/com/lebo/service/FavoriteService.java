@@ -80,12 +80,13 @@ public class FavoriteService extends AbstractMongoService {
     public List<Post> list(String userId, PaginationParam paginationParam) {
         List<Favorite> favorites = favoriteDao.findByUserId(userId,
                 paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
-        List<String> ids = new ArrayList<String>();
+
+        List<Post> posts = new ArrayList<Post>(favorites.size());
         for (int i = 0; i < favorites.size(); i++) {
-            ids.add(favorites.get(i).getPostId());
+            posts.add(statusService.getPost(favorites.get(i).getPostId()));
         }
-        //TODO statusService.findPosts(ids)使用缓存，用ID一次查一个
-        return statusService.findPosts(ids);
+
+        return posts;
     }
 
     public void deleteByPostId(String postId) {
