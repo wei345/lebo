@@ -401,8 +401,8 @@ public class StatusService extends AbstractMongoService {
         List<Post> posts = mongoTemplate.find(query, Post.class);
         logger.debug("更新热门帖子 : 正在处理 {} 个帖子", posts.size());
 
-        //为避免刷屏，每用户只可上榜2条
-        int max = 2;
+        //为避免刷屏，每用户只可上榜1条
+        int max = 1;
         Map<String, Integer> userId2count = new HashMap<String, Integer>(1000);
 
         List<HotPost> hotPosts = new ArrayList<HotPost>(1000);
