@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.entity.Friendship;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.WeiboUserDto;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,6 +53,9 @@ public class FriendRestController {
         } else {
             userId = accountService.getUserId(userId, screenName);
         }
+
+        //排序:双向关注在前
+        pageRequest.setSort(new Sort(Sort.Direction.DESC, Friendship.AFB_KEY, Friendship.BFA_KEY));
 
         List<String> ids = friendshipService.getFriends(userId, pageRequest);
         return accountService.toUserDtos(accountService.getUsers(ids));
