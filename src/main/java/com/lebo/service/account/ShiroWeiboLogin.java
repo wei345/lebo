@@ -2,6 +2,10 @@ package com.lebo.service.account;
 
 import com.lebo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
@@ -21,6 +25,8 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
 
     @Autowired
     private WeiboService weiboService;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     /*private String weibo_redirect_uri = "/weibo_callback";
 
@@ -30,12 +36,12 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
 
     public User getUser(String token) {
         String uid = weiboService.getUid(token);
+        Map userInfo = weiboService.getUserInfo(token, uid);
+
         User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
 
-        // 第一次登录，创建用户
+        // 新用户
         if (user == null) {
-            Map userInfo = weiboService.getUserInfo(token, uid);
-
             user = new User();
             user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
             user.setName((String) userInfo.get("name"));
@@ -50,12 +56,11 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
 
             user = accountService.createUser(user);
         }
-        //更新token
+        //老用户
         else {
-            if (!token.equals(user.getWeiboToken())) {
-                user.setWeiboToken(token);
-                accountService.saveUser(user);
-            }
+            mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(user.getId())),
+                    new Update().set(User.WEIBO_VERIFIED_KEY, userInfo.get("verified")).set(User.WEIBO_TOKEN_KEY, token),
+                    User.class);
         }
 
         return user;

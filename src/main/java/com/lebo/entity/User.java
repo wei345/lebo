@@ -51,6 +51,7 @@ public class User extends IdEntity {
     private Boolean verified;
     //是否是新浪微博认证用户，即加V用户
     private Boolean weiboVerified;
+    public static final String WEIBO_VERIFIED_KEY = "weiboVerified";
     private String location;
     private String timeZone;
 
@@ -108,6 +109,7 @@ public class User extends IdEntity {
     public static final String APNS_DEVELOPMENT_TOKEN_KEY = "apnsDevelopmentToken";
 
     private String weiboToken; //用微博账号登录的token
+    public static final String WEIBO_TOKEN_KEY = "weiboToken";
     private String renrenToken;//用人人账号登录的token
 
     //查找好友功能用到的token
