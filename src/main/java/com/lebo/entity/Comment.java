@@ -23,6 +23,14 @@ public class Comment extends IdEntity {
     private boolean truncated;
     //视频(mp4)
     private FileInfo video;
+    public static final String VIDEO_KEY = "video";
+    //转码后的视频，解决ios发的部分视频android无法播放问题
+    //如果ios和android客户端能做到使用相同的编码录制和播放视频，服务端就不用做编码转换了
+    private FileInfo videoConverted;
+    public static final String VIDEO_CONVERTED_KEY = "videoConverted";
+    private String videoConvertStatus;
+    public static final String VIDEO_CONVERT_STATUS_KEY = "videoConvertStatus";
+
     //视频第一帧(图片)
     private FileInfo videoFirstFrame;
     //语音(mp4, amr)
@@ -181,5 +189,21 @@ public class Comment extends IdEntity {
 
     public void setPikeId(String pikeId) {
         this.pikeId = pikeId;
+    }
+
+    public FileInfo getVideoConverted() {
+        return videoConverted;
+    }
+
+    public void setVideoConverted(FileInfo videoConverted) {
+        this.videoConverted = videoConverted;
+    }
+
+    public String getVideoConvertStatus() {
+        return videoConvertStatus;
+    }
+
+    public void setVideoConvertStatus(String videoConvertStatus) {
+        this.videoConvertStatus = videoConvertStatus;
     }
 }

@@ -65,7 +65,7 @@ public class StatusService extends AbstractMongoService {
     private SettingService settingService;
     @Autowired
     private ApplicationEventBus eventBus;
-    private static final String FILE_COLLECTION_NAME = "post";
+    public static final String FILE_COLLECTION_NAME = "post";
 
     /**
      * @param userId
@@ -189,6 +189,9 @@ public class StatusService extends AbstractMongoService {
         dto.setText(post.getText());
         if (post.getVideo() != null) {
             dto.setVideo(post.getVideo().toDto());
+        }
+        if(post.getVideoConverted() != null){
+            dto.setVideoConverted(post.getVideoConverted().toDto());
         }
         dto.setVideoFirstFrameUrl(post.getVideoFirstFrameUrl());
         dto.setSource(post.getSource());

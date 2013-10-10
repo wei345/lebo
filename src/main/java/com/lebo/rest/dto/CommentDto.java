@@ -14,6 +14,7 @@ public class CommentDto {
     private Date createdAt;
     private String text;
     private FileInfoDto video;
+    private FileInfoDto videoConverted;
     private String videoFirstFrameUrl;
     private FileInfoDto audio;
     private Boolean hasVideo;
@@ -107,5 +108,13 @@ public class CommentDto {
 
     public void setAudio(FileInfoDto audio) {
         this.audio = audio;
+    }
+
+    public FileInfoDto getVideoConverted() {
+        return videoConverted;
+    }
+
+    public void setVideoConverted(FileInfoDto videoConverted) {
+        this.videoConverted = videoConverted;
     }
 }

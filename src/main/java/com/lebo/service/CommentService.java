@@ -39,7 +39,7 @@ public class CommentService extends AbstractMongoService {
     private AccountService accountService;
     @Autowired
     private ApplicationEventBus eventBus;
-    private static final String FILE_COLLECTION_NAME = "comment";
+    public static final String FILE_COLLECTION_NAME = "comment";
 
     /**
      * @throws com.mongodb.MongoException 当存储数据失败时
@@ -100,6 +100,9 @@ public class CommentService extends AbstractMongoService {
         dto.setText(comment.getText());
         if (comment.getVideo() != null) {
             dto.setVideo(comment.getVideo().toDto());
+        }
+        if(comment.getVideoConverted() != null){
+            dto.setVideoConverted(comment.getVideoConverted().toDto());
         }
         dto.setVideoFirstFrameUrl(comment.getVideoFirstFrameUrl());
         if (comment.getAudio() != null) {

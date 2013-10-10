@@ -1,11 +1,14 @@
 package com.lebo.util;
 
 import com.xuggle.mediatool.IMediaReader;
+import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.MediaListenerAdapter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
 import com.xuggle.xuggler.Global;
+import com.xuggle.xuggler.ICodec;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +113,34 @@ public class VideoUtils {
 
     }
 
-    public static void main(String[] args) {
-        writeVideoFirstFrame(new File("/Users/liuwei/Movies/刘伟-2012.mov"), new File("/Users/liuwei/Movies/刘伟-2012.jpg"));
+    //-- 视频转码 --//
+
+    /**
+     * 解决ios客户端发布的视频android无法播放的问题
+     */
+    public static void convertVideo2mpeg4(String url, String target) {
+        long begin = System.currentTimeMillis();
+        if (!target.endsWith(".mp4")) {
+            target = StringUtils.substringBeforeLast(target, ".") + ".mp4";
+        }
+        logger.debug("转换视频 : 开始 {} -> {}", url, target);
+
+        IMediaReader reader = ToolFactory.makeReader(url);
+        IMediaWriter writer = ToolFactory.makeWriter(target, reader);
+        writer.getContainer().setForcedVideoCodec(ICodec.ID.CODEC_ID_MPEG4);
+
+        reader.addListener(writer);
+        while (reader.readPacket() == null) ;
+        logger.debug("转换视频 : 结束 用时 : {} ms", System.currentTimeMillis() - begin);
+    }
+
+    public static void convertVideo(String url, String target) {
+        long begin = System.currentTimeMillis();
+        logger.debug("转换视频 : 开始 {} -> {}", url, target);
+        IMediaReader reader = ToolFactory.makeReader(url);
+        IMediaWriter writer = ToolFactory.makeWriter(target, reader);
+        reader.addListener(writer);
+        while (reader.readPacket() == null) ;
+        logger.debug("转换视频 : 结束 用时 : {} ms", System.currentTimeMillis() - begin);
     }
 }
