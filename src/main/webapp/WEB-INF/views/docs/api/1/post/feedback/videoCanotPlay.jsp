@@ -8,6 +8,10 @@
 
 <tags:form name="报告不能播放的视频" method="POST" action="${ctx}/api/1/feedback/videoCanotPlay.json">
     <p>
+        如果客户端遇到不能播放的视频，则调用此接口告知服务器，服务器会做转码处理，转码后视频信息中会增加<code>videoConverted</code>字段，
+        详见<a href="${ctx}/docs/api/1/dataStructures">返回对象数据结构</a>。
+    </p>
+    <p>
         <code>${post}</code> 或 <code>${comment}</code>
     </p>
     <tags:field name="objectType"/>

@@ -61,17 +61,6 @@
 </tr>
 <tr>
     <td>
-        files (已弃用)
-    </td>
-    <td>
-        array
-    </td>
-    <td>
-        第1个是视频，第2个是图片
-    </td>
-</tr>
-<tr>
-    <td>
         video
     </td>
     <td>
@@ -79,6 +68,17 @@
     </td>
     <td>
         视频
+    </td>
+</tr>
+<tr>
+    <td>
+        videoConverted
+    </td>
+    <td>
+        object
+    </td>
+    <td>
+        转码后的video，ios客户端忽略此字段，android客户端优先读取此字段，如果没有此字段则读取video字段
     </td>
 </tr>
 <tr>
@@ -454,6 +454,17 @@
         <td>video</td>
         <td>object</td>
         <td>该评论的视频文件信息，该评论为视频评论时有此字段</td>
+    </tr>
+    <tr>
+        <td>
+            videoConverted
+        </td>
+        <td>
+            object
+        </td>
+        <td>
+            转码后的video，ios客户端忽略此字段，android客户端优先读取此字段，如果没有此字段则读取video字段
+        </td>
     </tr>
     <tr>
         <td>videoFirstFrameUrl</td>
