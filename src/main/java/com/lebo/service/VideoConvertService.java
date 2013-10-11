@@ -57,7 +57,7 @@ public class VideoConvertService {
                 new Update().set(Post.VIDEO_CONVERT_STATUS_KEY, VIDEO_CONVERT_STATUS_CONVERTING), Post.class);
 
         Post post = statusService.getPost(postId);
-        if(post.getVideoConverted() != null){
+        if (post.getVideoConverted() != null) {
             logger.debug("{} 已转码，中止, postId : {}", VIDEO_CONVERT_LOG_PREFIX, postId);
             return;
         }
@@ -103,7 +103,7 @@ public class VideoConvertService {
             logger.debug("{} 没有视频 objectType : {}, objectId : {}", VIDEO_CONVERT_LOG_PREFIX, OBJECT_TYPE_COMMENT, commentId);
             return;
         }
-        if(comment.getVideoConverted() != null){
+        if (comment.getVideoConverted() != null) {
             logger.debug("{} 已转码，中止, commentId : {}", VIDEO_CONVERT_LOG_PREFIX, commentId);
             return;
         }

@@ -8,6 +8,7 @@
     <p>
         返回当前登录用户的通知(消息)列表。
     </p>
+
     <p>
         unread=true，只返回未读通知。
     </p>
@@ -48,7 +49,7 @@
             activityType
         </td>
         <td>
-           string
+            string
         </td>
         <td>
             通知类型
@@ -59,7 +60,7 @@
             relatedStatus
         </td>
         <td>
-           object
+            object
         </td>
         <td>
             相关的视频

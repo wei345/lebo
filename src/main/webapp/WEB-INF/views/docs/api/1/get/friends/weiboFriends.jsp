@@ -11,13 +11,15 @@
         客户端第一次调用此接口，不需要带token参数，
     <ul>
         <li>如果服务端返回新浪好友，那么客户端可以继续获取下一页数据。</li>
-        <li>如果服务端返回错误状态码<code>${noTokenCode}</code>或<code>${errorTokenCode}</code>(状态码含义见<a href="/docs/api/1/dataStructures#error_code">返回对象数据结构</a>)，客户端需要显示新浪微博登录页，获得token后，带着token再次调用此接口，服务端返回新浪好友，之后客户端可以获取下一页数据。</li>
+        <li>如果服务端返回错误状态码<code>${noTokenCode}</code>或<code>${errorTokenCode}</code>(状态码含义见<a
+                href="/docs/api/1/dataStructures#error_code">返回对象数据结构</a>)，客户端需要显示新浪微博登录页，获得token后，带着token再次调用此接口，服务端返回新浪好友，之后客户端可以获取下一页数据。
+        </li>
     </ul>
     服务端会保存最后一次使用的新浪token。
     </p>
 
     <tags:field name="token" value="" optional="true"/>
-    <tags:fields-page-size />
+    <tags:fields-page-size/>
 </tags:form>
 
 <p>

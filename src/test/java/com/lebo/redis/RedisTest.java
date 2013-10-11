@@ -4,7 +4,8 @@ import com.lebo.SpringContextTestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springside.modules.nosql.redis.JedisTemplate;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author: Wei Liu
@@ -16,7 +17,7 @@ public class RedisTest extends SpringContextTestCase {
     private JedisTemplate jedisTemplate;
 
     @Test
-    public void test(){
+    public void test() {
         jedisTemplate.set("foo", "bar");
         assertEquals("bar", jedisTemplate.get("foo"));
     }
