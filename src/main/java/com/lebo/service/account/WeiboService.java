@@ -37,21 +37,20 @@ public class WeiboService {
     }
 
     /**
-     *
      * @param token
      * @param uid
      * @param count  单页返回的记录条数，最大不超过200。
      * @param cursor 返回结果的游标，下一页用返回值里的next_cursor，上一页用previous_cursor，首页为0。
      * @return
      */
-    public WeiboFriend getFriends(String token, String uid, int count, int cursor){
+    public WeiboFriend getFriends(String token, String uid, int count, int cursor) {
         Assert.hasText(token);
         Assert.hasText(uid);
         Assert.state(count > 0);
         Assert.state(count <= 200);
         Assert.state(cursor >= 0);
 
-        String url = String.format("https://api.weibo.com/2/friendships/friends.json?uid=%s&count=%s&cursor=%s&access_token=%s", uid, count,cursor,token);
+        String url = String.format("https://api.weibo.com/2/friendships/friends.json?uid=%s&count=%s&cursor=%s&access_token=%s", uid, count, cursor, token);
         String json = restTemplate.getForObject(url, String.class);
         WeiboFriend weiboFriend = jsonMapper.fromJson(json, WeiboFriend.class);
 
@@ -61,7 +60,7 @@ public class WeiboService {
         return weiboFriend;
     }
 
-    public static class WeiboFriend{
+    public static class WeiboFriend {
         private List<WeiboUser> users;
         private int next_cursor;
         private int previous_cursor;
@@ -100,7 +99,7 @@ public class WeiboService {
         }
     }
 
-    public static class WeiboUser{
+    public static class WeiboUser {
         private String id;
         private String screen_name;
         private String name;

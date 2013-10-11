@@ -375,7 +375,7 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageOriginalUrl() {
-        if(profileImageOriginal == null){
+        if (profileImageOriginal == null) {
             return null;
         }
         return FileContentUrlUtils.getContentUrl(profileImageOriginal);

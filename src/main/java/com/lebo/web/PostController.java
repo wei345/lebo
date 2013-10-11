@@ -66,7 +66,7 @@ public class PostController {
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public Object deletePublishVideoTask(@PathVariable(value = "id") String id){
+    public Object deletePublishVideoTask(@PathVariable(value = "id") String id) {
         statusService.destroyPost(id);
         return ControllerUtils.AJAX_OK;
     }

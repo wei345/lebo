@@ -72,11 +72,11 @@
     <bean class="com.lebo.service.FileContentUrlUtils" lazy-init="false"/>
 
     <!-- aop -->
-    <aop:aspectj-autoproxy />
+    <aop:aspectj-autoproxy/>
 
     <!-- expose specific properties to application  -->
     <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="singleton" value="true" />
+        <property name="singleton" value="true"/>
         <property name="properties">
             <props>
                 <prop key="app.baseurl">${app.baseurl}</prop>

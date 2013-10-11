@@ -14,12 +14,12 @@ public class SettingServiceTest extends SpringContextTestCase {
     private SettingService settingService;
 
     @Test
-    public void getAllChannels(){
+    public void getAllChannels() {
         settingService.getAllChannels();
     }
 
     @Test
-    public void getEnabledChannels(){
+    public void getEnabledChannels() {
         settingService.getEnabledChannels();
     }
 }

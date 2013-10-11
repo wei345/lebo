@@ -1,7 +1,6 @@
 package com.lebo.service.account;
 
 import com.google.common.base.Objects;
-import com.lebo.service.FileContentUrlUtils;
 import org.apache.shiro.SecurityUtils;
 
 import java.io.Serializable;

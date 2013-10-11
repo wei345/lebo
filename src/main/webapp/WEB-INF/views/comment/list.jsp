@@ -24,8 +24,10 @@
 <body>
 
 <form id="searchForm" class="form-search pull-left" method="GET" action="">
-    <input type="search" class="input-large search-query" id="postId" name="postId" value="${postId}" placeholder="帖子ID">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=postId]').val('')"></span>
+    <input type="search" class="input-large search-query" id="postId" name="postId" value="${postId}"
+           placeholder="帖子ID">
+    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+          onclick="$('input[name=postId]').val('')"></span>
 
     <input type="text" class="input-mini" name="count" value="${count}">条
     <button type="submit" class="btn" style="margin-left: 2em;">提交</button>
@@ -60,7 +62,7 @@
                     无
                 </c:if>
                 <a href="${item.mediaUrl}" target="_blank">
-                    ${item.mediaLinkText}
+                        ${item.mediaLinkText}
                 </a>
             </td>
             <td class="text">
@@ -80,7 +82,7 @@
 </table>
 
 <script>
-    $(function(){
+    $(function () {
         //行号
         $('#contentTable tr:gt(0)').each(function (index) {
             $('td:first', this).html(index + 1);

@@ -46,7 +46,7 @@ public class AccountServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void isScreenNameValid(){
+    public void isScreenNameValid() {
         //合法字符
         assertTrue(accountService.isScreenNameValid("中文_-abc0A"));
         //不能少于4个字符

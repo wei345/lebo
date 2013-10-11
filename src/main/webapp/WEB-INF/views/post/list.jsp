@@ -24,11 +24,15 @@
 <body>
 
 <form id="searchForm" class="form-search pull-left" method="GET" action="">
-    <input type="search" class="input-medium search-query" id="screenName" name="screenName" value="${screenName}" placeholder="用户名字">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=screenName]').val('')"></span>
-或
-    <input type="search" class="input-medium search-query" id="userId" name="userId" value="${userId}" placeholder="用户ID">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=userId]').val('')"></span>
+    <input type="search" class="input-medium search-query" id="screenName" name="screenName" value="${screenName}"
+           placeholder="用户名字">
+    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+          onclick="$('input[name=screenName]').val('')"></span>
+    或
+    <input type="search" class="input-medium search-query" id="userId" name="userId" value="${userId}"
+           placeholder="用户ID">
+    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+          onclick="$('input[name=userId]').val('')"></span>
 
     <input type="text" class="input-mini" name="count" value="${count}">条
     <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
@@ -81,7 +85,7 @@
 </table>
 
 <script>
-    $(function(){
+    $(function () {
         //行号
         $('#contentTable tr:gt(0)').each(function (index) {
             $('td:first', this).html(index + 1);

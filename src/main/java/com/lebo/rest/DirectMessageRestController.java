@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.entity.Setting;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.MessageService;
@@ -50,8 +51,8 @@ public class DirectMessageRestController {
             userId = accountService.getUserId(userId, screenName);
 
             if (video != null && image != null) {
-                if (video.getSize() > StatusRestController.ONE_M_BYTE || image.getSize() > StatusRestController.ONE_M_BYTE) {
-                    return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
+                if (video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES || image.getSize() > Setting.MAX_IMAGE_LENGTH_BYTES) {
+                    return ErrorDto.badRequest("上传的视频或图片太大");
                 }
             }
 

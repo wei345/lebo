@@ -20,10 +20,11 @@
 <body>
 
 <a href="${ctx}/admin/channels">= 频道列表</a>
+
 <form id="inputForm" action="${ctx}/admin/channels/update" method="post" class="form-horizontal"
       enctype="multipart/form-data">
     <c:if test="${channel.id != null}">
-    <input type="hidden" name="id" value="${channel.id}"/>
+        <input type="hidden" name="id" value="${channel.id}"/>
     </c:if>
     <fieldset>
         <legend>
@@ -48,8 +49,10 @@
 
         <div class="control-group">
             <label for="slug" class="control-label">图片 slug:</label>
+
             <div class="controls">
-                <input type="text" id="slug" name="slug" value="${channel.slug}" class="input-large" ${channel.id == null ? "" : "disabled"}/>
+                <input type="text" id="slug" name="slug" value="${channel.slug}"
+                       class="input-large" ${channel.id == null ? "" : "disabled"}/>
                 由小写字母、数字、连字符(-)组成
             </div>
         </div>
@@ -67,7 +70,8 @@
             <label for="description" class="control-label">描述(可选):</label>
 
             <div class="controls">
-                <input type="text" id="description" name="description" value="${channel.description}" class="input-large"/>
+                <input type="text" id="description" name="description" value="${channel.description}"
+                       class="input-large"/>
                 频道详情顶部内容
             </div>
         </div>
@@ -111,7 +115,8 @@
             <label for="enabled" class="control-label">启用:</label>
 
             <div class="controls">
-                <input type="checkbox" id="enabled" name="enabled" ${channel.enabled == null ? "" : "checked='checked'"}/>
+                <input type="checkbox" id="enabled"
+                       name="enabled" ${channel.enabled == null ? "" : "checked='checked'"}/>
             </div>
         </div>
 

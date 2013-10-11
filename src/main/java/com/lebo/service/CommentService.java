@@ -101,7 +101,7 @@ public class CommentService extends AbstractMongoService {
         if (comment.getVideo() != null) {
             dto.setVideo(comment.getVideo().toDto());
         }
-        if(comment.getVideoConverted() != null){
+        if (comment.getVideoConverted() != null) {
             dto.setVideoConverted(comment.getVideoConverted().toDto());
         }
         dto.setVideoFirstFrameUrl(comment.getVideoFirstFrameUrl());

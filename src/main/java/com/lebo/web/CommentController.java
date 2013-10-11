@@ -49,7 +49,7 @@ public class CommentController {
                     map.put("mediaUrl", comment.getVideo().getContentUrl());
                 }
 
-                if(comment.getVideoFirstFrame() != null){
+                if (comment.getVideoFirstFrame() != null) {
                     map.put("mediaLinkText", String.format("<img src='%s'/>", comment.getVideoFirstFrameUrl()));
                 }
 

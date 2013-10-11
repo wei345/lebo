@@ -3,6 +3,7 @@ package com.lebo.rest;
 import com.lebo.entity.Comment;
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
+import com.lebo.entity.Setting;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.CommentService;
 import com.lebo.service.DuplicateException;
@@ -138,10 +139,10 @@ public class CommentRestController {
             }
 
             //文件大小限制
-            if (video != null && video.getSize() > StatusRestController.ONE_M_BYTE ||
-                    image != null && image.getSize() > StatusRestController.ONE_M_BYTE ||
-                    audio != null && audio.getSize() > StatusRestController.ONE_M_BYTE) {
-                return ErrorDto.badRequest("上传的单个文件大小不能超过1M");
+            if (video != null && video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES ||
+                    image != null && image.getSize() > Setting.MAX_IMAGE_LENGTH_BYTES ||
+                    audio != null && audio.getSize() > Setting.MAX_AUDIO_LENGTH_BYTES) {
+                return ErrorDto.badRequest("上传的文件太大");
             }
 
             FileInfo videoFileInfo = null;

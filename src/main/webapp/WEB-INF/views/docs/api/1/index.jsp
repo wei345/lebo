@@ -65,6 +65,18 @@
     </tr>
 </table>
 
+<strong>页面</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/pages/hot" text="GET pages/hot"/>
+        </td>
+        <td>
+            返回显示<code>热门</code>需要的数据。
+        </td>
+    </tr>
+</table>
+
 <strong>时间线</strong>
 <table class="table table-hover">
     <tr>

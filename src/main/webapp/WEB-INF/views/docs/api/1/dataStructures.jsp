@@ -5,7 +5,9 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <style>
-    h2.noborder {border-bottom : 0}
+    h2.noborder {
+        border-bottom: 0
+    }
 </style>
 
 <h2 class="noborder">乐播</h2>
@@ -217,210 +219,210 @@
 
 <h2 class="noborder">用户</h2>
 <table class="table table-hover">
-    <tr>
-        <th class="input-large">字段</th>
-        <th class="input-small">类型</th>
-        <th>说明</th>
-    </tr>
-    <tr>
-        <td>
-            id
-        </td>
-        <td>
-            string
-        </td>
-        <td>
+<tr>
+    <th class="input-large">字段</th>
+    <th class="input-small">类型</th>
+    <th>说明</th>
+</tr>
+<tr>
+    <td>
+        id
+    </td>
+    <td>
+        string
+    </td>
+    <td>
 
-        </td>
-    </tr>
-    <tr>
-        <td>
-            screenName
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            唯一的显示名
-        </td>
-    </tr>
-    <tr>
-        <td>
-            description
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            用户个性签名
-        </td>
-    </tr>
-    <tr>
-        <td>
-            profileImageUrl
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            用户头像 50x50，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
-        </td>
-    </tr>
-    <tr>
-        <td>
-            profileImageBiggerUrl
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            用户头像 100x100，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
-        </td>
-    </tr>
-    <tr>
-        <td>
-            profileImageOriginalUrl
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            用户头像，原始图片，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
-        </td>
-    </tr>
-    <tr>
-        <td>
-            createdAt
-        </td>
-        <td>
-            string
-        </td>
-        <td>
-            该用户创建时间
-        </td>
-    </tr>
-    <tr>
-        <td>
-            following
-        </td>
-        <td>
-            boolean
-        </td>
-        <td>
-            当前登录用户是否正在关注该用户
-        </td>
-    </tr>
-    <tr>
-        <td>
-            bilateral
-        </td>
-        <td>
-            boolean
-        </td>
-        <td>
-            当前登录用户与该用户是否双向关注
-        </td>
-    </tr>
-    <tr>
-        <td>
-            followersCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            粉丝数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            friendsCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            关注数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            favoritesCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            喜欢数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            statusesCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            乐播数
-        </td>
-    </tr>
+    </td>
+</tr>
+<tr>
+    <td>
+        screenName
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        唯一的显示名
+    </td>
+</tr>
+<tr>
+    <td>
+        description
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        用户个性签名
+    </td>
+</tr>
+<tr>
+    <td>
+        profileImageUrl
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        用户头像 50x50，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
+    </td>
+</tr>
+<tr>
+    <td>
+        profileImageBiggerUrl
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        用户头像 100x100，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
+    </td>
+</tr>
+<tr>
+    <td>
+        profileImageOriginalUrl
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        用户头像，原始图片，可能以http开头，也可能以/开头，客户端需判断如果以/开头，则组装成完整URL
+    </td>
+</tr>
+<tr>
+    <td>
+        createdAt
+    </td>
+    <td>
+        string
+    </td>
+    <td>
+        该用户创建时间
+    </td>
+</tr>
+<tr>
+    <td>
+        following
+    </td>
+    <td>
+        boolean
+    </td>
+    <td>
+        当前登录用户是否正在关注该用户
+    </td>
+</tr>
+<tr>
+    <td>
+        bilateral
+    </td>
+    <td>
+        boolean
+    </td>
+    <td>
+        当前登录用户与该用户是否双向关注
+    </td>
+</tr>
+<tr>
+    <td>
+        followersCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        粉丝数
+    </td>
+</tr>
+<tr>
+    <td>
+        friendsCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        关注数
+    </td>
+</tr>
+<tr>
+    <td>
+        favoritesCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        喜欢数
+    </td>
+</tr>
+<tr>
+    <td>
+        statusesCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        乐播数
+    </td>
+</tr>
 
-    <tr>
-        <td>
-            beFavoritedCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            该用户发布的乐播被收藏的次数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            viewCount
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            该用户发布的乐播被播放的次数
-        </td>
-    </tr>
-    <tr>
-        <td>
-            weiboVerified
-        </td>
-        <td>
-            boolean
-        </td>
-        <td>
-            是否是新浪微博认证用户，即加V用户
-        </td>
-    </tr>
-    <tr>
-        <td>
-            blocking
-        </td>
-        <td>
-            boolean
-        </td>
-        <td>
-            当前登录用户是否已将该用户加入黑名单
-        </td>
-    </tr>
-    <tr>
-        <td>
-            level
-        </td>
-        <td>
-            int32
-        </td>
-        <td>
-            导演等级
-        </td>
-    </tr>
+<tr>
+    <td>
+        beFavoritedCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        该用户发布的乐播被收藏的次数
+    </td>
+</tr>
+<tr>
+    <td>
+        viewCount
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        该用户发布的乐播被播放的次数
+    </td>
+</tr>
+<tr>
+    <td>
+        weiboVerified
+    </td>
+    <td>
+        boolean
+    </td>
+    <td>
+        是否是新浪微博认证用户，即加V用户
+    </td>
+</tr>
+<tr>
+    <td>
+        blocking
+    </td>
+    <td>
+        boolean
+    </td>
+    <td>
+        当前登录用户是否已将该用户加入黑名单
+    </td>
+</tr>
+<tr>
+    <td>
+        level
+    </td>
+    <td>
+        int32
+    </td>
+    <td>
+        导演等级
+    </td>
+</tr>
 </table>
 
 <h2 class="noborder">评论</h2>

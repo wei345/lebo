@@ -3,9 +3,6 @@ package com.lebo.entity;
 import com.lebo.service.FileContentUrlUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 应用选项。
  *
@@ -15,6 +12,10 @@ import java.util.List;
  */
 @Document(collection = "settings")
 public class Setting extends IdEntity {
+    public static final int MAX_VIDEO_LENGTH_BYTES = 1024 * 1024 * 5; //5M
+    public static final int MAX_AUDIO_LENGTH_BYTES = 1024 * 1024; //1M
+    public static final int MAX_IMAGE_LENGTH_BYTES = 1024 * 1024; //1M
+
     private String officialAccountId;
     private String editorAccountId;//编辑id，编辑发的视频将显示在小编制作频道
 
@@ -37,7 +38,7 @@ public class Setting extends IdEntity {
     //红人榜 -> 导演排行
     private String hotuser_button3_backgroundColor = "#30B5F0";
     private String hotuser_button3_imageKey = "images/hotuser/btn3.png";
-    private String hotuser_button3_text= "导演排行";
+    private String hotuser_button3_text = "导演排行";
 
     //TODO 让新版客户端做banner功能，去掉在"九九重阳节"置顶视频
     private String jiuJiuChongYangJieTopPostId;
@@ -154,13 +155,15 @@ public class Setting extends IdEntity {
         this.hotuser_button3_text = hotuser_button3_text;
     }
 
-    public String getHotuser_button1_imageUrl(){
+    public String getHotuser_button1_imageUrl() {
         return FileContentUrlUtils.getContentUrl(hotuser_button1_imageKey);
     }
-    public String getHotuser_button2_imageUrl(){
+
+    public String getHotuser_button2_imageUrl() {
         return FileContentUrlUtils.getContentUrl(hotuser_button2_imageKey);
     }
-    public String getHotuser_button3_imageUrl(){
+
+    public String getHotuser_button3_imageUrl() {
         return FileContentUrlUtils.getContentUrl(hotuser_button3_imageKey);
     }
 
@@ -179,4 +182,5 @@ public class Setting extends IdEntity {
     public void setJiuJiuChongYangJieTopPostId(String jiuJiuChongYangJieTopPostId) {
         this.jiuJiuChongYangJieTopPostId = jiuJiuChongYangJieTopPostId;
     }
+
 }

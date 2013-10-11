@@ -60,7 +60,7 @@ public class ContentTypeMap {
      * </pre>
      */
     public static String getContentType(String ext) {
-        if(StringUtils.isBlank(ext)){
+        if (StringUtils.isBlank(ext)) {
             throw new IllegalArgumentException("扩展名不能为空");
         }
 

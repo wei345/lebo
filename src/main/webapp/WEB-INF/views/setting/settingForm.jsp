@@ -13,7 +13,8 @@
             height: 20px;
             vertical-align: middle;
         }
-        .preview-image{
+
+        .preview-image {
             width: 30px;
             height: 30px;
             display: inline-block;
@@ -65,6 +66,7 @@
 
 
     <h2>下载地址</h2>
+
     <p>
         在视频播放页面会用到乐播APP下载地址.
     </p>
@@ -112,7 +114,8 @@
             <input type="text" id="hotuser_button1_imageKey" name="hotuser_button1_imageKey"
                    value="${setting.hotuser_button1_imageKey}"
                    class="input-large required"/>
-            <span class="preview-image" style="background-color:${setting.hotuser_button1_backgroundColor}"><img src="${setting.hotuser_button1_imageUrl}"/></span>
+            <span class="preview-image" style="background-color:${setting.hotuser_button1_backgroundColor}"><img
+                    src="${setting.hotuser_button1_imageUrl}"/></span>
         </div>
     </div>
 
@@ -146,7 +149,8 @@
             <input type="text" id="hotuser_button2_imageKey" name="hotuser_button2_imageKey"
                    value="${setting.hotuser_button2_imageKey}"
                    class="input-large required"/>
-            <span class="preview-image" style="background-color:${setting.hotuser_button2_backgroundColor}"><img src="${setting.hotuser_button2_imageUrl}"/></span>
+            <span class="preview-image" style="background-color:${setting.hotuser_button2_backgroundColor}"><img
+                    src="${setting.hotuser_button2_imageUrl}"/></span>
         </div>
     </div>
 
@@ -180,7 +184,8 @@
             <input type="text" id="hotuser_button3_imageKey" name="hotuser_button3_imageKey"
                    value="${setting.hotuser_button3_imageKey}"
                    class="input-large required"/>
-            <span class="preview-image" style="background-color:${setting.hotuser_button3_backgroundColor}"><img src="${setting.hotuser_button3_imageUrl}"/></span>
+            <span class="preview-image" style="background-color:${setting.hotuser_button3_backgroundColor}"><img
+                    src="${setting.hotuser_button3_imageUrl}"/></span>
         </div>
     </div>
 
