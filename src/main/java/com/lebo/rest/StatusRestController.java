@@ -1,6 +1,7 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Post;
+import com.lebo.entity.Setting;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.DuplicateException;
@@ -37,7 +38,6 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/api/1/statuses")
 public class StatusRestController {
-    public static final int ONE_M_BYTE = 1024 * 1024;
     @Autowired
     private StatusService statusService;
     @Autowired
@@ -59,8 +59,8 @@ public class StatusRestController {
             logger.debug("       text : {}", text);
             logger.debug("     source : {}", source == null ? "无" : source);
 
-            if (video.getSize() > ONE_M_BYTE || image.getSize() > ONE_M_BYTE) {
-                return ErrorDto.badRequest("上传的单个文件不能超过1M");
+            if (video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES || image.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES) {
+                return ErrorDto.badRequest("上传的视频或图片太大");
             }
 
             Post post = statusService.createPost(accountService.getCurrentUserId(), text, ControllerUtils.getFileInfo(video),
