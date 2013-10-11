@@ -23,7 +23,9 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -178,6 +180,14 @@ public class AccountService extends AbstractMongoService {
         dto.setWeiboVerified(user.getWeiboVerified());
         dto.setLevel(user.getLevel());
         return dto;
+    }
+
+    public List<UserDto> toBasicUserDtos(List<User> users) {
+        List<UserDto> dtos = new ArrayList<UserDto>(users.size());
+        for (User user : users) {
+            dtos.add(toBasicUserDto(user));
+        }
+        return dtos;
     }
 
     public UserDto toUserDto(User user) {
@@ -522,6 +532,10 @@ public class AccountService extends AbstractMongoService {
                 jedis.expire(key, REDIS_SESSION_EXPIRE_SECONDS);
             }
         });
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return userDao.findAll(pageable);
     }
 
     //---- JMX ----
