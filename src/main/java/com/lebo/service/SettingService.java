@@ -1,11 +1,14 @@
 package com.lebo.service;
 
 import com.lebo.entity.Channel;
+import com.lebo.entity.RecommendedApp;
 import com.lebo.entity.Setting;
 import com.lebo.jms.SettingMessageProducer;
 import com.lebo.repository.ChannelDao;
+import com.lebo.repository.RecommendedAppDao;
 import com.lebo.repository.SettingDao;
 import com.lebo.rest.dto.ChannelDto;
+import com.lebo.rest.dto.RecommendedAppDto;
 import com.lebo.rest.dto.SettingDto;
 import com.lebo.service.param.PaginationParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,8 @@ public class SettingService extends AbstractMongoService {
     private SettingDao settingDao;
     @Autowired
     private ChannelDao channelDao;
+    @Autowired
+    private RecommendedAppDao recommendedAppDao;
     @Autowired
     private SettingMessageProducer settingMessageProducer;
     private Setting setting;
@@ -106,6 +111,38 @@ public class SettingService extends AbstractMongoService {
         mongoTemplate.updateFirst(new Query(new Criteria(Channel.ID_KEY).is(id)),
                 new Update().set(Channel.ENABLED_KEY, enabled),
                 Channel.class);
+    }
+
+    public List<RecommendedApp> getAllRecommendedApp() {
+        return recommendedAppDao.findAll(new Sort(Sort.Direction.ASC, RecommendedApp.ORDER_KEY));
+    }
+
+    public List<RecommendedApp> getEnabledRecommendedApp() {
+        Query query = new Query(new Criteria(RecommendedApp.ENABLED_KEY).is(true))
+                .with(new Sort(Sort.Direction.ASC, RecommendedApp.ORDER_KEY));
+        return mongoTemplate.find(query, RecommendedApp.class);
+    }
+
+    public RecommendedAppDto toRecommendedAppDto(RecommendedApp recommendedApp) {
+        RecommendedAppDto dto = new RecommendedAppDto();
+
+        dto.setName(recommendedApp.getName());
+        dto.setDescription(recommendedApp.getDescription());
+        dto.setImageUrl(recommendedApp.getImageUrl());
+        dto.setBackgroundColor(recommendedApp.getBackgroundColor());
+        dto.setUrl(recommendedApp.getUrl());
+        dto.setVersion(recommendedApp.getVersion());
+        dto.setSize(recommendedApp.getSize());
+
+        return dto;
+    }
+
+    public List<RecommendedAppDto> toRecommendedAppDtos(List<RecommendedApp> recommendedApps) {
+        List<RecommendedAppDto> dtos = new ArrayList<RecommendedAppDto>(recommendedApps.size());
+        for (RecommendedApp recommendedApp : recommendedApps) {
+            dtos.add(toRecommendedAppDto(recommendedApp));
+        }
+        return dtos;
     }
 
     //-- JMX --//
