@@ -72,7 +72,7 @@
             <tags:link url="${ctx}/docs/api/1/get/pages/hot" text="GET pages/hot"/>
         </td>
         <td>
-            返回显示<code>热门</code>需要的数据。
+            返回<code>热门</code>页数据。
         </td>
     </tr>
 </table>
@@ -466,14 +466,14 @@
     </tr>
 </table>
 
-<strong>版本</strong>
+<strong>即时通讯</strong>
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/checkVersion" text="POST checkVersion"/>
+            <tags:link url="${ctx}/docs/api/1/get/im/profiles" text="GET im/profiles"/>
         </td>
         <td>
-            返回客户端最新版本信息，以及是否需要强制升级。
+            返回指定用户的profile。
         </td>
     </tr>
 </table>
@@ -486,6 +486,18 @@
         </td>
         <td>
             向服务签报告不能播放的视频，服务器会做转码处理。
+        </td>
+    </tr>
+</table>
+
+<strong>版本</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/checkVersion" text="POST checkVersion"/>
+        </td>
+        <td>
+            返回客户端最新版本信息，以及是否需要强制升级。
         </td>
     </tr>
 </table>
