@@ -117,30 +117,45 @@ public class SettingService extends AbstractMongoService {
         return recommendedAppDao.findAll(new Sort(Sort.Direction.ASC, RecommendedApp.ORDER_KEY));
     }
 
-    public List<RecommendedApp> getEnabledRecommendedApp() {
+    public static final String RECOMMENDED_APP_TYPE_IOS = "ios";
+    public static final String RECOMMENDED_APP_TYPE_ANDROID = "android";
+
+    public List<RecommendedApp> getEnabledRecommendedApp(String type) {
         Query query = new Query(new Criteria(RecommendedApp.ENABLED_KEY).is(true))
                 .with(new Sort(Sort.Direction.ASC, RecommendedApp.ORDER_KEY));
+        //有android版下载地址
+        if (RECOMMENDED_APP_TYPE_ANDROID.equals(type)) {
+            query.addCriteria(new Criteria(RecommendedApp.ANDROID_URL_KEY).ne(null));
+        }
+        //有ios版下载地址
+        else {
+            query.addCriteria(new Criteria(RecommendedApp.IOS_URL_KEY).ne(null));
+        }
         return mongoTemplate.find(query, RecommendedApp.class);
     }
 
-    public RecommendedAppDto toRecommendedAppDto(RecommendedApp recommendedApp) {
+    public RecommendedAppDto toRecommendedAppDto(RecommendedApp recommendedApp, String type) {
         RecommendedAppDto dto = new RecommendedAppDto();
 
         dto.setName(recommendedApp.getName());
         dto.setDescription(recommendedApp.getDescription());
         dto.setImageUrl(recommendedApp.getImageUrl());
         dto.setBackgroundColor(recommendedApp.getBackgroundColor());
-        dto.setUrl(recommendedApp.getUrl());
+        if (RECOMMENDED_APP_TYPE_ANDROID.equals(type)) {
+            dto.setUrl(recommendedApp.getAndroidUrl());
+        } else {
+            dto.setUrl(recommendedApp.getIosUrl());
+        }
         dto.setVersion(recommendedApp.getVersion());
         dto.setSize(recommendedApp.getSize());
 
         return dto;
     }
 
-    public List<RecommendedAppDto> toRecommendedAppDtos(List<RecommendedApp> recommendedApps) {
+    public List<RecommendedAppDto> toRecommendedAppDtos(List<RecommendedApp> recommendedApps, String type) {
         List<RecommendedAppDto> dtos = new ArrayList<RecommendedAppDto>(recommendedApps.size());
         for (RecommendedApp recommendedApp : recommendedApps) {
-            dtos.add(toRecommendedAppDto(recommendedApp));
+            dtos.add(toRecommendedAppDto(recommendedApp, type));
         }
         return dtos;
     }

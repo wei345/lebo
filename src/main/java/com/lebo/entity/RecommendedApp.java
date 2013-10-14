@@ -13,7 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "settings.apps")
 public class RecommendedApp {
     private String name;
-    private String url;
+    private String iosUrl;
+    public static final String IOS_URL_KEY = "iosUrl";
+    private String androidUrl;
+    public static final String ANDROID_URL_KEY = "androidUrl";
     private String description;
     private String imageKey;
     private String backgroundColor;
@@ -32,12 +35,20 @@ public class RecommendedApp {
         this.name = name;
     }
 
-    public String getUrl() {
-        return FileContentUrlUtils.getContentUrl(url);
+    public String getIosUrl() {
+        return iosUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setIosUrl(String iosUrl) {
+        this.iosUrl = iosUrl;
+    }
+
+    public String getAndroidUrl() {
+        return androidUrl;
+    }
+
+    public void setAndroidUrl(String androidUrl) {
+        this.androidUrl = androidUrl;
     }
 
     public String getDescription() {
