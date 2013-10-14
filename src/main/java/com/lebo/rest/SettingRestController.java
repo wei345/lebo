@@ -39,27 +39,6 @@ public class SettingRestController {
     @ResponseBody
     public Object recommendedApps() {
         List<RecommendedApp> recommendedApps = settingService.getEnabledRecommendedApp();
-
-
-        /*TODO 推荐应用:从数据库读取数据
-        RecommendedAppDto dto = new RecommendedAppDto();
-        dto.setImageUrl("http://file.lebooo.com/images/logo.png");
-        dto.setName("乐播");
-        dto.setSize("20M");
-        dto.setUrl("http://file.dev.lebooo.com/images/btn-dl-lebo-iphone.png");
-        dto.setVersion("2.3");
-        dto.setBackgroundColor("#abcdef");
-        dtos.add(dto);
-
-        dto = new RecommendedAppDto();
-        dto.setImageUrl("http://file.lebooo.com/images/logo.png");
-        dto.setName("乐播-6秒视频");
-        dto.setSize("21M");
-        dto.setUrl("http://file.dev.lebooo.com/images/btn-dl-lebo-iphone.png");
-        dto.setVersion("2.4");
-        dto.setBackgroundColor("#123456");
-        dtos.add(dto);*/
-
         return settingService.toRecommendedAppDtos(recommendedApps);
     }
 }
