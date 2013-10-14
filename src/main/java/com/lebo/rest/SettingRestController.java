@@ -1,7 +1,7 @@
 package com.lebo.rest;
 
+import com.lebo.entity.RecommendedApp;
 import com.lebo.entity.Setting;
-import com.lebo.rest.dto.RecommendedAppDto;
 import com.lebo.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +38,8 @@ public class SettingRestController {
     @RequestMapping(value = "recommendedApps", method = RequestMethod.GET)
     @ResponseBody
     public Object recommendedApps() {
-        List<RecommendedAppDto> dtos = new ArrayList<RecommendedAppDto>();
+        List<RecommendedApp> recommendedApps = settingService.getEnabledRecommendedApp();
+
 
         /*TODO 推荐应用:从数据库读取数据
         RecommendedAppDto dto = new RecommendedAppDto();
@@ -60,6 +60,6 @@ public class SettingRestController {
         dto.setBackgroundColor("#123456");
         dtos.add(dto);*/
 
-        return dtos;
+        return settingService.toRecommendedAppDtos(recommendedApps);
     }
 }
