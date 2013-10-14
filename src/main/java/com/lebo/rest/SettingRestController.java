@@ -6,10 +6,7 @@ import com.lebo.service.SettingService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,10 +36,13 @@ public class SettingRestController {
 
     @RequestMapping(value = "recommendedApps", method = RequestMethod.GET)
     @ResponseBody
-    public Object recommendedApps(@RequestHeader("User-Agent") String userAgent) {
-        String type = SettingService.RECOMMENDED_APP_TYPE_IOS;
-        if (StringUtils.containsIgnoreCase(userAgent, "Android")) {
-            type = SettingService.RECOMMENDED_APP_TYPE_ANDROID;
+    public Object recommendedApps(@RequestHeader("User-Agent") String userAgent,
+                                  @RequestParam(value = "type", required = false) String type) {
+        if (type == null) {
+            type = SettingService.RECOMMENDED_APP_TYPE_IOS;
+            if (StringUtils.containsIgnoreCase(userAgent, "Android")) {
+                type = SettingService.RECOMMENDED_APP_TYPE_ANDROID;
+            }
         }
 
         List<RecommendedApp> recommendedApps = settingService.getEnabledRecommendedApp(type);
