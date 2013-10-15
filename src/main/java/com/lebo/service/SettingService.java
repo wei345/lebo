@@ -113,24 +113,28 @@ public class SettingService extends AbstractMongoService {
                 Channel.class);
     }
 
+    //-- 推荐应用 begin --//
+
     public List<RecommendedApp> getAllRecommendedApp() {
         return recommendedAppDao.findAll(new Sort(Sort.Direction.ASC, RecommendedApp.ORDER_KEY));
     }
 
-    public static final String RECOMMENDED_APP_TYPE_IOS = "ios";
-    public static final String RECOMMENDED_APP_TYPE_ANDROID = "android";
+    public RecommendedApp getRecommendedApp(String id) {
+        return recommendedAppDao.findOne(id);
+    }
+
+    public void saveRecommendedApp(RecommendedApp recommendedApp) {
+        recommendedAppDao.save(recommendedApp);
+    }
+
+    public void deleteRecommendedApp(String id) {
+        recommendedAppDao.delete(id);
+    }
 
     public List<RecommendedApp> getEnabledRecommendedApp(String type) {
         Query query = new Query(new Criteria(RecommendedApp.ENABLED_KEY).is(true))
+                .addCriteria(new Criteria(RecommendedApp.TYPE_KEY).is(type))
                 .with(new Sort(Sort.Direction.ASC, RecommendedApp.ORDER_KEY));
-        //有android版下载地址
-        if (RECOMMENDED_APP_TYPE_ANDROID.equals(type)) {
-            query.addCriteria(new Criteria(RecommendedApp.ANDROID_URL_KEY).ne(null));
-        }
-        //有ios版下载地址
-        else {
-            query.addCriteria(new Criteria(RecommendedApp.IOS_URL_KEY).ne(null));
-        }
         return mongoTemplate.find(query, RecommendedApp.class);
     }
 
@@ -141,13 +145,10 @@ public class SettingService extends AbstractMongoService {
         dto.setDescription(recommendedApp.getDescription());
         dto.setImageUrl(recommendedApp.getImageUrl());
         dto.setBackgroundColor(recommendedApp.getBackgroundColor());
-        if (RECOMMENDED_APP_TYPE_ANDROID.equals(type)) {
-            dto.setUrl(recommendedApp.getAndroidUrl());
-        } else {
-            dto.setUrl(recommendedApp.getIosUrl());
-        }
+        dto.setUrl(recommendedApp.getUrl());
         dto.setVersion(recommendedApp.getVersion());
         dto.setSize(recommendedApp.getSize());
+        dto.setDirectDownload(recommendedApp.getDirectDownload());
 
         return dto;
     }
@@ -159,6 +160,14 @@ public class SettingService extends AbstractMongoService {
         }
         return dtos;
     }
+
+    public void updateRecommendedAppEnabled(String id, boolean enabled) {
+        mongoTemplate.updateFirst(new Query(new Criteria(RecommendedApp.ID_KEY).is(id)),
+                new Update().set(RecommendedApp.ENABLED_KEY, enabled),
+                RecommendedApp.class);
+    }
+
+    //-- 推荐应用 end --//
 
     //-- JMX --//
     @ManagedOperation(description = "发送JMS Topic通知所有节点重新加载设置。适用于直接修改数据库，让应用重新加载")
