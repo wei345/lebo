@@ -47,19 +47,22 @@
         </div>
 
         <div class="control-group">
-            <label for="slug" class="control-label">图片 slug:</label>
-            <div class="controls">
-                <input type="text" id="slug" name="slug" value="${channel.slug}" class="input-large" ${channel.id == null ? "" : "disabled"}/>
-                由小写字母、数字、连字符(-)组成
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label for="channelImage" class="control-label">图片:</label>
+            <label for="channelImage" class="control-label">
+                <input type="checkbox" onclick="if(this.checked){$('#channelImage, #slug').removeAttr('disabled')}else{$('#channelImage, #slug').attr('disabled', 'disabled')}"/>
+                图片:
+            </label>
 
             <div class="controls">
                 <input type="file" id="channelImage" name="channelImage" value="${channelImage}" class="input-large"
                        minlength="3" ${channel.id == null ? "" : "disabled"}/>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="slug" class="control-label">图片 slug:</label>
+            <div class="controls">
+                <input type="text" id="slug" name="slug" value="${channel.slug}" class="input-large" ${channel.id == null ? "" : "disabled"}/>
+                由小写字母、数字、连字符(-)组成
             </div>
         </div>
 

@@ -4,70 +4,74 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<style type="text/css">
-    #contentTable th {
-        text-align: center;
-    }
+<html>
+<head>
+    <title>频道设置</title>
+    <style type="text/css">
+        #contentTable th {
+            text-align: center;
+        }
 
-    td.channel-image > div {
-        width: 100px;
-        height: 100px;
-        overflow: hidden;
-        margin: 10px;
-        position: relative;
-        text-align: center;
-    }
+        td.channel-image > div {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            margin: 10px;
+            position: relative;
+            text-align: center;
+        }
 
-    td.channel-image .display-name {
-        position: absolute;
-        bottom: 3px;
-        width: 100%;
-    }
+        td.channel-image .display-name {
+            position: absolute;
+            bottom: 3px;
+            width: 100%;
+        }
 
-    th.channel-image {
-        width: 120px;
-    }
+        th.channel-image {
+            width: 120px;
+        }
 
-    td.channel-detail {
-        padding: 10px;
-    }
+        td.channel-detail {
+            padding: 10px;
+        }
 
-    .channel-desc {
-        padding: 10px 0;
-    }
+        .channel-desc {
+            padding: 10px 0;
+        }
 
-    .channel-name {
-        font-weight: bold;
-    }
+        .channel-name {
+            font-weight: bold;
+        }
 
-    ul.channel-content {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+        ul.channel-content {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-    td.reallyOrder {
-        width: 30px;
-        text-align: center;
-        vertical-align: middle;
-    }
+        td.reallyOrder {
+            width: 30px;
+            text-align: center;
+            vertical-align: middle;
+        }
 
-    td.channel-order, td.actions {
-        vertical-align: middle;
-        text-align: center;
-    }
+        td.channel-order, td.actions {
+            vertical-align: middle;
+            text-align: center;
+        }
 
-    input#display-enabled-only {
-        vertical-align: top;
-        margin-right: 5px;
-    }
-
-</style>
+        input#display-enabled-only {
+            vertical-align: top;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
 
 <label for="display-enabled-only" class="pull-left" onclick="toggleEnabledOnly()"><input type="checkbox"
                                                                                          id="display-enabled-only">只显示已启用的</label>
 
-<a href="${ctx}/admin/channels/create" class="pull-right">+ 新建频道</a>
+<a href="${ctx}/admin/channels/create" class="pull-right">+ 新建</a>
 
 <table id="contentTable" class="table table-bordered table-condensed table-hover">
     <thead>
@@ -166,4 +170,6 @@
     //onload
     updateReallyOrder();
 </script>
+</body>
 
+</html>
