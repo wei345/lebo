@@ -10,6 +10,7 @@ package com.lebo.rest.dto;
 public class RecommendedAppDto {
     private String name;
     private String url;
+    private Boolean directDownload;
     private String description;
     private String imageUrl;
     private String backgroundColor;
@@ -70,5 +71,13 @@ public class RecommendedAppDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getDirectDownload() {
+        return directDownload;
+    }
+
+    public void setDirectDownload(Boolean directDownload) {
+        this.directDownload = directDownload;
     }
 }

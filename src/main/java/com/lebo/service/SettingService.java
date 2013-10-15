@@ -148,6 +148,7 @@ public class SettingService extends AbstractMongoService {
         dto.setUrl(recommendedApp.getUrl());
         dto.setVersion(recommendedApp.getVersion());
         dto.setSize(recommendedApp.getSize());
+        dto.setDirectDownload(recommendedApp.getDirectDownload());
 
         return dto;
     }
