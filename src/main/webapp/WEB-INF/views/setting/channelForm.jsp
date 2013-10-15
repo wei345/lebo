@@ -48,21 +48,22 @@
         </div>
 
         <div class="control-group">
-            <label for="slug" class="control-label">图片 slug:</label>
-
-            <div class="controls">
-                <input type="text" id="slug" name="slug" value="${channel.slug}"
-                       class="input-large" ${channel.id == null ? "" : "disabled"}/>
-                由小写字母、数字、连字符(-)组成
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label for="channelImage" class="control-label">图片:</label>
+            <label for="channelImage" class="control-label">
+                <input type="checkbox" onclick="if(this.checked){$('#channelImage, #slug').removeAttr('disabled')}else{$('#channelImage, #slug').attr('disabled', 'disabled')}"/>
+                图片:
+            </label>
 
             <div class="controls">
                 <input type="file" id="channelImage" name="channelImage" value="${channelImage}" class="input-large"
                        minlength="3" ${channel.id == null ? "" : "disabled"}/>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="slug" class="control-label">图片 slug:</label>
+            <div class="controls">
+                <input type="text" id="slug" name="slug" value="${channel.slug}" class="input-large" ${channel.id == null ? "" : "disabled"}/>
+                由小写字母、数字、连字符(-)组成
             </div>
         </div>
 
@@ -87,7 +88,7 @@
         </div>
 
         <div class="control-group">
-            <label for="track" class="control-label">follow:</label>
+            <label for="follow" class="control-label">follow:</label>
 
             <div class="controls">
                 <input type="text" id="follow" name="follow" value="${channel.follow}"
@@ -108,6 +109,7 @@
 
             <div class="controls">
                 <input type="text" id="order" name="order" value="${channel.order}" class="input-large"/>
+                任意整数。列表按此字段排序，由小到大.
             </div>
         </div>
 

@@ -39,9 +39,9 @@ public class SettingRestController {
     public Object recommendedApps(@RequestHeader("User-Agent") String userAgent,
                                   @RequestParam(value = "type", required = false) String type) {
         if (type == null) {
-            type = SettingService.RECOMMENDED_APP_TYPE_IOS;
+            type = RecommendedApp.TYPE_IOS;
             if (StringUtils.containsIgnoreCase(userAgent, "Android")) {
-                type = SettingService.RECOMMENDED_APP_TYPE_ANDROID;
+                type = RecommendedApp.TYPE_ANDROID;
             }
         }
 

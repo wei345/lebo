@@ -11,14 +11,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Time: PM3:48
  */
 @Document(collection = "settings.apps")
-public class RecommendedApp {
+public class RecommendedApp extends IdEntity{
     private String name;
-    private String iosUrl;
-    public static final String IOS_URL_KEY = "iosUrl";
-    private String androidUrl;
-    public static final String ANDROID_URL_KEY = "androidUrl";
+    private String url;
+    private Boolean directDownload;  //url是否是直接下载地址
     private String description;
     private String imageKey;
+    private String imageSlug;
     private String backgroundColor;
     private String version;
     private String size;
@@ -26,6 +25,10 @@ public class RecommendedApp {
     public static final String ORDER_KEY = "order";
     private boolean enabled;
     public static final String ENABLED_KEY = "enabled";
+    private String type;
+    public static final String TYPE_KEY = "type";
+    public static final String TYPE_IOS = "ios";
+    public static final String TYPE_ANDROID = "android";
 
     public String getName() {
         return name;
@@ -35,20 +38,20 @@ public class RecommendedApp {
         this.name = name;
     }
 
-    public String getIosUrl() {
-        return iosUrl;
+    public String getUrl() {
+        return url;
     }
 
-    public void setIosUrl(String iosUrl) {
-        this.iosUrl = iosUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getAndroidUrl() {
-        return androidUrl;
+    public String getType() {
+        return type;
     }
 
-    public void setAndroidUrl(String androidUrl) {
-        this.androidUrl = androidUrl;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDescription() {
@@ -67,7 +70,7 @@ public class RecommendedApp {
         this.imageKey = imageKey;
     }
 
-    public String getImageUrl(){
+    public String getImageUrl() {
         return FileContentUrlUtils.getContentUrl(imageKey);
     }
 
@@ -109,5 +112,21 @@ public class RecommendedApp {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getImageSlug() {
+        return imageSlug;
+    }
+
+    public void setImageSlug(String imageSlug) {
+        this.imageSlug = imageSlug;
+    }
+
+    public Boolean getDirectDownload() {
+        return directDownload;
+    }
+
+    public void setDirectDownload(Boolean directDownload) {
+        this.directDownload = directDownload;
     }
 }

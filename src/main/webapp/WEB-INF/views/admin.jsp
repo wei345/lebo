@@ -8,6 +8,7 @@
 <ul>
     <li><a href="${ctx}/admin/settings">基本设置</a></li>
     <li><a href="${ctx}/admin/channels">频道设置</a></li>
+    <li><a href="${ctx}/admin/recommendedApps">推荐应用</a></li>
 </ul>
 
 <h2>管理</h2>

@@ -75,14 +75,18 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
 
     @Override
     public void increaseReferrerCount(String id) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
-                new Update().inc(REFERRER_COUNT_KEY, 1), GRID_FS_FILES_COLLECTION_NAME);
+        if (isMongoId(id)) {
+            mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
+                    new Update().inc(REFERRER_COUNT_KEY, 1), GRID_FS_FILES_COLLECTION_NAME);
+        }
     }
 
     @Override
     public void decreaseReferrerCount(String id) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
-                new Update().inc(REFERRER_COUNT_KEY, -1), GRID_FS_FILES_COLLECTION_NAME);
+        if (isMongoId(id)) {
+            mongoTemplate.updateFirst(new Query(new Criteria("_id").is(new ObjectId(id))),
+                    new Update().inc(REFERRER_COUNT_KEY, -1), GRID_FS_FILES_COLLECTION_NAME);
+        }
     }
 
     @Override
@@ -115,8 +119,10 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
      */
     @Override
     public void delete(String id) {
-        decreaseReferrerCount(id);
-        gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id)).and(REFERRER_COUNT_KEY).lte(0)));
+        if (isMongoId(id)) {
+            decreaseReferrerCount(id);
+            gridFsTemplate.delete(new Query(new Criteria("_id").is(new ObjectId(id)).and(REFERRER_COUNT_KEY).lte(0)));
+        }
     }
 
     @Override

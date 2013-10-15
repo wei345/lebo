@@ -157,7 +157,7 @@ public class FileServlet extends HttpServlet {
     public void init() throws ServletException {
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
-        fileStorageService = applicationContext.getBean(GridFsService.class);
+        fileStorageService = applicationContext.getBean(FileStorageService.class);
         accountService = applicationContext.getBean(AccountService.class);
         statusService = applicationContext.getBean(StatusService.class);
     }
