@@ -2,9 +2,9 @@ package com.lebo.rest;
 
 import com.lebo.entity.Post;
 import com.lebo.entity.Setting;
+import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
-import com.lebo.service.DuplicateException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -51,29 +52,40 @@ public class StatusRestController {
     public Object update(@RequestParam(value = "video") MultipartFile video,
                          @RequestParam(value = "image") MultipartFile image,
                          @RequestParam(value = "text") String text,
-                         @RequestParam(value = "source", required = false) String source) {
-        try {
-            logger.debug("正在发布新视频:");
-            logger.debug("      video : {}", FileUtils.byteCountToDisplaySize(video.getSize()));
-            logger.debug("      image : {}", FileUtils.byteCountToDisplaySize(image.getSize()));
-            logger.debug("       text : {}", text);
-            logger.debug("     source : {}", source == null ? "无" : source);
+                         @RequestParam(value = "source", required = false) String source) throws IOException {
+        logger.debug("正在发布新视频:");
+        logger.debug("      video : {}", FileUtils.byteCountToDisplaySize(video.getSize()));
+        logger.debug("      image : {}", FileUtils.byteCountToDisplaySize(image.getSize()));
+        logger.debug("       text : {}", text);
+        logger.debug("     source : {}", source == null ? "无" : source);
 
-            if (video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES || image.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES) {
-                return ErrorDto.badRequest("上传的视频或图片太大");
-            }
-
-            Post post = statusService.createPost(accountService.getCurrentUserId(), text, ControllerUtils.getFileInfo(video),
-                    ControllerUtils.getFileInfo(image), null, source);
-
-            return statusService.toStatusDto(post);
-
-        } catch (DuplicateException e) {
-            return ErrorDto.duplicate();
-        } catch (Exception e) {
-            logger.info("发布Post失败", e);
-            return ErrorDto.badRequest(e.getMessage());
+        if (video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES || image.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES) {
+            return ErrorDto.badRequest("上传的视频或图片太大");
         }
+
+        //去掉 #最新视频#，永远不需要这个标签
+        text = text.replace("#最新视频#", "");
+
+        //当且仅当用户第一次发视频时，有"#新人报到#"
+        String firstVideoHashtag = "#新人报到#";
+        User user = accountService.getUser(accountService.getCurrentUserId());
+        //用户第一次发视频
+        if (user.getStatusesCount() == null || user.getStatusesCount() == 0) {
+            if (!text.contains(firstVideoHashtag)) {
+                text += firstVideoHashtag;
+            }
+        }
+        //不是第一次
+        else {
+            if (text.contains(firstVideoHashtag)) {
+                text = text.replace(firstVideoHashtag, "");
+            }
+        }
+
+        Post post = statusService.createPost(accountService.getCurrentUserId(), text, ControllerUtils.getFileInfo(video),
+                ControllerUtils.getFileInfo(image), null, source);
+
+        return statusService.toStatusDto(post);
     }
 
     /**

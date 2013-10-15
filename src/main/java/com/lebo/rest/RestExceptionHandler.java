@@ -3,6 +3,7 @@ package com.lebo.rest;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.DuplicateException;
 import com.lebo.service.ServiceException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.NestedExceptionUtils;
@@ -34,6 +35,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {DuplicateException.class})
     public final ResponseEntity<?> handleDuplicateException(DuplicateException ex, WebRequest request) {
         return ErrorDto.duplicate();
+    }
+
+    @ExceptionHandler(value = {UnknownAccountException.class})
+    public final ResponseEntity<?> handleUnknownAccountException(DuplicateException ex, WebRequest request) {
+        return ErrorDto.unauthorized();
     }
 
     @ExceptionHandler(value = {Exception.class})

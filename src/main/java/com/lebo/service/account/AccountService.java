@@ -19,6 +19,7 @@ import com.mongodb.QueryBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -496,11 +497,16 @@ public class AccountService extends AbstractMongoService {
     //-- Session --
 
     /**
-     * 取出Shiro中的当前用户Id.
+     * 取出Shiro中的当前用户Id,并且该id在数据库中也存在.
      */
     public String getCurrentUserId() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-        return user.id;
+        if (userDao.exists(user.id)) {
+            return user.id;
+        } else {
+            SecurityUtils.getSubject().logout();
+            throw new UnknownAccountException();
+        }
     }
 
     /**
