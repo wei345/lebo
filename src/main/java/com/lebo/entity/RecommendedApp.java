@@ -14,9 +14,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class RecommendedApp extends IdEntity{
     private String name;
     private String url;
-    private String slug;
+    private Boolean directDownload;  //url是否是直接下载地址
     private String description;
     private String imageKey;
+    private String imageSlug;
     private String backgroundColor;
     private String version;
     private String size;
@@ -113,11 +114,19 @@ public class RecommendedApp extends IdEntity{
         this.enabled = enabled;
     }
 
-    public String getSlug() {
-        return slug;
+    public String getImageSlug() {
+        return imageSlug;
     }
 
-    public void setSlug(String slug) {
-        this.slug = slug;
+    public void setImageSlug(String imageSlug) {
+        this.imageSlug = imageSlug;
+    }
+
+    public Boolean getDirectDownload() {
+        return directDownload;
+    }
+
+    public void setDirectDownload(Boolean directDownload) {
+        this.directDownload = directDownload;
     }
 }

@@ -53,13 +53,13 @@
             </td>
             <td class="logo">
                 <div style="background-color: ${app.backgroundColor}">
-                    <a href="${app.url}">
+                    <a href="${app.url}" title="${app.directDownload ? "直接下载" : "转到网页"}">
                         <img class="input-small" src="${app.imageUrl}"/>
                     </a>
                 </div>
             </td>
             <td class="detail">
-                <div style="padding-bottom: 10px">${app.name} - ${app.version} - ${app.size}</div>
+                <div style="padding-bottom: 10px">${app.name} - ${app.version} - ${app.type} - ${app.size}</div>
                 <p>
                     ${app.description}
                 </p>

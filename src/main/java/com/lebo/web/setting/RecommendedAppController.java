@@ -54,7 +54,7 @@ public class RecommendedAppController {
             if (image != null) {
                 //保存新文件
                 FileInfo fileInfo = ControllerUtils.getFileInfo(image);
-                fileInfo.setKey(AbstractMongoService.generateFileId("images/recommendedApps/", null, recommendedApp.getSlug(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+                fileInfo.setKey(AbstractMongoService.generateFileId("images/recommendedApps/", null, recommendedApp.getImageSlug(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
                 fileStorageService.save(fileInfo);
 
                 //删除旧文件

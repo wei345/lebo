@@ -10,6 +10,10 @@
     <tags:field name="type" optional="true"/>
 </tags:form>
 
+<p>
+    返回值中的<code>directDownload</code>字段: true - 表示URL是直接下载地址，false - 表示URL是网页地址，null或无此字段 - 表示URL内容不确定。
+</p>
+
 <tags:example method="GET" url="http://localhost:8080/api/1/settings/recommendedApps.json?type=android">
     [
         {

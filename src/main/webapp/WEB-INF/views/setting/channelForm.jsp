@@ -107,6 +107,7 @@
 
             <div class="controls">
                 <input type="text" id="order" name="order" value="${channel.order}" class="input-large"/>
+                任意整数。列表按此字段排序，由小到大.
             </div>
         </div>
 

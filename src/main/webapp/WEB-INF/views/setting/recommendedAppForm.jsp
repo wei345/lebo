@@ -7,6 +7,15 @@
 <head>
     <title>推荐应用</title>
 
+    <style>
+        .inline {
+            display: inline-block;
+        }
+        div.input-large{
+            padding: 4px 6px;
+        }
+    </style>
+
     <script>
         $(document).ready(function () {
             //聚焦第一个输入框
@@ -78,6 +87,24 @@
         </div>
 
         <div class="control-group">
+            <label class="control-label">直接下载:</label>
+
+            <div class="controls">
+                <div class="input-large inline">
+                    <input type="radio" name="directDownload" id="directDownload-true"
+                           value="true" ${app.directDownload ? "checked" : ""}>
+                    <label for="directDownload-true" class="inline">是</label>
+
+                    <input type="radio" name="directDownload" id="directDownload-false"
+                           value="false" ${app.directDownload ? "" : "checked"}>
+                    <label for="directDownload-false" class="inline">否</label>
+                </div>
+
+                上面的URL是否是直接下载地址
+            </div>
+        </div>
+
+        <div class="control-group">
             <label for="size" class="control-label">大小:</label>
 
             <div class="controls">
@@ -88,7 +115,8 @@
 
         <div class="control-group">
             <label for="image" class="control-label">
-                <input type="checkbox" onclick="if(this.checked){$('#image, #slug').removeAttr('disabled')}else{$('#image, #slug').attr('disabled', 'disabled')}"/>
+                <input type="checkbox"
+                       onclick="if(this.checked){$('#image, #imageSlug').removeAttr('disabled')}else{$('#image, #imageSlug').attr('disabled', 'disabled')}"/>
                 图片:
             </label>
 
@@ -99,10 +127,10 @@
         </div>
 
         <div class="control-group">
-            <label for="slug" class="control-label">图片 slug:</label>
+            <label for="imageSlug" class="control-label">图片 slug:</label>
 
             <div class="controls">
-                <input type="text" id="slug" name="slug" value="${app.slug}"
+                <input type="text" id="imageSlug" name="imageSlug" value="${app.imageSlug}"
                        class="input-large" ${app.id == null ? "" : "disabled"}/>
                 由小写字母、数字、连字符(-)组成
             </div>
@@ -123,7 +151,7 @@
 
             <div class="controls">
                 <input type="text" id="order" name="order" value="${app.order}" class="input-large"/>
-                任意整数
+                任意整数。列表按此字段排序，由小到大.
             </div>
         </div>
 
