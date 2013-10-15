@@ -1,14 +1,12 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Ad;
-import com.lebo.entity.User;
 import com.lebo.rest.dto.HotDto;
+import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.AdService;
-import com.lebo.service.account.AccountService;
+import com.lebo.service.StatusService;
 import com.lebo.service.param.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -26,11 +25,9 @@ import javax.validation.Valid;
 @Controller
 public class PageRestController {
     @Autowired
-    private AccountService accountService;
-    @Autowired
     private AdService adService;
-
-    private static final Sort USER_BE_FAVORITED_COUNT_DESC = new Sort(Sort.Direction.DESC, User.BE_FAVORITED_COUNT_KEY);
+    @Autowired
+    private StatusService statusService;
 
     /**
      * 热门页:用户列表，按红心数排序，有广告
@@ -45,9 +42,8 @@ public class PageRestController {
             dto.setAds(adService.toDtos(adService.findAds(Ad.GROUP_HOT)));
         }
 
-        pageRequest.setSort(USER_BE_FAVORITED_COUNT_DESC);
-        Page<User> page = accountService.findAll(pageRequest);
-        dto.setUsers(accountService.toBasicUserDtos(page.getContent()));
+        List<StatusDto> statuses = statusService.hotPosts(pageRequest.getPage(), pageRequest.getSize());
+        dto.setStatuses(statuses);
 
         return dto;
     }

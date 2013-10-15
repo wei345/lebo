@@ -540,10 +540,6 @@ public class AccountService extends AbstractMongoService {
         });
     }
 
-    public Page<User> findAll(Pageable pageable) {
-        return userDao.findAll(pageable);
-    }
-
     //---- JMX ----
     @ManagedOperation
     public void updateAllUserFriendsCount() {

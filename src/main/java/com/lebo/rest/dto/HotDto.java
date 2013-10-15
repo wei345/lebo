@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class HotDto {
     private List<AdDto> ads;
-    private List<UserDto> users;
+    private List<StatusDto> statuses;
 
     public List<AdDto> getAds() {
         return ads;
@@ -21,11 +21,11 @@ public class HotDto {
         this.ads = ads;
     }
 
-    public List<UserDto> getUsers() {
-        return users;
+    public List<StatusDto> getStatuses() {
+        return statuses;
     }
 
-    public void setUsers(List<UserDto> users) {
-        this.users = users;
+    public void setStatuses(List<StatusDto> statuses) {
+        this.statuses = statuses;
     }
 }
