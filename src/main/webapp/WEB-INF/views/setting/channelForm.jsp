@@ -83,7 +83,7 @@
         </div>
 
         <div class="control-group">
-            <label for="track" class="control-label">follow:</label>
+            <label for="follow" class="control-label">follow:</label>
 
             <div class="controls">
                 <input type="text" id="follow" name="follow" value="${channel.follow}"
