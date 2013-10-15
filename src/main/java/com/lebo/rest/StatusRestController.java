@@ -64,7 +64,11 @@ public class StatusRestController {
         }
 
         //去掉 #最新视频#，永远不需要这个标签
-        text = text.replace("#最新视频#", "");
+        String newPostHashtag = "#最新视频#";
+        if (text.contains(newPostHashtag)) {
+            text = text.replace(newPostHashtag, "");
+            logger.debug("自动去掉了{} : {}", newPostHashtag, text);
+        }
 
         //当且仅当用户第一次发视频时，有"#新人报到#"
         String firstVideoHashtag = "#新人报到#";
@@ -73,12 +77,14 @@ public class StatusRestController {
         if (user.getStatusesCount() == null || user.getStatusesCount() == 0) {
             if (!text.contains(firstVideoHashtag)) {
                 text += firstVideoHashtag;
+                logger.debug("自动添加了{} : {}", firstVideoHashtag, text);
             }
         }
         //不是第一次
         else {
             if (text.contains(firstVideoHashtag)) {
                 text = text.replace(firstVideoHashtag, "");
+                logger.debug("不是该用户第一个视频，自动去掉了{} : {}", firstVideoHashtag, text);
             }
         }
 
