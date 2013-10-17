@@ -11,7 +11,8 @@
         .inline {
             display: inline-block;
         }
-        div.input-large{
+
+        div.input-large {
             padding: 4px 6px;
         }
     </style>
@@ -115,8 +116,10 @@
 
         <div class="control-group">
             <label for="image" class="control-label">
-                <input type="checkbox"
-                       onclick="if(this.checked){$('#image, #imageSlug').removeAttr('disabled')}else{$('#image, #imageSlug').attr('disabled', 'disabled')}"/>
+                <c:if test="${app.id != null}">
+                    <input type="checkbox"
+                           onclick="if(this.checked){$('#image, #imageSlug').removeAttr('disabled')}else{$('#image, #imageSlug').attr('disabled', 'disabled')}"/>
+                </c:if>
                 图片:
             </label>
 
