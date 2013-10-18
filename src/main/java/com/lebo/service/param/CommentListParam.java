@@ -1,12 +1,10 @@
 package com.lebo.service.param;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 public class CommentListParam extends PaginationParam {
     private String postId;
+    private String userId;
     private Boolean hasVideo;
 
-    @NotBlank
     public String getPostId() {
         return postId;
     }
@@ -21,5 +19,13 @@ public class CommentListParam extends PaginationParam {
 
     public void setHasVideo(Boolean hasVideo) {
         this.hasVideo = hasVideo;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

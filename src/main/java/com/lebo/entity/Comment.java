@@ -18,6 +18,7 @@ import java.util.List;
 public class Comment extends IdEntity {
     @Indexed
     private String userId;
+    public static final String USER_ID_KEY = "userId";
     private Date createdAt;
     private String text;
     private boolean truncated;
