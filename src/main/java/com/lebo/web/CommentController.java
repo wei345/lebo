@@ -5,7 +5,6 @@ import com.lebo.entity.User;
 import com.lebo.service.CommentService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,38 +36,43 @@ public class CommentController {
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public String list(CommentListParam commentListParam, Model model) {
 
-        if (StringUtils.isNotBlank(commentListParam.getPostId())) {
-            List<Comment> comments = commentService.list(commentListParam);
+        List<Comment> comments = commentService.list(commentListParam);
 
-            List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(comments.size());
-            for (Comment comment : comments) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("id", comment.getId());
+        List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(comments.size());
+        for (Comment comment : comments) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", comment.getId());
 
-                if (comment.getVideo() != null) {
-                    map.put("mediaUrl", comment.getVideo().getContentUrl());
-                }
-
-                if (comment.getVideoFirstFrame() != null) {
-                    map.put("mediaLinkText", String.format("<img src='%s'/>", comment.getVideoFirstFrameUrl()));
-                }
-
-                if (comment.getAudio() != null) {
-                    map.put("mediaUrl", comment.getAudio().getContentUrl());
-                    map.put("mediaLinkText", "语音评论");
-                }
-
-                map.put("text", comment.getText());
-                User user = accountService.getUser(comment.getUserId());
-                map.put("screenName", user.getScreenName());
-                map.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(comment.getCreatedAt()));
-                maps.add(map);
+            if (comment.getVideo() != null) {
+                map.put("mediaUrl", comment.getVideo().getContentUrl());
             }
 
-            model.addAttribute("count", commentListParam.getCount());
-            model.addAttribute("postId", commentListParam.getPostId());
-            model.addAttribute("comments", maps);
+            if (comment.getVideoFirstFrame() != null) {
+                map.put("mediaLinkText", String.format("<img src='%s'/>", comment.getVideoFirstFrameUrl()));
+            }
+
+            if (comment.getAudio() != null) {
+                map.put("mediaUrl", comment.getAudio().getContentUrl());
+                map.put("mediaLinkText", "语音评论");
+            }
+
+            map.put("text", comment.getText());
+
+            User user = accountService.getUser(comment.getUserId());
+            if (user == null) {
+                map.put("screenName", "<i>未知</i>");
+            } else {
+                map.put("screenName", user.getScreenName());
+            }
+
+            map.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(comment.getCreatedAt()));
+            maps.add(map);
         }
+
+        model.addAttribute("count", commentListParam.getCount());
+        model.addAttribute("postId", commentListParam.getPostId());
+        model.addAttribute("userId", commentListParam.getUserId());
+        model.addAttribute("comments", maps);
 
         return "comment/list";
     }
