@@ -84,7 +84,13 @@ public class CommentService extends AbstractMongoService {
     }
 
     public List<Comment> list(CommentListParam param) {
-        Query query = new Query(new Criteria(Comment.POST_ID_KEY).is(param.getPostId()));
+        Query query = new Query();
+        if (StringUtils.isNotBlank(param.getPostId())) {
+            query.addCriteria(new Criteria(Comment.POST_ID_KEY).is(param.getPostId()));
+        }
+        if (StringUtils.isNotBlank(param.getUserId())) {
+            query.addCriteria(new Criteria(Comment.USER_ID_KEY).is(param.getUserId()));
+        }
         if (param.getHasVideo() != null) {
             query.addCriteria(new Criteria(Comment.HAS_VIDEO_KEY).is(param.getHasVideo()));
         }
@@ -101,7 +107,7 @@ public class CommentService extends AbstractMongoService {
         if (comment.getVideo() != null) {
             dto.setVideo(comment.getVideo().toDto());
         }
-        if(comment.getVideoConverted() != null){
+        if (comment.getVideoConverted() != null) {
             dto.setVideoConverted(comment.getVideoConverted().toDto());
         }
         dto.setVideoFirstFrameUrl(comment.getVideoFirstFrameUrl());

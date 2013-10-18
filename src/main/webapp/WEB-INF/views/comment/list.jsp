@@ -27,6 +27,9 @@
     <input type="search" class="input-large search-query" id="postId" name="postId" value="${postId}" placeholder="帖子ID">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=postId]').val('')"></span>
 
+    <input type="search" class="input-large search-query" id="userId" name="userId" value="${userId}" placeholder="用户ID">
+    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=userId]').val('')"></span>
+
     <input type="text" class="input-mini" name="count" value="${count}">条
     <button type="submit" class="btn" style="margin-left: 2em;">提交</button>
 </form>
@@ -78,6 +81,10 @@
         </tr>
     </c:forEach>
 </table>
+
+<c:if test="${empty comments}">
+    <div style="font-style: italic; text-align: center">没有了</div>
+</c:if>
 
 <script>
     $(function(){

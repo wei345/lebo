@@ -49,14 +49,14 @@
 
 <a href="${ctx}/register" class="pull-right">添加新用户</a>
 
-<table id="contentTable" class="table table-striped table-bordered table-condensed table-hover">
+<table id="contentTable" class="table table-striped table-bordered table-condensed table">
     <thead>
     <tr>
         <th>ID</th>
         <th>用户名</th>
         <th>邮件地址</th>
         <th>姓名</th>
-        <th>注册时间
+        <th>注册时间</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -70,7 +70,10 @@
             <td>
                 <fmt:formatDate value="${user.createdAt}" pattern="yyyy年MM月dd日  HH时mm分ss秒"/>
             </td>
-            <td><a href="${ctx}/admin/post/list?userId=${user.id}" target="_blank">查看帖子</a></td>
+            <td>
+                <a href="${ctx}/admin/post/list?userId=${user.id}" target="_blank">查看帖子</a><br/>
+                <a href="${ctx}/admin/comment/list?userId=${user.id}" target="_blank">查看评论</a>
+            </td>
         </tr>
     </c:forEach>
     </tbody>
