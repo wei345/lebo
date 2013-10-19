@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springside.modules.mapper.BeanMapper;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +145,7 @@ public class HomeRestController {
 
     @RequestMapping(value = "**")
     @ResponseBody
-    public Object notFound() {
-        return ErrorDto.notFound();
+    public Object notFound(HttpServletRequest request) {
+        return ErrorDto.notFound(String.format("URL[%s] does not exist", request.getRequestURL()));
     }
 }

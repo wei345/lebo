@@ -21,7 +21,7 @@ public class ContentTypeMap {
         contentTypeMap.put("video/mp4", "mp4");//mp4 mp4v mpg4
         contentTypeMap.put("video/x-flv", "flv");
         //音频
-        contentTypeMap.put("audio/mp4", "mp4a");
+        contentTypeMap.put("audio/amr", "amr");
         //图片
         contentTypeMap.put("image/jpeg", "jpg"); //jpeg jpg jpe
         contentTypeMap.put("image/png", "png");
@@ -43,12 +43,23 @@ public class ContentTypeMap {
      * @param filename    file name
      */
     public static String getExtension(String contentType, String filename) {
-        String ext = contentTypeMap.get(contentType);
+        String ext = getExtension(contentType);
 
         if (ext == null) {
             ext = StringUtils.substringAfterLast(filename, ".");
         }
 
+        return ext;
+    }
+
+    /**
+     * @throws RuntimeException 当找不到指定内容类型的扩展名时
+     */
+    public static String getExtension(String contentType) {
+        String ext = contentTypeMap.get(contentType);
+        if (ext == null) {
+            throw new RuntimeException("找不到contentType[" + contentType + "]的扩展名");
+        }
         return ext;
     }
 

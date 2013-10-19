@@ -165,6 +165,18 @@
     </tr>--%>
 </table>
 
+<strong>上传</strong>
+<table class="table table-hover">
+<tr>
+    <td>
+        <tags:link url="${ctx}/docs/api/1.1/post/upload/tmpUploadUrl" text="POST upload/tmpUploadUrl"/>
+    </td>
+    <td>
+        返回有失效期的临时上传地址。
+    </td>
+</tr>
+</table>
+
 <strong>视频</strong>
 <table class="table table-hover">
     <tr>
