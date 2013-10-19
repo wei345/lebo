@@ -13,6 +13,6 @@ public interface ALiYunStorageService extends FileStorageService {
      * @param contentType 内容类型如video/mp4
      * @param slug        小写英文字母或数字，单词间以"-"分隔，让人一看url就知道是什么内容
      */
-    String generateTmpWritableUrl(Date expireDate, String contentType, String slug);
+    String generateTmpUploadUrl(Date expireDate, String contentType, String slug);
 
 }

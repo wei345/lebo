@@ -73,7 +73,7 @@ public class UploadRestController {
 
         //生成签名URL
         Date expDate = DateUtils.addHours(new Date(), 1); //1小时后失效
-        String url = aLiYunStorageService.generateTmpWritableUrl(expDate, uploadType.contentType, uploadType.slug);
+        String url = aLiYunStorageService.generateTmpUploadUrl(expDate, uploadType.contentType, uploadType.slug);
 
         //返回结果
         PresignedUrlDto dto = new PresignedUrlDto();

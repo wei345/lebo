@@ -130,7 +130,7 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
     private SimpleDateFormat tmpKeyDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 
     @Override
-    public String generateTmpWritableUrl(Date expireDate, String contentType, String slug) {
+    public String generateTmpUploadUrl(Date expireDate, String contentType, String slug) {
         Assert.notNull(expireDate);
         Assert.notNull(contentType);
         Assert.notNull(slug);
