@@ -15,6 +15,8 @@ import java.util.List;
 public class FileInfo {
     private String key;
     @Transient
+    private String tmpKey; //临时文件，由客户端直接上传，然后告知服务端，服务端将其复制到其他地方，然后删掉临时文件
+    @Transient
     private InputStream content;
     @Transient
     private String filename;
@@ -60,7 +62,7 @@ public class FileInfo {
     }
 
 
-    public void setLength(long length) {
+    public void setLength(Long length) {
         this.length = length;
     }
 
@@ -68,7 +70,7 @@ public class FileInfo {
         this.contentType = contentType;
     }
 
-    public void setLastModified(long lastModified) {
+    public void setLastModified(Long lastModified) {
         this.lastModified = lastModified;
     }
 
@@ -119,6 +121,14 @@ public class FileInfo {
             dtos.add(fileInfo.toDto());
         }
         return dtos;
+    }
+
+    public String getTmpKey() {
+        return tmpKey;
+    }
+
+    public void setTmpKey(String tmpKey) {
+        this.tmpKey = tmpKey;
     }
 
     @Override

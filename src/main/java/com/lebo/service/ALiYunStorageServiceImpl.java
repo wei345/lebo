@@ -1,10 +1,8 @@
 package com.lebo.service;
 
 import com.aliyun.openservices.oss.OSSClient;
-import com.aliyun.openservices.oss.model.CannedAccessControlList;
-import com.aliyun.openservices.oss.model.OSSObject;
-import com.aliyun.openservices.oss.model.ObjectMetadata;
-import com.aliyun.openservices.oss.model.PutObjectResult;
+import com.aliyun.openservices.oss.OSSException;
+import com.aliyun.openservices.oss.model.*;
 import com.lebo.entity.FileInfo;
 import com.lebo.util.ContentTypeMap;
 import org.apache.commons.codec.binary.Base64;
@@ -42,6 +40,7 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
     private OSSClient client;
 
     private Logger logger = LoggerFactory.getLogger(ALiYunStorageService.class);
+    private static final String KEY_PREFIX_TMP = "tmp/";
 
     @Override
     public String save(FileInfo fileInfo) {
@@ -58,11 +57,22 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
             meta.setUserMetadata(userMeta);
         }
 
-        PutObjectResult result = client.putObject(bucketName, fileInfo.getKey(), fileInfo.getContent(), meta);
-        IOUtils.closeQuietly(fileInfo.getContent());
+        //从临时文件copy
+        if (isTmpFile(fileInfo.getTmpKey())) {
+            CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucketName, fileInfo.getTmpKey(), bucketName, fileInfo.getKey());
+            copyObjectRequest.setNewObjectMetadata(meta);
+            client.copyObject(copyObjectRequest);
+            client.deleteObject(bucketName, fileInfo.getTmpKey());
+            logger.info("保存文件成功: {} -> {}, {} ms", fileInfo.getTmpKey(), fileInfo.getKey(), (System.currentTimeMillis() - t1));
+        }
+        //保存新文件
+        else {
+            PutObjectResult result = client.putObject(bucketName, fileInfo.getKey(), fileInfo.getContent(), meta);
+            IOUtils.closeQuietly(fileInfo.getContent());
+            fileInfo.seteTag(result.getETag());
+            logger.info("保存文件成功: {}, {} ms", fileInfo.getKey(), (System.currentTimeMillis() - t1));
+        }
 
-        fileInfo.seteTag(result.getETag());
-        logger.info("保存文件成功: {}, {} ms", fileInfo.getKey(), (System.currentTimeMillis() - t1));
         return fileInfo.getKey();
     }
 
@@ -127,6 +137,47 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
         return id;
     }
 
+    @Override
+    public String getKeyFromUrl(String url) {
+        String prefix = baseurl + "/";
+        //url如：http://file.dev.lebooo.com/tmp/expire-2013-10-21-15-04-38-post-video-5264c3f61a88a2bb334d44bb.mp4?OSSAccessKeyId=7sKDB271X0Ur9ej0&Expires=1382339078&Signature=KIKelClIZd9J7MiuvcJkkEpyVds%3D
+        if (StringUtils.startsWith(url, prefix) && url.length() > prefix.length()) {
+            String key = url.substring(prefix.length());
+            //key如: tmp/expire-2013-10-21-15-04-38-post-video-5264c3f61a88a2bb334d44bb.mp4?OSSAccessKeyId=7sKDB271X0Ur9ej0&Expires=1382339078&Signature=KIKelClIZd9J7MiuvcJkkEpyVds%3D
+
+            int questionMarkPos = key.indexOf("?");
+            if (questionMarkPos != -1) {
+                key = key.substring(0, questionMarkPos);
+                //key如：tmp/expire-2013-10-21-15-04-38-post-video-5264c3f61a88a2bb334d44bb.mp4
+            }
+
+            return key;
+        }
+
+        return null;
+    }
+
+    @Override
+    public FileInfo getMetadata(String key) {
+        try {
+            ObjectMetadata metadata = client.getObjectMetadata(bucketName, key);
+
+            FileInfo fileMetadata = new FileInfo();
+            fileMetadata.setLength(metadata.getContentLength());
+            fileMetadata.setContentType(metadata.getContentType());
+            fileMetadata.setLastModified(metadata.getLastModified().getTime());
+            fileMetadata.seteTag(metadata.getETag());
+            return fileMetadata;
+        } catch (OSSException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isTmpFile(String key) {
+        return (key != null && key.startsWith(KEY_PREFIX_TMP));
+    }
+
     private SimpleDateFormat tmpKeyDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
     @Override
@@ -135,7 +186,7 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
         Assert.notNull(contentType);
         Assert.notNull(slug);
 
-        String key = new StringBuilder("tmp/expire")
+        String key = new StringBuilder(KEY_PREFIX_TMP).append("expire")
                 .append("-").append(tmpKeyDateFormat.format(expireDate))
                 .append("-").append(slug.toLowerCase())
                 .append("-").append(new ObjectId().toString()) //使用MongoDB ID格式，只因为够短够简单
@@ -190,13 +241,6 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
                 .append(StringUtils.trimToEmpty(canonicalizedOSSHeaders))
                 .append(canonicalizedResource)
                 .toString();
-
-        logger.debug("签名 : 字符串[{}]", stringToSign);
-        StringBuilder bytesToDisplay = new StringBuilder();
-        for(byte b : stringToSign.getBytes(CHARSET_UTF8)){
-            bytesToDisplay.append(String.format("%02X ", b));
-        }
-        logger.debug("签名 : 字节[{}]", bytesToDisplay.toString().trim());
 
         return Base64.encodeBase64String(Cryptos.hmacSha1(stringToSign.getBytes(CHARSET_UTF8), accessKeySecret.getBytes(CHARSET_UTF8)));
     }

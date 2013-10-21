@@ -189,6 +189,14 @@
     </tr>
     <tr>
         <td>
+            <tags:link url="${ctx}/docs/api/1.1/post/statuses/update" text="POST statuses/update v1.1"/>
+        </td>
+        <td>
+            发布视频，返回发布的视频。
+        </td>
+    </tr>
+    <tr>
+        <td>
             <tags:link url="${ctx}/docs/api/1/post/statuses/repost" text="POST statuses/repost"/>
         </td>
         <td>

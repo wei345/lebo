@@ -97,7 +97,7 @@ public class GridFsService extends AbstractMongoService implements FileStorageSe
         FileInfo fileInfo = new FileInfo();
         fileInfo.setContent(file.getInputStream());
         fileInfo.setFilename(file.getFilename());
-        fileInfo.setLength((int) file.getLength());
+        fileInfo.setLength(file.getLength());
 
         fileInfo.setLastModified(file.getUploadDate().getTime());
         fileInfo.seteTag("W/\"" + fileInfo.getLastModified() + "\"");
