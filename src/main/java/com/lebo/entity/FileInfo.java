@@ -22,7 +22,7 @@ public class FileInfo {
     private String contentType;
     private Long lastModified;
     private String eTag;
-    private Long duration;//时长，毫秒，文件为视频或音频时，可能有值
+    private Long duration;//时长，文件为视频或音频时，可能有值
 
     public FileInfo() {
     }
