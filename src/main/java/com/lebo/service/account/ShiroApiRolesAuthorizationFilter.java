@@ -6,6 +6,7 @@ import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -24,9 +25,11 @@ public class ShiroApiRolesAuthorizationFilter extends RolesAuthorizationFilter {
 
         // If the subject isn't identified, return an unauthorized error
         if (subject.getPrincipal() == null) {
+            ((HttpServletResponse) response).setStatus(401);
             out.write(ErrorDto.UNAUTHORIZED.toJson());
         } else {
             // If subject is known but not authorized, return an forbidden error
+            ((HttpServletResponse) response).setStatus(403);
             out.write(ErrorDto.FORBIDDEN.toJson());
         }
 
