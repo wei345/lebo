@@ -6,7 +6,7 @@
 <c:set var="types" value="<%=UploadRestController.UploadType.values()%>"/>
 
 
-<tags:form name="获取临时上传地址" action="${ctx}/api/1.1/upload/tmpUploadUrl.json" method="POST">
+<tags:form name="获取新的临时上传地址" action="${ctx}/api/1.1/upload/newTmpUploadUrl.json" method="GET">
     <table class="table table-hover table-bordered">
         <tr>
             <th>type</th>
@@ -29,8 +29,8 @@
     <tags:field name="type"/>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/1.1/upload/tmpUploadUrl.json?type=POST_VIDEO">
+<tags:example method="GET" url="http://localhost:8080/api/1.1/upload/newTmpUploadUrl.json?type=POST_VIDEO">
     {
-        url: "http://file.dev.lebooo.com/tmp/expire-2013-10-19-14-02-33-522-post-video-unique-526212691a880d00f61e9a80.mp4?OSSAccessKeyId=7sKDB271X0Ur9ej0&Expires=1382162553&Signature=51nkVeEG+baU3BJalbZxlqizQcw="
+        url: "http://file.dev.lebooo.com/tmp/expire-2013-10-21-15-04-38-post-video-5264c3f61a88a2bb334d44bb.mp4?OSSAccessKeyId=7sKDB271X0Ur9ej0&Expires=1382339078&Signature=KIKelClIZd9J7MiuvcJkkEpyVds%3D"
     }
 </tags:example>

@@ -127,7 +127,7 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
         return id;
     }
 
-    private SimpleDateFormat tmpKeyDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+    private SimpleDateFormat tmpKeyDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
     @Override
     public String generateTmpUploadUrl(Date expireDate, String contentType, String slug) {
@@ -138,7 +138,7 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
         String key = new StringBuilder("tmp/expire")
                 .append("-").append(tmpKeyDateFormat.format(expireDate))
                 .append("-").append(slug.toLowerCase())
-                .append("-unique-").append(new ObjectId().toString()) //使用MongoDB ID格式，只因为够短够简单
+                .append("-").append(new ObjectId().toString()) //使用MongoDB ID格式，只因为够短够简单
                 .append(".").append(ContentTypeMap.getExtension(contentType))
                 .toString();
 

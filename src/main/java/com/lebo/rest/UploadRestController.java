@@ -58,7 +58,7 @@ public class UploadRestController {
         }
     }
 
-    @RequestMapping(value = "tmpUploadUrl.json", method = RequestMethod.POST)
+    @RequestMapping(value = "newTmpUploadUrl.json", method = RequestMethod.GET)
     @ResponseBody
     public Object tmpUploadUrl(@RequestParam("type") String type) {
         if (StringUtils.isBlank(type)) {

@@ -169,7 +169,7 @@
 <table class="table table-hover">
 <tr>
     <td>
-        <tags:link url="${ctx}/docs/api/1.1/post/upload/tmpUploadUrl" text="POST upload/tmpUploadUrl"/>
+        <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
     </td>
     <td>
         返回有失效期的临时上传地址。
