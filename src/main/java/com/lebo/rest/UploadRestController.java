@@ -29,8 +29,12 @@ public class UploadRestController {
 
     public static enum UploadType {
         POST_VIDEO("video/mp4", "post-video", "上传帖子视频"),
+        POST_VIDEO_FIRST_FRAME("image/jpeg", "post-video-first-frame", "上传帖子视频第一帧"),
+
         COMMENT_VIDEO("video/mp4", "comment-video", "上传评论视频"),
+        COMMENT_VIDEO_FIRST_FRAME("image/jpeg", "comment-video-first-frame", "上传评论视频第一帧"),
         COMMENT_AUDIO("audio/amr", "comment-audio", "上传评论音频"),
+
         IM_VIDEO("video/mp4", "im-video", "上传即时通讯视频"),
         IM_VIDEO_FIRST_FRAME("image/jpeg", "im-video-first-frame", "上传即时通讯视频第一帧"),
         IM_AUDIO("audio/amr", "im-audio", "上传即时通讯音频"),;
