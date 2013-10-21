@@ -5,6 +5,7 @@ import org.apache.shiro.web.filter.authc.UserFilter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 /**
@@ -18,6 +19,7 @@ public class ShiroApiUserFilter extends UserFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+        ((HttpServletResponse) response).setStatus(401);
         PrintWriter out = response.getWriter();
         out.write(ErrorDto.UNAUTHORIZED.toJson());
         out.flush();
