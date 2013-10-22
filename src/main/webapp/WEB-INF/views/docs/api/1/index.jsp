@@ -188,7 +188,7 @@
             <tags:link url="${ctx}/docs/api/1.1/post/statuses/update" text="POST statuses/update v1.1"/>
         </td>
         <td>
-            发布视频，返回发布的视频。
+            发布视频，返回发布的视频。客户端直接上传视频到阿里云云存储，发布时传给服务端url。
         </td>
     </tr>
     <tr>
