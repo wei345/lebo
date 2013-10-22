@@ -129,6 +129,9 @@ public class StatusService extends AbstractMongoService {
             if (post.getVideoFirstFrame() != null) {
                 fileStorageService.delete(post.getVideoFirstFrame().getKey());
             }
+            if (post.getVideoConverted() != null) {
+                fileStorageService.delete(post.getVideoConverted().getKey());
+            }
 
             postDao.delete(post);
             eventBus.post(new AfterPostDestroyEvent(post));
