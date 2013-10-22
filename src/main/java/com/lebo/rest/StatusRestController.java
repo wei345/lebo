@@ -364,7 +364,7 @@ public class StatusRestController {
             return ErrorDto.badRequest("videoUrl[" + videoUrl + "]文件不存在");
         }
         if (!allowedVideoContentType.contains(videoMetadata.getContentType())) {
-            return ErrorDto.badRequest("视频contentType必须为以下值之一：" + allowedVideoContentType);
+            return ErrorDto.badRequest("视频contentType必须为以下值之一：" + allowedVideoContentType + ", 但是得到[" + videoMetadata.getContentType() + "]");
         }
 
         //图片文件
@@ -372,8 +372,8 @@ public class StatusRestController {
         if (imageMetadata == null) {
             return ErrorDto.badRequest("imageUrl[" + imageUrl + "]文件不存在");
         }
-        if (!allowedImageContentType.contains(videoMetadata.getContentType())) {
-            return ErrorDto.badRequest("图片contentType必须为以下值之一：" + allowedImageContentType);
+        if (!allowedImageContentType.contains(imageMetadata.getContentType())) {
+            return ErrorDto.badRequest("图片contentType必须为以下值之一：" + allowedImageContentType + ", 但是得到[" + imageMetadata.getContentType() + "]");
         }
 
         //文件大小
