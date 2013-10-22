@@ -86,17 +86,24 @@ public class HomeRestController {
     @RequestMapping(value = "1/logout", method = RequestMethod.POST)
     @ResponseBody
     public Object logout() {
-        Subject currentUser = SecurityUtils.getSubject();
-        ShiroUser principal = (ShiroUser) currentUser.getPrincipal();
-        if (principal != null) {
+        Subject subject = SecurityUtils.getSubject();
+        ShiroUser shiroUser = (ShiroUser) subject.getPrincipal();
+
+        if (shiroUser != null) {
+            User user = accountService.getUser(accountService.getCurrentUserId());
+            logger.debug("退出登录 : 正在退出 {}({})", user.getScreenName(), user.getId());
+
             //注销设备
-            User user = accountService.getUserSettings(accountService.getCurrentUserId());
+            logger.debug("退出登录 : 正在注销设备, apnsProductionToken : [{}], apnsDevelopmentToken : [{}]",
+                    user.getApnsProductionToken(), user.getApnsDevelopmentToken());
             user.setApnsProductionToken("");
             user.setApnsDevelopmentToken("");
             accountService.updateUserSettings(user);
+
             //退出
-            currentUser.logout();
-            return accountService.toBasicUserDto(accountService.getUser(principal.getId()));
+            subject.logout();
+            logger.debug("退出登录 : 已退出 {}({}) ", user.getScreenName(), user.getId());
+            return accountService.toBasicUserDto(user);
         } else {
             return ErrorDto.unauthorized();
         }
