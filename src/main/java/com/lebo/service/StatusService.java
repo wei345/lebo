@@ -129,6 +129,9 @@ public class StatusService extends AbstractMongoService {
             if (post.getVideoFirstFrame() != null) {
                 fileStorageService.delete(post.getVideoFirstFrame().getKey());
             }
+            if (post.getVideoConverted() != null) {
+                fileStorageService.delete(post.getVideoConverted().getKey());
+            }
 
             postDao.delete(post);
             eventBus.post(new AfterPostDestroyEvent(post));
@@ -689,9 +692,9 @@ public class StatusService extends AbstractMongoService {
         //TODO 让新版客户端做banner功能，去掉在"九九重阳节"置顶视频
         //临时在"九九重阳节"频道置顶视频，因为新版客户端忘记做banner功能
         if ("九九重阳节".equals(name) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
-            if(settingService.getSetting().getJiuJiuChongYangJieTopPostId() != null){
+            if (settingService.getSetting().getJiuJiuChongYangJieTopPostId() != null) {
                 Post topPost = getPost(settingService.getSetting().getJiuJiuChongYangJieTopPostId());
-                if(topPost != null){
+                if (topPost != null) {
                     query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
                     List<Post> posts = mongoTemplate.find(query, Post.class);
 
