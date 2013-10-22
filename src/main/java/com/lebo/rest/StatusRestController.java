@@ -1,10 +1,12 @@
 package com.lebo.rest;
 
+import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
 import com.lebo.entity.Setting;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.StatusDto;
+import com.lebo.service.ALiYunStorageService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
@@ -37,17 +39,22 @@ import java.util.List;
  * Time: PM8:35
  */
 @Controller
-@RequestMapping(value = "/api/1/statuses")
 public class StatusRestController {
+
+    private static final String API_1_PREFIX = "/api/1/statuses/";
+    private static final String API_1_1_PREFIX = "/api/1.1/statuses/";
+
     @Autowired
     private StatusService statusService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ALiYunStorageService aLiYunStorageService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
     //TODO 检查Post.text长度
-    @RequestMapping(value = "update", method = RequestMethod.POST)
+    @RequestMapping(value = API_1_PREFIX + "update", method = RequestMethod.POST)
     @ResponseBody
     public Object update(@RequestParam(value = "video") MultipartFile video,
                          @RequestParam(value = "image") MultipartFile image,
@@ -59,39 +66,11 @@ public class StatusRestController {
         logger.debug("       text : {}", text);
         logger.debug("     source : {}", source == null ? "无" : source);
 
-        if (video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES || image.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES) {
+        if (video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES || image.getSize() > Setting.MAX_IMAGE_LENGTH_BYTES) {
             return ErrorDto.badRequest("上传的视频或图片太大");
         }
 
-        //去掉 #最新视频#，永远不需要这个标签
-        String newPostHashtag = "#最新视频#";
-        if (text.contains(newPostHashtag)) {
-            text = text.replace(newPostHashtag, "");
-            logger.debug("自动去掉了{} : {}", newPostHashtag, text);
-        }
-
-        //当且仅当用户第一次发视频时，有"#新人报到#"
-        String firstVideoHashtag = "#新人报到#";
-        User user = accountService.getUser(accountService.getCurrentUserId());
-        //用户第一次发视频
-        if (user.getStatusesCount() == null || user.getStatusesCount() == 0) {
-            if (!text.contains(firstVideoHashtag)) {
-                text += firstVideoHashtag;
-                logger.debug("自动添加了{} : {}", firstVideoHashtag, text);
-            }
-        }
-        //不是第一次
-        else {
-            if (text.contains(firstVideoHashtag)) {
-                text = text.replace(firstVideoHashtag, "");
-                logger.debug("不是该用户第一个视频，自动去掉了{} : {}", firstVideoHashtag, text);
-            }
-        }
-
-        Post post = statusService.createPost(accountService.getCurrentUserId(), text, ControllerUtils.getFileInfo(video),
-                ControllerUtils.getFileInfo(image), null, source);
-
-        return statusService.toStatusDto(post);
+        return createPost(text, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image), source);
     }
 
     /**
@@ -110,7 +89,7 @@ public class StatusRestController {
      * https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
      * </p>
      */
-    @RequestMapping(value = "homeTimeline", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "homeTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object homeTimeline(@Valid TimelineParam param) {
         param.setUserId(accountService.getCurrentUserId());
@@ -122,7 +101,7 @@ public class StatusRestController {
     /**
      * 获取某个用户最新视频列表
      */
-    @RequestMapping(value = "userTimeline", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "userTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object userTimeline(@Valid TimelineParam param) {
         param.setUserId(accountService.getUserId(param.getUserId(), param.getScreenName()));
@@ -131,7 +110,7 @@ public class StatusRestController {
         return statusService.toStatusDtos(postList);
     }
 
-    @RequestMapping(value = "mentionsTimeline", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "mentionsTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object mentionsTimeline(@Valid TimelineParam param) {
         param.setUserId(accountService.getCurrentUserId());
@@ -147,7 +126,7 @@ public class StatusRestController {
      * @param id   原始post id或转发post id
      * @param text 添加的转发文本，必须做URLencode，内容不超过140个汉字
      */
-    @RequestMapping(value = "repost", method = RequestMethod.POST)
+    @RequestMapping(value = API_1_PREFIX + "repost", method = RequestMethod.POST)
     @ResponseBody
     public Object repost(@RequestParam("id") String id,
                          @RequestParam(value = "text", required = false) String text,
@@ -184,7 +163,7 @@ public class StatusRestController {
      *
      * @param id 原始帖ID
      */
-    @RequestMapping(value = "unrepost", method = RequestMethod.POST)
+    @RequestMapping(value = API_1_PREFIX + "unrepost", method = RequestMethod.POST)
     @ResponseBody
     public Object unrepost(@RequestParam("id") String id) {
         Post post = statusService.getRepost(accountService.getCurrentUserId(), id);
@@ -208,13 +187,13 @@ public class StatusRestController {
      * <li>#hashtag或@mention不会匹配#hashtags或@mentions。</li>
      * </ul>
      */
-    @RequestMapping(value = "filter", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "filter", method = RequestMethod.GET)
     @ResponseBody
     public Object filter(@Valid StatusFilterParam param) {
         return statusService.toStatusDtos(statusService.filterPosts(param));
     }
 
-    @RequestMapping(value = "search", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "search", method = RequestMethod.GET)
     @ResponseBody
     public Object search(@RequestParam(value = "q", required = false) String q,
                          @RequestParam(value = "page", defaultValue = "0") int pageNo,
@@ -250,14 +229,14 @@ public class StatusRestController {
         }
     }
 
-    @RequestMapping(value = "hot", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "hot", method = RequestMethod.GET)
     @ResponseBody
     public Object hot(@RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
         return statusService.hotPosts(page, size);
     }
 
-    @RequestMapping(value = "digest", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "digest", method = RequestMethod.GET)
     @ResponseBody
     public Object digest(@Valid PaginationParam param) {
         List<Post> posts = statusService.findDigest(param);
@@ -267,7 +246,7 @@ public class StatusRestController {
     /**
      * 返回用户精品视频列表
      */
-    @RequestMapping(value = "userDigest", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "userDigest", method = RequestMethod.GET)
     @ResponseBody
     public Object userDigest(@Valid PaginationParam param,
                              @RequestParam(value = "userId", required = false) String userId,
@@ -280,7 +259,7 @@ public class StatusRestController {
     /**
      * 返回指定频道的post
      */
-    @RequestMapping(value = "channelTimeline", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "channelTimeline", method = RequestMethod.GET)
     @ResponseBody
     public Object channelTimeline(@RequestParam(value = "name") String name,
                                   PaginationParam paginationParam) {
@@ -293,7 +272,7 @@ public class StatusRestController {
     }
 
 
-    @RequestMapping(value = "destroy", method = RequestMethod.POST)
+    @RequestMapping(value = API_1_PREFIX + "destroy", method = RequestMethod.POST)
     @ResponseBody
     public Object destroy(@RequestParam(value = "id") String id) {
         if (StringUtils.isBlank(id)) {
@@ -312,7 +291,7 @@ public class StatusRestController {
         return dto;
     }
 
-    @RequestMapping(value = "show", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "show", method = RequestMethod.GET)
     @ResponseBody
     public Object show(@RequestParam(value = "id") String id) {
         if (StringUtils.isBlank(id)) {
@@ -331,7 +310,7 @@ public class StatusRestController {
     /**
      * 作品榜：按收藏数(红心)降序排序
      */
-    @RequestMapping(value = "ranking", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_PREFIX + "ranking", method = RequestMethod.GET)
     @ResponseBody
     public Object ranking(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
@@ -341,7 +320,7 @@ public class StatusRestController {
     /**
      * 视频播放次数+1
      */
-    @RequestMapping(value = "increaseViewCountBatch", method = RequestMethod.POST)
+    @RequestMapping(value = API_1_PREFIX + "increaseViewCountBatch", method = RequestMethod.POST)
     @ResponseBody
     public Object increaseViewCount(@RequestParam(value = "postIds") String postIds,
                                     @RequestParam(value = "userIds") String userIds) {
@@ -349,5 +328,81 @@ public class StatusRestController {
         accountService.increaseViewCount(Arrays.asList(userIds.split("\\s*,\\s*")));
         return null;
     }
+
+    //-- v1.1 --//
+    @RequestMapping(value = API_1_1_PREFIX + "update.json", method = RequestMethod.POST)
+    @ResponseBody
+    public Object update_v1_1(@RequestParam(value = "videoUrl") String videoUrl,
+                              @RequestParam(value = "imageUrl") String imageUrl,
+                              @RequestParam(value = "text") String text,
+                              @RequestParam(value = "source", required = false) String source) throws IOException {
+
+        String videoKey = aLiYunStorageService.getKeyFromUrl(videoUrl);
+        if (videoKey == null || !aLiYunStorageService.isTmpFile(videoKey)) {
+            return ErrorDto.badRequest("videoUrl[" + videoUrl + "]格式错误");
+        }
+
+        String imageKey = aLiYunStorageService.getKeyFromUrl(imageUrl);
+        if (imageKey == null || !aLiYunStorageService.isTmpFile(imageKey)) {
+            return ErrorDto.badRequest("imageUrl[" + imageUrl + "]格式错误");
+        }
+
+        FileInfo videoMetadata = aLiYunStorageService.getMetadata(videoKey);
+        if(videoMetadata == null){
+            return ErrorDto.badRequest("videoUrl[" + videoUrl + "]文件不存在");
+        }
+
+        FileInfo imageMetadata = aLiYunStorageService.getMetadata(imageKey);
+        if(imageMetadata == null){
+            return ErrorDto.badRequest("imageUrl[" + imageUrl + "]文件不存在");
+        }
+
+        if (videoMetadata.getLength() > Setting.MAX_VIDEO_LENGTH_BYTES || imageMetadata.getLength() > Setting.MAX_IMAGE_LENGTH_BYTES) {
+            aLiYunStorageService.delete(videoKey);
+            aLiYunStorageService.delete(imageKey);
+            return ErrorDto.badRequest("上传的视频或图片太大");
+        }
+
+        videoMetadata.setKey(null);
+        videoMetadata.setTmpKey(videoKey);
+
+        imageMetadata.setKey(null);
+        imageMetadata.setTmpKey(imageKey);
+
+        return createPost(text, videoMetadata, imageMetadata, source);
+    }
+
+    private Object createPost(String text, FileInfo video, FileInfo videoFirstFrame, String source) {
+        //去掉 #最新视频#，永远不需要这个标签
+        String newPostHashtag = "#最新视频#";
+        if (text.contains(newPostHashtag)) {
+            text = text.replace(newPostHashtag, "");
+            logger.debug("自动去掉了{} : {}", newPostHashtag, text);
+        }
+
+        //当且仅当用户第一次发视频时，有"#新人报到#"
+        String firstVideoHashtag = "#新人报到#";
+        User user = accountService.getUser(accountService.getCurrentUserId());
+        //用户第一次发视频
+        if (user.getStatusesCount() == null || user.getStatusesCount() == 0) {
+            if (!text.contains(firstVideoHashtag)) {
+                text += firstVideoHashtag;
+                logger.debug("自动添加了{} : {}", firstVideoHashtag, text);
+            }
+        }
+        //不是第一次
+        else {
+            if (text.contains(firstVideoHashtag)) {
+                text = text.replace(firstVideoHashtag, "");
+                logger.debug("不是该用户第一个视频，自动去掉了{} : {}", firstVideoHashtag, text);
+            }
+        }
+
+        Post post = statusService.createPost(accountService.getCurrentUserId(), text, video,
+                videoFirstFrame, null, source);
+
+        return statusService.toStatusDto(post);
+    }
+
 
 }
