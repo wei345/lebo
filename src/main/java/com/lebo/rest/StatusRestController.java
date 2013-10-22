@@ -1,18 +1,14 @@
 package com.lebo.rest;
 
-import com.lebo.entity.FileInfo;
-import com.lebo.entity.Post;
-import com.lebo.entity.Setting;
-import com.lebo.entity.User;
+import com.lebo.entity.*;
 import com.lebo.rest.dto.ErrorDto;
+import com.lebo.rest.dto.HotDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.ALiYunStorageService;
+import com.lebo.service.AdService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.PaginationParam;
-import com.lebo.service.param.SearchParam;
-import com.lebo.service.param.StatusFilterParam;
-import com.lebo.service.param.TimelineParam;
+import com.lebo.service.param.*;
 import com.lebo.web.ControllerUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +46,8 @@ public class StatusRestController {
     private AccountService accountService;
     @Autowired
     private ALiYunStorageService aLiYunStorageService;
+    @Autowired
+    private AdService adService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
@@ -348,12 +346,12 @@ public class StatusRestController {
         }
 
         FileInfo videoMetadata = aLiYunStorageService.getMetadata(videoKey);
-        if(videoMetadata == null){
+        if (videoMetadata == null) {
             return ErrorDto.badRequest("videoUrl[" + videoUrl + "]文件不存在");
         }
 
         FileInfo imageMetadata = aLiYunStorageService.getMetadata(imageKey);
-        if(imageMetadata == null){
+        if (imageMetadata == null) {
             return ErrorDto.badRequest("imageUrl[" + imageUrl + "]文件不存在");
         }
 
@@ -404,5 +402,23 @@ public class StatusRestController {
         return statusService.toStatusDto(post);
     }
 
+    /**
+     * 热门页:用户列表，按红心数排序，有广告
+     */
+    @RequestMapping(value = API_1_1_PREFIX + "hot.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object hot_v1_1(@Valid PageRequest pageRequest,
+                           @RequestParam(value = "ads", defaultValue = "true") boolean ads) {
+        HotDto dto = new HotDto();
+
+        if (ads) {
+            dto.setAds(adService.toDtos(adService.findAds(Ad.GROUP_HOT)));
+        }
+
+        List<StatusDto> statuses = statusService.hotPosts(pageRequest.getPage(), pageRequest.getSize());
+        dto.setStatuses(statuses);
+
+        return dto;
+    }
 
 }

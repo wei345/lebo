@@ -65,18 +65,6 @@
     </tr>
 </table>
 
-<strong>页面</strong>
-<table class="table table-hover">
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/pages/hot" text="GET pages/hot"/>
-        </td>
-        <td>
-            返回<code>热门</code>页数据。
-        </td>
-    </tr>
-</table>
-
 <strong>时间线</strong>
 <table class="table table-hover">
     <tr>
@@ -145,6 +133,14 @@
         </td>
         <td>
             返回热门视频列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/statuses/hot" text="GET statuses/hot v1.1"/>
+        </td>
+        <td>
+            返回热门视频列表 + 广告。
         </td>
     </tr>
     <tr>
