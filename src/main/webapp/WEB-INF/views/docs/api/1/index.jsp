@@ -328,6 +328,14 @@
             返回红人榜按钮设置 & 推荐用户。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/users/fastestRising" text="GET users/fastestRising v1.1"/>
+        </td>
+        <td>
+            返回上升最快用户列表。
+        </td>
+    </tr>
 </table>
 
 <strong>关系</strong>
