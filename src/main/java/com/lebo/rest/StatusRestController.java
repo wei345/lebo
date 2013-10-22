@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -50,6 +51,18 @@ public class StatusRestController {
     private AdService adService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
+
+    public static LinkedHashSet<String> allowedVideoContentType;
+    public static LinkedHashSet<String> allowedImageContentType;
+
+    static {
+        allowedVideoContentType = new LinkedHashSet<String>(1);
+        allowedVideoContentType.add("video/mp4");
+
+        allowedImageContentType = new LinkedHashSet<String>(2);
+        allowedImageContentType.add("image/jpeg");
+        allowedImageContentType.add("image/png");
+    }
 
     //TODO 检查Post.text长度
     @RequestMapping(value = API_1_PREFIX + "update", method = RequestMethod.POST)
@@ -345,16 +358,25 @@ public class StatusRestController {
             return ErrorDto.badRequest("imageUrl[" + imageUrl + "]格式错误");
         }
 
+        //视频文件
         FileInfo videoMetadata = aLiYunStorageService.getMetadata(videoKey);
         if (videoMetadata == null) {
             return ErrorDto.badRequest("videoUrl[" + videoUrl + "]文件不存在");
         }
+        if (!allowedVideoContentType.contains(videoMetadata.getContentType())) {
+            return ErrorDto.badRequest("视频contentType必须为以下值之一：" + allowedVideoContentType);
+        }
 
+        //图片文件
         FileInfo imageMetadata = aLiYunStorageService.getMetadata(imageKey);
         if (imageMetadata == null) {
             return ErrorDto.badRequest("imageUrl[" + imageUrl + "]文件不存在");
         }
+        if (!allowedImageContentType.contains(videoMetadata.getContentType())) {
+            return ErrorDto.badRequest("图片contentType必须为以下值之一：" + allowedImageContentType);
+        }
 
+        //文件大小
         if (videoMetadata.getLength() > Setting.MAX_VIDEO_LENGTH_BYTES || imageMetadata.getLength() > Setting.MAX_IMAGE_LENGTH_BYTES) {
             aLiYunStorageService.delete(videoKey);
             aLiYunStorageService.delete(imageKey);

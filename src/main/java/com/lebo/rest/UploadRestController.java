@@ -3,7 +3,6 @@ package com.lebo.rest;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.PresignedUrlDto;
 import com.lebo.service.ALiYunStorageService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 
 /**
  * 处理上传.
@@ -27,57 +27,26 @@ public class UploadRestController {
     @Autowired
     private ALiYunStorageService aLiYunStorageService;
 
-    public static enum UploadType {
-        POST_VIDEO("video/mp4", "post-video", "上传帖子视频"),
-        POST_VIDEO_FIRST_FRAME("image/jpeg", "post-video-first-frame", "上传帖子视频第一帧"),
+    public static LinkedHashSet<String> allowedContentType;
 
-        COMMENT_VIDEO("video/mp4", "comment-video", "上传评论视频"),
-        COMMENT_VIDEO_FIRST_FRAME("image/jpeg", "comment-video-first-frame", "上传评论视频第一帧"),
-        COMMENT_AUDIO("audio/amr", "comment-audio", "上传评论音频"),
-
-        IM_VIDEO("video/mp4", "im-video", "上传即时通讯视频"),
-        IM_VIDEO_FIRST_FRAME("image/jpeg", "im-video-first-frame", "上传即时通讯视频第一帧"),
-        IM_AUDIO("audio/amr", "im-audio", "上传即时通讯音频"),;
-
-        UploadType(String contentType, String slug, String desc) {
-            this.contentType = contentType;
-            this.slug = slug;
-            this.desc = desc;
-        }
-
-        String contentType;
-        String slug;
-        String desc;
-
-        public String getContentType() {
-            return contentType;
-        }
-
-        public String getSlug() {
-            return slug;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
+    static {
+        allowedContentType = new LinkedHashSet<String>(4);
+        allowedContentType.add("video/mp4");
+        allowedContentType.add("image/jpeg");
+        allowedContentType.add("image/png");
+        allowedContentType.add("audio/amr");
     }
 
     @RequestMapping(value = "newTmpUploadUrl.json", method = RequestMethod.GET)
     @ResponseBody
-    public Object tmpUploadUrl(@RequestParam("type") String type) {
-        if (StringUtils.isBlank(type)) {
-            return ErrorDto.badRequest("type[" + type + "] 不能为空");
-        }
-
-        UploadType uploadType = UploadType.valueOf(type.toUpperCase());
-
-        if (uploadType == null) {
-            return ErrorDto.badRequest("type[" + type + "]无效");
+    public Object tmpUploadUrl(@RequestParam("contentType") String contentType) {
+        if (!allowedContentType.contains(contentType)) {
+            return ErrorDto.badRequest("contentType必须为以下值之一：" + allowedContentType);
         }
 
         //生成签名URL
         Date expDate = DateUtils.addHours(new Date(), 1); //1小时后失效
-        String url = aLiYunStorageService.generateTmpUploadUrl(expDate, uploadType.contentType, uploadType.slug);
+        String url = aLiYunStorageService.generateTmpUploadUrl(expDate, contentType, contentType.replace("/", "-"));
 
         //返回结果
         PresignedUrlDto dto = new PresignedUrlDto();

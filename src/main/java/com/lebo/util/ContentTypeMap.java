@@ -12,23 +12,19 @@ import java.util.Map;
  */
 public class ContentTypeMap {
 
-    private static Map<String, String> contentTypeMap = new HashMap<String, String>();
+    private static Map<String, String> contentType2extension = new HashMap<String, String>();
 
-    private static Map<String, String> ext2ContentType = new HashMap<String, String>();
+    private static Map<String, String> extension2ContentType = new HashMap<String, String>();
 
     static {
-        //视频
-        contentTypeMap.put("video/mp4", "mp4");//mp4 mp4v mpg4
-        contentTypeMap.put("video/x-flv", "flv");
-        //音频
-        contentTypeMap.put("audio/amr", "amr");
-        //图片
-        contentTypeMap.put("image/jpeg", "jpg"); //jpeg jpg jpe
-        contentTypeMap.put("image/png", "png");
+        contentType2extension.put("video/mp4", "mp4");//mp4 mp4v mpg4
+        contentType2extension.put("video/x-flv", "flv");
+        contentType2extension.put("audio/amr", "amr");
+        contentType2extension.put("image/jpeg", "jpg"); //jpeg jpg jpe
+        contentType2extension.put("image/png", "png");
 
-        //
-        ext2ContentType.put("jpg", "image/jpeg");
-        ext2ContentType.put("png", "image/png");
+        extension2ContentType.put("jpg", "image/jpeg");
+        extension2ContentType.put("png", "image/png");
     }
 
     /**
@@ -56,7 +52,7 @@ public class ContentTypeMap {
      * @throws RuntimeException 当找不到指定内容类型的扩展名时
      */
     public static String getExtension(String contentType) {
-        String ext = contentTypeMap.get(contentType);
+        String ext = contentType2extension.get(contentType);
         if (ext == null) {
             throw new RuntimeException("找不到contentType[" + contentType + "]的扩展名");
         }
@@ -75,7 +71,7 @@ public class ContentTypeMap {
             throw new IllegalArgumentException("扩展名不能为空");
         }
 
-        String contentType = ext2ContentType.get(ext);
+        String contentType = extension2ContentType.get(ext);
         if (contentType == null) {
             throw new RuntimeException(String.format("找不到对应 %s 的ContentType", ext));
         }
