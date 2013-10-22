@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Date: 13-10-22
  * Time: PM6:14
  */
-@Document(collection = "ar.frusers") //ar - analysis result, frusers - fastest rising users
+@Document(collection = "mr.frusers") //mapReduce fastest rising users
 public class FastestRisingUser extends IdEntity {
     private String value;
     public static final String VALUE_KEY = "value";
