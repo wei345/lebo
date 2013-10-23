@@ -1,6 +1,8 @@
 package com.lebo.rest;
 
+import com.lebo.entity.FastestRisingUser;
 import com.lebo.entity.Setting;
+import com.lebo.entity.Top50User;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.HotUserListDto;
@@ -31,15 +33,17 @@ import java.util.List;
  * Time: AM10:32
  */
 @Controller
-@RequestMapping("/api/1/users")
 public class UserRestController {
     @Autowired
     private AccountService accountService;
     @Autowired
     private SettingService settingService;
 
+    public static final String PREFIX_API_1_USERS = "/api/1/users/";
+    public static final String PREFIX_API_1_1_USERS = "/api/1.1/users/";
+
     //TODO 搜索用户，除了名字还查找位置和公司？
-    @RequestMapping(value = "search", method = RequestMethod.GET)
+    @RequestMapping(value = PREFIX_API_1_USERS + "search", method = RequestMethod.GET)
     @ResponseBody
     public Object search(@RequestParam(value = "q", required = false) String q,
                          @RequestParam(value = "page", defaultValue = "0") int pageNo,
@@ -74,7 +78,7 @@ public class UserRestController {
     /**
      * 查看用户
      */
-    @RequestMapping(value = "show", method = RequestMethod.GET)
+    @RequestMapping(value = PREFIX_API_1_USERS + "show", method = RequestMethod.GET)
     @ResponseBody
     public Object show(@RequestParam(value = "userId", required = false) String userId,
                        @RequestParam(value = "screenName", required = false) String screenName) {
@@ -91,9 +95,9 @@ public class UserRestController {
     /**
      * 红人榜页
      *
-     * @param btn true - 返回结果带有按钮设置，false - 返回结果不带按钮设置，默认false
+     * @param btn true - 返回结果带有按钮设置，false - 返回结果不带按钮设置
      */
-    @RequestMapping(value = "hotUserList", method = RequestMethod.GET)
+    @RequestMapping(value = PREFIX_API_1_USERS + "hotUserList", method = RequestMethod.GET)
     @ResponseBody
     public Object hotUserList(@Valid PageRequest pageRequest,
                               @RequestParam(value = "btn", defaultValue = "true") boolean btn) {
@@ -109,5 +113,31 @@ public class UserRestController {
         List<UserDto> users = accountService.getHotUsers(pageRequest.getPage(), pageRequest.getSize());
         dto.setUsers(users);
         return dto;
+    }
+
+    //---- v1.1 ----//
+
+    /**
+     * 上升最快
+     */
+    public static final Sort FASTEST_RISING_SORT = new Sort(Sort.Direction.DESC, FastestRisingUser.VALUE_KEY);
+
+    @RequestMapping(value = PREFIX_API_1_1_USERS + "fastestRising.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object fastestRising(@Valid PageRequest pageRequest) {
+        pageRequest.setSort(FASTEST_RISING_SORT);
+        return accountService.toUserDtos(accountService.findFastestRisingUsers(pageRequest));
+    }
+
+    /**
+     * Top50
+     */
+    public static final Sort TOP50_SORT = new Sort(Sort.Direction.DESC, Top50User.VALUE_KEY);
+
+    @RequestMapping(value = PREFIX_API_1_1_USERS + "top50.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object top50(@Valid PageRequest pageRequest) {
+        pageRequest.setSort(TOP50_SORT);
+        return accountService.toUserDtos(accountService.findTop50Users(pageRequest));
     }
 }

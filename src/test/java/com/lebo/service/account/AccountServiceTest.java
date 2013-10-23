@@ -60,6 +60,10 @@ public class AccountServiceTest extends SpringContextTestCase {
         assertTrue("\uD83D\uDC94".matches(".+"));
         //中文不匹配Emoji
         assertFalse("\uD83D\uDC94".matches("[\u4e00-\u9fa5]+"));
+    }
 
+    @Test
+    public void refreshFastestRisingUsers(){
+        accountService.refreshFastestRisingUsers();
     }
 }

@@ -1,9 +1,6 @@
 package com.lebo.service.account;
 
-import com.lebo.entity.Favorite;
-import com.lebo.entity.FileInfo;
-import com.lebo.entity.HotUser;
-import com.lebo.entity.User;
+import com.lebo.entity.*;
 import com.lebo.event.AfterUserCreateEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.UserDao;
@@ -24,7 +21,6 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -492,6 +488,76 @@ public class AccountService extends AbstractMongoService {
 
     public boolean isScreenNameValid(String screenName) {
         return screenNamePattern.matcher(screenName).matches();
+    }
+
+    /**
+     * 上升最快用户:按1小时内用户获得的红心数排名
+     */
+    public void refreshFastestRisingUsers() {
+        Date dateAgo = DateUtils.addMinutes(dateProvider.getDate(), settingService.getSetting().getFastestRisingMinutes() * -1);
+
+        //因为不需要返回结果，所有不用mongoTemplate#mapReduce
+        DBObject dbObject = new BasicDBObject();
+        dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
+        dbObject.put("map", String.format("function(){ emit(this.%s, 1); }", Favorite.POST_USERID_KEY));
+        dbObject.put("reduce", "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }");
+        dbObject.put("out", mongoTemplate.getCollectionName(FastestRisingUser.class));
+        dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(dateAgo).get());
+        dbObject.put("verbose", true);
+
+        logger.debug("正在刷新上升最快用户: command : {}", dbObject);
+
+        CommandResult result = mongoTemplate.executeCommand(dbObject);
+        result.throwOnError();
+
+        logger.debug("正在刷新上升最快用户，result : {}", result);
+    }
+
+    /**
+     * 上升最快用户:查询
+     */
+    public List<User> findFastestRisingUsers(Pageable pageable) {
+        List<FastestRisingUser> fastestRisingUsers = mongoTemplate.find(new Query().with(pageable), FastestRisingUser.class);
+        List<User> users = new ArrayList<User>(fastestRisingUsers.size());
+        for (FastestRisingUser fastestRisingUser : fastestRisingUsers) {
+            users.add(getUser(fastestRisingUser.getId()));
+        }
+        return users;
+    }
+
+    /**
+     * Top50用户:按一周内用户获得的红心数排名
+     */
+    public void refreshTop50Users() {
+        Date dateAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getTop50Days() * -1);
+
+        //因为不需要返回结果，所有不用mongoTemplate#mapReduce
+        DBObject dbObject = new BasicDBObject();
+        dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
+        dbObject.put("map", String.format("function(){ emit(this.%s, 1); }", Favorite.POST_USERID_KEY));
+        dbObject.put("reduce", "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }");
+        dbObject.put("out", mongoTemplate.getCollectionName(Top50User.class));
+        dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(dateAgo).get());
+        dbObject.put("verbose", true);
+
+        logger.debug("正在刷新Top50用户: command : {}", dbObject);
+
+        CommandResult result = mongoTemplate.executeCommand(dbObject);
+        result.throwOnError();
+
+        logger.debug("正在刷新Top50用户，result : {}", result);
+    }
+
+    /**
+     * Top50用户:查询
+     */
+    public List<User> findTop50Users(Pageable pageable) {
+        List<Top50User> top50Users = mongoTemplate.find(new Query().with(pageable), Top50User.class);
+        List<User> users = new ArrayList<User>(top50Users.size());
+        for (Top50User top50User : top50Users) {
+            users.add(getUser(top50User.getId()));
+        }
+        return users;
     }
 
     //-- Session --

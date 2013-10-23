@@ -28,7 +28,6 @@
 
     <div class="control-group">
         <label for="officialAccountId" class="control-label">乐播 账号ID:</label>
-
         <div class="controls">
             <input type="text" id="officialAccountId" name="officialAccountId" value="${setting.officialAccountId}"
                    class="input-large required"/>
@@ -38,7 +37,6 @@
 
     <div class="control-group">
         <label for="digestAccountId" class="control-label">乐播精品 账号ID:</label>
-
         <div class="controls">
             <input type="text" id="digestAccountId" name="digestAccountId" value="${setting.digestAccountId}"
                    class="input-large required"/>
@@ -48,7 +46,6 @@
 
     <div class="control-group">
         <label for="editorAccountId" class="control-label">编辑 账号ID:</label>
-
         <div class="controls">
             <input type="text" id="editorAccountId" name="editorAccountId" value="${setting.editorAccountId}"
                    class="input-large required"/>
@@ -67,11 +64,19 @@
 
     <div class="control-group">
         <label for="hotDays" class="control-label">热门:</label>
-
         <div class="controls">
-            <input type="text" id="hotDays" name="hotDays" value="${setting.hotDays}"
-                   class="input-large required"/>
-            最近几天的帖子按红心数降序排序
+            最近<input type="text" id="hotDays" name="hotDays" value="${setting.hotDays}"
+                   class="input-mini required"/>
+            天的帖子按红心数降序排序
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label for="fastestRisingMinutes" class="control-label">上升最快:</label>
+        <div class="controls">
+            用户按<input type="text" id="fastestRisingMinutes" name="fastestRisingMinutes" value="${setting.fastestRisingMinutes}"
+                   class="input-mini required"/>
+            分钟内获得的红心数排名
         </div>
     </div>
 
@@ -84,7 +89,6 @@
 
     <div class="control-group">
         <label for="appStoreLeboUrl" class="control-label">ios乐播app下载:</label>
-
         <div class="controls">
             <input type="text" id="appStoreLeboUrl" name="appStoreLeboUrl" value="${setting.appStoreLeboUrl}"
                    class="input-large required"/>
@@ -94,7 +98,6 @@
 
     <div class="control-group">
         <label for="leboAppAndroidDownloadUrl" class="control-label">android乐播app下载:</label>
-
         <div class="controls">
             <input type="text" id="leboAppAndroidDownloadUrl" name="leboAppAndroidDownloadUrl"
                    value="${setting.leboAppAndroidDownloadUrl}"
@@ -109,7 +112,6 @@
 
     <div class="control-group">
         <label for="hotuser_button1_backgroundColor" class="control-label">背景颜色:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button1_backgroundColor" name="hotuser_button1_backgroundColor"
                    value="${setting.hotuser_button1_backgroundColor}"
@@ -120,7 +122,6 @@
 
     <div class="control-group">
         <label for="hotuser_button1_imageKey" class="control-label">图片key:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button1_imageKey" name="hotuser_button1_imageKey"
                    value="${setting.hotuser_button1_imageKey}"
@@ -132,7 +133,6 @@
 
     <div class="control-group">
         <label for="hotuser_button1_text" class="control-label">文字:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button1_text" name="hotuser_button1_text"
                    value="${setting.hotuser_button1_text}"
@@ -144,7 +144,6 @@
 
     <div class="control-group">
         <label for="hotuser_button2_backgroundColor" class="control-label">背景颜色:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button2_backgroundColor" name="hotuser_button2_backgroundColor"
                    value="${setting.hotuser_button2_backgroundColor}"
@@ -155,7 +154,6 @@
 
     <div class="control-group">
         <label for="hotuser_button2_imageKey" class="control-label">图片key:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button2_imageKey" name="hotuser_button2_imageKey"
                    value="${setting.hotuser_button2_imageKey}"
@@ -167,7 +165,6 @@
 
     <div class="control-group">
         <label for="hotuser_button2_text" class="control-label">文字:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button2_text" name="hotuser_button2_text"
                    value="${setting.hotuser_button2_text}"
@@ -179,7 +176,6 @@
 
     <div class="control-group">
         <label for="hotuser_button3_backgroundColor" class="control-label">背景颜色:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button3_backgroundColor" name="hotuser_button3_backgroundColor"
                    value="${setting.hotuser_button3_backgroundColor}"
@@ -190,7 +186,6 @@
 
     <div class="control-group">
         <label for="hotuser_button3_imageKey" class="control-label">图片key:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button3_imageKey" name="hotuser_button3_imageKey"
                    value="${setting.hotuser_button3_imageKey}"
@@ -202,7 +197,6 @@
 
     <div class="control-group">
         <label for="hotuser_button3_text" class="control-label">文字:</label>
-
         <div class="controls">
             <input type="text" id="hotuser_button3_text" name="hotuser_button3_text"
                    value="${setting.hotuser_button3_text}"

@@ -164,7 +164,7 @@
 <strong>上传</strong>
 <table class="table table-hover">
 <tr>
-    <td>
+    <td class="td1">
         <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
     </td>
     <td>
@@ -326,6 +326,22 @@
         </td>
         <td>
             返回红人榜按钮设置 & 推荐用户。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/users/fastestRising" text="GET users/fastestRising v1.1"/>
+        </td>
+        <td>
+            返回上升最快用户列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/users/top50" text="GET users/top50 v1.1"/>
+        </td>
+        <td>
+            返回Top50用户列表。
         </td>
     </tr>
 </table>
