@@ -22,6 +22,7 @@ public class Setting extends IdEntity {
     private Integer digestDays = 2;
     private Integer hotDays = 2;
     private Integer fastestRisingMinutes = 60;
+    private Integer top50Days = 7;
 
     private String appStoreLeboUrl = "https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8";
     private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
@@ -190,5 +191,13 @@ public class Setting extends IdEntity {
 
     public void setFastestRisingMinutes(Integer fastestRisingMinutes) {
         this.fastestRisingMinutes = fastestRisingMinutes;
+    }
+
+    public Integer getTop50Days() {
+        return top50Days;
+    }
+
+    public void setTop50Days(Integer top50Days) {
+        this.top50Days = top50Days;
     }
 }

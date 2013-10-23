@@ -2,6 +2,7 @@ package com.lebo.rest;
 
 import com.lebo.entity.FastestRisingUser;
 import com.lebo.entity.Setting;
+import com.lebo.entity.Top50User;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.HotUserListDto;
@@ -125,6 +126,18 @@ public class UserRestController {
     @ResponseBody
     public Object fastestRising(@Valid PageRequest pageRequest) {
         pageRequest.setSort(FASTEST_RISING_SORT);
-        return accountService.toBasicUserDtos(accountService.findFastestRisingUsers(pageRequest));
+        return accountService.toUserDtos(accountService.findFastestRisingUsers(pageRequest));
+    }
+
+    /**
+     * Top50
+     */
+    public static final Sort TOP50_SORT = new Sort(Sort.Direction.DESC, Top50User.VALUE_KEY);
+
+    @RequestMapping(value = PREFIX_API_1_1_USERS + "top50.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object top50(@Valid PageRequest pageRequest) {
+        pageRequest.setSort(TOP50_SORT);
+        return accountService.toUserDtos(accountService.findTop50Users(pageRequest));
     }
 }

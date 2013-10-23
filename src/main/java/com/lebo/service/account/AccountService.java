@@ -491,7 +491,7 @@ public class AccountService extends AbstractMongoService {
     }
 
     /**
-     * 上升最快的用户:按1小时内用户获得的红心数排名
+     * 上升最快用户:按1小时内用户获得的红心数排名
      */
     public void refreshFastestRisingUsers() {
         Date dateAgo = DateUtils.addMinutes(dateProvider.getDate(), settingService.getSetting().getFastestRisingMinutes() * -1);
@@ -514,13 +514,48 @@ public class AccountService extends AbstractMongoService {
     }
 
     /**
-     * 查询上升最快用户
+     * 上升最快用户:查询
      */
     public List<User> findFastestRisingUsers(Pageable pageable) {
         List<FastestRisingUser> fastestRisingUsers = mongoTemplate.find(new Query().with(pageable), FastestRisingUser.class);
         List<User> users = new ArrayList<User>(fastestRisingUsers.size());
         for (FastestRisingUser fastestRisingUser : fastestRisingUsers) {
             users.add(getUser(fastestRisingUser.getId()));
+        }
+        return users;
+    }
+
+    /**
+     * Top50用户:按一周内用户获得的红心数排名
+     */
+    public void refreshTop50Users() {
+        Date dateAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getTop50Days() * -1);
+
+        //因为不需要返回结果，所有不用mongoTemplate#mapReduce
+        DBObject dbObject = new BasicDBObject();
+        dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
+        dbObject.put("map", String.format("function(){ emit(this.%s, 1); }", Favorite.POST_USERID_KEY));
+        dbObject.put("reduce", "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }");
+        dbObject.put("out", mongoTemplate.getCollectionName(Top50User.class));
+        dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(dateAgo).get());
+        dbObject.put("verbose", true);
+
+        logger.debug("正在刷新Top50用户: command : {}", dbObject);
+
+        CommandResult result = mongoTemplate.executeCommand(dbObject);
+        result.throwOnError();
+
+        logger.debug("正在刷新Top50用户，result : {}", result);
+    }
+
+    /**
+     * Top50用户:查询
+     */
+    public List<User> findTop50Users(Pageable pageable) {
+        List<Top50User> top50Users = mongoTemplate.find(new Query().with(pageable), Top50User.class);
+        List<User> users = new ArrayList<User>(top50Users.size());
+        for (Top50User top50User : top50Users) {
+            users.add(getUser(top50User.getId()));
         }
         return users;
     }

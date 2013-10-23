@@ -3,11 +3,11 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="上升最快" method="GET" action="${ctx}/api/1.1/users/fastestRising.json">
+<tags:form name="Top50" method="GET" action="${ctx}/api/1.1/users/top50.json">
     <tags:fields-page-size/>
 </tags:form>
 
-<tags:example method="GET" url="http://localhost:8080/api/1.1/users/fastestRising.json">
+<tags:example method="GET" url="http://localhost:8080/api/1.1/users/top50.json">
     [
         {
             id: "525124e81a88ac9dfcbd9ce0",
