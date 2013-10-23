@@ -7,6 +7,7 @@ package com.lebo.rest.dto;
  */
 public class SettingDto {
     private String officialAccountId;
+    private String digestAccountId;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -14,5 +15,13 @@ public class SettingDto {
 
     public void setOfficialAccountId(String officialAccountId) {
         this.officialAccountId = officialAccountId;
+    }
+
+    public String getDigestAccountId() {
+        return digestAccountId;
+    }
+
+    public void setDigestAccountId(String digestAccountId) {
+        this.digestAccountId = digestAccountId;
     }
 }
