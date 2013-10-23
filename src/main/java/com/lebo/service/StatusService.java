@@ -714,7 +714,7 @@ public class StatusService extends AbstractMongoService {
     public List<Post> findDigest(PaginationParam paginationParam) {
         Setting setting = settingService.getSetting();
         Query query = new Query();
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getOfficialAccountId()));
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
         paginationById(query, paginationParam);
 
         return mongoTemplate.find(query, Post.class);
@@ -723,7 +723,7 @@ public class StatusService extends AbstractMongoService {
     public List<Post> findUserDigest(String userId, PaginationParam paginationParam) {
         Setting setting = settingService.getSetting();
         Query query = new Query();
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getOfficialAccountId()));
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
         query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
         paginationById(query, paginationParam);
 
@@ -733,7 +733,7 @@ public class StatusService extends AbstractMongoService {
     public int countUserDigest(String userId) {
         Setting setting = settingService.getSetting();
         Query query = new Query();
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getOfficialAccountId()));
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
         query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
         return ((Long) mongoTemplate.count(query, Post.class)).intValue();
     }

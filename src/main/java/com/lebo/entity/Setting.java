@@ -18,6 +18,7 @@ public class Setting extends IdEntity {
 
     private String officialAccountId;
     private String editorAccountId;//编辑id，编辑发的视频将显示在小编制作频道
+    private String digestAccountId; //该账号专门用来指定精品视频，不允许被关注，该账号转发的视频会出现在精华页
 
     private Integer digestDays = 2;
     private Integer hotDays = 2;
@@ -183,4 +184,11 @@ public class Setting extends IdEntity {
         this.jiuJiuChongYangJieTopPostId = jiuJiuChongYangJieTopPostId;
     }
 
+    public String getDigestAccountId() {
+        return digestAccountId;
+    }
+
+    public void setDigestAccountId(String digestAccountId) {
+        this.digestAccountId = digestAccountId;
+    }
 }
