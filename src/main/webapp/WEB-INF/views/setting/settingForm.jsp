@@ -26,16 +26,27 @@
     <h2>基本设置</h2>
 
     <div class="control-group">
-        <label for="officialAccountId" class="control-label">官方账号ID:</label>
+        <label for="officialAccountId" class="control-label">乐播 账号ID:</label>
 
         <div class="controls">
             <input type="text" id="officialAccountId" name="officialAccountId" value="${setting.officialAccountId}"
                    class="input-large required"/>
+            新用户自动关注该账号
         </div>
     </div>
 
     <div class="control-group">
-        <label for="editorAccountId" class="control-label">编辑账号ID:</label>
+        <label for="digestAccountId" class="control-label">乐播精品 账号ID:</label>
+
+        <div class="controls">
+            <input type="text" id="digestAccountId" name="digestAccountId" value="${setting.digestAccountId}"
+                   class="input-large required"/>
+            该账号专门选精品视频，不允许被关注，该账号转发的视频会出现在精华页
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label for="editorAccountId" class="control-label">编辑 账号ID:</label>
 
         <div class="controls">
             <input type="text" id="editorAccountId" name="editorAccountId" value="${setting.editorAccountId}"
