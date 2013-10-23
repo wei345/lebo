@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,10 +54,19 @@ public class VideoConvertService {
     private MongoTemplate mongoTemplate;
 
     public void converPostVideo(String postId) throws IOException {
+        Post post = statusService.getPost(postId);
+
+        //获取原始帖
+        if(post.getOriginPostId() != null){
+            postId = post.getOriginPostId();
+            post = statusService.getPost(post.getOriginPostId());
+        }
+
+        Assert.notNull(post);
+
         mongoTemplate.updateFirst(new Query(new Criteria(Post.ID_KEY).is(postId)),
                 new Update().set(Post.VIDEO_CONVERT_STATUS_KEY, VIDEO_CONVERT_STATUS_CONVERTING), Post.class);
 
-        Post post = statusService.getPost(postId);
         if(post.getVideoConverted() != null){
             logger.debug("{} 已转码，中止, postId : {}", VIDEO_CONVERT_LOG_PREFIX, postId);
             return;
