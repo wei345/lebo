@@ -410,6 +410,13 @@ public class StatusService extends AbstractMongoService {
 
         List<HotPost> hotPosts = new ArrayList<HotPost>(1000);
         for (Post post : posts) {
+
+            //TODO 临时隐藏“性”帖子 begin
+            if (post.getHashtags() != null && post.getHashtags().contains("XXX")) {
+                continue;
+            }
+            //TODO 临时隐藏“性”帖子 end
+
             Integer count = userId2count.get(post.getUserId());
 
             if (count == null) {
@@ -422,6 +429,8 @@ public class StatusService extends AbstractMongoService {
                 userId2count.put(post.getUserId(), count + 1);
             }
         }
+
+
         logger.debug("更新热门帖子 : 处理后得到 {} 个帖子", hotPosts.size());
 
         //更新热门帖子
