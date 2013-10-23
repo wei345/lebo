@@ -67,7 +67,7 @@
         <div class="controls">
             最近<input type="text" id="hotDays" name="hotDays" value="${setting.hotDays}"
                    class="input-mini required"/>
-            天的帖子按红心数降序排序
+            天的帖子按红心数排序
         </div>
     </div>
 
@@ -76,7 +76,16 @@
         <div class="controls">
             用户按<input type="text" id="fastestRisingMinutes" name="fastestRisingMinutes" value="${setting.fastestRisingMinutes}"
                    class="input-mini required"/>
-            分钟内获得的红心数排名
+            分钟内获得的红心数排序
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label for="top50Days" class="control-label">Top 50:</label>
+        <div class="controls">
+            用户按<input type="text" id="top50Days" name="top50Days" value="${setting.top50Days}"
+                      class="input-mini required"/>
+            天内获得的红心数排序
         </div>
     </div>
 
