@@ -13,6 +13,7 @@ public class Task extends IdEntity {
     public static final String STATUS_VALUE_DONE = "done";
     public static final String STATUS_VALUE_TODO = "todo";
     public static final String TYPE_VALUE_PUBLISH_VIDEO = "publish-video";
+    public static final String TYPE_VALUE_APNS_ALL_USER = "publish-notification:apns-all-user";
 
     private String title;
     private String description;
@@ -24,12 +25,24 @@ public class Task extends IdEntity {
     private Date createdAt;
     private String status;
     public static final String STATUS_KEY = "status";
-    //-- 定时发布视频 --
+    //-- 定时发布视频 --//
     private FileInfo video;
     private FileInfo videoFirstFrame;
     private String videoText;
     private String videoUserId;
     private String videoSource;
+    //-- 发布通知 --//
+    private String notificationText;
+    private Integer notificationSentCount;
+
+    public Task(){}
+
+    public Task(String type, String userId, Date createdAt, String title){
+        this.type = type;
+        this.userId = userId;
+        this.createdAt = createdAt;
+        this.title = title;
+    }
 
     // JSR303 BeanValidator的校验规则
     @NotBlank
@@ -127,5 +140,21 @@ public class Task extends IdEntity {
 
     public void setVideoSource(String videoSource) {
         this.videoSource = videoSource;
+    }
+
+    public String getNotificationText() {
+        return notificationText;
+    }
+
+    public void setNotificationText(String notificationText) {
+        this.notificationText = notificationText;
+    }
+
+    public Integer getNotificationSentCount() {
+        return notificationSentCount;
+    }
+
+    public void setNotificationSentCount(Integer notificationSentCount) {
+        this.notificationSentCount = notificationSentCount;
     }
 }
