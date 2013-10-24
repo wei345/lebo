@@ -2,8 +2,11 @@ package com.lebo.service;
 
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Task;
+import com.lebo.entity.User;
+import com.lebo.jms.ApnsMessageProducer;
 import com.lebo.repository.TaskDao;
 import com.lebo.service.account.AccountService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -13,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author: Wei Liu
@@ -30,6 +35,8 @@ public class TaskService extends AbstractMongoService {
     private FileStorageService fileStorageService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ApnsMessageProducer apnsMessageProducer;
 
     public static final String UPLOAD_VIDEO_EXT = "mp4";
     public static final String UPLOAD_PHOTO_EXT = "jpg";
@@ -109,6 +116,47 @@ public class TaskService extends AbstractMongoService {
             }
             taskDao.delete(id);
         }
+    }
+
+    /**
+     * 给所有ios用户发送推送通知
+     */
+    public Task publishApnsAllUser(String text) {
+        Task task = new Task(Task.TYPE_VALUE_APNS_ALL_USER,
+                accountService.getCurrentUserId(),
+                new Date(),
+                "发布通知");
+
+        //获取用户
+        Query query = new Query();
+        query.addCriteria(new Criteria(User.APNS_PRODUCTION_TOKEN_KEY).ne(""))
+                .fields().include(User.APNS_PRODUCTION_TOKEN_KEY)
+                .include(User.SCREEN_NAME_KEY);
+        List<User> users = mongoTemplate.find(query, User.class);
+
+        //发送
+        Set<String> allToken = new HashSet<String>(users.size());
+        for (User user : users) {
+            if (StringUtils.isNotBlank(user.getApnsProductionToken()) &&
+                    !allToken.contains(user.getApnsProductionToken())) {
+                allToken.add(user.getApnsProductionToken());
+                apnsMessageProducer.sendNotificationQueue(text, user.getApnsProductionToken(), user);
+            }
+        }
+
+        //保存任务结果
+        task.setNotificationText(text);
+        task.setNotificationSentCount(allToken.size());
+
+        taskDao.save(task);
+        return task;
+    }
+
+    public List<Task> getTasksByType(String type) {
+        Query query = new Query();
+        query.addCriteria(new Criteria(Task.TYPE_KEY).is(type))
+                .with(new Sort(Sort.Direction.DESC, Task.ID_KEY));
+        return mongoTemplate.find(query, Task.class);
     }
 
 }
