@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * @author: Wei Liu
@@ -23,13 +24,25 @@ public class FeedbackService extends AbstractMongoService {
 
     @Autowired
     private ConvertVideoMessageProducer convertVideoMessageProducer;
+    @Autowired
+    private StatusService statusService;
 
     /**
      * 将帖子或视频评论添加到转码队列
      */
     public void addVideoConvertQueue(String objectType, String objectId) {
+        Assert.hasText(objectType);
+        Assert.hasText(objectId);
+
         //将帖子加入转码队列
         if (VideoConvertService.OBJECT_TYPE_POST.equals(objectType)) {
+            Post post = statusService.getPost(objectId);
+            Assert.notNull(post);
+
+            if (post.getOriginPostId() != null) {
+                objectId = post.getOriginPostId();
+            }
+
             Query query = new Query();
             query.addCriteria(new Criteria(Post.ID_KEY).is(objectId));
             query.addCriteria(new Criteria(Post.VIDEO_CONVERT_STATUS_KEY).is(VideoConvertService.VIDEO_CONVERT_STATUS_UNCONVERT));
