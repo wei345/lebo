@@ -698,11 +698,11 @@ public class StatusService extends AbstractMongoService {
         query.with(PaginationParam.ID_DESC_SORT).limit(paginationParam.getCount());
 
         //-- 临时置顶视频 begin --//
-        //TODO 让新版客户端做banner功能，去掉在"九九重阳节"置顶视频
-        //临时在"九九重阳节"频道置顶视频，因为新版客户端忘记做banner功能
-        if ("九九重阳节".equals(name) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
-            if (settingService.getSetting().getJiuJiuChongYangJieTopPostId() != null) {
-                Post topPost = getPost(settingService.getSetting().getJiuJiuChongYangJieTopPostId());
+        //TODO 让新版客户端做banner功能，去掉在"乐播模仿秀"置顶视频
+        //临时在"乐播模仿秀"频道置顶视频，因为新版客户端忘记做banner功能
+        if ("乐播模仿秀".equals(name) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
+            if (settingService.getSetting().getTopPostId() != null) {
+                Post topPost = getPost(settingService.getSetting().getTopPostId());
                 if (topPost != null) {
                     query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
                     List<Post> posts = mongoTemplate.find(query, Post.class);
