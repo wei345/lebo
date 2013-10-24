@@ -63,9 +63,9 @@ public class PublishNotificationController {
         try {
             Task task = taskService.publishApnsAllUser(text);
 
-            String message = new StringBuilder("成功: ")
+            String message = new StringBuilder("成功. ")
                     .append(task.getNotificationSentCount())
-                    .append(" 条通知已加入推送队列并开始推送, 预计全部完成需要 ")
+                    .append(" 条, 预计推送完成需要 ")
                     .append((task.getNotificationSentCount() <= totalApnsThreadCount) ?
                             secondPerApns :
                             (task.getNotificationSentCount() * secondPerApns) / totalApnsThreadCount)

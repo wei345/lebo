@@ -6,6 +6,7 @@ import com.lebo.entity.User;
 import com.lebo.jms.ApnsMessageProducer;
 import com.lebo.repository.TaskDao;
 import com.lebo.service.account.AccountService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -136,7 +137,8 @@ public class TaskService extends AbstractMongoService {
         //发送
         Set<String> allToken = new HashSet<String>(users.size());
         for (User user : users) {
-            if (!allToken.contains(user.getApnsProductionToken())) {
+            if (StringUtils.isNotBlank(user.getApnsProductionToken()) &&
+                    !allToken.contains(user.getApnsProductionToken())) {
                 allToken.add(user.getApnsProductionToken());
                 apnsMessageProducer.sendNotificationQueue(text, user.getApnsProductionToken(), user);
             }
