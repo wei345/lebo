@@ -43,8 +43,8 @@ public class Setting extends IdEntity {
     private String hotuser_button3_imageKey = "images/hotuser/btn3.png";
     private String hotuser_button3_text = "导演排行";
 
-    //TODO 让新版客户端做banner功能，去掉在"九九重阳节"置顶视频
-    private String jiuJiuChongYangJieTopPostId;
+    //TODO 让新版客户端做banner功能，去掉置顶视频
+    private String topPostId;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -178,12 +178,12 @@ public class Setting extends IdEntity {
         this.editorAccountId = editorAccountId;
     }
 
-    public String getJiuJiuChongYangJieTopPostId() {
-        return jiuJiuChongYangJieTopPostId;
+    public String getTopPostId() {
+        return topPostId;
     }
 
-    public void setJiuJiuChongYangJieTopPostId(String jiuJiuChongYangJieTopPostId) {
-        this.jiuJiuChongYangJieTopPostId = jiuJiuChongYangJieTopPostId;
+    public void setTopPostId(String topPostId) {
+        this.topPostId = topPostId;
     }
 
     public String getDigestAccountId() {
