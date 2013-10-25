@@ -8,6 +8,7 @@ import com.lebo.repository.TaskDao;
 import com.lebo.service.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -37,6 +38,10 @@ public class TaskService extends AbstractMongoService {
     private AccountService accountService;
     @Autowired
     private ApnsMessageProducer apnsAllUserMessageProducer;
+    @Value("${jms.apnsAllUserQueueTotalThreadCount}")
+    private int apnsAllUserQueueTotalThreadCount;
+    @Value("${apns.avgPushTimeSeconds}")
+    private int avgPushTimeSeconds;
 
     public static final String UPLOAD_VIDEO_EXT = "mp4";
     public static final String UPLOAD_PHOTO_EXT = "jpg";
@@ -159,4 +164,11 @@ public class TaskService extends AbstractMongoService {
         return mongoTemplate.find(query, Task.class);
     }
 
+    public int getApnsAllUserQueueTotalThreadCount() {
+        return apnsAllUserQueueTotalThreadCount;
+    }
+
+    public int getAvgPushTimeSeconds() {
+        return avgPushTimeSeconds;
+    }
 }

@@ -21,6 +21,7 @@
 
         <!-- activemq settings -->
         <replace key="jms.broker_url">tcp://10.132.40.139:61616</replace>
+        <replace key="jms.apnsAllUserQueueTotalThreadCount">120</replace>
 
         <!-- cluster settings -->
         <replace key="server.node_name">app1</replace>

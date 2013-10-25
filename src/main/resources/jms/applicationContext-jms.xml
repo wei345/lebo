@@ -80,7 +80,7 @@
         <property name="destination" ref="apnsAllUserQueue"/>
         <property name="messageListener" ref="apnsAllUserMessageListener"/>
         <property name="concurrentConsumers" value="1"/>
-        <property name="maxConcurrentConsumers" value="60"/>
+        <property name="maxConcurrentConsumers" value="${jms.apnsAllUserQueuePerNodeThreadCount}"/>
         <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>
     </bean>
     <!-- 全网 APNS MESSAGE end -->

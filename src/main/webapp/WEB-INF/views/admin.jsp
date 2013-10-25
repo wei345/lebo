@@ -23,5 +23,5 @@
 
 <ul>
     <li><a href="${ctx}/admin/task/publish-video">发布视频</a></li>
-    <li><a href="${ctx}/admin/task/apns-all-user">发布通知</a></li>
+    <li><a href="${ctx}/admin/task/apns-all-user">推送通知</a></li>
 </ul>
