@@ -36,7 +36,7 @@ public class TaskService extends AbstractMongoService {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private ApnsMessageProducer apnsMessageProducer;
+    private ApnsMessageProducer apnsAllUserMessageProducer;
 
     public static final String UPLOAD_VIDEO_EXT = "mp4";
     public static final String UPLOAD_PHOTO_EXT = "jpg";
@@ -140,7 +140,7 @@ public class TaskService extends AbstractMongoService {
             if (StringUtils.isNotBlank(user.getApnsProductionToken()) &&
                     !allToken.contains(user.getApnsProductionToken())) {
                 allToken.add(user.getApnsProductionToken());
-                apnsMessageProducer.sendNotificationQueue(text, user.getApnsProductionToken(), user);
+                apnsAllUserMessageProducer.sendNotificationQueue(text, user.getApnsProductionToken(), user);
             }
         }
 
