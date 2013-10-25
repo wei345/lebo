@@ -73,6 +73,7 @@ public class User extends IdEntity {
     private String salt;
     @Indexed
     private List<String> roles = new ArrayList<String>(1);
+    public static final String ROLES_KEY = "roles";
 
     //用户的粉丝数
     @Indexed(direction = IndexDirection.DESCENDING)
@@ -375,7 +376,7 @@ public class User extends IdEntity {
     }
 
     public String getProfileImageOriginalUrl() {
-        if(profileImageOriginal == null){
+        if (profileImageOriginal == null) {
             return null;
         }
         return FileContentUrlUtils.getContentUrl(profileImageOriginal);
