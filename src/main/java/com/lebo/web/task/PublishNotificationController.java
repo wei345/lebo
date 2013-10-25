@@ -5,6 +5,7 @@ import com.lebo.entity.User;
 import com.lebo.service.TaskService;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,6 @@ public class PublishNotificationController {
     @Autowired
     private AccountService accountService;
 
-    private int totalApnsThreadCount = 20;
-    private int secondPerApns = 6;
-
     @RequestMapping(value = "apns-all-user", method = RequestMethod.GET)
     public String apnsAllUserForm(Model model) {
         List<Task> tasks = taskService.getTasksByType(Task.TYPE_VALUE_APNS_ALL_USER);
@@ -54,6 +52,8 @@ public class PublishNotificationController {
         }
 
         model.addAttribute("tasks", maps);
+        model.addAttribute("avgPushTimeSeconds", taskService.getAvgPushTimeSeconds());
+        model.addAttribute("oneSecondPushCount", taskService.getApnsAllUserQueueTotalThreadCount() / taskService.getAvgPushTimeSeconds());
         return "task/apnsAllUser";
     }
 
@@ -66,9 +66,9 @@ public class PublishNotificationController {
             String message = new StringBuilder("成功. ")
                     .append(task.getNotificationSentCount())
                     .append(" 条通知已加入推送队列并开始推送, 预计推送完成需要 ")
-                    .append((task.getNotificationSentCount() <= totalApnsThreadCount) ?
-                            secondPerApns :
-                            (task.getNotificationSentCount() * secondPerApns) / totalApnsThreadCount)
+                    .append((task.getNotificationSentCount() <= taskService.getApnsAllUserQueueTotalThreadCount()) ?
+                            taskService.getAvgPushTimeSeconds() :
+                            (task.getNotificationSentCount() * taskService.getAvgPushTimeSeconds()) / taskService.getApnsAllUserQueueTotalThreadCount())
                     .append(" 秒")
                     .toString();
 

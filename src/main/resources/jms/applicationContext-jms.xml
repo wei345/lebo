@@ -47,6 +47,9 @@
         <property name="notifyQueue" ref="apnsQueue"/>
     </bean>
 
+    <!-- 异步接收消息处理类 -->
+    <bean id="apnsMessageListener" class="com.lebo.jms.ApnsMessageListener"/>
+
     <!-- 异步接收Queue消息Container -->
     <bean id="apnsQueueContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="advancedConnectionFactory"/>
@@ -58,10 +61,29 @@
         <!-- 设置消息确认模式为Client -->
         <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>
     </bean>
-
-    <!-- 异步接收消息处理类 -->
-    <bean id="apnsMessageListener" class="com.lebo.jms.ApnsMessageListener"/>
     <!-- APNS MESSAGE end -->
+
+    <!-- 全网 APNS MESSAGE begin -->
+    <bean id="apnsAllUserQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="q.apns-all-user"/>
+    </bean>
+
+    <bean id="apnsAllUserMessageProducer" class="com.lebo.jms.ApnsMessageProducer">
+        <property name="jmsTemplate" ref="advancedJmsTemplate"/>
+        <property name="notifyQueue" ref="apnsAllUserQueue"/>
+    </bean>
+
+    <bean id="apnsAllUserMessageListener" class="com.lebo.jms.ApnsMessageListener"/>
+
+    <bean id="apnsAllUserQueueContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="advancedConnectionFactory"/>
+        <property name="destination" ref="apnsAllUserQueue"/>
+        <property name="messageListener" ref="apnsAllUserMessageListener"/>
+        <property name="concurrentConsumers" value="1"/>
+        <property name="maxConcurrentConsumers" value="${jms.apnsAllUserQueuePerNodeThreadCount}"/>
+        <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>
+    </bean>
+    <!-- 全网 APNS MESSAGE end -->
 
     <!-- SETTING UPDATE begin -->
     <!-- Topic定义 -->
