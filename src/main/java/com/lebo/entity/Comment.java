@@ -35,6 +35,7 @@ public class Comment extends IdEntity {
     private FileInfo videoFirstFrame;
     //语音(mp4, amr)
     private FileInfo audio;
+    public static final String AUDIO_KEY = "audio";
     //来源，如：手机客户端、网页版
     private String source;
     private GeoLocation geoLocation;
