@@ -434,6 +434,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/notifications/list" text="GET notifications/list v1.1"/>
+        </td>
+        <td>
+            返回当前登录用户的通知(消息)列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/notifications/markAllRead" text="POST notifications/markAllRead"/>
         </td>
         <td>

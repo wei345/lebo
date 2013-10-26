@@ -165,7 +165,7 @@ public class TaskService extends AbstractMongoService {
         for (User user : users) {
             //系统通知
             Notification notification = new Notification();
-            notification.setActivityType(Notification.ACTIVITY_TYPE_SYSTEM);
+            notification.setActivityType(Notification.ACTIVITY_TYPE_LEBO_TEAM);
             notification.setCreatedAt(new Date());
             notification.setRecipientId(user.getId());
             notification.setUnread(true);

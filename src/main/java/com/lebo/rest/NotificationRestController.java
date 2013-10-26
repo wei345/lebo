@@ -22,7 +22,6 @@ import java.util.List;
  * Time: PM6:30
  */
 @Controller
-@RequestMapping("/api/1/notifications")
 public class NotificationRestController {
 
     @Autowired
@@ -30,18 +29,29 @@ public class NotificationRestController {
     @Autowired
     private AccountService accountService;
 
-    @RequestMapping(value = "list", method = RequestMethod.GET)
+    public static final String PREFIX_API_1 = "/api/1/notifications/";
+    public static final String PREFIX_API_1_1 = "/api/1.1/notifications/";
+
+    @RequestMapping(value = PREFIX_API_1 + "list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(@Valid PaginationParam param, @RequestParam(value = "unread", required = false) Boolean unread) {
+    public Object list(@Valid PaginationParam param,
+                       @RequestParam(value = "unread", required = false) Boolean unread) {
         List<Notification> notifications;
-        //在全部通知中查找，不区分是否未读
-        if (unread == null) {
-            notifications = notificationService.find(accountService.getCurrentUserId(), param);
-        }
-        //只查找未读的通知
-        else {
-            notifications = notificationService.findUnread(accountService.getCurrentUserId(), param);
-        }
+
+        String[] activityTypes = new String[]{
+                Notification.ACTIVITY_TYPE_REPOST,
+                Notification.ACTIVITY_TYPE_REPLY_POST,
+                Notification.ACTIVITY_TYPE_POST_AT,
+
+                Notification.ACTIVITY_TYPE_REPLY_COMMENT,
+                Notification.ACTIVITY_TYPE_COMMENT_AT,
+
+                Notification.ACTIVITY_TYPE_FAVORITE,
+                Notification.ACTIVITY_TYPE_FOLLOW
+        };
+
+        notifications = notificationService.find(accountService.getCurrentUserId(), unread, activityTypes, param);
+
         notificationService.markRead(notifications);
         return notificationService.toNotificationDtos(notifications);
     }
@@ -49,9 +59,28 @@ public class NotificationRestController {
     /**
      * 标记所有未读通知为已读。
      */
-    @RequestMapping(value = "markAllRead", method = RequestMethod.POST)
+    @RequestMapping(value = PREFIX_API_1 + "markAllRead", method = RequestMethod.POST)
     @ResponseBody
     public void markAllRead() {
         notificationService.markAllRead(accountService.getCurrentUserId());
+    }
+
+    @RequestMapping(value = PREFIX_API_1_1 + "list.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object list_v1_1(@Valid PaginationParam param,
+                            @RequestParam(value = "unread", required = false) Boolean unread,
+                            @RequestParam(value = "types", required = false) String types) {
+
+        String[] activityTypes = null;
+        if (types != null) {
+            activityTypes = types.split("\\s*,\\s*");
+        }
+
+        List<Notification> notifications;
+        notifications = notificationService.find(accountService.getCurrentUserId(), unread, activityTypes, param);
+
+        notificationService.markRead(notifications);
+
+        return notificationService.toNotificationDtos(notifications);
     }
 }

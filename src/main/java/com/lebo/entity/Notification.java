@@ -22,7 +22,8 @@ public class Notification extends IdEntity {
     public static final String ACTIVITY_TYPE_COMMENT_AT = "comment_at";
     public static final String ACTIVITY_TYPE_REPLY_POST = "reply_post";
     public static final String ACTIVITY_TYPE_REPLY_COMMENT = "reply_comment";
-    public static final String ACTIVITY_TYPE_SYSTEM = "system";
+    public static final String ACTIVITY_TYPE_LEBO_TEAM = "lebo_team";
+
     public static final String OBJECT_TYPE_POST = "post";
     public static final String OBJECT_TYPE_COMMENT = "comment";
 
@@ -37,6 +38,7 @@ public class Notification extends IdEntity {
     private String senderId;
     //关注、喜欢、转播、at、评论、评论的评论
     private String activityType;
+    public static final String ACTIVITY_TYPE_KEY = "activityType";
     //Post, Comment..
     private String objectType;
     private String objectId;

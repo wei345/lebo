@@ -38,8 +38,24 @@ public class NotificationService extends AbstractMongoService {
 
     public static final String FILE_COLLECTION_NAME = "notification";
 
-    public List<Notification> find(String recipientId, PaginationParam paginationParam) {
-        return notificationDao.find(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
+    public List<Notification> find(String recipientId, Boolean unread, String[] activityTypes, PaginationParam paginationParam) {
+
+        Query query = new Query();
+        if (recipientId != null) {
+            query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
+        }
+
+        if (unread != null) {
+            query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(unread));
+        }
+
+        if (activityTypes != null && activityTypes.length > 0) {
+            query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
+        }
+
+        paginationById(query, paginationParam);
+
+        return mongoTemplate.find(query, Notification.class);
     }
 
     public List<Notification> findUnread(String recipientId, PaginationParam paginationParam) {

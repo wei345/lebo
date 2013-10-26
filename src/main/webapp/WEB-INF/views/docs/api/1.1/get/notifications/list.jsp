@@ -4,7 +4,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="通知(消息)" action="${ctx}/api/1/notifications/list.json" method="GET">
+<tags:form name="通知(消息)" action="${ctx}/api/1.1/notifications/list.json" method="GET">
     <p>
         返回当前登录用户的通知(消息)列表。
     </p>
@@ -12,6 +12,10 @@
         unread=true，只返回未读通知。
     </p>
     <tags:field name="unread" value="true" optional="true"/>
+    <p>
+        指定一个或多个类型，多个类型之间以<code>,</code>分隔
+    </p>
+    <tags:field name="types" value="" optional="true"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>
@@ -48,7 +52,7 @@
             activityType
         </td>
         <td>
-           string
+            string
         </td>
         <td>
             通知类型
@@ -59,7 +63,7 @@
             relatedStatus
         </td>
         <td>
-           object
+            object
         </td>
         <td>
             相关的视频
@@ -96,6 +100,50 @@
         </td>
         <td>
             true: 未读，false: 已读
+        </td>
+    </tr>
+    <tr>
+        <td>
+            text
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+             通知内容:文字
+        </td>
+    </tr>
+    <tr>
+        <td>
+            imageUrl
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            通知内容:图片
+        </td>
+    </tr>
+    <tr>
+        <td>
+            senderName
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            发送者显示名
+        </td>
+    </tr>
+    <tr>
+        <td>
+            senderImageUrl
+        </td>
+        <td>
+            string
+        </td>
+        <td>
+            发送者头像
         </td>
     </tr>
 </table>
@@ -220,8 +268,33 @@
     如果返回结果中没有relatedStatus字段或其值为null，则表示该评论已被删除。
 </p>
 
-<tags:example method="GET" url="http://localhost:8080/api/1/notifications/list.json">
+<tags:example method="GET" url="http://localhost:8080/api/1.1/notifications/list.json">
     [
+        {
+            id: "526a6aaa1a8805aa4e5f361f",
+            sender: {
+                id: "525124e81a88ac9dfcbd9ce0",
+                screenName: "明丫丫是个爷们",
+                profileImageUrl: "http://file.dev.lebooo.com/525124e91a88ac9dfcbd9ce1",
+                profileImageBiggerUrl: "http://file.dev.lebooo.com/525124e91a88ac9dfcbd9ce3",
+                profileImageOriginalUrl: "http://file.dev.lebooo.com/525124e91a88ac9dfcbd9ce5",
+                createdAt: "Sun Oct 06 16:52:56 +0800 2013",
+                followersCount: 0,
+                friendsCount: 0,
+                statusesCount: 10,
+                beFavoritedCount: 1,
+                viewCount: 0,
+                digestCount: 0,
+                weiboVerified: false,
+                level: 0
+            },
+            activityType: "lebo_team",
+            createdAt: "Fri Oct 25 20:57:14 +0800 2013",
+            unread: false,
+            text: "test4",
+            senderName: "乐播团队",
+            senderImageUrl: "http://file.dev.lebooo.com/images/logo.png"
+        },
         {
             sender: {
                 id: "51dfd3d21a8855744379891f",
