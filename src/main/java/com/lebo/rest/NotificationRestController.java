@@ -63,7 +63,17 @@ public class NotificationRestController {
     @RequestMapping(value = PREFIX_API_1 + "markAllRead", method = RequestMethod.POST)
     @ResponseBody
     public void markAllRead() {
-        notificationService.markAllRead(accountService.getCurrentUserId());
+        notificationService.markAllRead(accountService.getCurrentUserId(), Arrays.asList(
+                Notification.ACTIVITY_TYPE_REPOST,
+                Notification.ACTIVITY_TYPE_REPLY_POST,
+                Notification.ACTIVITY_TYPE_POST_AT,
+
+                Notification.ACTIVITY_TYPE_REPLY_COMMENT,
+                Notification.ACTIVITY_TYPE_COMMENT_AT,
+
+                Notification.ACTIVITY_TYPE_FAVORITE,
+                Notification.ACTIVITY_TYPE_FOLLOW
+        ));
     }
 
     @RequestMapping(value = PREFIX_API_1_1 + "list.json", method = RequestMethod.GET)

@@ -58,10 +58,6 @@ public class NotificationService extends AbstractMongoService {
         return mongoTemplate.find(query, Notification.class);
     }
 
-    public List<Notification> findUnread(String recipientId, PaginationParam paginationParam) {
-        return notificationDao.findUnread(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
-    }
-
     public Notification create(Notification notification) {
         return notificationDao.save(notification);
     }
@@ -85,10 +81,11 @@ public class NotificationService extends AbstractMongoService {
     /**
      * 将指定用户的所有未读通知标记为已读。
      */
-    public void markAllRead(String userId) {
+    public void markAllRead(String userId, List<String> activityTypes) {
         Query query = new Query();
         query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(userId));
         query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+        query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
 
         mongoTemplate.updateMulti(query, new Update().set(Notification.UNREAD_KEY, false), Notification.class);
     }
