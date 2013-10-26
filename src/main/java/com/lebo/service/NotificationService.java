@@ -58,6 +58,23 @@ public class NotificationService extends AbstractMongoService {
         return mongoTemplate.find(query, Notification.class);
     }
 
+    public List<Notification> find(String recipientId, List<String> activityTypes, int count) {
+
+        Query query = new Query();
+        if (recipientId != null) {
+            query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
+        }
+
+        if (activityTypes != null && activityTypes.size() > 0) {
+            query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
+        }
+
+        query.limit(count);
+        query.with(PaginationParam.ID_DESC_SORT);
+
+        return mongoTemplate.find(query, Notification.class);
+    }
+
     public Notification create(Notification notification) {
         return notificationDao.save(notification);
     }
@@ -90,10 +107,21 @@ public class NotificationService extends AbstractMongoService {
         mongoTemplate.updateMulti(query, new Update().set(Notification.UNREAD_KEY, false), Notification.class);
     }
 
-    public int countUnreadNotifications(String recipientId) {
+    public int count(String recipientId, Boolean unread, List<String> activityTypes) {
         Query query = new Query();
-        query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
-        query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+
+        if (recipientId != null) {
+            query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
+        }
+
+        if (unread != null) {
+            query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+        }
+
+        if (activityTypes != null && activityTypes.size() > 0) {
+            query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
+        }
+
         return ((Long) mongoTemplate.count(query, Notification.class)).intValue();
     }
 

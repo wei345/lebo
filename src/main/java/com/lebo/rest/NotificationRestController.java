@@ -1,6 +1,7 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Notification;
+import com.lebo.rest.dto.NotificationGroupDto;
 import com.lebo.service.NotificationService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,6 +78,8 @@ public class NotificationRestController {
         ));
     }
 
+    //---- 1.1 ----//
+
     @RequestMapping(value = PREFIX_API_1_1 + "list.json", method = RequestMethod.GET)
     @ResponseBody
     public Object list_v1_1(@Valid PaginationParam param,
@@ -93,5 +97,57 @@ public class NotificationRestController {
         notificationService.markRead(notifications);
 
         return notificationService.toNotificationDtos(notifications);
+    }
+
+    @RequestMapping(value = PREFIX_API_1_1 + "groups.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object groups() {
+        List<NotificationGroupDto> dtos = new ArrayList<NotificationGroupDto>(2);
+
+        //
+        NotificationGroupDto leboTeamGroup = new NotificationGroupDto();
+
+        leboTeamGroup.setActivityTypes(Arrays.asList(Notification.ACTIVITY_TYPE_LEBO_TEAM));
+
+        leboTeamGroup.setGroupName("通知");
+
+        leboTeamGroup.setUnreadCount(notificationService.count(
+                accountService.getCurrentUserId(), true, leboTeamGroup.getActivityTypes()));
+
+        leboTeamGroup.setRecentNotifications(
+                notificationService.toNotificationDtos(
+                        notificationService.find(
+                                accountService.getCurrentUserId(), leboTeamGroup.getActivityTypes(), 1)));
+
+        dtos.add(leboTeamGroup);
+
+        //
+        NotificationGroupDto otherGroup = new NotificationGroupDto();
+
+        otherGroup.setActivityTypes(Arrays.asList(
+                Notification.ACTIVITY_TYPE_REPOST,
+                Notification.ACTIVITY_TYPE_REPLY_POST,
+                Notification.ACTIVITY_TYPE_POST_AT,
+
+                Notification.ACTIVITY_TYPE_REPLY_COMMENT,
+                Notification.ACTIVITY_TYPE_COMMENT_AT,
+
+                Notification.ACTIVITY_TYPE_FAVORITE,
+                Notification.ACTIVITY_TYPE_FOLLOW
+        ));
+
+        otherGroup.setGroupName("互动");
+
+        otherGroup.setUnreadCount(notificationService.count(
+                accountService.getCurrentUserId(), true, otherGroup.getActivityTypes()));
+
+        otherGroup.setRecentNotifications(
+                notificationService.toNotificationDtos(
+                        notificationService.find(
+                                accountService.getCurrentUserId(), otherGroup.getActivityTypes(), 1)));
+
+        dtos.add(otherGroup);
+
+        return dtos;
     }
 }

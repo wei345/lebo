@@ -492,6 +492,14 @@
             将当前登录用户的所有未读通知标记为已读。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/notifications/groups" text="GET notifications/groups v1.1"/>
+        </td>
+        <td>
+            返回通知分组、未读数、最新通知。
+        </td>
+    </tr>
 </table>
 
 <strong>私信</strong>

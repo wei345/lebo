@@ -39,7 +39,7 @@ public class ApnsMessageListener implements MessageListener {
                         mapMessage.getString("message"), mapMessage.getString("deviceToken"));
 
                 apnsService.pushMessage(mapMessage.getString("message"),
-                        notificationService.countUnreadNotifications(mapMessage.getString("recipientId")),
+                        notificationService.count(mapMessage.getString("recipientId"), true, null),
                         mapMessage.getString("deviceToken"));
             }
 
