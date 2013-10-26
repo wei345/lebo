@@ -3,7 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="通知索引" method="GET" action="${ctx}/api/1.1/notifications/groups.json">
+<tags:form name="通知分组" method="GET" action="${ctx}/api/1.1/notifications/groups.json">
     <p>返回通知分组、未读数、最新通知。</p>
 </tags:form>
 
