@@ -27,6 +27,17 @@
     <h2>基本设置</h2>
 
     <div class="control-group">
+        <label for="logoKey" class="control-label">Logo Key:</label>
+
+        <div class="controls">
+            <input type="text" id="logoKey" name="logoKey" value="${setting.logoKey}"
+                   class="input-large required"/>
+            <a href="${setting.logoUrl}" target="_blank"><img class="preview-image" src="${setting.logoUrl}"/></a>
+            乐播logo图片key
+        </div>
+    </div>
+
+    <div class="control-group">
         <label for="officialAccountId" class="control-label">乐播 账号ID:</label>
         <div class="controls">
             <input type="text" id="officialAccountId" name="officialAccountId" value="${setting.officialAccountId}"
