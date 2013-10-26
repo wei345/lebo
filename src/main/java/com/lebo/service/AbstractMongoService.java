@@ -110,15 +110,16 @@ public abstract class AbstractMongoService {
         return new ObjectId(time).toString();
     }
 
-    /**
-     * 生成和comment有关联、可读性好的fileId。
-     * 返回值格式：
-     * <pre>
-     * {collectionName}/{commentId}-{length}byte.{ext}
-     * </pre>
-     */
+
     static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+    /**
+     * 生成和数据库记录有关联、可读性好的fileId。
+     * 返回值格式：
+     * <pre>
+     * {collectionName}/{yyyy-MM-dd}/{mongoId}-{slug}-{length}.{ext}
+     * </pre>
+     */
     public static String generateFileId(String fileCollectionName, String mongoId, String slug, long length, String contentType, String filename) {
         Assert.hasText(fileCollectionName);
 

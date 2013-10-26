@@ -36,6 +36,8 @@ public class NotificationService extends AbstractMongoService {
     @Autowired
     private CommentService commentService;
 
+    public static final String FILE_COLLECTION_NAME = "notification";
+
     public List<Notification> find(String recipientId, PaginationParam paginationParam) {
         return notificationDao.find(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
     }

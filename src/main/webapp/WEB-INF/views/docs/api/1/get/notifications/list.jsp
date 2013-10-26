@@ -186,7 +186,22 @@
         <td>评论所属视频</td>
         <td><code>@</code>了该用户的评论</td>
     </tr>
+    <tr>
+        <td>
+            系统通知
+        </td>
+        <td>
+            <%=Notification.ACTIVITY_TYPE_SYSTEM%>
+        </td>
+        <td>无</td>
+        <td>无</td>
+        <td>无</td>
+    </tr>
 </table>
+
+<p>
+    系统通知有这些字段：text, imageUrl, senderName, senderImageUrl
+</p>
 
 <strong>返回结果中的relatedStatus</strong>
 

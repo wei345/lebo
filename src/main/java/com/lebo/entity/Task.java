@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import com.lebo.service.FileContentUrlUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -33,7 +34,11 @@ public class Task extends IdEntity {
     private String videoSource;
     //-- 发布通知 --//
     private String notificationText;
+    private String notificationImageKey;
+    private String notificationSenderName;
+    private String notificationSenderImageKey;
     private Integer notificationSentCount;
+    private Integer notificationApnsCount;
 
     public Task(){}
 
@@ -157,4 +162,45 @@ public class Task extends IdEntity {
     public void setNotificationSentCount(Integer notificationSentCount) {
         this.notificationSentCount = notificationSentCount;
     }
+
+    public String getNotificationImageKey() {
+        return notificationImageKey;
+    }
+
+    public String getNotificationImageUrl() {
+        return FileContentUrlUtils.getContentUrl(notificationImageKey);
+    }
+
+    public void setNotificationImageKey(String notificationImageKey) {
+        this.notificationImageKey = notificationImageKey;
+    }
+
+    public Integer getNotificationApnsCount() {
+        return notificationApnsCount;
+    }
+
+    public void setNotificationApnsCount(Integer notificationApnsCount) {
+        this.notificationApnsCount = notificationApnsCount;
+    }
+
+    public String getNotificationSenderName() {
+        return notificationSenderName;
+    }
+
+    public void setNotificationSenderName(String notificationSenderName) {
+        this.notificationSenderName = notificationSenderName;
+    }
+
+    public String getNotificationSenderImageKey() {
+        return notificationSenderImageKey;
+    }
+
+    public void setNotificationSenderImageKey(String notificationSenderImageKey) {
+        this.notificationSenderImageKey = notificationSenderImageKey;
+    }
+
+    public String getNotificationSenderImageUrl(){
+        return FileContentUrlUtils.getContentUrl(notificationSenderImageKey);
+    }
+
 }

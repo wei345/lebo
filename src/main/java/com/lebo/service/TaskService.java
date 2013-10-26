@@ -1,11 +1,13 @@
 package com.lebo.service;
 
 import com.lebo.entity.FileInfo;
+import com.lebo.entity.Notification;
 import com.lebo.entity.Task;
 import com.lebo.entity.User;
 import com.lebo.jms.ApnsMessageProducer;
 import com.lebo.repository.TaskDao;
 import com.lebo.service.account.AccountService;
+import com.lebo.util.ContentTypeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +40,10 @@ public class TaskService extends AbstractMongoService {
     private AccountService accountService;
     @Autowired
     private ApnsMessageProducer apnsAllUserMessageProducer;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    private SettingService settingService;
     @Value("${jms.apnsAllUserQueueTotalThreadCount}")
     private int apnsAllUserQueueTotalThreadCount;
     @Value("${apns.avgPushTimeSeconds}")
@@ -126,7 +132,20 @@ public class TaskService extends AbstractMongoService {
     /**
      * 给所有ios用户发送推送通知
      */
-    public Task publishApnsAllUser(String text) {
+    public Task publishApnsAllUser(String text, FileInfo image, String senderName) {
+
+        String imageKey = null;
+        if (image != null) {
+            //保存图片
+            String key = new StringBuilder(NotificationService.FILE_COLLECTION_NAME).append("/")
+                    .append(sdf.format(new Date())).append("/")
+                    .append("to-all-user-").append(image.getLength()).append(".").append(ContentTypeMap.getExtension(image.getContentType(), image.getFilename()))
+                    .toString();
+            image.setKey(key);
+            fileStorageService.save(image);
+            imageKey = image.getKey();
+        }
+
         Task task = new Task(Task.TYPE_VALUE_APNS_ALL_USER,
                 accountService.getCurrentUserId(),
                 new Date(),
@@ -134,14 +153,30 @@ public class TaskService extends AbstractMongoService {
 
         //获取用户
         Query query = new Query();
-        query.addCriteria(new Criteria(User.APNS_PRODUCTION_TOKEN_KEY).ne(""))
+        query.with(new Sort(Sort.Direction.DESC, User.DIGEST_COUNT_KEY))
                 .fields().include(User.APNS_PRODUCTION_TOKEN_KEY)
                 .include(User.SCREEN_NAME_KEY);
         List<User> users = mongoTemplate.find(query, User.class);
 
         //发送
+        String senderImageKey = settingService.getSetting().getLogoKey();
+
         Set<String> allToken = new HashSet<String>(users.size());
         for (User user : users) {
+            //系统通知
+            Notification notification = new Notification();
+            notification.setActivityType(Notification.ACTIVITY_TYPE_SYSTEM);
+            notification.setCreatedAt(new Date());
+            notification.setRecipientId(user.getId());
+            notification.setUnread(true);
+            notification.setSenderId(settingService.getSetting().getOfficialAccountId());
+            notification.setSenderName(senderName);
+            notification.setSenderImageKey(senderImageKey);
+            notification.setText(text);
+            notification.setImageKey(imageKey);
+            notificationService.create(notification);
+
+            //apns推送
             if (StringUtils.isNotBlank(user.getApnsProductionToken()) &&
                     !allToken.contains(user.getApnsProductionToken())) {
                 allToken.add(user.getApnsProductionToken());
@@ -151,9 +186,13 @@ public class TaskService extends AbstractMongoService {
 
         //保存任务结果
         task.setNotificationText(text);
-        task.setNotificationSentCount(allToken.size());
-
+        task.setNotificationImageKey(imageKey);
+        task.setNotificationSenderImageKey(senderImageKey);
+        task.setNotificationSenderName(senderName);
+        task.setNotificationApnsCount(allToken.size());
+        task.setNotificationSentCount(users.size());
         taskDao.save(task);
+
         return task;
     }
 

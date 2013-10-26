@@ -27,17 +27,45 @@
 <h2>全网推送通知</h2>
 
 <ul>
-    <li>系统使用苹果推送通知服务(Apple Push Notification Service)，iOS用户都会收到通知，Android用户不会收到通知</li>
-    <li>系统推送一条通知需要 ${avgPushTimeSeconds} 秒</li>
-    <li>系统每秒可推送 ${oneSecondPushCount} 条通知</li>
-    <li>有些用户先收到通知，有些用户后收到，全部用户都收到通知可能需要几分钟至几小时</li>
+    <li>所有用户都会收到乐播应用内通知(消息页)</li>
+    <li>iOS用户会收到苹果推送通知
+        <ul>
+            <li>系统推送一条通知需要 ${avgPushTimeSeconds} 秒</li>
+            <li>系统每秒可推送 ${oneSecondPushCount} 条通知</li>
+            <li>有些用户先收到通知，有些用户后收到，全部用户都收到通知可能需要几分钟至几小时</li>
+        </ul>
+    </li>
+    <li>Android用户不会收到推送通知</li>
     <li>不要重复发同一通知</li>
 </ul>
 
-<form id="publishForm" action="" method="post">
+<br/>
+
+<form id="publishForm" action="" method="post" enctype="multipart/form-data">
+
+    <div class="control-group" title='这个参数是可选的'>
+        <label class="control-label" for="image">发送者显示名:</label>
+
+        <div class="controls">
+            <input type="text" name="senderName" value="乐播团队" placeholder="发送者显示名"/>
+        </div>
+    </div>
+
+    <div class="control-group" title='这个参数是可选的'>
+        <label class="control-label" for="image">
+            <input type="checkbox"
+                   onclick="if(this.checked){this.form.image.removeAttribute('disabled');}else{this.form.image.setAttribute('disabled','disabled')}"/>
+            图片(可选)
+        </label>
+
+        <div class="controls">
+            <input type="file" id="image" name="image" placeholder="image"
+                   value="" disabled='disabled'>
+        </div>
+    </div>
 
     <div>
-        <textarea name="text" maxlength="140" placeholder="内容.." class="required"
+        <textarea name="text" maxlength="140" placeholder="文字内容.." class="required"
                   style="width:540px;height:100px;">${text}</textarea>
     </div>
 
@@ -70,7 +98,10 @@
             内容
         </th>
         <th style="width: 50px;">
-            数量
+            发送数
+        </th>
+        <th style="width: 50px;">
+            APNS
         </th>
         <th style="width: 100px;">
             发布者
@@ -83,10 +114,23 @@
         <tr>
             <td></td>
             <td class="text">
+                <div>
+                    <c:if test="${task.senderUrl != null}">
+                        <img style="width: 30px" src="${task.senderUrl}"/>
+                    </c:if>
+                        ${task.senderName}
+                </div>
+
+                <c:if test="${task.imageUrl != null}">
+                    <img style="width: 100px" src="${task.imageUrl}"/>
+                </c:if>
                     ${task.text}
             </td>
             <td>
                     ${task.count}
+            </td>
+            <td>
+                    ${task.apnsCount}
             </td>
             <td class="screenName">
                     ${task.screenName}

@@ -18,6 +18,10 @@ public class NotificationDto {
     private CommentDto relatedComment;
     private Date createdAt;
     private Boolean unread;
+    private String text;
+    private String imageUrl;
+    private String senderName;
+    private String senderImageUrl;
 
     public UserDto getSender() {
         return sender;
@@ -73,5 +77,37 @@ public class NotificationDto {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderImageUrl() {
+        return senderImageUrl;
+    }
+
+    public void setSenderImageUrl(String senderImageUrl) {
+        this.senderImageUrl = senderImageUrl;
     }
 }
