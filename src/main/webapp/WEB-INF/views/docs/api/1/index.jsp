@@ -534,6 +534,18 @@
     </tr>
 </table>
 
+<strong>虚拟货币</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/alipay/sign" text="GET alipay/sign"/>
+        </td>
+        <td>
+            返回用于支付宝请求的RSA签名。
+        </td>
+    </tr>
+</table>
+
 <strong>反馈</strong>
 <table class="table table-hover">
     <tr>
