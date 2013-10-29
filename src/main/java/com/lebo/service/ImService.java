@@ -3,7 +3,10 @@ package com.lebo.service;
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Im;
 import com.lebo.repository.ImDao;
+import com.lebo.rest.dto.ImDto;
+import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
@@ -13,9 +16,12 @@ import java.util.List;
  * Date: 13-10-29
  * Time: PM1:17
  */
+@Service
 public class ImService extends AbstractMongoService {
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private AccountService accountService;
     @Autowired
     private ImDao imDao;
     public static final String FILE_COLLECTION_NAME = "im";
@@ -44,5 +50,14 @@ public class ImService extends AbstractMongoService {
 
         imDao.save(im);
         return im;
+    }
+
+    public ImDto toDto(Im im){
+        ImDto dto = new ImDto();
+        dto.setFrom(accountService.toBasicUserDto(accountService.getUser(im.getFrom())));
+        dto.setTo(accountService.toBasicUserDto(accountService.getUser(im.getTo())));
+        dto.setCreatedAt(im.getCreatedAt());
+        dto.setAttachments(FileInfo.toDtos(im.getAttachments()));
+        return dto;
     }
 }

@@ -518,10 +518,18 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/get/im/profiles" text="GET im/profiles"/>
+            <tags:link url="${ctx}/docs/api/1.1/get/im/profiles" text="GET im/profiles"/>
         </td>
         <td>
             返回指定用户的profile。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/im/completeUpload" text="POST im/completeUpload"/>
+        </td>
+        <td>
+            完成上传文件，返回新url。
         </td>
     </tr>
 </table>

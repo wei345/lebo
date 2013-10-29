@@ -1,6 +1,12 @@
 package com.lebo.rest;
 
+import com.lebo.entity.FileInfo;
+import com.lebo.entity.Im;
 import com.lebo.entity.User;
+import com.lebo.rest.dto.ErrorDto;
+import com.lebo.service.ALiYunStorageService;
+import com.lebo.service.ImService;
+import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,12 +26,17 @@ import java.util.List;
  * Time: AM11:17
  */
 @Controller
-@RequestMapping("/api/1/im")
 public class ImRestController {
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ALiYunStorageService aLiYunStorageService;
+    @Autowired
+    private ImService imService;
 
-    @RequestMapping("profiles")   //为确保不受客户端或服务器url长度限制，也允许post
+    public static final String PREFIX_API_1_1_IM = "/api/1.1/im/";
+
+    @RequestMapping(PREFIX_API_1_1_IM + "profiles.json")   //为确保不受客户端或服务器url长度限制，也允许post
     @ResponseBody
     public Object profiles(@RequestParam("userIds") String userIds) {
         String[] ids = userIds.split("\\s*,\\s*");
@@ -37,15 +48,23 @@ public class ImRestController {
         return accountService.toBasicUserDtos(users);
     }
 
-    @RequestMapping(value = "completeUpload", method = RequestMethod.POST)
+    @RequestMapping(value = PREFIX_API_1_1_IM + "completeUpload.json", method = RequestMethod.POST)
     @ResponseBody
     public Object completeUpload(@RequestParam("fromUserId") String fromUserId,
                                  @RequestParam("toUserId") String toUserId,
-                                 @RequestParam("attachmentUrl") String attachmentUrl){
+                                 @RequestParam("attachmentUrl") String[] attachmentUrls) {
 
+        List<FileInfo> fileInfos = new ArrayList<FileInfo>(attachmentUrls.length);
+        try {
+            for (String attachmentUrl : attachmentUrls) {
+                fileInfos.add(aLiYunStorageService.getTmpFileInfoFromUrl(attachmentUrl));
+            }
+        } catch (ServiceException e) {
+            return ErrorDto.badRequest(e.getMessage());
+        }
 
+        Im im = imService.create(fromUserId, toUserId, fileInfos);
 
-        return null;
-
+        return imService.toDto(im);
     }
 }
