@@ -9,6 +9,7 @@ import java.util.List;
  * Time: PM2:26
  */
 public class ImDto {
+    private String id;
     private UserDto from;
     private UserDto to;
     private List<FileInfoDto> attachments;
@@ -44,5 +45,13 @@ public class ImDto {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

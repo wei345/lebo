@@ -58,6 +58,7 @@ public class ImService extends AbstractMongoService {
         dto.setTo(accountService.toBasicUserDto(accountService.getUser(im.getTo())));
         dto.setCreatedAt(im.getCreatedAt());
         dto.setAttachments(FileInfo.toDtos(im.getAttachments()));
+        dto.setId(im.getId());
         return dto;
     }
 }
