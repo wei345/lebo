@@ -245,6 +245,24 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
         return Base64.encodeBase64String(Cryptos.hmacSha1(stringToSign.getBytes(CHARSET_UTF8), accessKeySecret.getBytes(CHARSET_UTF8)));
     }
 
+    @Override
+    public FileInfo getTmpFileInfoFromUrl(String tmpUrl) {
+        String key = getKeyFromUrl(tmpUrl);
+        if (key == null || !isTmpFile(key)) {
+            throw new ServiceException("url[" + tmpUrl + "]格式错误");
+        }
+
+        FileInfo fileInfo = getMetadata(key);
+        if (fileInfo == null) {
+            throw new ServiceException("url[" + tmpUrl + "]文件不存在");
+        }
+
+        fileInfo.setKey(null);
+        fileInfo.setTmpKey(key);
+
+        return fileInfo;
+    }
+
     //TODO 清理过期的临时文件
     public void clearTmp() {
 

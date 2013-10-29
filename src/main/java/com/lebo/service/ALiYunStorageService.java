@@ -31,4 +31,11 @@ public interface ALiYunStorageService extends FileStorageService {
      * 判断是否临时文件, 通常以"tmp/"开头的key被认为是临时文件
      */
     boolean isTmpFile(String key);
+
+    /**
+     * 获取临时上传文件的封装对象.
+     *
+     * @throws ServiceException 当tmpUrl格式不正确或不存在时
+     */
+    FileInfo getTmpFileInfoFromUrl(String tmpUrl);
 }
