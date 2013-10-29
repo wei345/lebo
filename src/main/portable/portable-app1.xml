@@ -16,6 +16,11 @@
         <!-- mongodb settings -->
         <replace key="mongo.host">10.160.8.62</replace>
 
+        <!-- mysql settings -->
+        <replace key="jdbc.url">jdbc:mysql://rdsevaf7rer36rn.mysql.rds.aliyuncs.com/lebo?useUnicode=true&amp;characterEncoding=utf-8</replace>
+        <replace key="jdbc.username">dbm03cz00wt5n4he</replace>
+        <replace key="jdbc.password">f0219da022</replace>
+
         <!-- redis settings -->
         <replace key="redis.host">10.160.8.62</replace>
 
