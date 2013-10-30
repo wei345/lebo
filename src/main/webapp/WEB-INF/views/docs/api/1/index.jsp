@@ -306,6 +306,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/account/updateProfileWithMedia" text="POST account/updateProfile v1.1"/>
+        </td>
+        <td>
+            更新当前登录用户的Profile，返回更新后的用户信息。客户端直接上传文件到阿里云云服务器。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/account/checkScreenName" text="POST account/checkScreenName"/>
         </td>
         <td>
