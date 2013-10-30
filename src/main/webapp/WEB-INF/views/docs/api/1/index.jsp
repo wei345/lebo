@@ -254,6 +254,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/comments/createWithMedia" text="POST comments/createWithMedia v1.1"/>
+        </td>
+        <td>
+            发视频评论、语音评论，返回发布的评论。客户端直接上传视频到阿里云云存储。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/comments/destroy" text="POST comments/destroy"/>
         </td>
         <td>
