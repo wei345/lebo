@@ -607,7 +607,7 @@ public class StatusService extends AbstractMongoService {
         Channel channel = null;
         List<Channel> channels = settingService.getAllChannels();
         for (Channel c : channels) {
-            if (name.equals(c.getTitle())) {
+            if (name.equals(c.getName())) {
                 channel = c;
                 break;
             }
@@ -673,13 +673,17 @@ public class StatusService extends AbstractMongoService {
 
         //频道不含转发贴
         criteriaList.add(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //不含置顶视频，后面手动添加
+        if (channel != null && StringUtils.isNotBlank(channel.getTopPostId())) {
+            criteriaList.add(new Criteria(Post.ID_KEY).ne(channel.getTopPostId()));
+        }
 
         //分页
         if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
-            criteriaList.add(new Criteria("_id").lt(new ObjectId(paginationParam.getMaxId())));
+            criteriaList.add(new Criteria(Post.ID_KEY).lt(new ObjectId(paginationParam.getMaxId())));
         }
         if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
-            criteriaList.add(new Criteria("_id").gt(new ObjectId(paginationParam.getSinceId())));
+            criteriaList.add(new Criteria(Post.ID_KEY).gt(new ObjectId(paginationParam.getSinceId())));
         }
 
         //各条件间是and关系
@@ -697,25 +701,22 @@ public class StatusService extends AbstractMongoService {
         }
         query.with(PaginationParam.ID_DESC_SORT).limit(paginationParam.getCount());
 
-        //-- 临时置顶视频 begin --//
-        //TODO 让新版客户端做banner功能，去掉在"乐播模仿秀"置顶视频
-        //临时在"乐播模仿秀"频道置顶视频，因为新版客户端忘记做banner功能
-        if ("乐播模仿秀".equals(name) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
-            if (settingService.getSetting().getTopPostId() != null) {
-                Post topPost = getPost(settingService.getSetting().getTopPostId());
-                if (topPost != null) {
-                    query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
-                    List<Post> posts = mongoTemplate.find(query, Post.class);
+        //-- 添加置顶视频 begin --//
+        if (channel != null && StringUtils.isNotBlank(channel.getTopPostId()) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
 
-                    if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
-                        posts.add(0, topPost);
-                    }
+            Post post = getPost(channel.getTopPostId());
+            if (post != null) {
+                query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
+                List<Post> posts = mongoTemplate.find(query, Post.class);
 
-                    return posts;
+                if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
+                    posts.add(0, post);
                 }
+
+                return posts;
             }
         }
-        //-- 临时置顶视频 end --//
+        //-- 添加置顶视频 end --//
 
         return mongoTemplate.find(query, Post.class);
     }

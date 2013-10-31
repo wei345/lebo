@@ -3,6 +3,8 @@ package com.lebo.entity;
 import com.lebo.service.FileContentUrlUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * 应用选项。
  *
@@ -44,9 +46,6 @@ public class Setting extends IdEntity {
     private String hotuser_button3_backgroundColor = "#30B5F0";
     private String hotuser_button3_imageKey = "images/hotuser/btn3.png";
     private String hotuser_button3_text = "导演排行";
-
-    //TODO 让新版客户端做banner功能，去掉置顶视频
-    private String topPostId;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -178,14 +177,6 @@ public class Setting extends IdEntity {
 
     public void setEditorAccountId(String editorAccountId) {
         this.editorAccountId = editorAccountId;
-    }
-
-    public String getTopPostId() {
-        return topPostId;
-    }
-
-    public void setTopPostId(String topPostId) {
-        this.topPostId = topPostId;
     }
 
     public String getDigestAccountId() {
