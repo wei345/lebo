@@ -1,5 +1,7 @@
 package com.lebo.entity;
 
+import org.springframework.util.Assert;
+
 import java.math.BigDecimal;
 
 /**
@@ -8,11 +10,20 @@ import java.math.BigDecimal;
  * Time: PM5:00
  */
 public class OrderDetail {
-    private Product product;
     private Order order;
+    private Product product;
     private Integer quantity;
-    private BigDecimal total;
     private BigDecimal discount;
+
+    public OrderDetail() {
+    }
+
+    public OrderDetail(Order order, Product product, Integer quantity, BigDecimal discount) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        this.discount = discount;
+    }
 
     public Product getProduct() {
         return product;
@@ -38,19 +49,35 @@ public class OrderDetail {
         this.quantity = quantity;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
-
     public BigDecimal getDiscount() {
         return discount;
     }
 
     public void setDiscount(BigDecimal discount) {
         this.discount = discount;
+    }
+
+    /**
+     * 总价格
+     *
+     * @return product.price * quantity
+     */
+    public BigDecimal getTotalPrice() {
+        Assert.notNull(product);
+        Assert.notNull(quantity);
+        return product.getPrice().multiply(new BigDecimal(quantity));
+    }
+
+    /**
+     * 应付金额
+     *
+     * @return product.cost * quantity * ( 1 - discount )
+     */
+    public BigDecimal getTotalCost() {
+        Assert.notNull(discount);
+        Assert.notNull(product);
+        return product.getCost()
+                .multiply(new BigDecimal(quantity))
+                .multiply(BigDecimal.ONE.subtract(discount));
     }
 }

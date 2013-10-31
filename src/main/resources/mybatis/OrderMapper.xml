@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.lebo.repository.mybatis.OrderDao">
+
+    <insert id="save" parameterType="Order" useGeneratedKeys="true" keyProperty="orderId">
+		insert into ec_order (
+		mongo_user_id, order_date, discount, status)
+		values (
+		#{mongoUserId}, #{orderDate}, #{discount}, #{status})
+	</insert>
+
+</mapper>

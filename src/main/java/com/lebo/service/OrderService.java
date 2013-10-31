@@ -11,16 +11,32 @@ package com.lebo.service;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.lebo.entity.Order;
+import com.lebo.entity.OrderDetail;
 import com.lebo.entity.Product;
+import com.lebo.repository.mybatis.OrderDao;
+import com.lebo.repository.mybatis.OrderDetailDao;
+import com.lebo.repository.mybatis.ProductDao;
+import com.lebo.service.account.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Service
+@Transactional
 public class OrderService {
+
+    @Autowired
+    private ProductDao productDao;
+    @Autowired
+    private OrderDao orderDao;
+    @Autowired
+    private OrderDetailDao orderDetailDao;
+
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
     @Value("${alipay.lebo_private_key}")
@@ -42,13 +58,19 @@ public class OrderService {
         }
     }
 
-    public String createOrder(Long productId){
-        Order order = new Order();
+    public Order createOrder(Long productId, String mongoUserId) {
+        Order order = new Order(mongoUserId, BigDecimal.ZERO, Order.Status.UNPAID);
 
-        List<Product> products = new ArrayList<Product>(1);
+        Product product = productDao.get(productId);
+        Assert.notNull(product);
 
-        return null;
+        OrderDetail orderDetail = new OrderDetail(order, product, 1, BigDecimal.ZERO);
 
+        order.getOrderDetails().add(orderDetail);
 
+        orderDao.save(order);
+        orderDetailDao.save(orderDetail);
+
+        return order;
     }
 }

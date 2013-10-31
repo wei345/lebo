@@ -1,5 +1,7 @@
 package com.lebo.entity;
 
+import com.google.common.collect.Lists;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -13,19 +15,12 @@ import java.util.List;
  */
 public class Order {
     private Long orderId;
-    private String userMongoId;
-
+    private String mongoUserId;
     private Date orderDate;
-    private BigDecimal total;
     private BigDecimal discount;
     private Status status;
 
-    private String outTradeNo;
-    private String subject;
-    private BigDecimal totalFee;
-    private String body;
-
-    private List<OrderDetail> orderDetailList;
+    private List<OrderDetail> orderDetails = Lists.newArrayList();
 
     public static enum Status {
         PAID("已支付"),
@@ -36,6 +31,16 @@ public class Order {
         }
     }
 
+    public Order() {
+    }
+
+    public Order(String mongoUserId, BigDecimal discount, Status status) {
+        this.mongoUserId = mongoUserId;
+        this.discount = discount;
+        this.status = status;
+        this.orderDate = new Date();
+    }
+
     public Long getOrderId() {
         return orderId;
     }
@@ -44,44 +49,12 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public String getUserMongoId() {
-        return userMongoId;
+    public String getMongoUserId() {
+        return mongoUserId;
     }
 
-    public void setUserMongoId(String userMongoId) {
-        this.userMongoId = userMongoId;
-    }
-
-    public String getOutTradeNo() {
-        return outTradeNo;
-    }
-
-    public void setOutTradeNo(String outTradeNo) {
-        this.outTradeNo = outTradeNo;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public BigDecimal getTotalFee() {
-        return totalFee;
-    }
-
-    public void setTotalFee(BigDecimal totalFee) {
-        this.totalFee = totalFee;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
+    public void setMongoUserId(String mongoUserId) {
+        this.mongoUserId = mongoUserId;
     }
 
     public Date getOrderDate() {
@@ -90,14 +63,6 @@ public class Order {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
-    }
-
-    public BigDecimal getTotal() {
-        return total;
-    }
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
     }
 
     public BigDecimal getDiscount() {
@@ -116,11 +81,11 @@ public class Order {
         this.status = status;
     }
 
-    public List<OrderDetail> getOrderDetailList() {
-        return orderDetailList;
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
     }
 
-    public void setOrderDetailList(List<OrderDetail> orderDetailList) {
-        this.orderDetailList = orderDetailList;
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 }

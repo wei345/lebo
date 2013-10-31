@@ -1,5 +1,7 @@
 package com.lebo.entity;
 
+import org.springframework.util.Assert;
+
 import java.math.BigDecimal;
 
 /**
@@ -84,5 +86,16 @@ public class Product {
 
     public void setDiscount(BigDecimal discount) {
         this.discount = discount;
+    }
+
+    /**
+     * 应付金额
+     *
+     * @return price * ( 1 - discount )
+     */
+    public BigDecimal getCost() {
+        Assert.notNull(price);
+        Assert.notNull(discount);
+        return price.multiply(BigDecimal.ONE.subtract(discount));
     }
 }

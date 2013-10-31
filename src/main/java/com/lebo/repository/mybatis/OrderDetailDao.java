@@ -1,5 +1,6 @@
 package com.lebo.repository.mybatis;
 
+import com.lebo.entity.OrderDetail;
 import com.lebo.repository.MyBatisRepository;
 
 /**
@@ -9,4 +10,5 @@ import com.lebo.repository.MyBatisRepository;
  */
 @MyBatisRepository
 public interface OrderDetailDao {
+    void save(OrderDetail orderDetail);
 }
