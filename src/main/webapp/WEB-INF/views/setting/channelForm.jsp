@@ -112,6 +112,14 @@
         </div>
 
         <div class="control-group">
+            <label for="topPostId" class="control-label">置顶视频ID(可选):</label>
+
+            <div class="controls">
+                <input type="text" id="topPostId" name="topPostId" value="${channel.topPostId}" class="input-large"/>
+            </div>
+        </div>
+
+        <div class="control-group">
             <label for="enabled" class="control-label">启用:</label>
 
             <div class="controls">
