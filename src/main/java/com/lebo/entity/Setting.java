@@ -3,6 +3,8 @@ package com.lebo.entity;
 import com.lebo.service.FileContentUrlUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * 应用选项。
  *
@@ -35,10 +37,7 @@ public class Setting extends IdEntity {
     //红人榜 -> 导演排行
     private String hotuser_button3_backgroundColor = "#30B5F0";
     private String hotuser_button3_imageKey = "images/hotuser/btn3.png";
-    private String hotuser_button3_text= "导演排行";
-
-    //TODO 让新版客户端做banner功能，去掉置顶视频
-    private String topPostId;
+    private String hotuser_button3_text = "导演排行";
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -152,13 +151,15 @@ public class Setting extends IdEntity {
         this.hotuser_button3_text = hotuser_button3_text;
     }
 
-    public String getHotuser_button1_imageUrl(){
+    public String getHotuser_button1_imageUrl() {
         return FileContentUrlUtils.getContentUrl(hotuser_button1_imageKey);
     }
-    public String getHotuser_button2_imageUrl(){
+
+    public String getHotuser_button2_imageUrl() {
         return FileContentUrlUtils.getContentUrl(hotuser_button2_imageKey);
     }
-    public String getHotuser_button3_imageUrl(){
+
+    public String getHotuser_button3_imageUrl() {
         return FileContentUrlUtils.getContentUrl(hotuser_button3_imageKey);
     }
 
@@ -168,14 +169,6 @@ public class Setting extends IdEntity {
 
     public void setEditorAccountId(String editorAccountId) {
         this.editorAccountId = editorAccountId;
-    }
-
-    public String getTopPostId() {
-        return topPostId;
-    }
-
-    public void setTopPostId(String topPostId) {
-        this.topPostId = topPostId;
     }
 
     public String getDigestAccountId() {

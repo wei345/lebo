@@ -21,6 +21,8 @@ public class Channel extends IdEntity{
     private String slug;
     private int order;//小在前，大在后
     public static final String ORDER_KEY = "order";
+    //TODO 让新版客户端做banner功能，去掉置顶视频
+    private String topPostId; //该频道置顶视频
 
     public String getTitle() {
         return title;
@@ -129,5 +131,13 @@ public class Channel extends IdEntity{
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public String getTopPostId() {
+        return topPostId;
+    }
+
+    public void setTopPostId(String topPostId) {
+        this.topPostId = topPostId;
     }
 }
