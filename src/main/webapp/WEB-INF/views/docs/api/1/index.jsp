@@ -538,7 +538,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/alipay/sign" text="GET alipay/sign"/>
+            <tags:link url="${ctx}/docs/api/1.1/get/orders/buyProduct" text="GET orders/buyProduct"/>
         </td>
         <td>
             返回用于支付宝请求的RSA签名。
