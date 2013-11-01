@@ -5,6 +5,8 @@ import com.lebo.entity.Product;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -20,5 +22,13 @@ public class ProductDaoTest extends SpringContextTestCase {
     public void get() throws Exception {
         Product product = productDao.get(1L);
         assertTrue(1 == product.getProductId());
+    }
+
+    @Test
+    public void findByCategoryId(){
+        List<Product> productList = productDao.findByCategoryId(1L);
+        for(Product product : productList){
+            System.out.println(product.getName());
+        }
     }
 }

@@ -536,12 +536,20 @@
 
 <strong>虚拟货币</strong>
 <table class="table table-hover">
-    <tr>
+    <%--<tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/orders/buyProduct" text="GET orders/buyProduct"/>
+            <tags:link url="${ctx}/docs/api/1.1/get/ec/buyProduct" text="GET ec/buyProduct"/>
         </td>
         <td>
             返回用于支付宝请求的RSA签名。
+        </td>
+    </tr>--%>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/ec/goldProducts" text="GET ec/goldProducts"/>
+        </td>
+        <td>
+            返回金币商品。
         </td>
     </tr>
 </table>

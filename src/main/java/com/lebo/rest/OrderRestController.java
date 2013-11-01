@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OrderRestController {
     @Autowired
     private OrderService orderService;
-    private static final String PREFIX_API_1_1_ALIPAY = "/api/1.1/orders/";
+    private static final String PREFIX_API_1_1_ALIPAY = "/api/1.1/ec/";
 
-    @RequestMapping(value = PREFIX_API_1_1_ALIPAY + "buyProduct.json", method = RequestMethod.GET)
+    @RequestMapping(value = PREFIX_API_1_1_ALIPAY + "createOrder.json", method = RequestMethod.POST)
     @ResponseBody
-    public Object buyProduct(@RequestParam("productId") Long productId){
+    public Object createOrder(@RequestParam("productId") Long productId) {
         /*String sign = alipayService.sign(stringToSign);
 
         Map<String, String> result = new HashMap<String, String>(1);
@@ -29,6 +29,12 @@ public class OrderRestController {
 
         return result;*/
         return null;
+    }
+
+    @RequestMapping(value = PREFIX_API_1_1_ALIPAY + "goldProducts.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object goldProducts() {
+        return orderService.findProductByCategoryId(1L);
     }
 
 }

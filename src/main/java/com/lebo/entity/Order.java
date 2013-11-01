@@ -88,4 +88,12 @@ public class Order {
     public void setOrderDetails(List<OrderDetail> orderDetails) {
         this.orderDetails = orderDetails;
     }
+
+    public BigDecimal getTotalCost() {
+        BigDecimal total = new BigDecimal("0");
+        for (OrderDetail orderDetail : orderDetails) {
+            total = total.add(orderDetail.getTotalCost());
+        }
+        return total;
+    }
 }

@@ -3,6 +3,8 @@ package com.lebo.repository.mybatis;
 import com.lebo.entity.Product;
 import com.lebo.repository.MyBatisRepository;
 
+import java.util.List;
+
 /**
  * @author: Wei Liu
  * Date: 13-10-31
@@ -11,4 +13,6 @@ import com.lebo.repository.MyBatisRepository;
 @MyBatisRepository
 public interface ProductDao {
     Product get(Long id);
+
+    List<Product> findByCategoryId(Long categoryId);
 }

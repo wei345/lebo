@@ -23,7 +23,19 @@
         discount,
         image
         from ec_product
-        where product_id = #{id}
+        where product_id = #{productId}
+    </select>
+    
+    <select id="findByCategoryId" parameterType="long" resultMap="productMap">
+        select product_id,
+        name,
+        description,
+        price,
+        price_unit,
+        discount,
+        image
+        from ec_product
+        where product_category_id = #{categoryId}
     </select>
 
 </mapper>
