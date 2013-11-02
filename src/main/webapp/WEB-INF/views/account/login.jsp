@@ -2,6 +2,7 @@
 <%@ page import="org.springframework.context.ApplicationContext" %>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%@ page import="java.util.Properties" %>
+<%@ page import="com.lebo.service.AppEnv" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
@@ -17,9 +18,8 @@
 --%>
 <%
     ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
-    Properties properties = (Properties) applicationContext.getBean("applicationProperties");
-    String nodeName = (String) properties.get("server.node_name");
-    request.setAttribute("quickLogin", ("default".equals(nodeName) || "dev".equals(nodeName)));
+    AppEnv appEnv = applicationContext.getBean(AppEnv.class);
+    request.setAttribute("quickLogin", appEnv.isDevelopment());
 %>
 
 <c:if test="${quickLogin}">
