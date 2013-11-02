@@ -80,4 +80,9 @@ class Base62 {
         }
         return result;
     }
+
+    @org.junit.Test
+    public void urlEncode(){
+        System.out.println(Encodes.urlEncode("626070255@qq.com"));
+    }
 }

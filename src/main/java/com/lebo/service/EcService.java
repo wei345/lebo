@@ -13,7 +13,6 @@ import com.lebo.entity.OrderDetail;
 import com.lebo.entity.Product;
 import com.lebo.repository.mybatis.OrderDao;
 import com.lebo.repository.mybatis.OrderDetailDao;
-import com.lebo.repository.mybatis.ProductCategoryDao;
 import com.lebo.repository.mybatis.ProductDao;
 import com.lebo.rest.dto.OrderDetailDto;
 import com.lebo.rest.dto.OrderDto;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
+import org.springside.modules.utils.Encodes;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -41,9 +41,9 @@ public class EcService {
     @Autowired
     private OrderDetailDao orderDetailDao;
     @Autowired
-    private ProductCategoryDao productCategoryDao;
-    @Autowired
     private AlipayService alipayService;
+    @Autowired
+    private AppEnv appEnv;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -84,25 +84,39 @@ public class EcService {
         Order order = createOrder(productId, userId);
 
         Map<String, String> params = new HashMap<String, String>(10);
+        //基本参数，不可空
         params.put("service", service);
         params.put("partner", alipayPartnerId);
-        params.put("seller_id", alipaySellerId);
+        params.put("_input_charset", "utf-8");
+        //业务参数，不可空
         params.put("out_trade_no", order.getOrderId().toString());
         params.put("subject", "购买" + order.getSubject());
-        params.put("body", order.getBody());
-        params.put("total_fee", order.getTotalCost().setScale(2).toString());
-        params.put("notify_url", alipayNotifyUrl);
-        params.put("_input_charset", "utf-8");
         params.put("payment_type", paymentType);
+        params.put("seller_id", alipaySellerId);
+        //开发环境，订单支付1分钱
+        if (appEnv.isDevelopment()) {
+            params.put("total_fee", "0.01");
+        }
+        //生成环境，订单支付实际金额
+        else {
+            params.put("total_fee", order.getTotalCost().setScale(2).toString());
+        }
+        //
+        params.put("body", order.getBody());
+        params.put("notify_url", Encodes.urlEncode(alipayNotifyUrl));
+
+        //值带双引号
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            entry.setValue("\"" + entry.getValue() + "\"");
+        }
 
         String signContent = alipayService.getSignContent(params);
         String sign = alipayService.sign(signContent);
 
         return new StringBuilder(signContent)
-                .append("&sign=")
-                .append(sign)
-                .append("&sign_type=")
-                .append("RSA").toString();
+                .append("&sign=").append("\"" + Encodes.urlEncode(sign) + "\"")
+                .append("&sign_type=\"RSA\"")
+                .toString();
     }
 
     public ProductDto toProductDto(Product product) {
@@ -116,18 +130,4 @@ public class EcService {
     public OrderDetailDto toOrderDetailDto(OrderDetail orderDetail) {
         return BeanMapper.map(orderDetail, OrderDetailDto.class);
     }
-
-    /*public void generateAlipayParam(Order order){
-
-        Map<String,String> params = new HashMap<String, String>(10);
-        params.put("partner", alipayPartnerId);
-        params.put("seller_id", alipaySellerId);
-        params.put("out_trade_no", order.getOrderId().toString());
-        params.put("subject", "购买金币");
-        params.put("body", order.getOrderDetails().get(0).getProduct().getName());
-        params.put("total_fee", order.getTotalCost().setScale(2).toString());
-        params.put("notify_url", alipayNotifyUrl);
-        params.put("sign", sign(params));
-    }*/
-
 }

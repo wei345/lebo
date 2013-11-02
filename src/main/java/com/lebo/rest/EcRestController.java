@@ -34,12 +34,6 @@ public class EcRestController {
 
     private Logger logger = LoggerFactory.getLogger(EcRestController.class);
 
-    @RequestMapping(value = API_1_1_EC + "createOrder.json", method = RequestMethod.POST)
-    @ResponseBody
-    public Object createOrder(@RequestParam("productId") Long productId) {
-        return ecService.toOrderDto(ecService.createOrder(productId, accountService.getCurrentUserId()));
-    }
-
     @RequestMapping(value = API_1_1_EC + "goldProducts.json", method = RequestMethod.GET)
     @ResponseBody
     public Object goldProducts() {
@@ -50,8 +44,7 @@ public class EcRestController {
     @ResponseBody
     public Object alipaySigedParams(@RequestParam("productId") Long productId,
                                     @RequestParam("service") String service,
-                                    @RequestParam("paymentType") String paymentType
-    ) {
+                                    @RequestParam("paymentType") String paymentType) {
 
         String signed = ecService.getAlipayParams(accountService.getCurrentUserId(), productId, service, paymentType);
 
