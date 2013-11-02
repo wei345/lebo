@@ -22,6 +22,7 @@ public class ProductDaoTest extends SpringContextTestCase {
     public void get() throws Exception {
         Product product = productDao.get(1L);
         assertTrue(1 == product.getProductId());
+        System.out.println(product.getProductCategory().getProductCategoryId());
     }
 
     @Test

@@ -14,5 +14,7 @@ import java.util.List;
 public interface ProductDao {
     Product get(Long id);
 
+    Product getWithDetail(Long id);
+
     List<Product> findByCategoryId(Long categoryId);
 }

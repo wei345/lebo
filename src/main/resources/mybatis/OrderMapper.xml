@@ -11,4 +11,8 @@
 		#{mongoUserId}, #{orderDate}, #{discount}, #{status})
 	</insert>
 
+    <update id="updateOrderStatus" parameterType="Order">
+
+    </update>
+
 </mapper>

@@ -163,14 +163,14 @@
 
 <strong>上传</strong>
 <table class="table table-hover">
-<tr>
-    <td class="td1">
-        <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
-    </td>
-    <td>
-        返回有失效期的临时上传地址。
-    </td>
-</tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
+        </td>
+        <td>
+            返回有失效期的临时上传地址。
+        </td>
+    </tr>
 </table>
 
 <strong>视频</strong>
@@ -536,14 +536,6 @@
 
 <strong>虚拟货币</strong>
 <table class="table table-hover">
-    <%--<tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/ec/buyProduct" text="GET ec/buyProduct"/>
-        </td>
-        <td>
-            返回用于支付宝请求的RSA签名。
-        </td>
-    </tr>--%>
     <tr>
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1.1/get/ec/goldProducts" text="GET ec/goldProducts"/>
@@ -552,6 +544,22 @@
             返回金币商品。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/ec/createOrder" text="POST ec/createOrder"/>
+        </td>
+        <td>
+            创建订单，返回创建的订单。
+        </td>
+    </tr>
+        <tr>
+            <td class="td1">
+                <tags:link url="${ctx}/docs/api/1.1/get/ec/alipaySigedParams" text="GET ec/alipaySigedParams"/>
+            </td>
+            <td>
+                返回用于支付宝请求RSA签名的参数字符串。
+            </td>
+        </tr>
 </table>
 
 <strong>反馈</strong>

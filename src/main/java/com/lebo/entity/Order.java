@@ -1,6 +1,7 @@
 package com.lebo.entity;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -95,5 +96,31 @@ public class Order {
             total = total.add(orderDetail.getTotalCost());
         }
         return total;
+    }
+
+    /**
+     * 详细描述, 支付宝接口body参数, 最多300字符
+     */
+    public String getBody() {
+        StringBuilder sb = new StringBuilder();
+        for (OrderDetail orderDetail : orderDetails) {
+            sb.append(orderDetail.getProduct().getName())
+                    .append("×").append(orderDetail.getQuantity()).append(" ");
+        }
+
+        return StringUtils.substring(sb.toString().trim(), 0, 300);
+    }
+
+    /**
+     * 支付宝接口subject参数,最长为 128 个汉字
+     */
+    public String getSubject() {
+        StringBuilder sb = new StringBuilder();
+        for (OrderDetail orderDetail : orderDetails) {
+            sb.append(orderDetail.getProduct().getProductCategory().getName())
+                    .append(" ");
+        }
+
+        return StringUtils.substring(sb.toString().trim(), 0, 128);
     }
 }

@@ -1,0 +1,76 @@
+package com.lebo.rest.dto;
+
+import com.lebo.entity.Product;
+
+import java.math.BigDecimal;
+
+/**
+ * @author: Wei Liu
+ * Date: 13-11-1
+ * Time: PM5:30
+ */
+public class ProductDto {
+    private Long productId;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Product.PriceUnit priceUnit;
+    private BigDecimal discount;
+    private String image;
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Product.PriceUnit getPriceUnit() {
+        return priceUnit;
+    }
+
+    public void setPriceUnit(Product.PriceUnit priceUnit) {
+        this.priceUnit = priceUnit;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+}
