@@ -10,10 +10,11 @@ package com.lebo.service;
 
 import com.lebo.entity.GoldOrder;
 import com.lebo.entity.GoldProduct;
+import com.lebo.entity.UserGold;
 import com.lebo.repository.mybatis.GoldOrderDao;
 import com.lebo.repository.mybatis.GoldProductDao;
-import com.lebo.rest.dto.OrderDto;
-import com.lebo.rest.dto.ProductDto;
+import com.lebo.repository.mybatis.UserGoldDao;
+import com.lebo.rest.dto.GoldProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class VgService {
     private AlipayService alipayService;
     @Autowired
     private AppEnv appEnv;
+    @Autowired
+    private UserGoldDao userGoldDao;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -72,10 +75,6 @@ public class VgService {
         GoldOrder goldOrder = goldOrderDao.get(orderId);
         goldOrder.setGoldProduct(goldProductDao.get(goldOrder.getGoldProduct().getId()));
         return goldOrder;
-    }
-
-    public void updateOrderStatus(GoldOrder goldOrder, GoldOrder.Status status) {
-
     }
 
     public String getAlipayParams(String userId, Long productId, String service, String paymentType) {
@@ -117,20 +116,31 @@ public class VgService {
                 .toString();
     }
 
-    public ProductDto toProductDto(GoldProduct goldProduct) {
-        return BeanMapper.map(goldProduct, ProductDto.class);
-    }
-
-    public OrderDto toOrderDto(GoldOrder goldOrder) {
-        return BeanMapper.map(goldOrder, OrderDto.class);
+    public GoldProductDto toProductDto(GoldProduct goldProduct) {
+        return BeanMapper.map(goldProduct, GoldProductDto.class);
     }
 
     /**
      * 购买金币，支付宝支付成功.
      */
-    public void tradeSuccess(Long orderId) {
-        GoldOrder goldOrder = getOrderWithDetail(orderId);
+    public void tradeSuccess(Long orderId, String alipayStatus) {
+        //更新订单状态
+        updateTradeStatus(orderId, GoldOrder.Status.PAID, alipayStatus);
 
+        //更新用户金币数
+        GoldOrder goldOrder = goldOrderDao.get(orderId);
+        Long gold = userGoldDao.getUserGoldQuantity(goldOrder.getUserId());
+        UserGold userGold = new UserGold();
+        userGold.setUserId(goldOrder.getUserId());
+        userGold.setGoldQuantity(gold + goldOrder.getGoldQuantity());
+        userGoldDao.updateUserGoldQuantity(userGold);
+    }
 
+    public void updateTradeStatus(Long orderId, GoldOrder.Status status, String alipayStatus) {
+        GoldOrder goldOrder = new GoldOrder();
+        goldOrder.setId(orderId);
+        goldOrder.setStatus(status);
+        goldOrder.setAlipayStatus(alipayStatus);
+        goldOrderDao.updateStatus(goldOrder);
     }
 }

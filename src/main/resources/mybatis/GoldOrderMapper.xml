@@ -6,24 +6,26 @@
 
     <resultMap id="goldOrderDetailMap" type="GoldOrder">
         <id property="id" column="id"/>
-        <result property="mongoUserId" column="mongo_user_id"/>
+        <result property="userId" column="user_id"/>
         <result property="orderDate" column="order_date"/>
         <result property="quantity" column="quantity"/>
         <result property="discount" column="discount"/>
         <result property="status" column="status"/>
+        <result property="alipayStatus" column="alipay_status"/>
         <result property="goldProduct.id" column="gold_product_id"/>
     </resultMap>
 
     <insert id="save" parameterType="GoldOrder" useGeneratedKeys="true" keyProperty="id">
 		insert into vg_gold_order (
-		mongo_user_id,
+		user_id,
 		gold_product_id,
 		quantity,
 		discount,
 		order_date,
-		status)
+		status,
+		alipay_status)
 		values (
-		#{mongoUserId},
+		#{userId},
 		#{goldProduct.id},
 		#{quantity},
 		#{discount},
@@ -33,14 +35,29 @@
 
     <select id="getWithDetail" parameterType="long" resultMap="goldOrderDetailMap">
         select id,
-        mongo_user_id,
+        user_id,
         gold_product_id,
         quantity,
         discount,
         order_date,
-        status
+        status,
+        alipay_status
         from vg_order
         where id = #{id}
     </select>
+
+    <update id="updateStatus" parameterType="GoldOrder">
+        update vg_gold_order
+        <set>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="alipayStatus != null">
+                alipay_status = #{alipayStatus}
+            </if>
+        </set>
+        where id = #{id}
+
+    </update>
 
 </mapper>

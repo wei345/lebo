@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * Date: 13-11-1
  * Time: PM5:30
  */
-public class ProductDto {
+public class GoldProductDto {
     private Long productId;
     private String name;
     private String description;

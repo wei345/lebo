@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.lebo.repository.mybatis.UserGoldDao">
+
+    <select id="getUserGoldQuantity" parameterType="string" resultType="long">
+        select gold_quantity
+        from vg_user_gold
+        where user_id = #{userId}
+    </select>
+
+    <update id="updateUserGoldQuantity" parameterType="UserGold">
+        update vg_user_gold
+        set gold_quantity = #{goldQuantity}
+        where user_id = #{userId}
+    </update>
+
+</mapper>

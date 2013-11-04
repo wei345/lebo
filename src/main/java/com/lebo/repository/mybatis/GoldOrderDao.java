@@ -13,4 +13,6 @@ public interface GoldOrderDao {
     GoldOrder get(Long id);
 
     void save(GoldOrder goldOrder);
+
+    void updateStatus(GoldOrder goldOrder);
 }

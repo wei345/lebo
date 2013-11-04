@@ -14,13 +14,13 @@ import java.util.Date;
  */
 public class GoldOrder {
     private Long id;
-    private String mongoUserId;
+    private String userId;
     private GoldProduct goldProduct;
     private Integer quantity;
     private BigDecimal discount;
     private Date orderDate;
     private Status status;
-
+    private String alipayStatus;
 
     public static enum Status {
         PAID("已支付"),
@@ -34,8 +34,8 @@ public class GoldOrder {
     public GoldOrder() {
     }
 
-    public GoldOrder(String mongoUserId, BigDecimal discount, Status status) {
-        this.mongoUserId = mongoUserId;
+    public GoldOrder(String userId, BigDecimal discount, Status status) {
+        this.userId = userId;
         this.discount = discount;
         this.status = status;
         this.orderDate = new Date();
@@ -49,12 +49,12 @@ public class GoldOrder {
         this.id = id;
     }
 
-    public String getMongoUserId() {
-        return mongoUserId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setMongoUserId(String mongoUserId) {
-        this.mongoUserId = mongoUserId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Date getOrderDate() {
@@ -117,5 +117,17 @@ public class GoldOrder {
         return StringUtils.substring(
                 new StringBuilder(goldProduct.getName())
                         .append("×").append(quantity).toString(), 0, 128);
+    }
+
+    public String getAlipayStatus() {
+        return alipayStatus;
+    }
+
+    public void setAlipayStatus(String alipayStatus) {
+        this.alipayStatus = alipayStatus;
+    }
+
+    public Long getGoldQuantity(){
+        return goldProduct.getGoldQuantity() * quantity;
     }
 }
