@@ -5,6 +5,7 @@ import com.lebo.entity.Im;
 import com.lebo.repository.ImDao;
 import com.lebo.rest.dto.ImDto;
 import com.lebo.service.account.AccountService;
+import com.lebo.util.ContentTypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +38,7 @@ public class ImService extends AbstractMongoService {
         //保存附件
         for (int i = 0; i < attachments.size(); i++) {
             FileInfo fileInfo = attachments.get(i);
-            fileInfo.setKey(
-                    generateFileId(FILE_COLLECTION_NAME,
-                            im.getId(),
-                            i + "-" + fileInfo.getContentType().replace("/", "-"),
-                            fileInfo.getLength(),
-                            fileInfo.getContentType(),
-                            fileInfo.getFilename()));
+            fileInfo.setKey(generateImFileKey(im.getId(), i, fileInfo.getContentType()));
         }
         fileStorageService.save(attachments.toArray(new FileInfo[]{}));
         im.setAttachments(attachments);
@@ -52,7 +47,14 @@ public class ImService extends AbstractMongoService {
         return im;
     }
 
-    public ImDto toDto(Im im){
+    private String generateImFileKey(String imId, int i, String contentType) {
+        return new StringBuilder(FILE_COLLECTION_NAME + "/")
+                .append(imId).append("-").append(i)
+                .append(".").append(ContentTypeMap.getExtension(contentType))
+                .toString();
+    }
+
+    public ImDto toDto(Im im) {
         ImDto dto = new ImDto();
         dto.setFrom(accountService.toBasicUserDto(accountService.getUser(im.getFrom())));
         dto.setTo(accountService.toBasicUserDto(accountService.getUser(im.getTo())));
