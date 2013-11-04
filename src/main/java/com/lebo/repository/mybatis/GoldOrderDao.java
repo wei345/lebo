@@ -1,6 +1,6 @@
 package com.lebo.repository.mybatis;
 
-import com.lebo.entity.Order;
+import com.lebo.entity.GoldOrder;
 import com.lebo.repository.MyBatisRepository;
 
 /**
@@ -9,6 +9,8 @@ import com.lebo.repository.MyBatisRepository;
  * Time: PM4:50
  */
 @MyBatisRepository
-public interface OrderDao {
-    void save(Order order);
+public interface GoldOrderDao {
+    GoldOrder get(Long id);
+
+    void save(GoldOrder goldOrder);
 }

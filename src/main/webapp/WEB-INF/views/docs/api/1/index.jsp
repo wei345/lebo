@@ -538,7 +538,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/ec/goldProducts" text="GET ec/goldProducts"/>
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goldProducts" text="GET vg/goldProducts"/>
         </td>
         <td>
             返回金币商品。
@@ -546,7 +546,7 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/ec/alipaySigedParams" text="GET ec/alipaySigedParams"/>
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/alipaySigedParams" text="GET vg/alipaySigedParams"/>
         </td>
         <td>
             返回用于支付宝请求RSA签名的参数字符串。

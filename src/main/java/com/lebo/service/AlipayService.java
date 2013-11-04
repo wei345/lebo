@@ -50,6 +50,14 @@ public class AlipayService {
         }
     }
 
+    public boolean rsaCheckContent(String content, String sign) {
+        try {
+            return AlipaySignature.rsaCheckContent(content, sign, alipayPublicKey, DEFAULT_CHARSET);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getSignContent(Map<String, String> params) {
         return AlipaySignature.getSignContent(params);
     }

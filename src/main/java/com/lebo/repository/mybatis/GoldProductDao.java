@@ -1,6 +1,6 @@
 package com.lebo.repository.mybatis;
 
-import com.lebo.entity.Product;
+import com.lebo.entity.GoldProduct;
 import com.lebo.repository.MyBatisRepository;
 
 import java.util.List;
@@ -11,10 +11,8 @@ import java.util.List;
  * Time: PM4:50
  */
 @MyBatisRepository
-public interface ProductDao {
-    Product get(Long id);
+public interface GoldProductDao {
+    GoldProduct get(Long id);
 
-    Product getWithDetail(Long id);
-
-    List<Product> findByCategoryId(Long categoryId);
+    List<GoldProduct> getAll();
 }

@@ -9,18 +9,17 @@ import java.math.BigDecimal;
  * Date: 13-10-30
  * Time: PM3:22
  */
-public class Product {
-    private Long productId;
+public class GoldProduct {
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
     private PriceUnit priceUnit;
     private BigDecimal discount;
     private String image;
-    private ProductCategory productCategory;
+    private Long goldQuantity;
 
     public static enum PriceUnit {
-        GOLD, //金币
         RMB
     }
 
@@ -48,14 +47,6 @@ public class Product {
         this.image = image;
     }
 
-    public ProductCategory getProductCategory() {
-        return productCategory;
-    }
-
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -64,12 +55,12 @@ public class Product {
         this.description = description;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getId() {
+        return id;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public PriceUnit getPriceUnit() {
@@ -88,14 +79,24 @@ public class Product {
         this.discount = discount;
     }
 
+    public Long getGoldQuantity() {
+        return goldQuantity;
+    }
+
+    public void setGoldQuantity(Long goldQuantity) {
+        this.goldQuantity = goldQuantity;
+    }
+
     /**
      * 应付金额
      *
-     * @return price * ( 1 - discount )
+     * @return price + discount
      */
     public BigDecimal getCost() {
         Assert.notNull(price);
-        Assert.notNull(discount);
-        return price.multiply(BigDecimal.ONE.subtract(discount));
+        if (discount != null) {
+            return price.add(discount);
+        }
+        return price;
     }
 }

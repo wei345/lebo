@@ -1,11 +1,9 @@
 package com.lebo.entity;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 订单
@@ -14,14 +12,15 @@ import java.util.List;
  * Date: 13-10-30
  * Time: PM3:03
  */
-public class Order {
-    private Long orderId;
+public class GoldOrder {
+    private Long id;
     private String mongoUserId;
-    private Date orderDate;
+    private GoldProduct goldProduct;
+    private Integer quantity;
     private BigDecimal discount;
+    private Date orderDate;
     private Status status;
 
-    private List<OrderDetail> orderDetails = Lists.newArrayList();
 
     public static enum Status {
         PAID("已支付"),
@@ -32,22 +31,22 @@ public class Order {
         }
     }
 
-    public Order() {
+    public GoldOrder() {
     }
 
-    public Order(String mongoUserId, BigDecimal discount, Status status) {
+    public GoldOrder(String mongoUserId, BigDecimal discount, Status status) {
         this.mongoUserId = mongoUserId;
         this.discount = discount;
         this.status = status;
         this.orderDate = new Date();
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Long getId() {
+        return id;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getMongoUserId() {
@@ -82,45 +81,41 @@ public class Order {
         this.status = status;
     }
 
-    public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
+    public GoldProduct getGoldProduct() {
+        return goldProduct;
     }
 
-    public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
+    public void setGoldProduct(GoldProduct goldProduct) {
+        this.goldProduct = goldProduct;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public BigDecimal getTotalCost() {
-        BigDecimal total = new BigDecimal("0");
-        for (OrderDetail orderDetail : orderDetails) {
-            total = total.add(orderDetail.getTotalCost());
-        }
-        return total;
+        return goldProduct.getCost().multiply(new BigDecimal(quantity)).add(discount);
     }
 
     /**
      * 详细描述, 支付宝接口body参数, 最多300字符
      */
     public String getBody() {
-        StringBuilder sb = new StringBuilder();
-        for (OrderDetail orderDetail : orderDetails) {
-            sb.append(orderDetail.getProduct().getName())
-                    .append("×").append(orderDetail.getQuantity()).append(" ");
-        }
-
-        return StringUtils.substring(sb.toString().trim(), 0, 300);
+        return StringUtils.substring(
+                new StringBuilder(goldProduct.getName())
+                        .append("×").append(quantity).toString(), 0, 300);
     }
 
     /**
      * 支付宝接口subject参数,最长为 128 个汉字
      */
     public String getSubject() {
-        StringBuilder sb = new StringBuilder();
-        for (OrderDetail orderDetail : orderDetails) {
-            sb.append(orderDetail.getProduct().getProductCategory().getName())
-                    .append(" ");
-        }
-
-        return StringUtils.substring(sb.toString().trim(), 0, 128);
+        return StringUtils.substring(
+                new StringBuilder(goldProduct.getName())
+                        .append("×").append(quantity).toString(), 0, 128);
     }
 }

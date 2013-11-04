@@ -1,7 +1,7 @@
 package com.lebo.rest;
 
 import com.lebo.service.AlipayService;
-import com.lebo.service.EcService;
+import com.lebo.service.VgService;
 import com.lebo.service.account.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,21 +23,21 @@ import java.util.Map;
  * Time: PM6:16
  */
 @Controller
-public class EcRestController {
+public class VgRestController {
     @Autowired
-    private EcService ecService;
+    private VgService vgService;
     @Autowired
     private AccountService accountService;
     @Autowired
     private AlipayService alipayService;
-    private static final String API_1_1_EC = "/api/1.1/ec/";
+    private static final String API_1_1_EC = "/api/1.1/vg/";
 
-    private Logger logger = LoggerFactory.getLogger(EcRestController.class);
+    private Logger logger = LoggerFactory.getLogger(VgRestController.class);
 
     @RequestMapping(value = API_1_1_EC + "goldProducts.json", method = RequestMethod.GET)
     @ResponseBody
     public Object goldProducts() {
-        return ecService.findProductByCategoryId(1L);
+        return vgService.findAllGoldProducts();
     }
 
     @RequestMapping(value = API_1_1_EC + "alipaySigedParams.json", method = RequestMethod.GET)
@@ -46,7 +46,7 @@ public class EcRestController {
                                     @RequestParam("service") String service,
                                     @RequestParam("paymentType") String paymentType) {
 
-        String signed = ecService.getAlipayParams(accountService.getCurrentUserId(), productId, service, paymentType);
+        String signed = vgService.getAlipayParams(accountService.getCurrentUserId(), productId, service, paymentType);
 
         Map<String, String> result = new HashMap<String, String>(1);
         result.put("signed", signed);
@@ -97,6 +97,19 @@ public class EcRestController {
         } else {
             logger.debug("未通过");
             return "error";
+        }
+
+        if("TRADE_SUCCESS".equals(tradeStatus)){
+
+        }
+        else if("TRADE_FINISHED".equals(tradeStatus)){
+
+        }
+        else if("WAIT_BUYER_PAY".equals(tradeStatus)){
+
+        }
+        else if("TRADE_CLOSED".equals(tradeStatus)){
+
         }
 
         return "success";

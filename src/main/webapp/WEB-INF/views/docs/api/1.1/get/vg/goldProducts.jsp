@@ -3,14 +3,14 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="金币商品" method="GET" action="${ctx}/api/1.1/ec/goldProducts.json">
+<tags:form name="金币商品" method="GET" action="${ctx}/api/1.1/vg/goldProducts.json">
 
 </tags:form>
 
-<tags:example method="GET" url="http://192.168.1.103:8080/api/1.1/ec/goldProducts.json">
+<tags:example method="GET" url="http://192.168.1.103:8080/api/1.1/vg/goldProducts.json">
     [
         {
-            productId: 1,
+            id: 1,
             name: "10个金币",
             price: 1,
             priceUnit: "RMB",
@@ -19,7 +19,7 @@
             cost: 1
         },
         {
-            productId: 2,
+            id: 2,
             name: "50个金币",
             price: 5,
             priceUnit: "RMB",
@@ -28,29 +28,29 @@
             cost: 5
         },
         {
-            productId: 3,
+            id: 3,
             name: "200个金币",
             price: 20,
             priceUnit: "RMB",
-            discount: 0.1,
+            discount: -2,
             image: "images/products/gold-200.png",
             cost: 18
         },
         {
-            productId: 4,
+            id: 4,
             name: "500个金币",
             price: 50,
             priceUnit: "RMB",
-            discount: 0.2,
+            discount: -10,
             image: "images/products/gold-500.png",
             cost: 40
         },
         {
-            productId: 5,
+            id: 5,
             name: "1000个金币",
             price: 100,
             priceUnit: "RMB",
-            discount: 0.3,
+            discount: -30,
             image: "images/products/gold-1000.png",
             cost: 70
         }

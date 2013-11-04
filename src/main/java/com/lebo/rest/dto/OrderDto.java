@@ -1,6 +1,6 @@
 package com.lebo.rest.dto;
 
-import com.lebo.entity.Order;
+import com.lebo.entity.GoldOrder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class OrderDto {
     private String mongoUserId;
     private Date orderDate;
     private BigDecimal discount;
-    private Order.Status status;
+    private GoldOrder.Status status;
 
     private List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
 
@@ -53,11 +53,11 @@ public class OrderDto {
         this.discount = discount;
     }
 
-    public Order.Status getStatus() {
+    public GoldOrder.Status getStatus() {
         return status;
     }
 
-    public void setStatus(Order.Status status) {
+    public void setStatus(GoldOrder.Status status) {
         this.status = status;
     }
 

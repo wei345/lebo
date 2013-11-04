@@ -1,6 +1,6 @@
 package com.lebo.rest.dto;
 
-import com.lebo.entity.Product;
+import com.lebo.entity.GoldProduct;
 
 import java.math.BigDecimal;
 
@@ -14,7 +14,7 @@ public class ProductDto {
     private String name;
     private String description;
     private BigDecimal price;
-    private Product.PriceUnit priceUnit;
+    private GoldProduct.PriceUnit priceUnit;
     private BigDecimal discount;
     private String image;
 
@@ -50,11 +50,11 @@ public class ProductDto {
         this.price = price;
     }
 
-    public Product.PriceUnit getPriceUnit() {
+    public GoldProduct.PriceUnit getPriceUnit() {
         return priceUnit;
     }
 
-    public void setPriceUnit(Product.PriceUnit priceUnit) {
+    public void setPriceUnit(GoldProduct.PriceUnit priceUnit) {
         this.priceUnit = priceUnit;
     }
 

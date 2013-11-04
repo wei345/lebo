@@ -8,13 +8,10 @@ package com.lebo.service;
  * Time: PM5:53
  */
 
-import com.lebo.entity.Order;
-import com.lebo.entity.OrderDetail;
-import com.lebo.entity.Product;
-import com.lebo.repository.mybatis.OrderDao;
-import com.lebo.repository.mybatis.OrderDetailDao;
-import com.lebo.repository.mybatis.ProductDao;
-import com.lebo.rest.dto.OrderDetailDto;
+import com.lebo.entity.GoldOrder;
+import com.lebo.entity.GoldProduct;
+import com.lebo.repository.mybatis.GoldOrderDao;
+import com.lebo.repository.mybatis.GoldProductDao;
 import com.lebo.rest.dto.OrderDto;
 import com.lebo.rest.dto.ProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +29,12 @@ import java.util.Map;
 
 @Service
 @Transactional
-public class EcService {
+public class VgService {
 
     @Autowired
-    private ProductDao productDao;
+    private GoldProductDao goldProductDao;
     @Autowired
-    private OrderDao orderDao;
-    @Autowired
-    private OrderDetailDao orderDetailDao;
+    private GoldOrderDao goldOrderDao;
     @Autowired
     private AlipayService alipayService;
     @Autowired
@@ -56,32 +51,35 @@ public class EcService {
     @Value("${alipay.seller_id}")
     public String alipaySellerId;
 
-    public Order createOrder(Long productId, String mongoUserId) {
-        Order order = new Order(mongoUserId, BigDecimal.ZERO, Order.Status.UNPAID);
+    public GoldOrder createOrder(Long goldProductId, String mongoUserId) {
+        GoldOrder goldOrder = new GoldOrder(mongoUserId, BigDecimal.ZERO, GoldOrder.Status.UNPAID);
 
-        Product product = productDao.getWithDetail(productId);
-        Assert.notNull(product);
+        GoldProduct goldProduct = goldProductDao.get(goldProductId);
+        Assert.notNull(goldProduct);
+        goldOrder.setGoldProduct(goldProduct);
 
-        OrderDetail orderDetail = new OrderDetail(order, product, 1, BigDecimal.ZERO);
+        goldOrder.setQuantity(1);
 
-        order.getOrderDetails().add(orderDetail);
-
-        orderDao.save(order);
-        orderDetailDao.save(orderDetail);
-
-        return order;
+        goldOrderDao.save(goldOrder);
+        return goldOrder;
     }
 
-    public List<Product> findProductByCategoryId(Long productCategoryId) {
-        return productDao.findByCategoryId(productCategoryId);
+    public List<GoldProduct> findAllGoldProducts() {
+        return goldProductDao.getAll();
     }
 
-    public void updateOrderStatus(Order order, Order.Status status) {
+    public GoldOrder getOrderWithDetail(Long orderId) {
+        GoldOrder goldOrder = goldOrderDao.get(orderId);
+        goldOrder.setGoldProduct(goldProductDao.get(goldOrder.getGoldProduct().getId()));
+        return goldOrder;
+    }
+
+    public void updateOrderStatus(GoldOrder goldOrder, GoldOrder.Status status) {
 
     }
 
     public String getAlipayParams(String userId, Long productId, String service, String paymentType) {
-        Order order = createOrder(productId, userId);
+        GoldOrder goldOrder = createOrder(productId, userId);
 
         Map<String, String> params = new HashMap<String, String>(10);
         //基本参数，不可空
@@ -89,8 +87,8 @@ public class EcService {
         params.put("partner", alipayPartnerId);
         params.put("_input_charset", "utf-8");
         //业务参数，不可空
-        params.put("out_trade_no", order.getOrderId().toString());
-        params.put("subject", "购买" + order.getSubject());
+        params.put("out_trade_no", goldOrder.getId().toString());
+        params.put("subject", "购买" + goldOrder.getSubject());
         params.put("payment_type", paymentType);
         params.put("seller_id", alipaySellerId);
         //开发环境，订单支付1分钱
@@ -99,10 +97,10 @@ public class EcService {
         }
         //生成环境，订单支付实际金额
         else {
-            params.put("total_fee", order.getTotalCost().setScale(2).toString());
+            params.put("total_fee", goldOrder.getTotalCost().setScale(2).toString());
         }
         //
-        params.put("body", order.getBody());
+        params.put("body", goldOrder.getBody());
         params.put("notify_url", Encodes.urlEncode(alipayNotifyUrl));
 
         //值带双引号
@@ -119,15 +117,20 @@ public class EcService {
                 .toString();
     }
 
-    public ProductDto toProductDto(Product product) {
-        return BeanMapper.map(product, ProductDto.class);
+    public ProductDto toProductDto(GoldProduct goldProduct) {
+        return BeanMapper.map(goldProduct, ProductDto.class);
     }
 
-    public OrderDto toOrderDto(Order order) {
-        return BeanMapper.map(order, OrderDto.class);
+    public OrderDto toOrderDto(GoldOrder goldOrder) {
+        return BeanMapper.map(goldOrder, OrderDto.class);
     }
 
-    public OrderDetailDto toOrderDetailDto(OrderDetail orderDetail) {
-        return BeanMapper.map(orderDetail, OrderDetailDto.class);
+    /**
+     * 购买金币，支付宝支付成功.
+     */
+    public void tradeSuccess(Long orderId) {
+        GoldOrder goldOrder = getOrderWithDetail(orderId);
+
+
     }
 }
