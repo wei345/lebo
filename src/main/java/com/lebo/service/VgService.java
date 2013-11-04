@@ -14,6 +14,7 @@ import com.lebo.entity.UserGold;
 import com.lebo.repository.mybatis.GoldOrderDao;
 import com.lebo.repository.mybatis.GoldProductDao;
 import com.lebo.repository.mybatis.UserGoldDao;
+import com.lebo.rest.dto.GoldOrderDto;
 import com.lebo.rest.dto.GoldProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.utils.Encodes;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +89,7 @@ public class VgService {
         params.put("_input_charset", "utf-8");
         //业务参数，不可空
         params.put("out_trade_no", goldOrder.getId().toString());
-        params.put("subject", "购买" + goldOrder.getSubject());
+        params.put("subject", "购买" + goldOrder.getAlipaySubject());
         params.put("payment_type", paymentType);
         params.put("seller_id", alipaySellerId);
         //开发环境，订单支付1分钱
@@ -99,7 +101,7 @@ public class VgService {
             params.put("total_fee", goldOrder.getTotalCost().setScale(2).toString());
         }
         //
-        params.put("body", goldOrder.getBody());
+        params.put("body", goldOrder.getAlipayBody());
         params.put("notify_url", Encodes.urlEncode(alipayNotifyUrl));
 
         //值带双引号
@@ -118,6 +120,18 @@ public class VgService {
 
     public GoldProductDto toProductDto(GoldProduct goldProduct) {
         return BeanMapper.map(goldProduct, GoldProductDto.class);
+    }
+
+    public List<GoldProductDto> toProductDtos(List<GoldProduct> goldProducts) {
+        ArrayList<GoldProductDto> dtos = new ArrayList<GoldProductDto>(goldProducts.size());
+        for (GoldProduct goldProduct : goldProducts) {
+            dtos.add(toProductDto(goldProduct));
+        }
+        return dtos;
+    }
+
+    public GoldOrderDto toGoldOrderDto(GoldOrder goldOrder) {
+        return BeanMapper.map(goldOrder, GoldOrderDto.class);
     }
 
     /**

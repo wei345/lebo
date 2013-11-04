@@ -29,7 +29,7 @@ public class VgRestController {
     @RequestMapping(value = API_1_1_VG + "goldProducts.json", method = RequestMethod.GET)
     @ResponseBody
     public Object goldProducts() {
-        return vgService.findAllGoldProducts();
+        return vgService.toProductDtos(vgService.findAllGoldProducts());
     }
 
     @RequestMapping(value = API_1_1_VG + "alipaySigedParams.json", method = RequestMethod.GET)
@@ -43,5 +43,12 @@ public class VgRestController {
         Map<String, String> result = new HashMap<String, String>(1);
         result.put("signed", signed);
         return result;
+    }
+
+    @RequestMapping(value = API_1_1_VG + "goldOrders/detail.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object order(@RequestParam("orderId") Long orderId) {
+
+        return vgService.toGoldOrderDto(vgService.getOrderWithDetail(orderId));
     }
 }

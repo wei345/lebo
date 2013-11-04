@@ -4,7 +4,7 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="com.lebo.repository.mybatis.GoldOrderDao">
 
-    <resultMap id="goldOrderDetailMap" type="GoldOrder">
+    <resultMap id="goldOrderMap" type="GoldOrder">
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="orderDate" column="order_date"/>
@@ -22,8 +22,7 @@
 		quantity,
 		discount,
 		order_date,
-		status,
-		alipay_status)
+		status)
 		values (
 		#{userId},
 		#{goldProduct.id},
@@ -33,7 +32,7 @@
 		#{status})
 	</insert>
 
-    <select id="getWithDetail" parameterType="long" resultMap="goldOrderDetailMap">
+    <select id="get" parameterType="long" resultMap="goldOrderMap">
         select id,
         user_id,
         gold_product_id,
@@ -42,7 +41,7 @@
         order_date,
         status,
         alipay_status
-        from vg_order
+        from vg_gold_order
         where id = #{id}
     </select>
 

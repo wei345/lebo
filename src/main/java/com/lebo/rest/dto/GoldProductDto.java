@@ -16,6 +16,7 @@ public class GoldProductDto {
     private BigDecimal price;
     private GoldProduct.PriceUnit priceUnit;
     private BigDecimal discount;
+    private BigDecimal cost;
     private String image;
 
     public Long getProductId() {
@@ -72,5 +73,13 @@ public class GoldProductDto {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 }

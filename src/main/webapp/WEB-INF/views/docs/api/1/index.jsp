@@ -552,6 +552,14 @@
             返回用于支付宝请求RSA签名的参数字符串。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goldOrders/detail" text="GET vg/goldOrders/detail"/>
+        </td>
+        <td>
+            返回订单详细。
+        </td>
+    </tr>
 </table>
 
 <strong>反馈</strong>

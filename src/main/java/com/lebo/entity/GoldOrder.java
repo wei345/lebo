@@ -104,7 +104,7 @@ public class GoldOrder {
     /**
      * 详细描述, 支付宝接口body参数, 最多300字符
      */
-    public String getBody() {
+    public String getAlipayBody() {
         return StringUtils.substring(
                 new StringBuilder(goldProduct.getName())
                         .append("×").append(quantity).toString(), 0, 300);
@@ -113,7 +113,7 @@ public class GoldOrder {
     /**
      * 支付宝接口subject参数,最长为 128 个汉字
      */
-    public String getSubject() {
+    public String getAlipaySubject() {
         return StringUtils.substring(
                 new StringBuilder(goldProduct.getName())
                         .append("×").append(quantity).toString(), 0, 128);
