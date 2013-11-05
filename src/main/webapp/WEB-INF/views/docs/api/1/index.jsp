@@ -568,6 +568,14 @@
             返回用户的虚拟物品。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goods" text="GET vg/goods"/>
+        </td>
+        <td>
+            返回虚拟物品列表。
+        </td>
+    </tr>
 </table>
 
 <strong>反馈</strong>

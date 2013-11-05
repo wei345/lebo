@@ -25,4 +25,15 @@
         from vg_goods
         where id = #{id}
     </select>
+
+    <select id="getAll" resultMap="goodsMap">
+        select id,
+        name,
+        description,
+        price,
+        discount,
+        image_normal,
+        image_bigger
+        from vg_goods
+    </select>
 </mapper>

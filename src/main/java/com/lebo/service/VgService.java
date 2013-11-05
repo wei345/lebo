@@ -12,6 +12,7 @@ import com.lebo.entity.*;
 import com.lebo.repository.mybatis.*;
 import com.lebo.rest.dto.GoldOrderDto;
 import com.lebo.rest.dto.GoldProductDto;
+import com.lebo.rest.dto.GoodsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -169,6 +170,22 @@ public class VgService {
 
     public Goods getGoodsById(Long goodsId) {
         return goodsDao.getById(goodsId);
+    }
+
+    public List<Goods> getAllGoods(){
+        return goodsDao.getAll();
+    }
+
+    public GoodsDto toGoodsDto(Goods goods){
+        return BeanMapper.map(goods, GoodsDto.class);
+    }
+
+    public List<GoodsDto> toGoodsDtos(List<Goods> goodsList){
+        List<GoodsDto> goodsDtos = new ArrayList<GoodsDto>(goodsList.size());
+        for(Goods goods : goodsList){
+            goodsDtos.add(toGoodsDto(goods));
+        }
+        return goodsDtos;
     }
 
 }

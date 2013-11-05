@@ -98,4 +98,10 @@ public class VgRestController {
 
         return userVgDto;
     }
+
+    @RequestMapping(value = API_1_1_VG + "goods.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getAllGoods() {
+        return vgService.toGoodsDtos(vgService.getAllGoods());
+    }
 }
