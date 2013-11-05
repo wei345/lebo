@@ -58,6 +58,14 @@
 
     <!-- 依赖项定义 -->
     <dependencies>
+        <!-- ALIPAY begin -->
+        <dependency>
+            <groupId>com.alipay</groupId>
+            <artifactId>alipay-sdk</artifactId>
+            <version>20131029120045</version>
+        </dependency>
+        <!-- ALIPAY end -->
+
         <!-- XUGGLE begin -->
         <dependency>
             <groupId>xuggle</groupId>

@@ -163,14 +163,14 @@
 
 <strong>上传</strong>
 <table class="table table-hover">
-<tr>
-    <td class="td1">
-        <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
-    </td>
-    <td>
-        返回有失效期的临时上传地址。
-    </td>
-</tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
+        </td>
+        <td>
+            返回有失效期的临时上传地址。
+        </td>
+    </tr>
 </table>
 
 <strong>视频</strong>
@@ -546,6 +546,58 @@
         </td>
         <td>
             完成上传文件，返回新url。
+        </td>
+    </tr>
+</table>
+
+<strong>虚拟货币</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goods" text="GET vg/goods"/>
+        </td>
+        <td>
+            返回虚拟物品列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goldProducts" text="GET vg/goldProducts"/>
+        </td>
+        <td>
+            返回金币商品列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/alipaySigedParams" text="GET vg/alipaySigedParams"/>
+        </td>
+        <td>
+            返回用于支付宝请求RSA签名的参数字符串。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goldOrders/detail" text="GET vg/goldOrders/detail"/>
+        </td>
+        <td>
+            返回订单详细。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/userVg" text="GET vg/userVg"/>
+        </td>
+        <td>
+            返回用户金币数和虚拟物品。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/vg/giveGoods" text="POST vg/giveGoods"/>
+        </td>
+        <td>
+            赠送物品。
         </td>
     </tr>
 </table>

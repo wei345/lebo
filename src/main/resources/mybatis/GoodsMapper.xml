@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.lebo.repository.mybatis.GoodsDao">
+
+    <resultMap id="goodsMap" type="Goods">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="price" column="price"/>
+        <result property="discount" column="discount"/>
+        <result property="imageNormal" column="image_normal"/>
+        <result property="imageBigger" column="image_bigger"/>
+    </resultMap>
+
+    <select id="getById" parameterType="long" resultMap="goodsMap">
+        select id,
+        name,
+        description,
+        price,
+        discount,
+        image_normal,
+        image_bigger
+        from vg_goods
+        where id = #{id}
+    </select>
+
+    <select id="getAll" resultMap="goodsMap">
+        select id,
+        name,
+        description,
+        price,
+        discount,
+        image_normal,
+        image_bigger
+        from vg_goods
+    </select>
+</mapper>

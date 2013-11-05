@@ -35,6 +35,7 @@ public class ErrorDto {
     public static final ErrorDto INTERNAL_SERVER_ERROR = new ErrorDto("Internal Server Error", 10500, HttpStatus.INTERNAL_SERVER_ERROR);
     public static final ErrorDto FIND_WEIBO_FRIEND_NO_TOKEN = new ErrorDto("没有微博token", 10431, HttpStatus.BAD_REQUEST);
     public static final ErrorDto FIND_WEIBO_FRIEND_ERROR_TOKEN = new ErrorDto("token不正确或已过期", 10432, HttpStatus.BAD_REQUEST);
+    public static final ErrorDto INSUFFICIENT_GOLD = new ErrorDto("金币不足", 10434, HttpStatus.BAD_REQUEST);
     public static final SuccessDto OK = new SuccessDto();
 
     private static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
