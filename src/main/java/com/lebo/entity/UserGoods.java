@@ -10,6 +10,20 @@ public class UserGoods {
     private Long goodsId;
     private Integer quantity;
 
+    public UserGoods() {
+    }
+
+    public UserGoods(String userId, Long goodsId) {
+        this.userId = userId;
+        this.goodsId = goodsId;
+    }
+
+    public UserGoods(String userId, Long goodsId, int quantity) {
+        this.userId = userId;
+        this.goodsId = goodsId;
+        this.quantity = quantity;
+    }
+
     public String getUserId() {
         return userId;
     }

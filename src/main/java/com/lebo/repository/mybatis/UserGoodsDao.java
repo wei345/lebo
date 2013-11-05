@@ -13,4 +13,10 @@ import java.util.List;
 @MyBatisRepository
 public interface UserGoodsDao {
     List<UserGoods> getByUserId(String userId);
+
+    UserGoods getByUserIdGoodsId(UserGoods userGoods);
+
+    void insert(UserGoods userGoods);
+
+    void updateQuantityByUserIdAndGoodsId(UserGoods userGoods);
 }

@@ -2,6 +2,7 @@ drop table if exists vg_gold_order;
 drop table if exists vg_gold_product;
 drop table if exists vg_user_gold;
 drop table if exists vg_user_goods;
+drop table if exists vg_give_goods;
 drop table if exists vg_goods;
 
 create table vg_gold_product (
@@ -48,6 +49,16 @@ create table vg_user_goods (
     quantity int not null,
     foreign key (goods_id) references vg_goods(id),
     primary key(user_id, goods_id)
+) engine=InnoDB;
+
+create table vg_give_goods (
+    id bigint not null auto_increment primary key,
+    from_user_id varchar(24) not null,
+    to_user_id varchar(24) not null,
+    goods_id bigint not null,
+    quantity int not null,
+    give_date datetime not null,
+    foreign key (goods_id) references vg_goods(id)
 ) engine=InnoDB;
 
 insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(1, '10个金币', 1, 'RMB', 0, 'images/gold/gold-10.png', 10);

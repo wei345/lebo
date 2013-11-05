@@ -10,6 +10,7 @@ package com.lebo.service;
 
 import com.lebo.entity.*;
 import com.lebo.repository.mybatis.*;
+import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.GoldOrderDto;
 import com.lebo.rest.dto.GoldProductDto;
 import com.lebo.rest.dto.GoodsDto;
@@ -22,10 +23,7 @@ import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.utils.Encodes;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -45,6 +43,8 @@ public class VgService {
     private UserGoodsDao userGoodsDao;
     @Autowired
     private GoodsDao goodsDao;
+    @Autowired
+    private GiveGoodsDao giveGoodsDao;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -144,11 +144,17 @@ public class VgService {
 
         //更新用户金币数
         GoldOrder goldOrder = goldOrderDao.get(orderId);
-        Long gold = userGoldDao.getUserGoldQuantity(goldOrder.getUserId());
-        UserGold userGold = new UserGold();
-        userGold.setUserId(goldOrder.getUserId());
-        userGold.setGoldQuantity(gold + goldOrder.getGoldQuantity());
-        userGoldDao.updateUserGoldQuantity(userGold);
+        addUserGoldQuantity(goldOrder.getUserId(), goldOrder.getGoldQuantity());
+    }
+
+    private void addUserGoldQuantity(String userId, Long goldQuantity) {
+        UserGold userGold = userGoldDao.getByUserId(userId);
+        if (userGold == null) {
+            userGoldDao.insert(new UserGold(userId, goldQuantity));
+        } else {
+            userGold.setGoldQuantity(userGold.getGoldQuantity() + goldQuantity);
+            userGoldDao.updateUserGoldQuantity(userGold);
+        }
     }
 
     public void updateTradeStatus(Long orderId, GoldOrder.Status status, String alipayStatus) {
@@ -172,20 +178,56 @@ public class VgService {
         return goodsDao.getById(goodsId);
     }
 
-    public List<Goods> getAllGoods(){
+    public List<Goods> getAllGoods() {
         return goodsDao.getAll();
     }
 
-    public GoodsDto toGoodsDto(Goods goods){
+    public GoodsDto toGoodsDto(Goods goods) {
         return BeanMapper.map(goods, GoodsDto.class);
     }
 
-    public List<GoodsDto> toGoodsDtos(List<Goods> goodsList){
+    public List<GoodsDto> toGoodsDtos(List<Goods> goodsList) {
         List<GoodsDto> goodsDtos = new ArrayList<GoodsDto>(goodsList.size());
-        for(Goods goods : goodsList){
+        for (Goods goods : goodsList) {
             goodsDtos.add(toGoodsDto(goods));
         }
         return goodsDtos;
+    }
+
+    public void giveGoods(String fromUserId, String toUserId, Long goodsId, Integer quantity) {
+        Long fromUserGold = getUserGoldQuantity(fromUserId);
+        Goods goods = getGoodsById(goodsId);
+        Integer totalCost = goods.getPrice() * quantity;
+
+        //检查金币余额
+        if (fromUserGold < totalCost) {
+            throw new ServiceException(ErrorDto.INSUFFICIENT_GOLD);
+        }
+
+        //支付金币
+        userGoldDao.updateUserGoldQuantity(new UserGold(fromUserId, fromUserGold - totalCost));
+
+        //增加物品
+        addUserGoodsQuantity(toUserId, goodsId, quantity);
+
+        //记录历史
+        GiveGoods giveGoods = new GiveGoods();
+        giveGoods.setFromUserId(fromUserId);
+        giveGoods.setToUserId(toUserId);
+        giveGoods.setGoodsId(goodsId);
+        giveGoods.setQuantity(quantity);
+        giveGoods.setGiveDate(new Date());
+        giveGoodsDao.insert(giveGoods);
+    }
+
+    private void addUserGoodsQuantity(String userId, long goodsId, int quantity) {
+        UserGoods userGoods = userGoodsDao.getByUserIdGoodsId(new UserGoods(userId, goodsId));
+        if (userGoods == null) {
+            userGoodsDao.insert(new UserGoods(userId, goodsId, quantity));
+        } else {
+            userGoods.setQuantity(userGoods.getQuantity() + quantity);
+            userGoodsDao.updateQuantityByUserIdAndGoodsId(userGoods);
+        }
     }
 
 }

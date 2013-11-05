@@ -573,8 +573,8 @@
     <tr>
         <th class="input-medium">HTTP状态码</th>
         <th class="input-medium">code</th>
-        <th class="input-medium">message</th>
-        <th>说明</th>
+        <th>message</th>
+        <th class="input-large">说明</th>
     </tr>
     <tr>
         <td>
@@ -648,44 +648,44 @@
     </tr>
     <tr>
         <td>
-            400
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKED.getHttpStatus().value()%>
         </td>
         <td>
-            10428
-        </td>
-        <td>
-
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKED.getError().getCode()%>
         </td>
         <td>
             <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKED.getError().getMessage()%>
         </td>
+        <td>
+
+        </td>
     </tr>
     <tr>
         <td>
-            400
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING.getHttpStatus().value()%>
         </td>
         <td>
-            10429
-        </td>
-        <td>
-
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING.getError().getCode()%>
         </td>
         <td>
             <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_BLOCKING.getError().getMessage()%>
         </td>
-    </tr>
-    <tr>
-        <td>
-            400
-        </td>
-        <td>
-            10430
-        </td>
         <td>
 
         </td>
+    </tr>
+    <tr>
+        <td>
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY.getHttpStatus().value()%>
+        </td>
+        <td>
+            <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY.getError().getCode()%>
+        </td>
         <td>
             <%=ErrorDto.CAN_NOT_FOLLOW_BECAUSE_TOO_MANY.getError().getMessage()%>
+        </td>
+        <td>
+
         </td>
     </tr>
     <tr>
@@ -696,10 +696,10 @@
             <%=ErrorDto.FIND_WEIBO_FRIEND_NO_TOKEN.getError().getCode()%>
         </td>
         <td>
-
+            <%=ErrorDto.FIND_WEIBO_FRIEND_NO_TOKEN.getError().getMessage()%>
         </td>
         <td>
-            <%=ErrorDto.FIND_WEIBO_FRIEND_NO_TOKEN.getError().getMessage()%>
+
         </td>
     </tr>
     <tr>
@@ -710,10 +710,24 @@
             <%=ErrorDto.FIND_WEIBO_FRIEND_ERROR_TOKEN.getError().getCode()%>
         </td>
         <td>
-
+            <%=ErrorDto.FIND_WEIBO_FRIEND_ERROR_TOKEN.getError().getMessage()%>
         </td>
         <td>
-            <%=ErrorDto.FIND_WEIBO_FRIEND_ERROR_TOKEN.getError().getMessage()%>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <%=ErrorDto.INSUFFICIENT_GOLD.getHttpStatus().value()%>
+        </td>
+        <td>
+            <%=ErrorDto.INSUFFICIENT_GOLD.getError().getCode()%>
+        </td>
+        <td>
+            <%=ErrorDto.INSUFFICIENT_GOLD.getError().getMessage()%>
+        </td>
+        <td>
+
         </td>
     </tr>
     <tr>

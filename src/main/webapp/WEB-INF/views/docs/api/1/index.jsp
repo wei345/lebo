@@ -538,10 +538,18 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goods" text="GET vg/goods"/>
+        </td>
+        <td>
+            返回虚拟物品列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1.1/get/vg/goldProducts" text="GET vg/goldProducts"/>
         </td>
         <td>
-            返回金币商品。
+            返回金币商品列表。
         </td>
     </tr>
     <tr>
@@ -565,15 +573,15 @@
             <tags:link url="${ctx}/docs/api/1.1/get/vg/userVg" text="GET vg/userVg"/>
         </td>
         <td>
-            返回用户的虚拟物品。
+            返回用户金币数和虚拟物品。
         </td>
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/vg/goods" text="GET vg/goods"/>
+            <tags:link url="${ctx}/docs/api/1.1/post/vg/giveGoods" text="POST vg/giveGoods"/>
         </td>
         <td>
-            返回虚拟物品列表。
+            赠送物品。
         </td>
     </tr>
 </table>

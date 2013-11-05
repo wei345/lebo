@@ -77,8 +77,10 @@ public class VgRestController {
         UserVgDto userVgDto = new UserVgDto();
         BeanMapper.copy(user, userVgDto);
         userVgDto.setUserId(user.getId());
+
         //用户金币数
         userVgDto.setGoldQuantity(vgService.getUserGoldQuantity(userId));
+
         //用户物品
         Long goodsTotalPrice = 0L;
         List<UserGoods> userGoodsList = vgService.getUserGoodsByUserId(userId);
@@ -104,4 +106,19 @@ public class VgRestController {
     public Object getAllGoods() {
         return vgService.toGoodsDtos(vgService.getAllGoods());
     }
+
+    @RequestMapping(value = API_1_1_VG + "giveGoods.json", method = RequestMethod.POST)
+    @ResponseBody
+    public Object giveGoods(@RequestParam(value = "toUserId", required = false) String toUserId,
+                            @RequestParam(value = "toScreenName", required = false) String toScreenName,
+                            @RequestParam("goodsId") long goodsId,
+                            @RequestParam("quantity") int quantity) {
+
+        toUserId = accountService.getUserId(toUserId, toScreenName);
+
+        vgService.giveGoods(accountService.getCurrentUserId(), toUserId, goodsId, quantity);
+
+        return ErrorDto.OK;
+    }
+
 }

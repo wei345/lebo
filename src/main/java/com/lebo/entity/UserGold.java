@@ -9,6 +9,15 @@ public class UserGold {
     private String userId;
     private Long goldQuantity;
 
+    public UserGold(){
+
+    }
+
+    public UserGold(String userId, Long goldQuantity){
+        this.userId = userId;
+        this.goldQuantity = goldQuantity;
+    }
+
     public String getUserId() {
         return userId;
     }

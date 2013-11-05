@@ -29,7 +29,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ServiceException.class})
     public final ResponseEntity<?> handleServiceException(ServiceException ex, WebRequest request) {
-        return ErrorDto.badRequest(ex.getMessage());
+        if (ex.getErrorDto() != null) {
+            ErrorDto dto = ex.getErrorDto();
+            return new ResponseEntity<ErrorDto>(dto, dto.getHttpStatus());
+        } else {
+            return ErrorDto.badRequest(ex.getMessage());
+        }
     }
 
     @ExceptionHandler(value = {DuplicateException.class})

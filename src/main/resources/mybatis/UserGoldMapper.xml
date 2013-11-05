@@ -4,6 +4,18 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="com.lebo.repository.mybatis.UserGoldDao">
 
+    <resultMap id="userGoldMap" type="UserGold">
+        <id property="userId" column="user_id"/>
+        <result property="goldQuantity" column="gold_quantity"/>
+    </resultMap>
+
+    <select id="getByUserId" parameterType="string" resultMap="userGoldMap">
+        select user_id,
+        gold_quantity
+        from vg_user_gold
+        where user_id = #{userId}
+    </select>
+
     <select id="getUserGoldQuantity" parameterType="string" resultType="long">
         select gold_quantity
         from vg_user_gold
@@ -15,5 +27,15 @@
         set gold_quantity = #{goldQuantity}
         where user_id = #{userId}
     </update>
+
+    <insert id="insert" parameterType="UserGold">
+        insert into (
+        user_id,
+        user_quantity
+        ) values (
+        #{userId},
+        #{userQuantity}
+        )
+    </insert>
 
 </mapper>
