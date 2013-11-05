@@ -31,9 +31,10 @@ create table vg_goods (
       id bigint not null auto_increment primary key,
     	name varchar(255) not null unique,
     	description varchar(1024),
-    	price decimal (19,2) not null,
+    	price int not null,
       discount decimal (5,2) not null,
-    	image varchar(1024)
+    	image_normal varchar(1024),
+    	image_bigger varchar(1024)
 ) engine=InnoDB;
 
 create table vg_user_gold (
@@ -55,8 +56,8 @@ insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_q
 insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(4, '500个金币', 50, 'RMB', -10, 'images/gold/gold-500.png', 500);
 insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(5, '1000个金币', 100, 'RMB', -30, 'images/gold/gold-1000.png', 1000);
 
-insert into vg_goods(id, name, price, discount, image) values(1, '贝壳', 3, 0, 'images/goods/shell.png');
-insert into vg_goods(id, name, price, discount, image) values(2, '玫瑰', 10, 0, 'images/goods/rose.png');
-insert into vg_goods(id, name, price, discount, image) values(3, '钻石', 100, 0, 'images/goods/diamond.png');
+insert into vg_goods(id, name, price, discount, image_normal, image_bigger) values(1, '贝壳', 3, 0, 'images/goods/shell.png', 'images/goods/shell-bigger.png');
+insert into vg_goods(id, name, price, discount, image_normal, image_bigger) values(2, '玫瑰', 10, 0, 'images/goods/rose.png', 'images/goods/rose-bigger.png');
+insert into vg_goods(id, name, price, discount, image_normal, image_bigger) values(3, '钻石', 100, 0, 'images/goods/diamond.png', 'images/goods/diamond-bigger.png');
 
 

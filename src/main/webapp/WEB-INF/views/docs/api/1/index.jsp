@@ -560,6 +560,14 @@
             返回订单详细。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/userVg" text="GET vg/userVg"/>
+        </td>
+        <td>
+            返回用户的虚拟物品。
+        </td>
+    </tr>
 </table>
 
 <strong>反馈</strong>

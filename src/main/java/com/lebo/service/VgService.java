@@ -8,12 +8,8 @@ package com.lebo.service;
  * Time: PM5:53
  */
 
-import com.lebo.entity.GoldOrder;
-import com.lebo.entity.GoldProduct;
-import com.lebo.entity.UserGold;
-import com.lebo.repository.mybatis.GoldOrderDao;
-import com.lebo.repository.mybatis.GoldProductDao;
-import com.lebo.repository.mybatis.UserGoldDao;
+import com.lebo.entity.*;
+import com.lebo.repository.mybatis.*;
 import com.lebo.rest.dto.GoldOrderDto;
 import com.lebo.rest.dto.GoldProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +40,10 @@ public class VgService {
     private AppEnv appEnv;
     @Autowired
     private UserGoldDao userGoldDao;
+    @Autowired
+    private UserGoodsDao userGoodsDao;
+    @Autowired
+    private GoodsDao goodsDao;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -157,4 +157,18 @@ public class VgService {
         goldOrder.setAlipayStatus(alipayStatus);
         goldOrderDao.updateStatus(goldOrder);
     }
+
+    public Long getUserGoldQuantity(String userId) {
+        Long quantity = userGoldDao.getUserGoldQuantity(userId);
+        return quantity == null ? 0 : quantity;
+    }
+
+    public List<UserGoods> getUserGoodsByUserId(String userId) {
+        return userGoodsDao.getByUserId(userId);
+    }
+
+    public Goods getGoodsById(Long goodsId) {
+        return goodsDao.getById(goodsId);
+    }
+
 }
