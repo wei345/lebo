@@ -2,11 +2,14 @@ package com.lebo.web;
 
 import com.lebo.entity.Post;
 import com.lebo.entity.User;
+import com.lebo.service.CommentService;
 import com.lebo.service.ServiceException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.param.PaginationParam;
+import com.lebo.service.param.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +34,16 @@ public class PostController {
     private StatusService statusService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private CommentService commentService;
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public String list(@RequestParam(value = "userId", required = false) String userId,
                        @RequestParam(value = "screenName", required = false) String screenName,
-                       @Valid PaginationParam paginationParam,
+                       @RequestParam(value = "track", required = false) String track,
+                       @RequestParam(value = "orderBy", defaultValue = Post.ID_KEY) String orderBy,
+                       @RequestParam(value = "order", defaultValue = "DESC") String order,
+                       @Valid PageRequest pageRequest,
                        Model model) {
         try {
             userId = accountService.getUserId(userId, screenName);
@@ -43,7 +51,11 @@ public class PostController {
             userId = null;
         }
 
-        List<Post> posts = statusService.findOriginPosts(userId, paginationParam);
+        pageRequest.setSort(new Sort(Sort.Direction.fromString(order), orderBy));
+
+        Page<Post> page = statusService.findOriginPosts(userId, track, pageRequest);
+
+        List<Post> posts = page.getContent();
 
         List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(posts.size());
         for (Post post : posts) {
@@ -52,21 +64,28 @@ public class PostController {
             map.put("videoUrl", post.getVideo().getContentUrl());
             map.put("videoFirstFrameUrl", post.getVideoFirstFrameUrl());
             map.put("text", post.getText());
-            User user = accountService.getUser(post.getUserId());
-            map.put("screenName", user.getScreenName());
+            map.put("favoritesCount", post.getFavoritesCount());
+            map.put("viewCount", post.getViewCount());
             map.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
+            map.put("repostCount", statusService.countReposts(post.getId()));
+            map.put("commentCount", commentService.countPostComments(post.getId()));
+            User user = accountService.getUser(post.getUserId());
+            map.put("userId", user.getId());
+            map.put("screenName", user.getScreenName());
+            map.put("profileImageUrl", user.getProfileImageUrl());
             maps.add(map);
         }
 
         model.addAttribute("posts", maps);
-        model.addAttribute("count", paginationParam.getCount());
+        model.addAttribute("count", pageRequest.getPageSize());
+        model.addAttribute("page", page);
 
         return "post/list";
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public Object deletePublishVideoTask(@PathVariable(value = "id") String id){
+    public Object deletePublishVideoTask(@PathVariable(value = "id") String id) {
         statusService.destroyPost(id);
         return ControllerUtils.AJAX_OK;
     }

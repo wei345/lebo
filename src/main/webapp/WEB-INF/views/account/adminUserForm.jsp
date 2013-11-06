@@ -25,10 +25,17 @@
             <small>用户管理</small>
         </legend>
         <div class="control-group">
+            <label class="control-label">头像:</label>
+
+            <div class="controls">
+                <img src="${user.profileImageUrl}" title="用户头像"/>
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label">用户名:</label>
 
             <div class="controls">
-                <input type="text" value="${user.screenName}" class="input-large" disabled=""/>
+                <span class="help-inline">${user.screenName}</span>
             </div>
         </div>
         <div class="control-group">
@@ -62,6 +69,86 @@
                                                                                   pattern="yyyy年MM月dd日  HH时mm分ss秒"/></span>
             </div>
         </div>
+
+        <div class="control-group">
+            <label class="control-label">最后登录日期:</label>
+
+            <div class="controls">
+                <span class="help-inline" style="padding:5px 0px"><fmt:formatDate value="${user.lastSignInAt}"
+                                                                                  pattern="yyyy年MM月dd日  HH时mm分ss秒"/></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">签名:</label>
+            <div class="controls">
+                <span class="help-inline">${user.description}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">新浪加V用户:</label>
+            <div class="controls">
+                <span class="help-inline">${user.weiboVerified ? "是" : "否"}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">性别:</label>
+            <div class="controls">
+                <span class="help-inline">${user.gender == 1 ? '男' : (user.gender == 0 ? '女' : '未知')}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">粉丝数:</label>
+            <div class="controls">
+                <span class="help-inline">${user.followersCount}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">收到红心数:</label>
+            <div class="controls">
+                <span class="help-inline">${user.beFavoritedCount}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">所有帖子被浏览数:</label>
+            <div class="controls">
+                <span class="help-inline">${user.viewCount}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">精品数:</label>
+            <div class="controls">
+                <span class="help-inline">${user.digestCount}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">帖子数:</label>
+            <div class="controls">
+                <span class="help-inline">${user.statusesCount}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">关注数:</label>
+            <div class="controls">
+                <span class="help-inline">${user.friendsCount}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">weiboToken:</label>
+            <div class="controls">
+                <span class="help-inline">${user.weiboToken}</span>
+            </div>
+        </div>
+
         <div class="form-actions">
             <input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;
             <input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>

@@ -19,6 +19,8 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -766,17 +768,29 @@ public class StatusService extends AbstractMongoService {
     /**
      * 查找指定用户的帖子(不包含转发), 如果userId为null，则忽略该条件
      */
-    public List<Post> findOriginPosts(String userId, PaginationParam paginationParam) {
+    public Page<Post> findOriginPosts(String userId, String track, PageRequest pageRequest) {
         Query query = new Query();
         //原帖
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+
         //指定用户
         if (userId != null) {
             query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
         }
+
+        //搜索文字内容
+        if (StringUtils.isNotBlank(track)) {
+            query.addCriteria(new Criteria(Post.SEARCH_TERMS_KEY).is(track));
+        }
+
         //分页、排序
-        paginationById(query, paginationParam);
+        query.with(pageRequest);
+
+        Page<Post> page = new PageImpl<Post>(mongoTemplate.find(query, Post.class),
+                pageRequest,
+                mongoTemplate.count(query, Post.class));
+
         //查找
-        return mongoTemplate.find(query, Post.class);
+        return page;
     }
 }
