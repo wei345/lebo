@@ -7,7 +7,7 @@
 
 <html>
 <head>
-    <title>管理帖子</title>
+    <title>帖子管理</title>
     <style type="text/css">
         #contentTable th {
             text-align: center;
@@ -97,7 +97,7 @@
         <th>
             详细
         </th>
-        <th>
+        <th class="input-small">
             操作
         </th>
     </tr>
