@@ -1,4 +1,4 @@
-package com.lebo.web.setting;
+package com.lebo.web.admin;
 
 import com.lebo.entity.Setting;
 import com.lebo.service.SettingService;
@@ -26,7 +26,7 @@ public class SettingController {
     public String optionForm(Model model) {
         Setting setting = settingService.getSetting();
         model.addAttribute("setting", setting);
-        return "setting/settingForm";
+        return "admin/setting/settingForm";
     }
 
     @RequestMapping(method = RequestMethod.POST)

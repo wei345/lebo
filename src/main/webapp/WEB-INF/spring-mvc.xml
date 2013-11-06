@@ -66,6 +66,6 @@
     <mvc:view-controller path="/login" view-name="account/login"/>
     <mvc:view-controller path="/docs/api/1" view-name="docs/api/1/index"/>
     <mvc:view-controller path="/docs/**"/>
-    <mvc:view-controller path="/admin" view-name="admin"/>
+    <mvc:view-controller path="/admin" view-name="admin/index"/>
 
 </beans>

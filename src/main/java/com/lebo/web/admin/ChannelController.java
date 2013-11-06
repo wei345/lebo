@@ -1,4 +1,4 @@
-package com.lebo.web.setting;
+package com.lebo.web.admin;
 
 import com.lebo.entity.Channel;
 import com.lebo.entity.FileInfo;
@@ -32,18 +32,18 @@ public class ChannelController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
         model.addAttribute("channels", settingService.getAllChannels());
-        return "setting/channelList";
+        return "admin/setting/channelList";
     }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
     public String createForm() {
-        return "setting/channelForm";
+        return "admin/setting/channelForm";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model model) {
         model.addAttribute("channel", settingService.getChannel(id));
-        return "setting/channelForm";
+        return "admin/setting/channelForm";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -71,7 +71,7 @@ public class ChannelController {
         } catch (Exception e) {
             model.addAttribute("error", e);
             model.addAttribute("channel", channel);
-            return "setting/channelForm";
+            return "admin/setting/channelForm";
         }
     }
 

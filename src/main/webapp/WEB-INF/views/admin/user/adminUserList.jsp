@@ -47,7 +47,7 @@
     <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
 </form>
 
-<a href="${ctx}/register" class="pull-right">添加新用户</a>
+<a href="${ctx}/register" class="pull-right">+ 添加新用户</a>
 
 <table id="contentTable" class="table table-striped table-bordered table-condensed table">
     <thead>

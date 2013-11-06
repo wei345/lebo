@@ -1,10 +1,12 @@
-package com.lebo.web;
+package com.lebo.web.admin;
 
 import com.lebo.entity.Comment;
 import com.lebo.entity.User;
 import com.lebo.service.CommentService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
+import com.lebo.web.ControllerSetup;
+import com.lebo.web.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,7 +76,7 @@ public class CommentController {
         model.addAttribute("userId", commentListParam.getUserId());
         model.addAttribute("comments", maps);
 
-        return "comment/list";
+        return "admin/comment/list";
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
