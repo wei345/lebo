@@ -8,7 +8,10 @@
     int current =  page.getNumber();
     int begin = Math.max(1, current - paginationSize/2);
     int end = Math.min(begin + (paginationSize - 1), page.getTotalPages() - 1);
-    String queryString = request.getQueryString().replaceAll("(^|&)page=" + current, "");
+    String queryString = "";
+    if(request.getQueryString() != null){
+        queryString = request.getQueryString().replaceAll("(^|&)page=" + current, "");
+    }
 
     request.setAttribute("current", current);
     request.setAttribute("begin", begin);
