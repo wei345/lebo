@@ -1,4 +1,4 @@
-package com.lebo.web.account;
+package com.lebo.web.admin;
 
 import com.lebo.entity.User;
 import com.lebo.service.account.AccountService;
@@ -40,7 +40,7 @@ public class UserAdminController {
             direction = Sort.Direction.ASC;
         } else {
             model.addAttribute("error", String.format("参数order值[%s]无效", order));
-            return "account/adminUserList";
+            return "admin/user/adminUserList";
         }
 
         //搜索
@@ -56,13 +56,13 @@ public class UserAdminController {
         model.addAttribute("orderBy", orderBy);
         model.addAttribute("order", order);
 
-        return "account/adminUserList";
+        return "admin/user/adminUserList";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model model) {
         model.addAttribute("user", accountService.getUser(id));
-        return "account/adminUserForm";
+        return "admin/user/adminUserForm";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)

@@ -1,4 +1,4 @@
-package com.lebo.web.setting;
+package com.lebo.web.admin;
 
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.RecommendedApp;
@@ -37,12 +37,12 @@ public class RecommendedAppController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
         model.addAttribute("apps", settingService.getAllRecommendedApp());
-        return "setting/recommendedAppList";
+        return "admin/setting/recommendedAppList";
     }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
     public String createForm() {
-        return "setting/recommendedAppForm";
+        return "admin/setting/recommendedAppForm";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -70,14 +70,14 @@ public class RecommendedAppController {
         } catch (Exception e) {
             model.addAttribute("error", e);
             model.addAttribute("app", recommendedApp);
-            return "setting/recommendedAppForm";
+            return "admin/setting/recommendedAppForm";
         }
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model model) {
         model.addAttribute("app", settingService.getRecommendedApp(id));
-        return "setting/recommendedAppForm";
+        return "admin/setting/recommendedAppForm";
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
