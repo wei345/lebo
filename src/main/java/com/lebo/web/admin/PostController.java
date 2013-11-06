@@ -1,4 +1,4 @@
-package com.lebo.web;
+package com.lebo.web.admin;
 
 import com.lebo.entity.Post;
 import com.lebo.entity.User;
@@ -7,6 +7,8 @@ import com.lebo.service.ServiceException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PageRequest;
+import com.lebo.web.ControllerSetup;
+import com.lebo.web.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -80,7 +82,7 @@ public class PostController {
         model.addAttribute("count", pageRequest.getPageSize());
         model.addAttribute("page", page);
 
-        return "post/list";
+        return "admin/post/list";
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)

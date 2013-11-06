@@ -1,4 +1,4 @@
-package com.lebo.web.task;
+package com.lebo.web.admin;
 
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Task;
@@ -60,7 +60,7 @@ public class PublishNotificationController {
         model.addAttribute("tasks", maps);
         model.addAttribute("avgPushTimeSeconds", taskService.getAvgPushTimeSeconds());
         model.addAttribute("oneSecondPushCount", taskService.getApnsAllUserQueueTotalThreadCount() / taskService.getAvgPushTimeSeconds());
-        return "task/apnsAllUser";
+        return "admin/task/apnsAllUser";
     }
 
     @RequestMapping(value = "apns-all-user", method = RequestMethod.POST)

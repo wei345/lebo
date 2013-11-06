@@ -1,4 +1,4 @@
-package com.lebo.web.task;
+package com.lebo.web.admin;
 
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Task;
@@ -64,7 +64,7 @@ public class PublishVideoController {
         }
 
         model.addAttribute("tasks", maps);
-        return "task/publishVideo";
+        return "admin/task/publishVideo";
     }
 
     /**
