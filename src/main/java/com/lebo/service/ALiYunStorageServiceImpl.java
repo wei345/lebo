@@ -4,11 +4,9 @@ import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.OSSException;
 import com.aliyun.openservices.oss.model.*;
 import com.lebo.entity.FileInfo;
-import com.lebo.util.ContentTypeMap;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +16,6 @@ import org.springside.modules.utils.Encodes;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -41,6 +38,7 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
 
     private Logger logger = LoggerFactory.getLogger(ALiYunStorageService.class);
     private static final String KEY_PREFIX_TMP = "tmp/";
+    private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
     @Override
     public String save(FileInfo fileInfo) {
@@ -173,31 +171,20 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
         }
     }
 
+
+    /**
+     * 判断是否临时文件, 通常以"tmp/"开头的key被认为是临时文件
+     */
     @Override
     public boolean isTmpFile(String key) {
         return (key != null && key.startsWith(KEY_PREFIX_TMP));
     }
 
-    private SimpleDateFormat tmpKeyDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-
     @Override
-    public String generateTmpUploadUrl(Date expireDate, String contentType, String slug) {
-        Assert.notNull(expireDate);
-        Assert.notNull(contentType);
-        Assert.notNull(slug);
-
-        String key = new StringBuilder(KEY_PREFIX_TMP).append("expire")
-                .append("-").append(tmpKeyDateFormat.format(expireDate))
-                .append("-").append(slug.toLowerCase())
-                .append("-").append(new ObjectId().toString()) //使用MongoDB ID格式，只因为够短够简单
-                .append(".").append(ContentTypeMap.getExtension(contentType))
-                .toString();
-
-        return generatePresignedWritableUrl(
-                expireDate,
-                key,
-                contentType);
+    public String getTmpPath() {
+        return KEY_PREFIX_TMP;
     }
+
 
     /**
      * @param expireDate  有效期
@@ -205,7 +192,8 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
      * @param contentType 可为null
      * @return 如：http://oss-example.oss.aliyuncs.com/oss-api.pdf?OSSAccessKeyId=44CF9590006BF252F707&Expires=1141889120&Signature=vjbyPxybdZaNmGa%2ByT272YEAiv4%3D
      */
-    String generatePresignedWritableUrl(Date expireDate, String path, String contentType) {
+    @Override
+    public String generatePresignedUrl(Date expireDate, String path, String contentType) {
         Assert.notNull(expireDate);
         Assert.notNull(path);
 
@@ -227,8 +215,6 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
                 .append("&Signature=").append(Encodes.urlEncode(sign("PUT", null, contentType, date, null, canonicalizedResource)))
                 .toString();
     }
-
-    private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
     String sign(String verb, String contentMd5, String contentType, String date, String canonicalizedOSSHeaders, String canonicalizedResource) {
         Assert.hasText(date);
@@ -261,11 +247,6 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
         fileInfo.setTmpKey(key);
 
         return fileInfo;
-    }
-
-    //TODO 清理过期的临时文件
-    public void clearTmp() {
-
     }
 
     @PostConstruct

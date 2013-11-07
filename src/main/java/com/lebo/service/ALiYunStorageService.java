@@ -13,9 +13,9 @@ public interface ALiYunStorageService extends FileStorageService {
     /**
      * @param expireDate  失效期
      * @param contentType 内容类型如video/mp4
-     * @param slug        小写英文字母或数字，单词间以"-"分隔，让人一看url就知道是什么内容
+     * @param path
      */
-    String generateTmpUploadUrl(Date expireDate, String contentType, String slug);
+    String generatePresignedUrl(Date expireDate, String path, String contentType);
 
     /**
      * 返回阿里云云存储URL中的key.
@@ -31,6 +31,8 @@ public interface ALiYunStorageService extends FileStorageService {
      * 判断是否临时文件, 通常以"tmp/"开头的key被认为是临时文件
      */
     boolean isTmpFile(String key);
+
+    String getTmpPath();
 
     /**
      * 获取临时上传文件的封装对象.
