@@ -3,7 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="获取用户profile" method="GET" action="${ctx}/api/1.1/im/profiles.json">
+<tags:form name="获取用户profile" method="GET" action="${ctx}/api/1.1/ims/profiles.json">
     <p>
         一个或多个用户ID，多个用户ID之间以<code>,</code>分隔。
     </p>
@@ -11,7 +11,7 @@
 </tags:form>
 
 
-<tags:example method="GET" url="http://localhost:8080/api/1.1/im/profiles.json?userIds=521c1c161a88bff4d06f19a0%2C521c1c161a88bff4d06f19a2">
+<tags:example method="GET" url="http://localhost:8080/api/1.1/ims/profiles.json?userIds=521c1c161a88bff4d06f19a0%2C521c1c161a88bff4d06f19a2">
     [
         {
             id: "521c1c161a88bff4d06f19a0",

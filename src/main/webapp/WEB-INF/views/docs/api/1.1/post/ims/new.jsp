@@ -3,10 +3,11 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<tags:form name="完成上传文件" method="POST" action="${ctx}/api/1.1/im/completeUpload.json">
+<tags:form name="完成上传文件" method="POST" action="${ctx}/api/1.1/ims/new.json">
     <tags:field name="fromUserId"/>
     <tags:field name="toUserId"/>
-    <tags:field name="attachmentUrl"/>
+    <tags:field name="message" optional="true"/>
+    <tags:field name="attachmentUrl" optional="true"/>
 
     <div id="insert-before-here" style="display: none"></div>
 
@@ -19,7 +20,7 @@
     <br/>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/1.1/im/completeUpload.json">
+<tags:example method="POST" url="http://localhost:8080/api/1.1/ims/new.json">
     {
         id: "52771a271a88eac34747bb37",
         from: {

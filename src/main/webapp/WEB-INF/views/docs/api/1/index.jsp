@@ -534,7 +534,7 @@
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/im/profiles" text="GET im/profiles"/>
+            <tags:link url="${ctx}/docs/api/1.1/get/ims/profiles" text="GET ims/profiles"/>
         </td>
         <td>
             返回指定用户的profile。
@@ -542,10 +542,18 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/post/im/completeUpload" text="POST im/completeUpload"/>
+            <tags:link url="${ctx}/docs/api/1.1/post/ims/new" text="POST ims/new"/>
         </td>
         <td>
             完成上传文件，返回新url。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/ims/recent" text="GET ims/recent"/>
+        </td>
+        <td>
+            返回最近消息列表。
         </td>
     </tr>
 </table>
