@@ -5,10 +5,14 @@ import com.lebo.entity.Im;
 import com.lebo.repository.ImDao;
 import com.lebo.rest.dto.ImDto;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.param.PaginationParam;
 import com.lebo.util.ContentTypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,12 +32,13 @@ public class ImService extends AbstractMongoService {
     public static final String FILE_COLLECTION_NAME = "im";
 
     //目前只保存附件
-    public Im create(String fromUserId, String toUserId, List<FileInfo> attachments) {
+    public Im create(String fromUserId, String toUserId, String message, List<FileInfo> attachments) {
         Im im = new Im();
         im.setCreatedAt(new Date());
         im.setId(newMongoId(im.getCreatedAt()));
         im.setFrom(fromUserId);
         im.setTo(toUserId);
+        im.setMessage(message);
 
         //保存附件
         for (int i = 0; i < attachments.size(); i++) {
@@ -62,5 +67,21 @@ public class ImService extends AbstractMongoService {
         dto.setAttachments(FileInfo.toDtos(im.getAttachments()));
         dto.setId(im.getId());
         return dto;
+    }
+
+    public List<ImDto> toDtos(List<Im> ims) {
+        List<ImDto> dtos = new ArrayList<ImDto>(ims.size());
+        for (Im im : ims) {
+            dtos.add(toDto(im));
+        }
+        return dtos;
+    }
+
+    public List<Im> getRecentMessage(Date fromTime, int count) {
+        Query query = new Query(new Criteria(Im.CREATED_AT).gt(fromTime));
+        query.with(PaginationParam.ID_DESC_SORT);
+        query.limit(count);
+
+        return mongoTemplate.find(query, Im.class);
     }
 }
