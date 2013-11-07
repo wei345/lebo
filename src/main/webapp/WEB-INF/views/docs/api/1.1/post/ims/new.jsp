@@ -8,6 +8,7 @@
     <tags:field name="toUserId"/>
     <tags:field name="message" optional="true"/>
     <tags:field name="attachmentUrl" optional="true"/>
+    <tags:field name="type"/>
 
     <div id="insert-before-here" style="display: none"></div>
 

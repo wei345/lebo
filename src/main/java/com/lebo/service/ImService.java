@@ -32,13 +32,14 @@ public class ImService extends AbstractMongoService {
     public static final String FILE_COLLECTION_NAME = "im";
 
     //目前只保存附件
-    public Im create(String fromUserId, String toUserId, String message, List<FileInfo> attachments) {
+    public Im create(String fromUserId, String toUserId, String message, List<FileInfo> attachments, int type) {
         Im im = new Im();
         im.setCreatedAt(new Date());
         im.setId(newMongoId(im.getCreatedAt()));
-        im.setFrom(fromUserId);
-        im.setTo(toUserId);
+        im.setFromUserId(fromUserId);
+        im.setToUserId(toUserId);
         im.setMessage(message);
+        im.setType(type);
 
         //保存附件
         for (int i = 0; i < attachments.size(); i++) {
@@ -61,8 +62,8 @@ public class ImService extends AbstractMongoService {
 
     public ImDto toDto(Im im) {
         ImDto dto = new ImDto();
-        dto.setFrom(accountService.toBasicUserDto(accountService.getUser(im.getFrom())));
-        dto.setTo(accountService.toBasicUserDto(accountService.getUser(im.getTo())));
+        dto.setFrom(accountService.toBasicUserDto(accountService.getUser(im.getFromUserId())));
+        dto.setTo(accountService.toBasicUserDto(accountService.getUser(im.getToUserId())));
         dto.setCreatedAt(im.getCreatedAt());
         dto.setAttachments(FileInfo.toDtos(im.getAttachments()));
         dto.setId(im.getId());
@@ -77,8 +78,9 @@ public class ImService extends AbstractMongoService {
         return dtos;
     }
 
-    public List<Im> getRecentMessage(Date fromTime, int count) {
+    public List<Im> getRecentMessage(String toUserId, Date fromTime, int count) {
         Query query = new Query(new Criteria(Im.CREATED_AT).gt(fromTime));
+        query.addCriteria(new Criteria(Im.TO_USER_ID).is(toUserId));
         query.with(PaginationParam.ID_DESC_SORT);
         query.limit(count);
 

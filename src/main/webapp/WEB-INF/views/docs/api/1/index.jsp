@@ -545,7 +545,7 @@
             <tags:link url="${ctx}/docs/api/1.1/post/ims/new" text="POST ims/new"/>
         </td>
         <td>
-            完成上传文件，返回新url。
+            保存即时消息。
         </td>
     </tr>
     <tr>

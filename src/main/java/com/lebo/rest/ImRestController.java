@@ -57,6 +57,7 @@ public class ImRestController {
     public Object newMessage(@RequestParam("fromUserId") String fromUserId,
                              @RequestParam("toUserId") String toUserId,
                              @RequestParam(value = "message", required = false) String message,
+                             @RequestParam("type") int type,
                              @RequestParam(value = "attachmentUrl", required = false) String[] attachmentUrls) {
 
         if ((attachmentUrls == null || attachmentUrls.length == 0) && StringUtils.isBlank(message)) {
@@ -72,7 +73,7 @@ public class ImRestController {
             return ErrorDto.badRequest(e.getMessage());
         }
 
-        Im im = imService.create(fromUserId, toUserId, message, fileInfos);
+        Im im = imService.create(fromUserId, toUserId, message, fileInfos, type);
 
         return imService.toDto(im);
     }
@@ -80,6 +81,10 @@ public class ImRestController {
     @RequestMapping(value = PREFIX_API_1_1_IM + "recent.json", method = RequestMethod.GET)
     @ResponseBody
     public Object recentMessage(@RequestParam("fromTime") long fromTime) {
-        return imService.toDtos(imService.getRecentMessage(new Date(fromTime * 1000), RECENT_MAX_COUNT));
+        return imService.toDtos(
+                imService.getRecentMessage(
+                        accountService.getCurrentUserId(),
+                        new Date(fromTime * 1000),
+                        RECENT_MAX_COUNT));
     }
 }
