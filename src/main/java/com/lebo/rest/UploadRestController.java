@@ -2,7 +2,7 @@ package com.lebo.rest;
 
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.PresignedUrlDto;
-import com.lebo.service.ALiYunStorageService;
+import com.lebo.service.UploadService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ import java.util.LinkedHashSet;
 @Controller
 public class UploadRestController {
     @Autowired
-    private ALiYunStorageService aLiYunStorageService;
+    private UploadService uploadService;
 
     public static LinkedHashSet<String> allowedContentType;
 
@@ -45,8 +45,8 @@ public class UploadRestController {
         }
 
         //生成签名URL
-        Date expDate = DateUtils.addHours(new Date(), 1); //1小时后失效
-        String url = aLiYunStorageService.generateTmpUploadUrl(expDate, contentType, contentType.replace("/", "-"));
+        Date expireDate = DateUtils.addHours(new Date(), 1); //1小时后失效
+        String url = uploadService.newTmpUploadUrl(expireDate, contentType, contentType.replace("/", "-"));
 
         //返回结果
         PresignedUrlDto dto = new PresignedUrlDto();
