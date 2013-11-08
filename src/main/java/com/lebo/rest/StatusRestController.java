@@ -349,7 +349,7 @@ public class StatusRestController {
     @ResponseBody
     public Object update_v1_1(@RequestParam(value = "videoUrl") String videoUrl,
                               @RequestParam(value = "imageUrl") String imageUrl,
-                              @RequestParam(value = "text") String text,
+                              @RequestParam(value = "text", defaultValue = "") String text,
                               @RequestParam(value = "source", required = false) String source) throws IOException {
 
         String videoKey = aLiYunStorageService.getKeyFromUrl(videoUrl);
