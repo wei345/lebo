@@ -78,7 +78,11 @@ public class StatusRestController {
         logger.debug("     source : {}", source == null ? "无" : source);
 
         if (video.getSize() > Setting.MAX_VIDEO_LENGTH_BYTES || image.getSize() > Setting.MAX_IMAGE_LENGTH_BYTES) {
-            return ErrorDto.badRequest("上传的视频或图片太大");
+            return ErrorDto.badRequest("上传的视频("
+                    + FileUtils.byteCountToDisplaySize(video.getSize())
+                    + ")或图片("
+                    + FileUtils.byteCountToDisplaySize(image.getSize())
+                    + ")太大");
         }
 
         return createPost(text, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image), source);
@@ -380,7 +384,11 @@ public class StatusRestController {
         if (videoMetadata.getLength() > Setting.MAX_VIDEO_LENGTH_BYTES || imageMetadata.getLength() > Setting.MAX_IMAGE_LENGTH_BYTES) {
             aLiYunStorageService.delete(videoKey);
             aLiYunStorageService.delete(imageKey);
-            return ErrorDto.badRequest("上传的视频或图片太大");
+            return ErrorDto.badRequest("上传的视频("
+                    + FileUtils.byteCountToDisplaySize(videoMetadata.getLength())
+                    + ")或图片("
+                    + FileUtils.byteCountToDisplaySize(imageMetadata.getLength())
+                    + ")太大");
         }
 
         videoMetadata.setKey(null);
