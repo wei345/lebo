@@ -1,5 +1,7 @@
 package com.lebo.entity;
 
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -19,7 +21,9 @@ public class Im extends IdEntity {
     public static final String TO_USER_ID = "toUserId";
     private String message;
     private List<FileInfo> attachments;
-    private int type;
+    private Integer type;
+    public static final String TYPE_KEY = "type";
+    @Indexed(direction = IndexDirection.DESCENDING)
     private Date createdAt;
     public static final String CREATED_AT = "createdAt";
 
@@ -64,11 +68,11 @@ public class Im extends IdEntity {
         this.toUserId = toUserId;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 }

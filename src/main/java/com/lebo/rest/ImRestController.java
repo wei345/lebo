@@ -8,7 +8,6 @@ import com.lebo.service.ALiYunStorageService;
 import com.lebo.service.ImService;
 import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,26 +53,15 @@ public class ImRestController {
 
     @RequestMapping(value = PREFIX_API_1_1_IM + "new.json", method = RequestMethod.POST)
     @ResponseBody
-    public Object newMessage(@RequestParam("fromUserId") String fromUserId,
-                             @RequestParam("toUserId") String toUserId,
+    public Object newMessage(@RequestParam("toUserId") String toUserId,
                              @RequestParam(value = "message", required = false) String message,
-                             @RequestParam("type") int type,
-                             @RequestParam(value = "attachmentUrl", required = false) String[] attachmentUrls) {
+                             @RequestParam("type") int type) {
 
-        if ((attachmentUrls == null || attachmentUrls.length == 0) && StringUtils.isBlank(message)) {
-            return ErrorDto.badRequest("message和attachmentUrl不能都为空");
+        if (!accountService.isUserExists(toUserId)) {
+            return ErrorDto.badRequest("toUserId[" + toUserId + "]用户不存在");
         }
 
-        List<FileInfo> fileInfos = new ArrayList<FileInfo>(attachmentUrls.length);
-        try {
-            for (String attachmentUrl : attachmentUrls) {
-                fileInfos.add(aLiYunStorageService.getTmpFileInfoFromUrl(attachmentUrl));
-            }
-        } catch (ServiceException e) {
-            return ErrorDto.badRequest(e.getMessage());
-        }
-
-        Im im = imService.create(fromUserId, toUserId, message, fileInfos, type);
+        Im im = imService.newMessage(accountService.getCurrentUserId(), toUserId, message, type);
 
         return imService.toDto(im);
     }
@@ -86,5 +74,28 @@ public class ImRestController {
                         accountService.getCurrentUserId(),
                         new Date(fromTime * 1000),
                         RECENT_MAX_COUNT));
+    }
+
+    @RequestMapping(value = PREFIX_API_1_1_IM + "completeUpload.json", method = RequestMethod.POST)
+    @ResponseBody
+    public Object completeUpload(@RequestParam("toUserId") String toUserId,
+                                 @RequestParam(value = "attachmentUrl") String[] attachmentUrls) {
+
+        if (!accountService.isUserExists(toUserId)) {
+            return ErrorDto.badRequest("toUserId[" + toUserId + "]用户不存在");
+        }
+
+        List<FileInfo> fileInfos = new ArrayList<FileInfo>(attachmentUrls.length);
+        try {
+            for (String attachmentUrl : attachmentUrls) {
+                fileInfos.add(aLiYunStorageService.getTmpFileInfoFromUrl(attachmentUrl));
+            }
+        } catch (ServiceException e) {
+            return ErrorDto.badRequest(e.getMessage());
+        }
+
+        Im im = imService.completeUpload(accountService.getCurrentUserId(), toUserId, fileInfos);
+
+        return imService.toDto(im);
     }
 }

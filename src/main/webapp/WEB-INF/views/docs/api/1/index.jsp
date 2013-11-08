@@ -542,6 +542,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/ims/completeUpload" text="POST ims/completeUpload"/>
+        </td>
+        <td>
+            完成上传，返回新的URL。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1.1/post/ims/new" text="POST ims/new"/>
         </td>
         <td>

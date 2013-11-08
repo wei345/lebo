@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springside.modules.mapper.BeanMapper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +33,7 @@ public class ImService extends AbstractMongoService {
     public static final String FILE_COLLECTION_NAME = "im";
 
     //目前只保存附件
-    public Im create(String fromUserId, String toUserId, String message, List<FileInfo> attachments, int type) {
+    public Im create(String fromUserId, String toUserId, String message, List<FileInfo> attachments, Integer type) {
         Im im = new Im();
         im.setCreatedAt(new Date());
         im.setId(newMongoId(im.getCreatedAt()));
@@ -42,15 +43,25 @@ public class ImService extends AbstractMongoService {
         im.setType(type);
 
         //保存附件
-        for (int i = 0; i < attachments.size(); i++) {
-            FileInfo fileInfo = attachments.get(i);
-            fileInfo.setKey(generateImFileKey(im.getId(), i, fileInfo.getContentType()));
+        if (attachments != null && attachments.size() > 0) {
+            for (int i = 0; i < attachments.size(); i++) {
+                FileInfo fileInfo = attachments.get(i);
+                fileInfo.setKey(generateImFileKey(im.getId(), i, fileInfo.getContentType()));
+            }
+            fileStorageService.save(attachments.toArray(new FileInfo[]{}));
+            im.setAttachments(attachments);
         }
-        fileStorageService.save(attachments.toArray(new FileInfo[]{}));
-        im.setAttachments(attachments);
 
         imDao.save(im);
         return im;
+    }
+
+    public Im newMessage(String fromUserId, String toUserId, String message, int type) {
+        return create(fromUserId, toUserId, message, null, type);
+    }
+
+    public Im completeUpload(String fromUserId, String toUserId, List<FileInfo> attachments) {
+        return create(fromUserId, toUserId, null, attachments, null);
     }
 
     private String generateImFileKey(String imId, int i, String contentType) {
@@ -61,13 +72,7 @@ public class ImService extends AbstractMongoService {
     }
 
     public ImDto toDto(Im im) {
-        ImDto dto = new ImDto();
-        dto.setFrom(accountService.toBasicUserDto(accountService.getUser(im.getFromUserId())));
-        dto.setTo(accountService.toBasicUserDto(accountService.getUser(im.getToUserId())));
-        dto.setCreatedAt(im.getCreatedAt());
-        dto.setAttachments(FileInfo.toDtos(im.getAttachments()));
-        dto.setId(im.getId());
-        return dto;
+        return BeanMapper.map(im, ImDto.class);
     }
 
     public List<ImDto> toDtos(List<Im> ims) {
@@ -81,6 +86,7 @@ public class ImService extends AbstractMongoService {
     public List<Im> getRecentMessage(String toUserId, Date fromTime, int count) {
         Query query = new Query(new Criteria(Im.CREATED_AT).gt(fromTime));
         query.addCriteria(new Criteria(Im.TO_USER_ID).is(toUserId));
+        query.addCriteria(new Criteria(Im.TYPE_KEY).ne(null));
         query.with(PaginationParam.ID_DESC_SORT);
         query.limit(count);
 

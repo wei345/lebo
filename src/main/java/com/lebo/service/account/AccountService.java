@@ -606,6 +606,10 @@ public class AccountService extends AbstractMongoService {
         });
     }
 
+    public boolean isUserExists(String userId){
+        return userDao.exists(userId);
+    }
+
     //---- JMX ----
     @ManagedOperation
     public void updateAllUserFriendsCount() {
