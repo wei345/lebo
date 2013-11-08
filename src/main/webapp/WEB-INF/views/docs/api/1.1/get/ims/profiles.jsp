@@ -5,6 +5,9 @@
 
 <tags:form name="获取用户profile" method="GET" action="${ctx}/api/1.1/ims/profiles.json">
     <p>
+        支持GET和POST，客户端应该用POST，避免URL太长问题。
+    </p>
+    <p>
         一个或多个用户ID，多个用户ID之间以<code>,</code>分隔。
     </p>
     <tags:field name="userIds"/>

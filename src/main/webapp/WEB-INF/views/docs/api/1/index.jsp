@@ -553,7 +553,7 @@
             <tags:link url="${ctx}/docs/api/1.1/post/ims/new" text="POST ims/new"/>
         </td>
         <td>
-            保存即时消息。
+            保存新消息。
         </td>
     </tr>
     <tr>

@@ -27,8 +27,6 @@ public class ImService extends AbstractMongoService {
     @Autowired
     private FileStorageService fileStorageService;
     @Autowired
-    private AccountService accountService;
-    @Autowired
     private ImDao imDao;
     public static final String FILE_COLLECTION_NAME = "im";
 
@@ -83,8 +81,8 @@ public class ImService extends AbstractMongoService {
         return dtos;
     }
 
-    public List<Im> getRecentMessage(String toUserId, Date fromTime, int count) {
-        Query query = new Query(new Criteria(Im.CREATED_AT).gt(fromTime));
+    public List<Im> getRecentMessage(String toUserId, Date afterTime, int count) {
+        Query query = new Query(new Criteria(Im.CREATED_AT).gt(afterTime));
         query.addCriteria(new Criteria(Im.TO_USER_ID).is(toUserId));
         query.addCriteria(new Criteria(Im.TYPE_KEY).ne(null));
         query.with(PaginationParam.ID_DESC_SORT);

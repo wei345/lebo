@@ -8,11 +8,11 @@
         在这个时间之后的最近消息。
         秒数，如 1383826364。
     </p>
-    <tags:field name="fromTime"/>
+    <tags:field name="afterTime"/>
 </tags:form>
 
 
-<tags:example method="GET" url="http://localhost:8080/api/1.1/ims/recent.json?fromTime=1383826364">
+<tags:example method="GET" url="http://localhost:8080/api/1.1/ims/recent.json?afterTime=1383826364">
     [
         {
             id: "527c67e41a88858af9a5e3ed",

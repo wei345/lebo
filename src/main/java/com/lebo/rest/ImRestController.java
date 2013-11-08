@@ -68,11 +68,11 @@ public class ImRestController {
 
     @RequestMapping(value = PREFIX_API_1_1_IM + "recent.json", method = RequestMethod.GET)
     @ResponseBody
-    public Object recentMessage(@RequestParam("fromTime") long fromTime) {
+    public Object recentMessage(@RequestParam("afterTime") long afterTime) {
         return imService.toDtos(
                 imService.getRecentMessage(
                         accountService.getCurrentUserId(),
-                        new Date(fromTime * 1000),
+                        new Date(afterTime * 1000),
                         RECENT_MAX_COUNT));
     }
 
