@@ -17,9 +17,9 @@
         <replace key="mongo.host">localhost</replace>
 
         <!-- mysql settings -->
-        <replace key="jdbc.url">jdbc:mysql://rdsevaf7rer36rn.mysql.rds.aliyuncs.com/lebo-dev?useUnicode=true&amp;characterEncoding=utf-8</replace>
-        <replace key="jdbc.username">dbm03cz00wt5n4he</replace>
-        <replace key="jdbc.password">f0219da022</replace>
+        <replace key="jdbc.url">jdbc:mysql://rdsevaf7rer36rn.mysql.rds.aliyuncs.com/lebodev?useUnicode=true&amp;characterEncoding=utf-8</replace>
+        <replace key="jdbc.username">lebodev</replace>
+        <replace key="jdbc.password">0750333219294d05b222a765582cf34d</replace>
 
         <!-- activemq settings -->
         <replace key="jms.broker_url">vm://lebo?broker.persistent=false&amp;broker.useJmx=false&amp;broker.schedulerSupport=false</replace>
