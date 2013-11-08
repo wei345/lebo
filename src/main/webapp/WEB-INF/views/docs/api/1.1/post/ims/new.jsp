@@ -10,16 +10,21 @@
         整数，表示不同消息类型，由客户端定。
     </p>
     <tags:field name="type"/>
+    <p>
+        客户端发送消息时间，整数。如 1383901962
+    </p>
+    <tags:field name="messageTime"/>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/1.1/ims/new.json">
+<tags:example method="POST" url="http://localhost:8080/api/1.1/ims/new.json?toUserId=52356929343539a89a52dc8d&message=test&type=1&messageTime=1383901962">
     {
-        id: "527c67e41a88858af9a5e3ed",
+        id: "527cac8b1a88fa8b6685af92",
         fromUserId: "52356929343539a89a52dc8d",
         toUserId: "52356929343539a89a52dc8d",
-        message: "http://file.dev.lebooo.com/im/527c648a1a884c28e939d568-0.mp4,http://file.dev.lebooo.com/im/527c648a1a884c28e939d568-1.jpg",
-        type: 2,
-        createdAt: "Fri Nov 08 12:26:12 +0800 2013"
+        message: "test",
+        type: 1,
+        createdAt: "Fri Nov 08 17:19:07 +0800 2013",
+        messageTime: 1383901962
     }
 </tags:example>
 

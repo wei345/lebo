@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,14 +53,15 @@ public class ImRestController {
     @RequestMapping(value = PREFIX_API_1_1_IM + "new.json", method = RequestMethod.POST)
     @ResponseBody
     public Object newMessage(@RequestParam("toUserId") String toUserId,
-                             @RequestParam(value = "message", required = false) String message,
+                             @RequestParam(value = "message") String message,
+                             @RequestParam(value = "messageTime") long messageTime,
                              @RequestParam("type") int type) {
 
         if (!accountService.isUserExists(toUserId)) {
             return ErrorDto.badRequest("toUserId[" + toUserId + "]用户不存在");
         }
 
-        Im im = imService.newMessage(accountService.getCurrentUserId(), toUserId, message, type);
+        Im im = imService.newMessage(accountService.getCurrentUserId(), toUserId, message, type, messageTime);
 
         return imService.toDto(im);
     }
@@ -72,7 +72,7 @@ public class ImRestController {
         return imService.toDtos(
                 imService.getRecentMessage(
                         accountService.getCurrentUserId(),
-                        new Date(afterTime * 1000),
+                        afterTime,
                         RECENT_MAX_COUNT));
     }
 

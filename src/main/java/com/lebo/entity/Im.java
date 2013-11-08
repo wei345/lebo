@@ -23,9 +23,10 @@ public class Im extends IdEntity {
     private List<FileInfo> attachments;
     private Integer type;
     public static final String TYPE_KEY = "type";
-    @Indexed(direction = IndexDirection.DESCENDING)
     private Date createdAt;
-    public static final String CREATED_AT = "createdAt";
+    @Indexed(direction = IndexDirection.DESCENDING)
+    private Long messageTime;  //客户端提交的消息时间
+    public static final String MESSAGE_TIME_KEY = "messageTime";
 
 
     public List<FileInfo> getAttachments() {
@@ -74,5 +75,13 @@ public class Im extends IdEntity {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Long getMessageTime() {
+        return messageTime;
+    }
+
+    public void setMessageTime(Long messageTime) {
+        this.messageTime = messageTime;
     }
 }

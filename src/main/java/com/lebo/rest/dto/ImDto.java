@@ -16,6 +16,7 @@ public class ImDto {
     private Integer type;
     private List<FileInfoDto> attachments;
     private Date createdAt;
+    private Long messageTime;
 
     public String getFromUserId() {
         return fromUserId;
@@ -71,5 +72,13 @@ public class ImDto {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Long getMessageTime() {
+        return messageTime;
+    }
+
+    public void setMessageTime(Long messageTime) {
+        this.messageTime = messageTime;
     }
 }

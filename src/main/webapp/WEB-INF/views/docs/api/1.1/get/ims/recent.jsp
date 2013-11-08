@@ -15,12 +15,13 @@
 <tags:example method="GET" url="http://localhost:8080/api/1.1/ims/recent.json?afterTime=1383826364">
     [
         {
-            id: "527c67e41a88858af9a5e3ed",
+            id: "527cac8b1a88fa8b6685af92",
             fromUserId: "52356929343539a89a52dc8d",
             toUserId: "52356929343539a89a52dc8d",
-            message: "http://file.dev.lebooo.com/im/527c648a1a884c28e939d568-0.mp4,http://file.dev.lebooo.com/im/527c648a1a884c28e939d568-1.jpg",
-            type: 2,
-            createdAt: "Fri Nov 08 12:26:12 +0800 2013"
+            message: "test",
+            type: 1,
+            createdAt: "Fri Nov 08 17:19:07 +0800 2013",
+            messageTime: 1383901962
         }
     ]
 </tags:example>

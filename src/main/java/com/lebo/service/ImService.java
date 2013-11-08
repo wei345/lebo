@@ -4,10 +4,10 @@ import com.lebo.entity.FileInfo;
 import com.lebo.entity.Im;
 import com.lebo.repository.ImDao;
 import com.lebo.rest.dto.ImDto;
-import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.util.ContentTypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -29,9 +29,10 @@ public class ImService extends AbstractMongoService {
     @Autowired
     private ImDao imDao;
     public static final String FILE_COLLECTION_NAME = "im";
+    private static Sort MESSAGE_SORT = new Sort(Sort.Direction.DESC, Im.MESSAGE_TIME_KEY);
 
     //目前只保存附件
-    public Im create(String fromUserId, String toUserId, String message, List<FileInfo> attachments, Integer type) {
+    public Im create(String fromUserId, String toUserId, String message, List<FileInfo> attachments, Integer type, Long messageTime) {
         Im im = new Im();
         im.setCreatedAt(new Date());
         im.setId(newMongoId(im.getCreatedAt()));
@@ -39,6 +40,7 @@ public class ImService extends AbstractMongoService {
         im.setToUserId(toUserId);
         im.setMessage(message);
         im.setType(type);
+        im.setMessageTime(messageTime);
 
         //保存附件
         if (attachments != null && attachments.size() > 0) {
@@ -54,12 +56,12 @@ public class ImService extends AbstractMongoService {
         return im;
     }
 
-    public Im newMessage(String fromUserId, String toUserId, String message, int type) {
-        return create(fromUserId, toUserId, message, null, type);
+    public Im newMessage(String fromUserId, String toUserId, String message, int type, Long messageTime) {
+        return create(fromUserId, toUserId, message, null, type, messageTime);
     }
 
     public Im completeUpload(String fromUserId, String toUserId, List<FileInfo> attachments) {
-        return create(fromUserId, toUserId, null, attachments, null);
+        return create(fromUserId, toUserId, null, attachments, null, null);
     }
 
     private String generateImFileKey(String imId, int i, String contentType) {
@@ -81,11 +83,11 @@ public class ImService extends AbstractMongoService {
         return dtos;
     }
 
-    public List<Im> getRecentMessage(String toUserId, Date afterTime, int count) {
-        Query query = new Query(new Criteria(Im.CREATED_AT).gt(afterTime));
+    public List<Im> getRecentMessage(String toUserId, Long afterTime, int count) {
+        Query query = new Query(new Criteria(Im.MESSAGE_TIME_KEY).gt(afterTime));
         query.addCriteria(new Criteria(Im.TO_USER_ID).is(toUserId));
         query.addCriteria(new Criteria(Im.TYPE_KEY).ne(null));
-        query.with(PaginationParam.ID_DESC_SORT);
+        query.with(MESSAGE_SORT);
         query.limit(count);
 
         return mongoTemplate.find(query, Im.class);
