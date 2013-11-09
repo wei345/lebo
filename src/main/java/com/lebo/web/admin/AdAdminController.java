@@ -61,7 +61,7 @@ public class AdAdminController {
             if (image != null) {
                 //保存新文件
                 FileInfo fileInfo = ControllerUtils.getFileInfo(image);
-                fileInfo.setKey(AbstractMongoService.generateFileId("images/ads/", null, imageSlug, fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+                fileInfo.setKey(AbstractMongoService.generateFileId("images/ads", null, imageSlug, fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
                 fileStorageService.save(fileInfo);
 
                 //删除旧文件

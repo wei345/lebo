@@ -55,7 +55,7 @@ public class ChannelController {
             if (image != null) {
                 //保存新文件
                 FileInfo fileInfo = ControllerUtils.getFileInfo(image);
-                fileInfo.setKey(AbstractMongoService.generateFileId("images/channels/", null, channel.getSlug(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+                fileInfo.setKey(AbstractMongoService.generateFileId("images/channels", null, channel.getSlug(), fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
                 fileStorageService.save(fileInfo);
 
                 //删除旧文件
