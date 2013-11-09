@@ -66,11 +66,10 @@
             </td>
 
             <td class="detail">
-                <div>${ad.group} : ${ad.subject}</div>
-                <div>
-                        描述：${ad.description}
-                </div>
+                <div>主题：${ad.subject}</div>
+                <div>描述：${ad.description}</div>
                 <div>跳转：${ad.url}</div>
+                <div>组：${ad.group}</div>
             </td>
             <td class="channel-order">${ad.order}</td>
             <td class="actions">
