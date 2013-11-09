@@ -44,7 +44,11 @@ public class ImRestController {
         String[] ids = userIds.split("\\s*,\\s*");
         List<User> users = new ArrayList<User>(ids.length);
         for (int i = 0; i < ids.length; i++) {
-            users.add(accountService.getUser(ids[i]));
+            User user = accountService.getUser(ids[i]);
+            if (user == null) {
+                return ErrorDto.badRequest("用户不存在, id: [" + ids[i] + "]");
+            }
+            users.add(user);
         }
 
         return accountService.toBasicUserDtos(users);
