@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "ads")
 public class Ad extends IdEntity {
     private String imageKey;
+    private String subject;
     private String description;
     private String url;
     private int order;//小在前，大在后
@@ -20,6 +21,8 @@ public class Ad extends IdEntity {
     private String group;
     public static final String GROUP_KEY = "group";
     public static final String GROUP_HOT = "hot";
+    private boolean enabled;
+    public static final String ENABLED_KEY = "enabled";
 
     public String getImageKey() {
         return imageKey;
@@ -63,5 +66,21 @@ public class Ad extends IdEntity {
 
     public String getImageUrl() {
         return FileContentUrlUtils.getContentUrl(imageKey);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }
