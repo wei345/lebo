@@ -442,7 +442,7 @@ public class StatusRestController {
         HotDto dto = new HotDto();
 
         if (ads) {
-            dto.setAds(adService.toDtos(adService.findAds(Ad.GROUP_HOT)));
+            dto.setAds(adService.toDtos(adService.findAd(Ad.GROUP_HOT, true)));
         }
 
         List<StatusDto> statuses = statusService.hotPosts(pageRequest.getPage(), pageRequest.getSize());
