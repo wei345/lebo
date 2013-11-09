@@ -67,7 +67,7 @@
 
             <div class="controls">
                 <input type="text" id="version" name="version" value="${app.version}"
-                       class="input-large"/>
+                       class="input-large required"/>
             </div>
         </div>
 
@@ -83,7 +83,7 @@
             <label for="url" class="control-label">URL:</label>
 
             <div class="controls">
-                <input type="text" id="url" name="url" value="${app.url}" class="input-large"/>
+                <input type="text" id="url" name="url" value="${app.url}" class="input-large required"/>
             </div>
         </div>
 
@@ -109,7 +109,7 @@
             <label for="size" class="control-label">大小:</label>
 
             <div class="controls">
-                <input type="text" id="size" name="size" value="${app.size}" class="input-large"/>
+                <input type="text" id="size" name="size" value="${app.size}" class="input-large required"/>
                 如: 12.3M
             </div>
         </div>
@@ -124,7 +124,7 @@
             </label>
 
             <div class="controls">
-                <input type="file" id="image" name="image" value="${image}" class="input-large"
+                <input type="file" id="image" name="image" value="${image}" class="input-large required"
                        minlength="3" ${app.id == null ? "" : "disabled"}/>
             </div>
         </div>
@@ -134,7 +134,7 @@
 
             <div class="controls">
                 <input type="text" id="imageSlug" name="imageSlug" value="${app.imageSlug}"
-                       class="input-large" ${app.id == null ? "" : "disabled"}/>
+                       class="input-large required" ${app.id == null ? "" : "disabled"}/>
                 由小写字母、数字、连字符(-)组成
             </div>
         </div>
@@ -153,7 +153,7 @@
             <label for="order" class="control-label">顺序:</label>
 
             <div class="controls">
-                <input type="text" id="order" name="order" value="${app.order}" class="input-large"/>
+                <input type="text" id="order" name="order" value="${app.order}" class="input-large required"/>
                 任意整数。列表按此字段排序，由小到大.
             </div>
         </div>
