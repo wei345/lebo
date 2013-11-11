@@ -9,6 +9,8 @@ public class WeiboUserDto {
     private Boolean verified;
     private String profileImageUrl;
     private String description;
+    private Boolean following;
+    private Boolean bilateral;
 
     public String getUserId() {
         return userId;
@@ -72,5 +74,21 @@ public class WeiboUserDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Boolean following) {
+        this.following = following;
+    }
+
+    public Boolean getBilateral() {
+        return bilateral;
+    }
+
+    public void setBilateral(Boolean bilateral) {
+        this.bilateral = bilateral;
     }
 }

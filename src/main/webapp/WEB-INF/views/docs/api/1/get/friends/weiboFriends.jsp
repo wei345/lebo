@@ -29,23 +29,16 @@
               url="http://app.dev.lebooo.com:8080/api/1/friends/weiboFriends.json?token=2.00TgJysBz7QwTC50dd2ad1facNOSYD&size=2">
     [
         {
-            userId: "5212dac30cf20618e8e07b6d",
-            weiboId: "3327539674",
-            screenName: "洛洛家的小九",
-            name: "洛洛家的小九",
-            gender: "f",
-            verified: false,
-            profileImageUrl: "http://tp3.sinaimg.cn/3327539674/50/5660982641/0",
-            description: ""
-        },
-        {
-            weiboId: "3051578312",
-            screenName: "志龙小朋友",
-            name: "志龙小朋友",
+            userId: "5216d0dc1a8829c4ae1bbec3",
+            weiboId: "1722412763",
+            screenName: "涛涛_IT",
+            name: "涛涛_IT",
             gender: "m",
             verified: false,
-            profileImageUrl: "http://tp1.sinaimg.cn/3051578312/50/5650947497/1",
-            description: "一句话介绍一下自己吧，让别人更了解你"
+            profileImageUrl: "http://tp4.sinaimg.cn/1722412763/50/5678249484/1",
+            description: "asdfasdfasdf",
+            following: false,
+            bilateral: false
         }
     ]
 </tags:example>

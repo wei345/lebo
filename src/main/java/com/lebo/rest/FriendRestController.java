@@ -89,14 +89,14 @@ public class FriendRestController {
     public Object weiboFriends(@RequestParam(value = "token", required = false) String token,
                                PageRequest pageRequest) {
         //确定token和weiboUid
-        User user = accountService.getUser(accountService.getCurrentUserId());
+        User currentUser = accountService.getUser(accountService.getCurrentUserId());
 
         if (token == null) {
-            token = user.getFindFriendWeiboToken();
+            token = currentUser.getFindFriendWeiboToken();
         }
 
         if (token == null) {
-            token = user.getWeiboToken();
+            token = currentUser.getWeiboToken();
         }
 
         if (token == null) {
@@ -105,8 +105,8 @@ public class FriendRestController {
 
         String weiboUid;
         //直接使用已存储的weiboUid
-        if (token.equals(user.getFindFriendWeiboToken())) {
-            weiboUid = user.getFindFriendWeiboUid();
+        if (token.equals(currentUser.getFindFriendWeiboToken())) {
+            weiboUid = currentUser.getFindFriendWeiboUid();
         }
         //从新浪获取weiboUid
         else {
@@ -157,6 +157,13 @@ public class FriendRestController {
                     weiboUserDto.setProfileImageUrl(weiboUser.getProfile_image_url());
                     weiboUserDto.setVerified(weiboUser.getVerified());
                     weiboUserDto.setDescription(weiboUser.getDescription());
+                    //是否关注
+                    weiboUserDto.setFollowing(friendshipService.isFollowing(currentUser.getId(), u.getId()));
+                    if (weiboUserDto.getFollowing()) {
+                        weiboUserDto.setBilateral(friendshipService.isBilateral(currentUser.getId(), u.getId()));
+                    } else {
+                        weiboUserDto.setBilateral(false);
+                    }
 
                     dtos.add(weiboUserDto);
                     //本页已满，跳出循环
@@ -186,10 +193,10 @@ public class FriendRestController {
         accountService.setRedisSessionAttribute(WEIBO_FRIEND_CURSOR_KEY, String.valueOf(cursor));
 
         //更新用户的findFriendWeiboToken
-        if (!token.equals(user.getFindFriendWeiboToken())) {
-            user.setFindFriendWeiboToken(token);
-            user.setFindFriendWeiboUid(weiboUid);
-            accountService.saveUser(user);
+        if (!token.equals(currentUser.getFindFriendWeiboToken())) {
+            currentUser.setFindFriendWeiboToken(token);
+            currentUser.setFindFriendWeiboUid(weiboUid);
+            accountService.saveUser(currentUser);
         }
 
         return dtos;
