@@ -19,6 +19,11 @@
             height: 30px;
             display: inline-block;
         }
+
+        .radio-label{
+            display: inline-block;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -221,6 +226,18 @@
             <input type="text" id="hotuser_button3_text" name="hotuser_button3_text"
                    value="${setting.hotuser_button3_text}"
                    class="input-large required"/>
+        </div>
+    </div>
+
+    <h2>广告</h2>
+
+    <div class="control-group">
+        <label class="control-label">热门页广告初始状态:</label>
+        <div class="controls">
+            <input type="radio" id="adsHotExpanded-true" name="adsHotExpanded" value="true" ${setting.adsHotExpanded ? "checked" : ""}/>
+            <label for="adsHotExpanded-true" class="radio-label">展开</label>
+            <input type="radio" id="adsHotExpanded-false" name="adsHotExpanded" value="false" ${setting.adsHotExpanded ? "" : "checked"}/>
+            <label for="adsHotExpanded-false" class="radio-label">折叠</label>
         </div>
     </div>
 

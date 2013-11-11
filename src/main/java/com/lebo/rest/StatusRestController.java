@@ -6,6 +6,7 @@ import com.lebo.rest.dto.HotDto;
 import com.lebo.rest.dto.StatusDto;
 import com.lebo.service.ALiYunStorageService;
 import com.lebo.service.AdService;
+import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
@@ -49,6 +50,8 @@ public class StatusRestController {
     private ALiYunStorageService aLiYunStorageService;
     @Autowired
     private AdService adService;
+    @Autowired
+    private SettingService settingService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
 
@@ -443,6 +446,7 @@ public class StatusRestController {
 
         if (ads) {
             dto.setAds(adService.toDtos(adService.findAd(Ad.GROUP_HOT, true)));
+            dto.setAdsExpanded(settingService.getSetting().isAdsHotExpanded());
         }
 
         List<StatusDto> statuses = statusService.hotPosts(pageRequest.getPage(), pageRequest.getSize());

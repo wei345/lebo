@@ -12,6 +12,7 @@ import java.util.List;
 public class HotDto {
     private List<AdDto> ads;
     private List<StatusDto> statuses;
+    private Boolean adsExpanded;
 
     public List<AdDto> getAds() {
         return ads;
@@ -27,5 +28,13 @@ public class HotDto {
 
     public void setStatuses(List<StatusDto> statuses) {
         this.statuses = statuses;
+    }
+
+    public Boolean getAdsExpanded() {
+        return adsExpanded;
+    }
+
+    public void setAdsExpanded(Boolean adsExpanded) {
+        this.adsExpanded = adsExpanded;
     }
 }

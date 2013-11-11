@@ -47,6 +47,8 @@ public class Setting extends IdEntity {
     private String hotuser_button3_imageKey = "images/hotuser/btn3.png";
     private String hotuser_button3_text = "导演排行";
 
+    private boolean adsHotExpanded = true;
+
     public String getOfficialAccountId() {
         return officialAccountId;
     }
@@ -213,5 +215,13 @@ public class Setting extends IdEntity {
 
     public String getLogoUrl(){
         return FileContentUrlUtils.getContentUrl(logoKey);
+    }
+
+    public boolean isAdsHotExpanded() {
+        return adsHotExpanded;
+    }
+
+    public void setAdsHotExpanded(boolean adsHotExpanded) {
+        this.adsHotExpanded = adsHotExpanded;
     }
 }
