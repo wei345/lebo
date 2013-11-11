@@ -80,7 +80,7 @@
             <tags:link url="${ctx}/docs/api/1.1/get/upload/newImUploadUrls" text="GET upload/newImUploadUrls"/>
         </td>
         <td>
-            返回有失效期的临时上传地址。
+            返回即时通讯文件上传地址。
         </td>
     </tr>
 </table>

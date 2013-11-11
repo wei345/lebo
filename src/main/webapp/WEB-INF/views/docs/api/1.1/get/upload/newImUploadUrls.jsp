@@ -47,7 +47,7 @@
     curl -H "Content-Type: image/jpeg" -T "/path/to/photo.jpg" "http://file.dev.lebooo.com/tmp/expire-2013-10-21-21-05-25-image-jpeg-526518851a88064aeb74ef0a.jpg?OSSAccessKeyId=7sKDB271X0Ur9ej0&Expires=1382360725&Signature=eEF7WVVkWp4PlArduYibk8yV3g4%3D"
 </code>
 
-<tags:example method="GET" url="http://localhost:8080/api/1.1/upload/newImUploadUrls.json?contentType=video%2Fmp4&contentType=image%2Fpng">
+<tags:example method="GET" url="http://localhost:8080/api/1.1/upload/newImUploadUrls.json?contentType=video%2Fmp4&contentType=image%2Fjpeg">
     [
         "http://file.dev.lebooo.com/im/5280d5f31a8805f70c993fc0.mp4?OSSAccessKeyId=7sKDB271X0Ur9ej0&Expires=1384178691&Signature=5PwSLNFHJvfBiiaIqSpas27V8iY%3D",
         "http://file.dev.lebooo.com/im/5280d5f31a8805f70c993fc2.jpg?OSSAccessKeyId=7sKDB271X0Ur9ej0&Expires=1384178691&Signature=QT0gP6TwXhHYk2%2F7djl7bih%2BhcQ%3D"
