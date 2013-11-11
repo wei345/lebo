@@ -2,6 +2,7 @@ package com.lebo.rest;
 
 import com.lebo.entity.Hashtag;
 import com.lebo.service.HashtagService;
+import com.lebo.service.SettingService;
 import com.lebo.service.param.SearchParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,8 @@ public class HashtagRestController {
 
     @Autowired
     private HashtagService hashtagService;
+    @Autowired
+    private SettingService settingService;
 
     /**
      * 搜索Post.text中出现的标签，按标签出现次数由大到小排序。
@@ -33,4 +36,11 @@ public class HashtagRestController {
         param.setSort(new Sort(Sort.Direction.DESC, Hashtag.POSTS_COUNT_KEY));
         return hashtagService.toChannelDtos(hashtagService.searchHashtags(param));
     }
+
+    @RequestMapping(value = "suggestions", method = RequestMethod.GET)
+    @ResponseBody
+    public Object suggestions() {
+        return settingService.toChannelDtos(hashtagService.getSuggestionHashtags());
+    }
+
 }

@@ -452,6 +452,14 @@
             返回符合条件的hashtag列表，可指定hashtag中出现的关键词。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/hashtags/suggestions" text="GET hashtags/suggestions"/>
+        </td>
+        <td>
+            返回系统推荐的标签列表。
+        </td>
+    </tr>
 </table>
 
 <strong>拉黑</strong>
