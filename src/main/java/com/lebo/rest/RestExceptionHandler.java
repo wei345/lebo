@@ -43,7 +43,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {UnknownAccountException.class})
-    public final ResponseEntity<?> handleUnknownAccountException(DuplicateException ex, WebRequest request) {
+    public final ResponseEntity<?> handleUnknownAccountException(UnknownAccountException ex, WebRequest request) {
         return ErrorDto.unauthorized();
     }
 
