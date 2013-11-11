@@ -60,6 +60,7 @@
                 userMentions: [ ],
                 digest: false
             }
-        ]
+        ],
+        adsExpanded: true
     }
 </tags:example>
