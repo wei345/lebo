@@ -14,19 +14,21 @@ public class UploadUrl extends IdEntity {
     private String url;
     private String path;
     private String contentType;
-    private Date expireAt;
-    public static final String EXPIRE_AT_KEY = "expireAt";
+    private Date expireAt; //签名失效时间
     private Date createdAt;
+    private Date deleteAt; //删除文件时间
+    public static final String DELETE_AT_KEY = "deleteAt";
 
     public UploadUrl() {
     }
 
-    public UploadUrl(String url, String path, String contentType, Date expireAt, Date createdAt) {
+    public UploadUrl(String url, String path, String contentType, Date expireAt, Date createdAt, Date deleteAt) {
         this.url = url;
         this.path = path;
         this.contentType = contentType;
         this.expireAt = expireAt;
         this.createdAt = createdAt;
+        this.deleteAt = deleteAt;
     }
 
 
@@ -68,5 +70,13 @@ public class UploadUrl extends IdEntity {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getDeleteAt() {
+        return deleteAt;
+    }
+
+    public void setDeleteAt(Date deleteAt) {
+        this.deleteAt = deleteAt;
     }
 }

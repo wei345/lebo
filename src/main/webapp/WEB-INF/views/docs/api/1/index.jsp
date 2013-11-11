@@ -65,6 +65,26 @@
     </tr>
 </table>
 
+<strong>上传</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
+        </td>
+        <td>
+            返回有失效期的临时上传地址。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/upload/newImUploadUrls" text="GET upload/newImUploadUrls"/>
+        </td>
+        <td>
+            返回有失效期的临时上传地址。
+        </td>
+    </tr>
+</table>
+
 <strong>时间线</strong>
 <table class="table table-hover">
     <tr>
@@ -159,18 +179,6 @@
             返回符合搜索条件的视频列表，可以指定hashtag、@某人、关键词，可以按喜欢数、浏览数排序。
         </td>
     </tr>--%>
-</table>
-
-<strong>上传</strong>
-<table class="table table-hover">
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
-        </td>
-        <td>
-            返回有失效期的临时上传地址。
-        </td>
-    </tr>
 </table>
 
 <strong>视频</strong>
@@ -526,6 +534,7 @@
     </tr>
 </table>
 
+<%--未用到
 <strong>私信</strong>
 <table class="table table-hover">
     <tr>
@@ -536,7 +545,7 @@
             发送私信，返回发送的私信。
         </td>
     </tr>
-</table>
+</table>--%>
 
 <strong>即时通讯</strong>
 <table class="table table-hover">
@@ -546,14 +555,6 @@
         </td>
         <td>
             返回指定用户的profile。
-        </td>
-    </tr>
-    <tr>
-        <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/post/ims/completeUpload" text="POST ims/completeUpload"/>
-        </td>
-        <td>
-            完成上传，返回新的URL。
         </td>
     </tr>
     <tr>

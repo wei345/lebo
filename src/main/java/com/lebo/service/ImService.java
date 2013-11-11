@@ -60,10 +60,6 @@ public class ImService extends AbstractMongoService {
         return create(fromUserId, toUserId, message, null, type, messageTime);
     }
 
-    public Im completeUpload(String fromUserId, String toUserId, List<FileInfo> attachments) {
-        return create(fromUserId, toUserId, null, attachments, null, null);
-    }
-
     private String generateImFileKey(String imId, int i, String contentType) {
         return new StringBuilder(FILE_COLLECTION_NAME + "/")
                 .append(imId).append("-").append(i)

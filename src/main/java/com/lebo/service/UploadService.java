@@ -2,6 +2,7 @@ package com.lebo.service;
 
 import com.lebo.entity.UploadUrl;
 import com.lebo.util.ContentTypeMap;
+import org.apache.commons.lang3.time.DateUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class UploadService extends AbstractMongoService {
         String url = aLiYunStorageService.generatePresignedUrl(expireDate, path, contentType);
 
         mongoTemplate.save(
-                new UploadUrl(url, path, contentType, expireDate, new Date()),
+                new UploadUrl(url, path, contentType, expireDate, new Date(), expireDate),
                 mongoTemplate.getCollectionName(UploadUrl.class));
 
         logger.debug("已生成新的上传地址: " + url);
@@ -69,7 +70,7 @@ public class UploadService extends AbstractMongoService {
      */
     public int cleanExpireUrl() {
         List<UploadUrl> uploadUrls = mongoTemplate.find(
-                new Query(new Criteria(UploadUrl.EXPIRE_AT_KEY).lt(new Date())),
+                new Query(new Criteria(UploadUrl.DELETE_AT_KEY).lt(new Date())),
                 UploadUrl.class);
 
         for (UploadUrl uploadUrl : uploadUrls) {
@@ -79,5 +80,30 @@ public class UploadService extends AbstractMongoService {
         }
 
         return uploadUrls.size();
+    }
+
+    public String newImUploadUrl(String contentType) {
+        Assert.notNull(contentType);
+
+        String path = new StringBuilder(ImService.FILE_COLLECTION_NAME + "/")
+                .append(new ObjectId())
+                .append(".").append(ContentTypeMap.getExtension(contentType))
+                .toString();
+
+        Date expireDate = DateUtils.addHours(new Date(), 1);
+        Date deleteDate = DateUtils.addWeeks(expireDate, 1);
+
+        String url = aLiYunStorageService.generatePresignedUrl(
+                expireDate,
+                path,
+                contentType);
+
+        mongoTemplate.save(
+                new UploadUrl(url, path, contentType, expireDate, new Date(), deleteDate),
+                mongoTemplate.getCollectionName(UploadUrl.class));
+
+        logger.debug("已生成新的上传地址: " + url);
+
+        return url;
     }
 }

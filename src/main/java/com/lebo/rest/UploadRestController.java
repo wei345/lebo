@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * 处理上传.
@@ -52,6 +54,23 @@ public class UploadRestController {
         PresignedUrlDto dto = new PresignedUrlDto();
         dto.setUrl(url);
         return dto;
+    }
+
+    @RequestMapping(value = "newImUploadUrls.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object newImUploadUrls(@RequestParam("contentType") String[] contentTypes) {
+
+        List<String> urls = new ArrayList<String>(contentTypes.length);
+
+        for (String contentType : contentTypes) {
+            if (!allowedContentType.contains(contentType)) {
+                return ErrorDto.badRequest("contentType必须为以下值之一：" + allowedContentType);
+            }
+
+            urls.add(uploadService.newImUploadUrl(contentType));
+        }
+
+        return urls;
     }
 
 }

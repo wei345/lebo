@@ -1,12 +1,9 @@
 package com.lebo.rest;
 
-import com.lebo.entity.FileInfo;
 import com.lebo.entity.Im;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.service.ALiYunStorageService;
 import com.lebo.service.ImService;
-import com.lebo.service.ServiceException;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,8 +26,6 @@ import java.util.List;
 public class ImRestController {
     @Autowired
     private AccountService accountService;
-    @Autowired
-    private ALiYunStorageService aLiYunStorageService;
     @Autowired
     private ImService imService;
 
@@ -78,28 +73,5 @@ public class ImRestController {
                         accountService.getCurrentUserId(),
                         afterTime,
                         RECENT_MAX_COUNT));
-    }
-
-    @RequestMapping(value = PREFIX_API_1_1_IM + "completeUpload.json", method = RequestMethod.POST)
-    @ResponseBody
-    public Object completeUpload(@RequestParam("toUserId") String toUserId,
-                                 @RequestParam(value = "attachmentUrl") String[] attachmentUrls) {
-
-        if (!accountService.isUserExists(toUserId)) {
-            return ErrorDto.badRequest("toUserId[" + toUserId + "]用户不存在");
-        }
-
-        List<FileInfo> fileInfos = new ArrayList<FileInfo>(attachmentUrls.length);
-        try {
-            for (String attachmentUrl : attachmentUrls) {
-                fileInfos.add(aLiYunStorageService.getTmpFileInfoFromUrl(attachmentUrl));
-            }
-        } catch (ServiceException e) {
-            return ErrorDto.badRequest(e.getMessage());
-        }
-
-        Im im = imService.completeUpload(accountService.getCurrentUserId(), toUserId, fileInfos);
-
-        return imService.toDto(im);
     }
 }
