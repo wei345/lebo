@@ -355,7 +355,7 @@ public class StatusRestController {
             aLiYunStorageService.delete(videoFileInfo.getTmpKey());
             aLiYunStorageService.delete(imageFileInfo.getTmpKey());
 
-            return e.getErrorDto().toResponseEntity();
+            throw e;
         }
 
         return createPost(text, videoFileInfo, imageFileInfo, source);

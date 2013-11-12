@@ -17,7 +17,7 @@ public class Setting extends IdEntity {
     public static final int MAX_VIDEO_LENGTH_BYTES = 1024 * 1024 * 5; //5M
     public static final int MAX_AUDIO_LENGTH_BYTES = 1024 * 1024; //1M
     public static final int MAX_IMAGE_LENGTH_BYTES = 1024 * 1024; //1M
-    public static final int MAX_USER_PROFILE_IMAGE_LENGTH_BYTES = 1024 * 1024 * 5; //1M
+    public static final int MAX_USER_PROFILE_IMAGE_LENGTH_BYTES = 1024 * 1024 * 5; //5M
 
     private String officialAccountId;
     private String editorAccountId;//编辑id，编辑发的视频将显示在小编制作频道

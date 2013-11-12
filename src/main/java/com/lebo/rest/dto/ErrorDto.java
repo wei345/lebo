@@ -125,10 +125,6 @@ public class ErrorDto {
         return httpStatus;
     }
 
-    public ResponseEntity<ErrorDto> toResponseEntity() {
-        return new ResponseEntity<ErrorDto>(this, httpStatus);
-    }
-
     public static class Error {
         private String message;
         private int code;

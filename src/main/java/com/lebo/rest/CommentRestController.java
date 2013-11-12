@@ -252,7 +252,7 @@ public class CommentRestController {
                 aLiYunStorageService.delete(videoFileInfo.getTmpKey());
                 aLiYunStorageService.delete(imageFileInfo.getTmpKey());
 
-                return e.getErrorDto().toResponseEntity();
+                throw e;
             }
         }
 
@@ -270,7 +270,7 @@ public class CommentRestController {
 
                 aLiYunStorageService.delete(audioFileInfo.getTmpKey());
 
-                return e.getErrorDto().toResponseEntity();
+                throw e;
             }
         }
 
