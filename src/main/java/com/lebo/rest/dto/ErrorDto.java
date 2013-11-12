@@ -48,21 +48,17 @@ public class ErrorDto {
     public ErrorDto() {
     }
 
-    private ErrorDto(String message, int code) {
-        error = new Error(message, code);
-    }
-
     private ErrorDto(String message, int code, HttpStatus httpStatus) {
         error = new Error(message, code);
         this.httpStatus = httpStatus;
     }
 
     public static ErrorDto newBadRequestError(String message) {
-        return new ErrorDto(message, 10400);
+        return new ErrorDto(message, 10400, HttpStatus.BAD_REQUEST);
     }
 
     private static ErrorDto newInternalServerError(String message) {
-        return new ErrorDto(message, 10500);
+        return new ErrorDto(message, 10500, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public static ResponseEntity<ErrorDto> badRequest(String message) {
@@ -94,7 +90,7 @@ public class ErrorDto {
     }
 
     public static ResponseEntity<ErrorDto> notFound(String message) {
-        return new ResponseEntity<ErrorDto>(new ErrorDto(message, NOT_FOUND_CODE), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ErrorDto>(new ErrorDto(message, NOT_FOUND_CODE, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     public static ResponseEntity<ErrorDto> unauthorized() {
@@ -106,7 +102,7 @@ public class ErrorDto {
     }
 
     public static ResponseEntity<ErrorDto> unauthorized(String message) {
-        return new ResponseEntity<ErrorDto>(new ErrorDto(message, UNAUTHORIZED_CODE), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorDto>(new ErrorDto(message, UNAUTHORIZED_CODE, HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
     }
 
     public static ResponseEntity<ErrorDto> duplicate() {
@@ -129,7 +125,7 @@ public class ErrorDto {
         return httpStatus;
     }
 
-    public ResponseEntity<ErrorDto> toResponseEntity(){
+    public ResponseEntity<ErrorDto> toResponseEntity() {
         return new ResponseEntity<ErrorDto>(this, httpStatus);
     }
 
