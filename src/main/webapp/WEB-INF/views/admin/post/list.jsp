@@ -47,6 +47,36 @@
         #contentTable tr td .info label [class^='icon-'] {
             margin-right: 3px;
         }
+
+        .rate-form {
+            background-color: #FFF;
+            padding: 10px;
+            width: 180px;
+            border: 1px solid;
+        }
+
+        .rate-form input {
+            margin: 0 0 0 5px;
+            vertical-align: top;
+        }
+
+        .rate-form .close {
+            margin: -10px 0 0 0;
+        }
+
+        .rate-form .muted, .rate-form .text-error {
+            padding: 5px 0 0 5px;
+        }
+
+        .icon-pencil {
+            cursor: pointer;
+        }
+
+        .rating-detail {
+            width: 60px;
+            text-align: left;
+            padding-left: 30px;
+        }
     </style>
 </head>
 <body>
@@ -98,23 +128,31 @@
             详细
         </th>
         <th class="input-small">
+            评分
+        </th>
+        <th class="input-mini">
             操作
         </th>
     </tr>
     <c:forEach items="${posts}" var="item">
         <tr>
+
             <td></td>
+
             <td>
                 <a href="${item.videoUrl}" target="_blank">
                     <img src="${item.videoFirstFrameUrl}"/>
                 </a>
             </td>
+
             <td class="detail">
+
                 <div class="authorDisplayName">
                     <a href="${ctx}/admin/user/update/${item.userId}">
                         <img class="authorPhoto" src="${item.profileImageUrl}" title="作者头像"/>
                         <span>${item.screenName}</span>
                     </a>
+
                     <span class="time" title="发布时间">${item.createdAt}</span>
                 </div>
 
@@ -126,11 +164,22 @@
                     <label title="播放"><span class="icon-play"></span>${item.viewCount}</label>
                     <label title="评论"><span class="icon-comment"></span>${item.commentCount}</label>
                 </div>
+
             </td>
+
+            <td>
+                <div class="rating-detail">
+                    <span class="rating">${item.rating == null ? 0 : item.rating}</span>
+                        <span class="icon-pencil" style="display: none;"
+                              onclick="showRateInputForm(event, '${item.id}')"></span>
+                </div>
+            </td>
+
             <td>
                 <a href="${ctx}/admin/comment/list?postId=${item.id}" target="_blank">查看评论</a>
                 <input type="button" value="删除" class="btn btn-link" onclick="deletePost('${item.id}', this)"/>
             </td>
+
         </tr>
     </c:forEach>
 </table>
@@ -143,6 +192,13 @@
         $('#contentTable tr:gt(0)').each(function (index) {
             $('td:first', this).html(index + 1);
         });
+
+        //评分编辑按钮显示/隐藏
+        $('#contentTable tr').mouseenter(function () {
+            $(this).find('.icon-pencil').show();
+        }).mouseleave(function () {
+                    $(this).find('.icon-pencil').hide();
+                });
 
     });
 
@@ -159,6 +215,75 @@
             });
         }
     }
+
+    function showRateInputForm(event, postId) {
+
+        var ratingDetail = $(event.target).parent();
+
+        var rating = ratingDetail.find('.rating').html();
+
+        //创建输入框和按钮
+        var inputForm = $('<div class="rate-form">' +
+                '<input type="text" class="input-mini" value="' + rating + '" placeholder="整数"/>' +
+                '<input type="button" value="确定" class="btn btn-primary" title="确定 - 快捷键\'回车\'"/>' +
+                '<button type="button" class="close" onclick="$(this).parent().remove()" title="关闭 - 快捷键\'ESC\'">&times;</button>' +
+                '<div class="text-error" style="display: none"></div>' +
+                '<div class="muted">输入正整数、负整数或0</div>' +
+                '</div>')
+                .appendTo(document.body)
+                .offset($(event.target).offset());
+
+        $('.btn-primary', inputForm).click(function () {
+            updateRating(postId, inputForm, ratingDetail);
+        });
+
+        //输入框获得焦点、键盘事件
+        $('input[type=text]', inputForm)
+                .focus()
+                .keydown(function (e) {
+                    if (e.keyCode == 13) {
+                        updateRating(postId, inputForm, ratingDetail);
+                    } else if (e.keyCode == 27) {
+                        inputForm.remove();
+                    }
+                });
+    }
+
+    function updateRating(postId, inputForm, ratingDetail) {
+        var newRating = $('input[type=text]', inputForm).val();
+
+        if (newRating.match(/^-?\d+$/)) {
+            newRating = parseInt(newRating);
+        } else {
+            $('.muted', inputForm).hide();
+            $('.text-error', inputForm).html('输入内容不合法').show();
+            return;
+        }
+
+        $('.muted', inputForm).html('正在保存..').show();
+
+        $('.text-error', inputForm).hide();
+
+        $.ajax({
+            url: '${ctx}/admin/post/updateRating',
+            type: 'POST',
+            data: {id: postId, rating: newRating},
+            success: function (data) {
+                if (data == 'ok') {
+                    $('.rating', ratingDetail).html(newRating);
+                    $(inputForm).remove();
+                } else {
+                    $('.muted', inputForm).hide();
+                    $('.text-error', inputForm).html('保存失败').show();
+                }
+            },
+            error: function () {
+                $('.muted', inputForm).hide();
+                $('.text-error', inputForm).html('保存失败').show();
+            }
+        });
+    }
 </script>
+
 </body>
 </html>

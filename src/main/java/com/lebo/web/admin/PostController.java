@@ -68,6 +68,7 @@ public class PostController {
             map.put("text", post.getText());
             map.put("favoritesCount", post.getFavoritesCount());
             map.put("viewCount", post.getViewCount());
+            map.put("rating", post.getRating());
             map.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
             map.put("repostCount", statusService.countReposts(post.getId()));
             map.put("commentCount", commentService.countPostComments(post.getId()));
@@ -89,6 +90,14 @@ public class PostController {
     @ResponseBody
     public Object deletePublishVideoTask(@PathVariable(value = "id") String id) {
         statusService.destroyPost(id);
+        return ControllerUtils.AJAX_OK;
+    }
+
+    @RequestMapping(value = "updateRating", method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateRating(@RequestParam(value = "id") String id,
+                               @RequestParam(value = "rating") int rating) {
+        statusService.updateRating(id, rating);
         return ControllerUtils.AJAX_OK;
     }
 }

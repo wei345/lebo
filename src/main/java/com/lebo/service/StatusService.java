@@ -793,4 +793,10 @@ public class StatusService extends AbstractMongoService {
         //查找
         return page;
     }
+
+    public void updateRating(String postId, int rating) {
+        mongoTemplate.updateFirst(new Query(new Criteria(Post.ID_KEY).is(postId)),
+                new Update().set(Post.RATING_KEY, rating),
+                Post.class);
+    }
 }
