@@ -11,6 +11,8 @@
     </ol>
     <p>上传视频的url</p>
     <tags:field name="videoUrl"/>
+    <p>视频时长，单位：秒，整数</p>
+    <tags:field name="duration"/>
     <p>上传图片的url</p>
     <tags:field name="imageUrl"/>
     <tags:textarea name="text" value=""/>
@@ -18,26 +20,31 @@
 
 <tags:example method="POST" url="${ctx}/api/1.1/statuses/update.json">
     {
-        id: "52651a241a88064aeb74ef29",
+        id: "5281e24b1a88d05919b482bf",
         user: {
             id: "52356929343539a89a52dc8d",
             screenName: "admin",
+            description: "秋",
+            profileImageUrl: "http://file.dev.lebooo.com/user/2013-09-15/52356929343539a89a52dc8d-normal-4252.png",
+            profileImageBiggerUrl: "http://file.dev.lebooo.com/user/2013-09-15/52356929343539a89a52dc8d-bigger-16865.png",
+            profileImageOriginalUrl: "http://file.dev.lebooo.com/user/2013-09-15/52356929343539a89a52dc8d-original-1705885.png",
             followersCount: 0,
             friendsCount: 0,
-            statusesCount: 3,
+            statusesCount: 7,
             beFavoritedCount: 0,
-            viewCount: 0,
+            viewCount: 1,
             digestCount: 0,
             level: 0
         },
-        createdAt: "Mon Oct 21 20:12:20 +0800 2013",
-        text: "客户端通过签名URL上传到OSS",
+        createdAt: "Tue Nov 12 16:09:47 +0800 2013",
+        text: "上传视频，有时长信息",
         video: {
-            length: 621825,
+            length: 670912,
             contentType: "video/mp4",
-            contentUrl: "http://file.dev.lebooo.com/post/2013-10-21/52651a241a88064aeb74ef29-video-621825.mp4"
+            contentUrl: "http://file.dev.lebooo.com/post/2013-11-12/5281e24b1a88d05919b482bf-video-670912.mp4",
+            duration: 6
         },
-        videoFirstFrameUrl: "http://file.dev.lebooo.com/post/2013-10-21/52651a241a88064aeb74ef29-video-first-frame-15874.jpg",
+        videoFirstFrameUrl: "http://file.dev.lebooo.com/post/2013-11-12/5281e24b1a88d05919b482bf-video-first-frame-27258.jpg",
         favorited: false,
         favoritesCount: 0,
         repostsCount: 0,

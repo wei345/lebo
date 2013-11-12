@@ -5,10 +5,7 @@ import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
 import com.lebo.entity.Setting;
 import com.lebo.rest.dto.ErrorDto;
-import com.lebo.service.ALiYunStorageService;
-import com.lebo.service.CommentService;
-import com.lebo.service.DuplicateException;
-import com.lebo.service.StatusService;
+import com.lebo.service.*;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
 import com.lebo.web.ControllerUtils;
@@ -45,6 +42,8 @@ public class CommentRestController {
     private StatusService statusService;
     @Autowired
     private ALiYunStorageService aLiYunStorageService;
+    @Autowired
+    private UploadService uploadService;
 
     public static final String PREFIX_API_1_COMMENTS = "/api/1/comments/";
     public static final String PREFIX_API_1_1_COMMENTS = "/api/1.1/comments/";
@@ -222,6 +221,7 @@ public class CommentRestController {
                                        @RequestParam(value = "imageUrl", required = false) String imageUrl,
                                        @RequestParam(value = "audioUrl", required = false) String audioUrl,
                                        @RequestParam(value = "audioDuration", required = false) Long audioDuration,
+                                       @RequestParam(value = "videoDuration", required = false) Long videoDuration,
                                        @RequestParam(value = "text", required = false) String text,
                                        @RequestParam(value = "postId", required = false) String postId,
                                        @RequestParam(value = "replyCommentId", required = false) String replyCommentId) {
@@ -234,26 +234,49 @@ public class CommentRestController {
         FileInfo videoFileInfo = null;
         FileInfo imageFileInfo = null;
         FileInfo audioFileInfo = null;
+
         //视频评论
         if (StringUtils.isNotBlank(videoUrl) && StringUtils.isNotBlank(imageUrl)) {
+
             videoFileInfo = aLiYunStorageService.getTmpFileInfoFromUrl(videoUrl);
+            videoFileInfo.setDuration(videoDuration);
             imageFileInfo = aLiYunStorageService.getTmpFileInfoFromUrl(imageUrl);
-        }
-        //语音评论
-        else if (StringUtils.isNotBlank(audioUrl)) {
-            audioFileInfo = aLiYunStorageService.getTmpFileInfoFromUrl(audioUrl);
-            audioFileInfo.setDuration(audioDuration);
-        }
-        //参数错误
-        else {
-            return ErrorDto.badRequest("参数必须满足这个条件：(video不为空 && image不为空) || (audio不为空)");
+
+            try {
+
+                uploadService.checkVideo(videoFileInfo);
+                uploadService.checkImage(imageFileInfo);
+
+            } catch (ServiceException e) {
+
+                aLiYunStorageService.delete(videoFileInfo.getTmpKey());
+                aLiYunStorageService.delete(imageFileInfo.getTmpKey());
+
+                return e.getErrorDto().toResponseEntity();
+            }
         }
 
-        //附件大小限制
-        if (videoFileInfo != null && videoFileInfo.getLength() > Setting.MAX_VIDEO_LENGTH_BYTES ||
-                imageFileInfo != null && imageFileInfo.getLength() > Setting.MAX_IMAGE_LENGTH_BYTES ||
-                audioFileInfo != null && audioFileInfo.getLength() > Setting.MAX_AUDIO_LENGTH_BYTES) {
-            return ErrorDto.badRequest("上传的文件太大");
+        //语音评论
+        else if (StringUtils.isNotBlank(audioUrl)) {
+
+            audioFileInfo = aLiYunStorageService.getTmpFileInfoFromUrl(audioUrl);
+            audioFileInfo.setDuration(audioDuration);
+
+            try {
+
+                uploadService.checkAudio(audioFileInfo);
+
+            } catch (ServiceException e) {
+
+                aLiYunStorageService.delete(audioFileInfo.getTmpKey());
+
+                return e.getErrorDto().toResponseEntity();
+            }
+        }
+
+        //参数错误
+        else {
+            return ErrorDto.badRequest("参数必须满足这个条件：(videoUrl不为空 && imageUrl不为空) || (audioUrl不为空)");
         }
 
         return createComment(text, replyCommentId, postId, videoFileInfo, imageFileInfo, audioFileInfo);

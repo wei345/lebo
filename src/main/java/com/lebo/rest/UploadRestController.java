@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.PresignedUrlDto;
 import com.lebo.service.UploadService;
 import org.apache.commons.lang3.time.DateUtils;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -29,22 +27,10 @@ public class UploadRestController {
     @Autowired
     private UploadService uploadService;
 
-    public static LinkedHashSet<String> allowedContentType;
-
-    static {
-        allowedContentType = new LinkedHashSet<String>(4);
-        allowedContentType.add("video/mp4");
-        allowedContentType.add("image/jpeg");
-        allowedContentType.add("image/png");
-        allowedContentType.add("audio/amr");
-    }
-
     @RequestMapping(value = "newTmpUploadUrl.json", method = RequestMethod.GET)
     @ResponseBody
     public Object tmpUploadUrl(@RequestParam("contentType") String contentType) {
-        if (!allowedContentType.contains(contentType)) {
-            return ErrorDto.badRequest("contentType必须为以下值之一：" + allowedContentType);
-        }
+        uploadService.checkUploadContentType(contentType);
 
         //生成签名URL
         Date expireDate = DateUtils.addHours(new Date(), 1); //1小时后失效
@@ -63,9 +49,7 @@ public class UploadRestController {
         List<String> urls = new ArrayList<String>(contentTypes.length);
 
         for (String contentType : contentTypes) {
-            if (!allowedContentType.contains(contentType)) {
-                return ErrorDto.badRequest("contentType必须为以下值之一：" + allowedContentType);
-            }
+            uploadService.checkUploadContentType(contentType);
 
             urls.add(uploadService.newImUploadUrl(contentType));
         }

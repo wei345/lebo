@@ -57,7 +57,7 @@ public class ErrorDto {
         this.httpStatus = httpStatus;
     }
 
-    private static ErrorDto newBadRequestError(String message) {
+    public static ErrorDto newBadRequestError(String message) {
         return new ErrorDto(message, 10400);
     }
 
@@ -127,6 +127,10 @@ public class ErrorDto {
     @JsonIgnore
     public HttpStatus getHttpStatus() {
         return httpStatus;
+    }
+
+    public ResponseEntity<ErrorDto> toResponseEntity(){
+        return new ResponseEntity<ErrorDto>(this, httpStatus);
     }
 
     public static class Error {

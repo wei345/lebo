@@ -4,10 +4,7 @@ import com.lebo.entity.*;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.HotDto;
 import com.lebo.rest.dto.StatusDto;
-import com.lebo.service.ALiYunStorageService;
-import com.lebo.service.AdService;
-import com.lebo.service.SettingService;
-import com.lebo.service.StatusService;
+import com.lebo.service.*;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.*;
 import com.lebo.web.ControllerUtils;
@@ -17,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,7 +26,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -52,20 +49,10 @@ public class StatusRestController {
     private AdService adService;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private UploadService uploadService;
 
     private Logger logger = LoggerFactory.getLogger(StatusRestController.class);
-
-    public static LinkedHashSet<String> allowedVideoContentType;
-    public static LinkedHashSet<String> allowedImageContentType;
-
-    static {
-        allowedVideoContentType = new LinkedHashSet<String>(1);
-        allowedVideoContentType.add("video/mp4");
-
-        allowedImageContentType = new LinkedHashSet<String>(2);
-        allowedImageContentType.add("image/jpeg");
-        allowedImageContentType.add("image/png");
-    }
 
     //TODO 检查Post.text长度
     @RequestMapping(value = API_1_PREFIX + "update", method = RequestMethod.POST)
@@ -350,57 +337,29 @@ public class StatusRestController {
     //-- v1.1 --//
     @RequestMapping(value = API_1_1_PREFIX + "update.json", method = RequestMethod.POST)
     @ResponseBody
-    public Object update_v1_1(@RequestParam(value = "videoUrl") String videoUrl,
-                              @RequestParam(value = "imageUrl") String imageUrl,
+    public Object update_v1_1(@RequestParam("videoUrl") String videoUrl,
+                              @RequestParam("imageUrl") String imageUrl,
+                              @RequestParam("duration") Long duration,
                               @RequestParam(value = "text", defaultValue = "") String text,
                               @RequestParam(value = "source", required = false) String source) throws IOException {
 
-        String videoKey = aLiYunStorageService.getKeyFromUrl(videoUrl);
-        if (videoKey == null || !aLiYunStorageService.isTmpFile(videoKey)) {
-            return ErrorDto.badRequest("videoUrl[" + videoUrl + "]格式错误");
+        FileInfo videoFileInfo = aLiYunStorageService.getTmpFileInfoFromUrl(videoUrl);
+        videoFileInfo.setDuration(duration);
+        FileInfo imageFileInfo = aLiYunStorageService.getTmpFileInfoFromUrl(imageUrl);
+
+        try {
+            uploadService.checkVideo(videoFileInfo);
+            uploadService.checkImage(imageFileInfo);
+
+        } catch (ServiceException e) {
+
+            aLiYunStorageService.delete(videoFileInfo.getTmpKey());
+            aLiYunStorageService.delete(imageFileInfo.getTmpKey());
+
+            return e.getErrorDto().toResponseEntity();
         }
 
-        String imageKey = aLiYunStorageService.getKeyFromUrl(imageUrl);
-        if (imageKey == null || !aLiYunStorageService.isTmpFile(imageKey)) {
-            return ErrorDto.badRequest("imageUrl[" + imageUrl + "]格式错误");
-        }
-
-        //视频文件
-        FileInfo videoMetadata = aLiYunStorageService.getMetadata(videoKey);
-        if (videoMetadata == null) {
-            return ErrorDto.badRequest("videoUrl[" + videoUrl + "]文件不存在");
-        }
-        if (!allowedVideoContentType.contains(videoMetadata.getContentType())) {
-            return ErrorDto.badRequest("视频contentType必须为以下值之一：" + allowedVideoContentType + ", 但是得到[" + videoMetadata.getContentType() + "]");
-        }
-
-        //图片文件
-        FileInfo imageMetadata = aLiYunStorageService.getMetadata(imageKey);
-        if (imageMetadata == null) {
-            return ErrorDto.badRequest("imageUrl[" + imageUrl + "]文件不存在");
-        }
-        if (!allowedImageContentType.contains(imageMetadata.getContentType())) {
-            return ErrorDto.badRequest("图片contentType必须为以下值之一：" + allowedImageContentType + ", 但是得到[" + imageMetadata.getContentType() + "]");
-        }
-
-        //文件大小
-        if (videoMetadata.getLength() > Setting.MAX_VIDEO_LENGTH_BYTES || imageMetadata.getLength() > Setting.MAX_IMAGE_LENGTH_BYTES) {
-            aLiYunStorageService.delete(videoKey);
-            aLiYunStorageService.delete(imageKey);
-            return ErrorDto.badRequest("上传的视频("
-                    + FileUtils.byteCountToDisplaySize(videoMetadata.getLength())
-                    + ")或图片("
-                    + FileUtils.byteCountToDisplaySize(imageMetadata.getLength())
-                    + ")太大");
-        }
-
-        videoMetadata.setKey(null);
-        videoMetadata.setTmpKey(videoKey);
-
-        imageMetadata.setKey(null);
-        imageMetadata.setTmpKey(imageKey);
-
-        return createPost(text, videoMetadata, imageMetadata, source);
+        return createPost(text, videoFileInfo, imageFileInfo, source);
     }
 
     private Object createPost(String text, FileInfo video, FileInfo videoFirstFrame, String source) {
