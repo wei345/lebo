@@ -386,6 +386,15 @@ public class StatusService extends AbstractMongoService {
         return dtos;
     }
 
+    private Comparator hotPostComparator = new Comparator<Post>() {
+        @Override
+        public int compare(Post post1, Post post2) {
+            Integer v1 = post1.getFavoritesCount() + (post1.getRating() == null ? 0 : post1.getRating());
+            Integer v2 = post2.getFavoritesCount() + (post2.getRating() == null ? 0 : post2.getRating());
+            return v2.compareTo(v1);
+        }
+    };
+
     /**
      * 刷新热门帖子列表:最近2天的帖子按红心数降序排序
      * 为避免刷屏，每用户只可上榜2条
@@ -406,18 +415,14 @@ public class StatusService extends AbstractMongoService {
         List<Post> posts = mongoTemplate.find(query, Post.class);
         logger.debug("更新热门帖子 : 正在处理 {} 个帖子", posts.size());
 
+        Collections.sort(posts, hotPostComparator);
+
         //为避免刷屏，每用户只可上榜1条
         int max = 1;
         Map<String, Integer> userId2count = new HashMap<String, Integer>(1000);
 
         List<HotPost> hotPosts = new ArrayList<HotPost>(1000);
         for (Post post : posts) {
-
-            //TODO 临时隐藏“性”帖子 begin
-            if (post.getHashtags() != null && post.getHashtags().contains("XXX")) {
-                continue;
-            }
-            //TODO 临时隐藏“性”帖子 end
 
             Integer count = userId2count.get(post.getUserId());
 
@@ -431,7 +436,6 @@ public class StatusService extends AbstractMongoService {
                 userId2count.put(post.getUserId(), count + 1);
             }
         }
-
 
         logger.debug("更新热门帖子 : 处理后得到 {} 个帖子", hotPosts.size());
 
