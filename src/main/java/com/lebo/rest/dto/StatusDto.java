@@ -150,7 +150,11 @@ public class StatusDto {
     }
 
     public Integer getViewCount() {
-        return viewCount;
+        if(viewCount == null){
+            return null;
+        }
+
+        return viewCount * 3;
     }
 
     public void setViewCount(Integer viewCount) {
