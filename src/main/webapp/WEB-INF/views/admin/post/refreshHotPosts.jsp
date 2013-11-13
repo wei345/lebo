@@ -22,12 +22,16 @@
 
 <input type="button" value="立即刷新热门帖子" class="btn" onclick="refreshHotPosts()"/>
 
+<div class="text-success" style="display: none"></div>
+
 <div class="text-info" style="display: none">正在处理..</div>
 
 <div class="text-error" style="display: none">处理失败</div>
 
 <script>
     function refreshHotPosts() {
+        var beginTime = new Date().getTime();
+
         $('input[type=button]').hide();
 
         $('.text-error').hide();
@@ -37,11 +41,12 @@
         $.ajax({
             url: '${ctx}/admin/post/refreshHotPosts',
             type: 'POST',
+            dataType: 'json',
             success: function (data) {
-                if (data == 'ok') {
+                if (data.ok) {
                     $('.text-info').hide();
                     $('.text-error').hide();
-                    $('input[type=button]').show();
+                    $('.text-success').html('已刷新，用时 ' + data.time + ' ms').show();
                 } else {
                     $('.text-error').show();
                     $('.text-info').hide();
