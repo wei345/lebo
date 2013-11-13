@@ -104,8 +104,15 @@ public class PostController {
     @RequestMapping(value = "refreshHotPosts", method = RequestMethod.POST)
     @ResponseBody
     public Object refreshHotPosts() {
+        long beginTime = System.currentTimeMillis();
+
         statusService.refreshHotPosts();
-        return ControllerUtils.AJAX_OK;
+
+        Map map = new HashMap(2);
+        map.put("ok", true);
+        map.put("time", System.currentTimeMillis() - beginTime);
+
+        return map;
     }
 
     @RequestMapping(value = "refreshHotPosts", method = RequestMethod.GET)
