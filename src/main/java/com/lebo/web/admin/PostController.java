@@ -100,4 +100,16 @@ public class PostController {
         statusService.updateRating(id, rating);
         return ControllerUtils.AJAX_OK;
     }
+
+    @RequestMapping(value = "refreshHotPosts", method = RequestMethod.POST)
+    @ResponseBody
+    public Object refreshHotPosts() {
+        statusService.refreshHotPosts();
+        return ControllerUtils.AJAX_OK;
+    }
+
+    @RequestMapping(value = "refreshHotPosts", method = RequestMethod.GET)
+    public Object refreshHotPostsShow() {
+        return "/admin/post/refreshHotPosts";
+    }
 }
