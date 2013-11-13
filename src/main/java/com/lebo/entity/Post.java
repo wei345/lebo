@@ -71,6 +71,9 @@ public class Post extends IdEntity {
     private boolean digest;
     public static final String DIGEST_KEY = "digest";
 
+    private Integer rating;
+    public static final String RATING_KEY = "rating";
+
     //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
     private String pikeId;
 
@@ -291,5 +294,13 @@ public class Post extends IdEntity {
 
     public void setVideoConverted(FileInfo videoConverted) {
         this.videoConverted = videoConverted;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }
