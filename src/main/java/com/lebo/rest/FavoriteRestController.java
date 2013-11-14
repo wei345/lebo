@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.entity.Favorite;
 import com.lebo.entity.Post;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.FavoriteService;
@@ -8,6 +9,7 @@ import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +33,8 @@ public class FavoriteRestController {
     @Autowired
     private StatusService statusService;
 
+    private Sort FAVORITE_LIST_SORT = new Sort(Sort.Direction.DESC, Favorite.POST_ID_KEY);
+
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseBody
     public Object create(@RequestParam("id") String id) {
@@ -50,6 +54,8 @@ public class FavoriteRestController {
     public Object list(@RequestParam(value = "userId", required = false) String userId,
                        @RequestParam(value = "screenName", required = false) String screenName,
                        @Valid PaginationParam paginationParam) {
+
+        paginationParam.setSort(FAVORITE_LIST_SORT);
 
         if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
             userId = accountService.getCurrentUserId();
