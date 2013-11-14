@@ -29,8 +29,6 @@ public class FavoriteService extends AbstractMongoService {
     @Autowired
     private StatusService statusService;
     @Autowired
-    private AccountService accountService;
-    @Autowired
     private ApplicationEventBus eventBus;
 
     public void create(String userId, String postId) {
