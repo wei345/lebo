@@ -1,5 +1,6 @@
 package com.lebo.service.account;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -21,16 +22,4 @@ public class ShiroFormAuthenticationFilter extends FormAuthenticationFilter {
         return super.createToken(request, response);
     }
 
-    /**
-     * 允许访问登录页面 GET /login
-     * 在生产环境shiro loginUrl设为404
-     */
-    @Override
-    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        if (pathsMatch("/login", request) && WebUtils.toHttp(request).getMethod().equalsIgnoreCase(GET_METHOD)) {
-            //允许访问登录页
-            return true;
-        }
-        return super.onAccessDenied(request, response);
-    }
 }

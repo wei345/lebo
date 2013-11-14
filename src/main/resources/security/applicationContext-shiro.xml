@@ -20,8 +20,7 @@
     <!-- Shiro Filter -->
     <bean id="authcFilter" class="com.lebo.service.account.ShiroFormAuthenticationFilter"/>
     <bean id="apiFilter" class="com.lebo.service.account.ShiroApiUserFilter"/>
-    <!-- 已经不需要自定义userFilter 因为: 1. 要显示登录页，因为编辑用  2. 登录页面在非开发环境已不显示OAuthId快速登录
-    <bean id="userFilter" class="org.apache.shiro.web.filter.authc.UserFilter"/>-->
+
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login"/>
@@ -30,7 +29,6 @@
             <util:map>
                 <entry key="authc" value-ref="authcFilter"/>
                 <entry key="api" value-ref="apiFilter"/>
-                <!--<entry key="user" value-ref="userFilter"/>-->
             </util:map>
         </property>
         <property name="filterChainDefinitions">
