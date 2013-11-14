@@ -16,6 +16,6 @@ import java.util.List;
 public interface FavoriteDao extends MongoRepository<Favorite, String> {
     Favorite findByUserIdAndPostId(String userId, String postId);
 
-    @Query(value = "{ userId : ?0 , _id : { $lt : { $oid : ?1 }, $gt : { $oid : ?2 } } }")
+    @Query(value = "{ userId : ?0 , postId : { $lt : ?1, $gt : ?2 } }")
     List<Favorite> findByUserId(String userId, String maxId, String sinceId, Pageable pageable);
 }
