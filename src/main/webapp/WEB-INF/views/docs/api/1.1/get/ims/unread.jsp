@@ -16,7 +16,7 @@
     <tags:field name="polling" optional="true"/>
 </tags:form>
 
-<tags:example method="GET" url="http://localhost:8080/api/1.1/ims/unread.json">
+<tags:example method="GET" url="http://localhost:8080/api/1.1/ims/unread.json?polling=true">
     [
         {
             id: "528616dd1a88005182b89112",
