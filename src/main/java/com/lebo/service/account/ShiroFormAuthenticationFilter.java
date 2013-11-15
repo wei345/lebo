@@ -64,10 +64,10 @@ public class ShiroFormAuthenticationFilter extends FormAuthenticationFilter {
      */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        if (isLoginRequest(request, response) && isLoginSubmission(request, response)) {
+        if (isLoginRequest(request, response)) {
             int count = NumberUtils.toInt(jedisTemplate.get(getLoginCounterKey(request)), 0);
             if (count >= MAX_LOGIN_RETRY_TIMES) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_NOT_FOUND);
                 return false;
             }
         }
