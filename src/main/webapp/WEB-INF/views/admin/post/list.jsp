@@ -77,11 +77,15 @@
             text-align: left;
             padding-left: 30px;
         }
+
+        .result-status{
+            padding: 0 0 6px 0;
+        }
     </style>
 </head>
 <body>
 
-<form id="searchForm" class="form-search pull-left" method="GET" action="">
+<form id="searchForm" class="form-search" method="GET" action="">
     <input type="search" class="input-medium search-query" id="screenName" name="screenName" value="${param.screenName}"
            placeholder="用户名字">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
@@ -110,11 +114,13 @@
             <option value="ASC" ${param.order == "ASC" ? "selected" : ""}>升序</option>
         </select>
 
-        <input type="text" class="input-mini" name="size" value="${count}">条/页
+        <input type="text" class="input-mini" name="size" value="${page.size}">条/页
 
         <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
     </div>
 </form>
+
+<div class="muted result-status">第 ${page.size * page.number + 1} - ${page.size * page.number + page.numberOfElements} 条，共 ${page.totalElements} 条（用时 ${spentSeconds} 秒）</div>
 
 <table id="contentTable" class="table table-hover">
     <tr>
