@@ -18,13 +18,14 @@
 
 <tags:example method="POST" url="http://localhost:8080/api/1.1/ims/new.json?toUserId=52356929343539a89a52dc8d&message=test&type=1&messageTime=1383901962">
     {
-        id: "527cac8b1a88fa8b6685af92",
+        id: "528616dd1a88005182b89112",
         fromUserId: "52356929343539a89a52dc8d",
-        toUserId: "52356929343539a89a52dc8d",
-        message: "test",
+        toUserId: "5274a4ff1a882a098ff02899",
+        message: "文字消息",
         type: 1,
-        createdAt: "Fri Nov 08 17:19:07 +0800 2013",
-        messageTime: 1383901962
+        createdAt: "Fri Nov 15 20:43:09 +0800 2013",
+        messageTime: 1384519378,
+        unread: true
     }
 </tags:example>
 

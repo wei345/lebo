@@ -27,7 +27,8 @@ public class Im extends IdEntity {
     @Indexed(direction = IndexDirection.DESCENDING)
     private Long messageTime;  //客户端提交的消息时间
     public static final String MESSAGE_TIME_KEY = "messageTime";
-
+    private Boolean unread;
+    public static final String UNREAD_KEY = "unread";
 
     public List<FileInfo> getAttachments() {
         return attachments;
@@ -83,5 +84,13 @@ public class Im extends IdEntity {
 
     public void setMessageTime(Long messageTime) {
         this.messageTime = messageTime;
+    }
+
+    public Boolean getUnread() {
+        return unread;
+    }
+
+    public void setUnread(Boolean unread) {
+        this.unread = unread;
     }
 }

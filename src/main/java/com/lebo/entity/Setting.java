@@ -3,8 +3,6 @@ package com.lebo.entity;
 import com.lebo.service.FileContentUrlUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * 应用选项。
  *
@@ -48,6 +46,8 @@ public class Setting extends IdEntity {
     private String hotuser_button3_text = "导演排行";
 
     private boolean adsHotExpanded = true;
+
+    private Integer imPollingIntervalSeconds = 180;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -223,5 +223,13 @@ public class Setting extends IdEntity {
 
     public void setAdsHotExpanded(boolean adsHotExpanded) {
         this.adsHotExpanded = adsHotExpanded;
+    }
+
+    public Integer getImPollingIntervalSeconds() {
+        return imPollingIntervalSeconds;
+    }
+
+    public void setImPollingIntervalSeconds(Integer imPollingIntervalSeconds) {
+        this.imPollingIntervalSeconds = imPollingIntervalSeconds;
     }
 }
