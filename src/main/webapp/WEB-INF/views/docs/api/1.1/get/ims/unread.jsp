@@ -10,6 +10,10 @@
         <li>返回当前登录用户的未读消息，最多 ${maxCount} 条</li>
         <li>系统会将<strong>全部</strong>未读消息标记为已读</li>
     </ul>
+    <p>
+        是否轮询 <code>true</code>/<code>false</code>
+    </p>
+    <tags:field name="polling" optional="true"/>
 </tags:form>
 
 <tags:example method="GET" url="http://localhost:8080/api/1.1/ims/unread.json">
