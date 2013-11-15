@@ -4,11 +4,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>403 - 权限不足</title>
+    <title>403 - 被禁止</title>
 </head>
 
 <body>
-<h2>403 - 权限不足.</h2>
+<h2>403 - 被禁止.</h2>
 
 </body>
 </html>
