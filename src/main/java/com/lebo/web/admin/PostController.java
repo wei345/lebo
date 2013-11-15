@@ -47,6 +47,8 @@ public class PostController {
                        @RequestParam(value = "order", defaultValue = "DESC") String order,
                        @Valid PageRequest pageRequest,
                        Model model) {
+        long beginTime = System.currentTimeMillis();
+
         try {
             userId = accountService.getUserId(userId, screenName);
         } catch (ServiceException e) {
@@ -59,29 +61,29 @@ public class PostController {
 
         List<Post> posts = page.getContent();
 
-        List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(posts.size());
+        List<Map<String, Object>> postInfos = new ArrayList<Map<String, Object>>(posts.size());
         for (Post post : posts) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", post.getId());
-            map.put("videoUrl", post.getVideo().getContentUrl());
-            map.put("videoFirstFrameUrl", post.getVideoFirstFrameUrl());
-            map.put("text", post.getText());
-            map.put("favoritesCount", post.getFavoritesCount());
-            map.put("viewCount", post.getViewCount());
-            map.put("rating", post.getRating());
-            map.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
-            map.put("repostCount", statusService.countReposts(post.getId()));
-            map.put("commentCount", commentService.countPostComments(post.getId()));
+            Map<String, Object> postInfo = new HashMap<String, Object>();
+            postInfo.put("id", post.getId());
+            postInfo.put("videoUrl", post.getVideo().getContentUrl());
+            postInfo.put("videoFirstFrameUrl", post.getVideoFirstFrameUrl());
+            postInfo.put("text", post.getText());
+            postInfo.put("favoritesCount", post.getFavoritesCount());
+            postInfo.put("viewCount", post.getViewCount());
+            postInfo.put("rating", post.getRating());
+            postInfo.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
+            postInfo.put("repostCount", statusService.countReposts(post.getId()));
+            postInfo.put("commentCount", commentService.countPostComments(post.getId()));
             User user = accountService.getUser(post.getUserId());
-            map.put("userId", user.getId());
-            map.put("screenName", user.getScreenName());
-            map.put("profileImageUrl", user.getProfileImageUrl());
-            maps.add(map);
+            postInfo.put("userId", user.getId());
+            postInfo.put("screenName", user.getScreenName());
+            postInfo.put("profileImageUrl", user.getProfileImageUrl());
+            postInfos.add(postInfo);
         }
 
-        model.addAttribute("posts", maps);
-        model.addAttribute("count", pageRequest.getPageSize());
+        model.addAttribute("posts", postInfos);
         model.addAttribute("page", page);
+        model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime)/1000.0);
 
         return "admin/post/list";
     }
