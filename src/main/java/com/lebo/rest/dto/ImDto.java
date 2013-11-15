@@ -17,6 +17,7 @@ public class ImDto {
     private List<FileInfoDto> attachments;
     private Date createdAt;
     private Long messageTime;
+    private Boolean unread;
 
     public String getFromUserId() {
         return fromUserId;
@@ -80,5 +81,13 @@ public class ImDto {
 
     public void setMessageTime(Long messageTime) {
         this.messageTime = messageTime;
+    }
+
+    public Boolean getUnread() {
+        return unread;
+    }
+
+    public void setUnread(Boolean unread) {
+        this.unread = unread;
     }
 }

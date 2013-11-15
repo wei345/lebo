@@ -573,6 +573,14 @@
             返回最近消息列表。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/ims/unread" text="GET ims/unread"/>
+        </td>
+        <td>
+            返回当前登录用户的未读消息。
+        </td>
+    </tr>
 </table>
 
 <strong>虚拟货币</strong>

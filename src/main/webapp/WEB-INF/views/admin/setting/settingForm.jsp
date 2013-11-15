@@ -241,6 +241,17 @@
         </div>
     </div>
 
+    <h2>即时通讯</h2>
+
+    <div class="control-group">
+        <label class="control-label">即时通讯轮询间隔(秒):</label>
+        <div class="controls">
+            <input type="text" id="imPollingIntervalSeconds" name="imPollingIntervalSeconds"
+                   value="${setting.imPollingIntervalSeconds}"
+                   class="input-large required"/>
+        </div>
+    </div>
+
     <div class="form-actions">
         <input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
         <input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;

@@ -3,6 +3,7 @@ package com.lebo.rest;
 import com.lebo.entity.Im;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
+import com.lebo.rest.dto.ImDto;
 import com.lebo.service.ImService;
 import com.lebo.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class ImRestController {
 
     public static final String PREFIX_API_1_1_IM = "/api/1.1/ims/";
 
-    private static int RECENT_MAX_COUNT = 1000;
+    public static int RECENT_MAX_COUNT = 500;
 
     @RequestMapping(PREFIX_API_1_1_IM + "profiles.json")   //为确保不受客户端或服务器url长度限制，也允许post
     @ResponseBody
@@ -60,7 +61,7 @@ public class ImRestController {
             return ErrorDto.badRequest("toUserId[" + toUserId + "]用户不存在");
         }
 
-        Im im = imService.newMessage(accountService.getCurrentUserId(), toUserId, message, type, messageTime);
+        Im im = imService.newMessage(accountService.getCurrentUserId(), toUserId, message, type, messageTime, true);
 
         return imService.toDto(im);
     }
@@ -69,9 +70,23 @@ public class ImRestController {
     @ResponseBody
     public Object recentMessage(@RequestParam("afterTime") long afterTime) {
         return imService.toDtos(
-                imService.getRecentMessage(
+                imService.getRecentMessages(
                         accountService.getCurrentUserId(),
                         afterTime,
                         RECENT_MAX_COUNT));
+    }
+
+    @RequestMapping(value = PREFIX_API_1_1_IM + "unread.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object unread(@RequestParam(value = "polling", required = false) Boolean polling) {
+
+        String currentUserId = accountService.getCurrentUserId();
+
+        List<ImDto> result = imService.toDtos(
+                imService.getUnreadMessages(currentUserId, RECENT_MAX_COUNT));
+
+        imService.markAllRead(currentUserId);
+
+        return result;
     }
 }
