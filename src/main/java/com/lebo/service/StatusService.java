@@ -679,9 +679,10 @@ public class StatusService extends AbstractMongoService {
 
         //频道不含转发贴
         criteriaList.add(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
-        //不含置顶视频，后面手动添加
+
+        //排除置顶视频
         if (channel != null && StringUtils.isNotBlank(channel.getTopPostId())) {
-            criteriaList.add(new Criteria(Post.ID_KEY).ne(channel.getTopPostId()));
+            criteriaList.add(new Criteria(Post.ID_KEY).ne(new ObjectId(channel.getTopPostId())));
         }
 
         //分页
