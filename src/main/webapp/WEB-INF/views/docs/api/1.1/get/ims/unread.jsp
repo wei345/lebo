@@ -8,7 +8,7 @@
 <tags:form name="获取未读消息" method="GET" action="${ctx}/api/1.1/ims/unread.json">
     <ul>
         <li>返回当前登录用户的未读消息，最多 ${maxCount} 条</li>
-        <li>系统会将所有消息设为已读</li>
+        <li>系统会将<strong>全部</strong>未读消息标记为已读</li>
     </ul>
 </tags:form>
 
