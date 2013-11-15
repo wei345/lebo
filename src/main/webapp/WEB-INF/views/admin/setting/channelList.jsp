@@ -12,31 +12,35 @@
             text-align: center;
         }
 
-        td.channel-image > div {
+        td.channel-preview, th.channel-preview{
             width: 100px;
-            height: 100px;
+        }
+
+        .channel-preview > .channel-button {
+            width: 95px;
+            height: 95px;
             overflow: hidden;
             margin: 10px;
             position: relative;
             text-align: center;
         }
 
-        td.channel-image .display-name {
+        .channel-preview .channel-subject {
             position: absolute;
-            bottom: 3px;
+            top: 10px;
             width: 100%;
         }
 
-        th.channel-image {
-            width: 120px;
+        .channel-preview img{
+            width: 95px;
         }
 
-        td.channel-detail {
+        .channel-detail {
             padding: 10px;
         }
 
         .channel-desc {
-            padding: 10px 0;
+            padding: 3px 0;
         }
 
         .channel-name {
@@ -77,7 +81,7 @@
     <thead>
     <tr>
         <th class="reallyOrder"></th>
-        <th class="channel-image">预览</th>
+        <th class="channel-preview">预览</th>
         <th>详细</th>
         <th class="input-mini">编号</th>
         <th class="input-medium">操作</th>
@@ -88,19 +92,24 @@
         <tr class="${channel.enabled == true? "enabled" : ""}">
             <td class="reallyOrder">
             </td>
-            <td class="channel-image">
-                <div style="background-color: ${channel.backgroundColor}">
-                    <img class="input-small" src="${channel.imageUrl}"/>
-
-                    <div class="display-name">${channel.title}</div>
+            <td class="channel-preview">
+                <div class="channel-button" style="background-color: ${channel.backgroundColor}">
+                    <div class="channel-subject">${channel.title}</div>
+                    <img src="${channel.imageUrl}"/>
                 </div>
             </td>
             <td class="channel-detail">
-                <div class="channel-name">${channel.name}</div>
-                <div class="channel-desc">${empty channel.description ? "<i>无描述</i>" : channel.description}</div>
+                <div class="channel-name" title="频道名">${channel.name}</div>
+                <div class="channel-desc">描述: ${empty channel.description ? "<i>无</i>" : channel.description}</div>
                 <ul class="channel-content">
-                    <li>${empty channel.follow ? "<i>无follow</i>" : "follow "}${channel.follow}</li>
-                    <li>${empty channel.track ? "<i>无track</i>" : "track "}${channel.track}</li>
+                    <li>follow: ${empty channel.follow ? "<i>无</i>" : channel.follow}</li>
+                    <li>track: ${empty channel.track ? "<i>无</i>" : channel.track}</li>
+                    <c:if test="${empty channel.topPostId}">
+                        <li>置顶: <i>无</i></li>
+                    </c:if>
+                    <c:if test="${!empty channel.topPostId}">
+                        <li>置顶: <a href="${ctx}/play/${channel.topPostId}" target="_blank">${channel.topPostId}</a></li>
+                    </c:if>
                 </ul>
             </td>
             <td class="channel-order">${channel.order}</td>
