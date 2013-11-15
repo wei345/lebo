@@ -69,11 +69,7 @@ public class ImRestController {
     @RequestMapping(value = PREFIX_API_1_1_IM + "recent.json", method = RequestMethod.GET)
     @ResponseBody
     public Object recentMessage(@RequestParam("afterTime") long afterTime) {
-        return imService.toDtos(
-                imService.getRecentMessages(
-                        accountService.getCurrentUserId(),
-                        afterTime,
-                        RECENT_MAX_COUNT));
+        return unread(false);
     }
 
     @RequestMapping(value = PREFIX_API_1_1_IM + "unread.json", method = RequestMethod.GET)
