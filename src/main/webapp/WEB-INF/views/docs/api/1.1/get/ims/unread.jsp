@@ -13,6 +13,10 @@
     <p>
         是否轮询 <code>true</code>/<code>false</code>
     </p>
+    <ul>
+        <li>如果是定时轮询传true，如果是收到系统推送通知查询未读消息传false</li>
+        <li>服务端可能会统计轮询，或针对轮询做优化处理</li>
+    </ul>
     <tags:field name="polling" optional="true"/>
 </tags:form>
 
