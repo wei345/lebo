@@ -16,7 +16,7 @@
 
 <ul>
     <li><a href="${ctx}/admin/user">用户管理</a></li>
-    <li><a href="${ctx}/admin/post/list">帖子管理</a>, <a href="${ctx}/admin/post/refreshHotPosts">刷新热门帖子</a></li>
+    <li><a href="${ctx}/admin/post">帖子管理</a></li>
     <li><a href="${ctx}/admin/comment/list">评论管理</a></li>
 </ul>
 

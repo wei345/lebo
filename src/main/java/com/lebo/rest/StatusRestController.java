@@ -237,7 +237,7 @@ public class StatusRestController {
     @ResponseBody
     public Object hot(@RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "size", defaultValue = PaginationParam.DEFAULT_COUNT + "") int size) {
-        return statusService.hotPosts(page, size);
+        return statusService.toStatusDtos(statusService.hotPosts(page, size));
     }
 
     @RequestMapping(value = API_1_PREFIX + "digest", method = RequestMethod.GET)
@@ -407,7 +407,8 @@ public class StatusRestController {
             dto.setAdsExpanded(settingService.getSetting().isAdsHotExpanded());
         }
 
-        List<StatusDto> statuses = statusService.hotPosts(pageRequest.getPage(), pageRequest.getSize());
+        List<StatusDto> statuses = statusService.toStatusDtos(
+                statusService.hotPosts(pageRequest.getPage(), pageRequest.getSize()));
         dto.setStatuses(statuses);
 
         return dto;
