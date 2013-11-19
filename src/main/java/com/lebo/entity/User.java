@@ -112,6 +112,8 @@ public class User extends IdEntity {
     private String weiboToken; //用微博账号登录的token
     public static final String WEIBO_TOKEN_KEY = "weiboToken";
     private String renrenToken;//用人人账号登录的token
+    private String qqToken;
+    public static final String QQ_TOKEN_KEY = "qqToken";
 
     //查找好友功能用到的token
     private String findFriendWeiboToken;
@@ -505,6 +507,14 @@ public class User extends IdEntity {
 
     public void setFriendsCount(Integer friendsCount) {
         this.friendsCount = friendsCount;
+    }
+
+    public String getQqToken() {
+        return qqToken;
+    }
+
+    public void setQqToken(String qqToken) {
+        this.qqToken = qqToken;
     }
 
     @Override

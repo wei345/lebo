@@ -17,7 +17,9 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
     public static String PROVIDER = "renren";
 
     @Override
-    public User getUser(String token) {
+    public User getUser(OauthToken oauthToken) {
+        String token = oauthToken.getToken();
+
         Map userInfo = (Map) getUserInfo(token).get("response");
         List<Map<String, String>> avatar = (List) userInfo.get("avatar");
 
