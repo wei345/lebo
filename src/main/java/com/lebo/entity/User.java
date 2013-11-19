@@ -46,6 +46,10 @@ public class User extends IdEntity {
     //origin 可以很大
     private String profileImageOriginal;
     public static final String PROFILE_IMAGE_ORIGIN_KEY = "profileImageOriginal";
+    //background image
+    private String profileBackgroundImage;
+    public static final String PROFILE_BACKGROUND_IMAGE_KEY = "profileBackgroundImage";
+    public static final int PROFILE_BACKGROUND_IMAGE_SIZE = 1024;
     @Indexed
     private Date createdAt;
     private Boolean verified;
@@ -515,6 +519,18 @@ public class User extends IdEntity {
 
     public void setQqToken(String qqToken) {
         this.qqToken = qqToken;
+    }
+
+    public String getProfileBackgroundImage() {
+        return profileBackgroundImage;
+    }
+
+    public void setProfileBackgroundImage(String profileBackgroundImage) {
+        this.profileBackgroundImage = profileBackgroundImage;
+    }
+
+    public String getProfileBackgroundImageUrl(){
+        return FileContentUrlUtils.getContentUrl(profileBackgroundImage);
     }
 
     @Override

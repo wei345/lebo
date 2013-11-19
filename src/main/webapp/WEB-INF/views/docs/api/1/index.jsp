@@ -322,6 +322,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/account/updateProfileBackgroundImage" text="POST account/updateProfileBackgroundImage v1.1"/>
+        </td>
+        <td>
+            更新当前登录用户个人页背景图片，返回更新后的用户信息。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/account/checkScreenName" text="POST account/checkScreenName"/>
         </td>
         <td>

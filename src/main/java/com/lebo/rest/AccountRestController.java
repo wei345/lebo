@@ -7,9 +7,12 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.ALiYunStorageService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.account.ShiroUser;
+import com.lebo.util.ContentTypeMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.stereotype.Controller;
@@ -34,6 +37,8 @@ public class AccountRestController {
     private AccountService accountService;
     @Autowired
     private ALiYunStorageService aLiYunStorageService;
+
+    private Logger logger = LoggerFactory.getLogger(AccountRestController.class);
 
     @RequestMapping(value = API_1_ACCOUNT + "updateProfile", method = RequestMethod.POST)
     @ResponseBody
@@ -163,5 +168,47 @@ public class AccountRestController {
         //更新ShiroUser
         updateCurrentUser(user);
         return accountService.toUserDto(user);
+    }
+
+    @RequestMapping(value = API_1_1_ACCOUNT + "updateProfileBackgroundImage.json", method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateProfileBackgroundImage_v1_1(@RequestParam(value = "imageUrl") String imageUrl) {
+        String userId = accountService.getCurrentUserId();
+
+        //读取图片
+        FileInfo imageFileInfo = aLiYunStorageService.get(aLiYunStorageService.getKeyFromUrl(imageUrl));
+
+        if (imageFileInfo == null) {
+            return ErrorDto.badRequest("图片不存在 url : " + imageUrl);
+        }
+
+        //检查图片类型
+        if (!ContentTypeMap.IMAGE_JPEG.equals(imageFileInfo.getContentType())
+                && !ContentTypeMap.IMAGE_PNG.equals(imageFileInfo.getContentType())) {
+            return ErrorDto.badRequest("不允许文件类型 " + imageFileInfo.getContentType());
+        }
+
+        //检查图片大小
+        if (imageFileInfo.getLength() > Setting.MAX_USER_PROFILE_BACKGROUND_IMAGE_LENGTH_BYTES) {
+            return ErrorDto.badRequest("图片大小不能超过 " +
+                    FileUtils.byteCountToDisplaySize(Setting.MAX_USER_PROFILE_BACKGROUND_IMAGE_LENGTH_BYTES));
+        }
+
+        //保存图片
+        try {
+
+            User user = accountService.updateProfileBackgroundImage(userId, imageFileInfo.getContent());
+            return accountService.toBasicUserDto(user);
+
+        } catch (IOException e) {
+
+            logger.debug("保存用户背景图片失败", e);
+            return ErrorDto.badRequest("保存用户背景图片失败: " + e.getMessage());
+
+        } finally {
+
+            aLiYunStorageService.delete(imageFileInfo.getKey());
+
+        }
     }
 }

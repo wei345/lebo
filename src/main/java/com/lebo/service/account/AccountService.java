@@ -167,6 +167,7 @@ public class AccountService extends AbstractMongoService {
         dto.setProfileImageUrl(user.getProfileImageUrl());
         dto.setProfileImageBiggerUrl(user.getProfileImageBiggerUrl());
         dto.setProfileImageOriginalUrl(user.getProfileImageOriginalUrl());
+        dto.setProfileBackgroundImageUrl(user.getProfileBackgroundImageUrl());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setFollowersCount(user.getFollowersCount());
         dto.setFriendsCount(user.getFriendsCount());
@@ -560,6 +561,32 @@ public class AccountService extends AbstractMongoService {
         return users;
     }
 
+    public User updateProfileBackgroundImage(String userId, InputStream imageInputStream) throws IOException {
+        User user = getUser(userId);
+
+        BufferedImage originImage = ImageIO.read(imageInputStream);
+        ByteArrayOutputStream outputStream;
+        FileInfo fileInfo;
+
+        BufferedImage normal = ImageUtils.resizeImage(User.PROFILE_BACKGROUND_IMAGE_SIZE, originImage);
+        //删除旧图片
+        if (isFileId(user.getProfileBackgroundImage())) {
+            fileStorageService.delete(user.getProfileBackgroundImage());
+        }
+        //保存新图片
+        outputStream = new ByteArrayOutputStream();
+        ImageIO.write(normal, "png", outputStream);
+        fileInfo = new FileInfo(new ByteArrayInputStream(outputStream.toByteArray()), "image/png", outputStream.size(), "profile-background-image.png");
+        fileInfo.setKey(generateFileId(FILE_COLLECTION_NAME, user.getId(), "background-image", fileInfo.getLength(), fileInfo.getContentType(), fileInfo.getFilename()));
+        fileStorageService.save(fileInfo);
+        user.setProfileBackgroundImage(fileInfo.getKey());
+
+        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
+                new Update().set(User.PROFILE_BACKGROUND_IMAGE_KEY, fileInfo.getKey()), User.class);
+
+        return user;
+    }
+
     //-- Session --
 
     /**
@@ -570,6 +597,7 @@ public class AccountService extends AbstractMongoService {
         if (userDao.exists(user.id)) {
             return user.id;
         } else {
+            //如果user.id不存在，userDao.exists会抛出异常，永远不会执行这里?
             SecurityUtils.getSubject().logout();
             throw new UnknownAccountException();
         }
@@ -606,7 +634,7 @@ public class AccountService extends AbstractMongoService {
         });
     }
 
-    public boolean isUserExists(String userId){
+    public boolean isUserExists(String userId) {
         return userDao.exists(userId);
     }
 

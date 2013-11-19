@@ -14,6 +14,7 @@ public class UserDto {
     private String profileImageUrl;
     private String profileImageBiggerUrl;
     private String profileImageOriginalUrl;
+    private String profileBackgroundImageUrl;
     private Date createdAt;
     private Boolean following;
     private Integer followersCount;
@@ -190,5 +191,13 @@ public class UserDto {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public String getProfileBackgroundImageUrl() {
+        return profileBackgroundImageUrl;
+    }
+
+    public void setProfileBackgroundImageUrl(String profileBackgroundImageUrl) {
+        this.profileBackgroundImageUrl = profileBackgroundImageUrl;
     }
 }
