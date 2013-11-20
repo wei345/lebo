@@ -58,8 +58,10 @@ public class User extends IdEntity {
     // --- 下面是用户隐私数据 --- //
     @Indexed
     private LinkedHashSet<String> oAuthIds;
-    // 性别 -1 未知，0 女，1 男
-    private Integer gender;
+    private Character gender;
+    public static final String GENDER_KEY = "gender";
+    public static final char GENDER_MALE = 'm';
+    public static final char GENDER_FEMALE = 'f';
     //TODO 在设置email时，保证唯一
     @Indexed
     private String email;
@@ -112,6 +114,7 @@ public class User extends IdEntity {
     private String weiboToken; //用微博账号登录的token
     public static final String WEIBO_TOKEN_KEY = "weiboToken";
     private String renrenToken;//用人人账号登录的token
+    public static final String RENREN_TOKEN_KEY = "renrenToken";
 
     //查找好友功能用到的token
     private String findFriendWeiboToken;
@@ -230,11 +233,11 @@ public class User extends IdEntity {
         this.oAuthIds = oAuthIds;
     }
 
-    public Integer getGender() {
+    public Character getGender() {
         return gender;
     }
 
-    public void setGender(Integer gender) {
+    public void setGender(Character gender) {
         this.gender = gender;
     }
 

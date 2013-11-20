@@ -34,7 +34,82 @@ public class WeiboService {
             throw new RuntimeException("获取用户信息发生错误");
         }
         return userInfo;
-    }
+    }/*
+    例子：
+    GET https://api.weibo.com/2/users/show.json?uid=3318605793&access_token=2.00txWacDz7QwTC832c8cafd1NOBqCD
+    响应:
+    {
+	"allow_all_act_msg": false,
+	"allow_all_comment": true,
+	"avatar_hd": "http://tp2.sinaimg.cn/3318605793/180/5667911042/1",
+	"avatar_large": "http://tp2.sinaimg.cn/3318605793/180/5667911042/1",
+	"bi_followers_count": 0,
+	"block_word": 0,
+	"city": "1",
+	"class": 1,
+	"created_at": "Thu Jul 04 21:12:05 +0800 2013",
+	"description": "",
+	"domain": "",
+	"favourites_count": 0,
+	"follow_me": false,
+	"followers_count": 51,
+	"following": false,
+	"friends_count": 62,
+	"gender": "m",
+	"geo_enabled": true,
+	"id": 3318605793,
+	"idstr": "3318605793",
+	"lang": "zh-cn",
+	"location": "海外 美国",
+	"mbrank": 0,
+	"mbtype": 0,
+	"name": "垃手",
+	"online_status": 0,
+	"profile_image_url": "http://tp2.sinaimg.cn/3318605793/50/5667911042/1",
+	"profile_url": "u/3318605793",
+	"province": "400",
+	"ptype": 0,
+	"remark": "",
+	"screen_name": "垃手",
+	"star": 0,
+	"status": {
+		"attitudes_count": 0,
+		"bmiddle_pic": "http://ww2.sinaimg.cn/bmiddle/c5cde7e1jw1e8f9ft7aykj20c807igme.jpg",
+		"comments_count": 0,
+		"created_at": "Sun Sep 08 18:21:15 +0800 2013",
+		"favorited": false,
+		"geo": <null>,
+		"id": 3620322777695001,
+		"idstr": "3620322777695001",
+		"in_reply_to_screen_name": "",
+		"in_reply_to_status_id": "",
+		"in_reply_to_user_id": "",
+		"mid": "3620322777695001",
+		"mlevel": 0,
+		"original_pic": "http://ww2.sinaimg.cn/large/c5cde7e1jw1e8f9ft7aykj20c807igme.jpg",
+		"pic_urls": [
+			{
+				"thumbnail_pic": "http://ww2.sinaimg.cn/thumbnail/c5cde7e1jw1e8f9ft7aykj20c807igme.jpg"
+			}
+		],
+		"reposts_count": 0,
+		"source": "<a href=\"http://app.weibo.com/t/feed/48buUD\" rel=\"nofollow\">晚九朝五</a>",
+		"text": "夜幕降临，黑暗挑逗激情，霓红闪烁，狂欢驱走寂寞，这里是夜幕下的潮人圣殿，人人都是主角，此时此刻，你来主宰夜晚的开始，从晚九HIGH到天亮。晚上九点，让我们一起开始吧...http://t.cn/zYbfCUY",
+		"thumbnail_pic": "http://ww2.sinaimg.cn/thumbnail/c5cde7e1jw1e8f9ft7aykj20c807igme.jpg",
+		"truncated": false,
+		"visible": {
+			"list_id": 0,
+			"type": 0
+		}
+	},
+	"statuses_count": 3,
+	"url": "",
+	"verified": false,
+	"verified_reason": "",
+	"verified_type": -1.0,
+	"weihao": ""
+}
+    */
 
     /**
      * @param token
