@@ -36,12 +36,43 @@ public class NotificationService extends AbstractMongoService {
     @Autowired
     private CommentService commentService;
 
-    public List<Notification> find(String recipientId, PaginationParam paginationParam) {
-        return notificationDao.find(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
+    public static final String FILE_COLLECTION_NAME = "notification";
+
+    public List<Notification> find(String recipientId, Boolean unread, List<String> activityTypes, PaginationParam paginationParam) {
+
+        Query query = new Query();
+        if (recipientId != null) {
+            query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
+        }
+
+        if (unread != null) {
+            query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(unread));
+        }
+
+        if (activityTypes != null && activityTypes.size() > 0) {
+            query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
+        }
+
+        paginationById(query, paginationParam);
+
+        return mongoTemplate.find(query, Notification.class);
     }
 
-    public List<Notification> findUnread(String recipientId, PaginationParam paginationParam) {
-        return notificationDao.findUnread(recipientId, paginationParam.getMaxId(), paginationParam.getSinceId(), paginationParam);
+    public List<Notification> find(String recipientId, List<String> activityTypes, int count) {
+
+        Query query = new Query();
+        if (recipientId != null) {
+            query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
+        }
+
+        if (activityTypes != null && activityTypes.size() > 0) {
+            query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
+        }
+
+        query.limit(count);
+        query.with(PaginationParam.ID_DESC_SORT);
+
+        return mongoTemplate.find(query, Notification.class);
     }
 
     public Notification create(Notification notification) {
@@ -67,18 +98,30 @@ public class NotificationService extends AbstractMongoService {
     /**
      * 将指定用户的所有未读通知标记为已读。
      */
-    public void markAllRead(String userId) {
+    public void markAllRead(String userId, List<String> activityTypes) {
         Query query = new Query();
         query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(userId));
         query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+        query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
 
         mongoTemplate.updateMulti(query, new Update().set(Notification.UNREAD_KEY, false), Notification.class);
     }
 
-    public int countUnreadNotifications(String recipientId) {
+    public int count(String recipientId, Boolean unread, List<String> activityTypes) {
         Query query = new Query();
-        query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
-        query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+
+        if (recipientId != null) {
+            query.addCriteria(new Criteria(Notification.RECIPIENT_ID_KEY).is(recipientId));
+        }
+
+        if (unread != null) {
+            query.addCriteria(new Criteria(Notification.UNREAD_KEY).is(true));
+        }
+
+        if (activityTypes != null && activityTypes.size() > 0) {
+            query.addCriteria(new Criteria(Notification.ACTIVITY_TYPE_KEY).in(activityTypes));
+        }
+
         return ((Long) mongoTemplate.count(query, Notification.class)).intValue();
     }
 

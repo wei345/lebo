@@ -11,13 +11,15 @@
         客户端第一次调用此接口，不需要带token参数，
     <ul>
         <li>如果服务端返回新浪好友，那么客户端可以继续获取下一页数据。</li>
-        <li>如果服务端返回错误状态码<code>${noTokenCode}</code>或<code>${errorTokenCode}</code>(状态码含义见<a href="/docs/api/1/dataStructures#error_code">返回对象数据结构</a>)，客户端需要显示新浪微博登录页，获得token后，带着token再次调用此接口，服务端返回新浪好友，之后客户端可以获取下一页数据。</li>
+        <li>如果服务端返回错误状态码<code>${noTokenCode}</code>或<code>${errorTokenCode}</code>(状态码含义见<a
+                href="/docs/api/1/dataStructures#error_code">返回对象数据结构</a>)，客户端需要显示新浪微博登录页，获得token后，带着token再次调用此接口，服务端返回新浪好友，之后客户端可以获取下一页数据。
+        </li>
     </ul>
     服务端会保存最后一次使用的新浪token。
     </p>
 
     <tags:field name="token" value="" optional="true"/>
-    <tags:fields-page-size />
+    <tags:fields-page-size/>
 </tags:form>
 
 <p>
@@ -27,23 +29,16 @@
               url="http://app.dev.lebooo.com:8080/api/1/friends/weiboFriends.json?token=2.00TgJysBz7QwTC50dd2ad1facNOSYD&size=2">
     [
         {
-            userId: "5212dac30cf20618e8e07b6d",
-            weiboId: "3327539674",
-            screenName: "洛洛家的小九",
-            name: "洛洛家的小九",
-            gender: "f",
-            verified: false,
-            profileImageUrl: "http://tp3.sinaimg.cn/3327539674/50/5660982641/0",
-            description: ""
-        },
-        {
-            weiboId: "3051578312",
-            screenName: "志龙小朋友",
-            name: "志龙小朋友",
+            userId: "5216d0dc1a8829c4ae1bbec3",
+            weiboId: "1722412763",
+            screenName: "涛涛_IT",
+            name: "涛涛_IT",
             gender: "m",
             verified: false,
-            profileImageUrl: "http://tp1.sinaimg.cn/3051578312/50/5650947497/1",
-            description: "一句话介绍一下自己吧，让别人更了解你"
+            profileImageUrl: "http://tp4.sinaimg.cn/1722412763/50/5678249484/1",
+            description: "asdfasdfasdf",
+            following: false,
+            bilateral: false
         }
     ]
 </tags:example>

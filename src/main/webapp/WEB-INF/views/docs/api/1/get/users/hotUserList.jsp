@@ -8,7 +8,7 @@
         true - 返回结果带有按钮设置，false - 返回结果不带按钮设置，默认false。
     </p>
     <tags:field name="btn" optional="true"/>
-    <tags:fields-page-size />
+    <tags:fields-page-size/>
 </tags:form>
 
 <tags:example method="GET" url="http://localhost:8080/api/1/users/hotUserList.json?btn=true">

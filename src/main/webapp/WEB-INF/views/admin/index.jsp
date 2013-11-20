@@ -9,13 +9,14 @@
     <li><a href="${ctx}/admin/settings">基本设置</a></li>
     <li><a href="${ctx}/admin/channels">频道设置</a></li>
     <li><a href="${ctx}/admin/recommendedApps">推荐应用</a></li>
+    <li><a href="${ctx}/admin/ads">广告管理</a></li>
 </ul>
 
-<h2>管理</h2>
+<h2>内容</h2>
 
 <ul>
     <li><a href="${ctx}/admin/user">用户管理</a></li>
-    <li><a href="${ctx}/admin/post/list">帖子管理</a>, <a href="${ctx}/admin/post/refreshHotPosts">刷新热门帖子</a></li>
+    <li><a href="${ctx}/admin/post">帖子管理</a></li>
     <li><a href="${ctx}/admin/comment/list">评论管理</a></li>
 </ul>
 

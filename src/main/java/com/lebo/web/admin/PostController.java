@@ -11,10 +11,12 @@ import com.lebo.web.ControllerSetup;
 import com.lebo.web.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -39,6 +41,13 @@ public class PostController {
     @Autowired
     private CommentService commentService;
 
+    private static int HOT_POST_COUNT = 60;
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String index() {
+        return "admin/post/index";
+    }
+
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public String list(@RequestParam(value = "userId", required = false) String userId,
                        @RequestParam(value = "screenName", required = false) String screenName,
@@ -59,31 +68,10 @@ public class PostController {
 
         Page<Post> page = statusService.findOriginPosts(userId, track, pageRequest);
 
-        List<Post> posts = page.getContent();
-
-        List<Map<String, Object>> postInfos = new ArrayList<Map<String, Object>>(posts.size());
-        for (Post post : posts) {
-            Map<String, Object> postInfo = new HashMap<String, Object>();
-            postInfo.put("id", post.getId());
-            postInfo.put("videoUrl", post.getVideo().getContentUrl());
-            postInfo.put("videoFirstFrameUrl", post.getVideoFirstFrameUrl());
-            postInfo.put("text", post.getText());
-            postInfo.put("favoritesCount", post.getFavoritesCount());
-            postInfo.put("viewCount", post.getViewCount());
-            postInfo.put("rating", post.getRating());
-            postInfo.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
-            postInfo.put("repostCount", statusService.countReposts(post.getId()));
-            postInfo.put("commentCount", commentService.countPostComments(post.getId()));
-            User user = accountService.getUser(post.getUserId());
-            postInfo.put("userId", user.getId());
-            postInfo.put("screenName", user.getScreenName());
-            postInfo.put("profileImageUrl", user.getProfileImageUrl());
-            postInfos.add(postInfo);
-        }
-
-        model.addAttribute("posts", postInfos);
+        model.addAttribute("posts", toModelPosts(page.getContent()));
         model.addAttribute("page", page);
-        model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime)/1000.0);
+        model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime) / 1000.0);
+        model.addAttribute("controllerMethod", "list");
 
         return "admin/post/list";
     }
@@ -104,21 +92,50 @@ public class PostController {
     }
 
     @RequestMapping(value = "refreshHotPosts", method = RequestMethod.POST)
-    @ResponseBody
-    public Object refreshHotPosts() {
+    public Object refreshHotPosts(RedirectAttributes redirectAttributes) {
         long beginTime = System.currentTimeMillis();
 
         statusService.refreshHotPosts();
 
-        Map map = new HashMap(2);
-        map.put("ok", true);
-        map.put("time", System.currentTimeMillis() - beginTime);
+        redirectAttributes.addFlashAttribute("success", "已更新热门帖子，用时 " + (System.currentTimeMillis() - beginTime) + " ms");
 
-        return map;
+        return "redirect:/admin/post/hot";
     }
 
-    @RequestMapping(value = "refreshHotPosts", method = RequestMethod.GET)
-    public Object refreshHotPostsShow() {
-        return "/admin/post/refreshHotPosts";
+    @RequestMapping(value = "hot", method = RequestMethod.GET)
+    public Object hotPosts(Model model) {
+        long beginTime = System.currentTimeMillis();
+
+        Page<Post> page = new PageImpl<Post>(statusService.hotPosts(0, HOT_POST_COUNT));
+
+        model.addAttribute("posts", toModelPosts(page.getContent()));
+        model.addAttribute("page", page);
+        model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime) / 1000.0);
+        model.addAttribute("controllerMethod", "hotPosts");
+
+        return "admin/post/list";
+    }
+
+    private List<Map<String, Object>> toModelPosts(List<Post> posts) {
+        List<Map<String, Object>> postInfos = new ArrayList<Map<String, Object>>(posts.size());
+        for (Post post : posts) {
+            Map<String, Object> postInfo = new HashMap<String, Object>();
+            postInfo.put("id", post.getId());
+            postInfo.put("videoUrl", post.getVideo().getContentUrl());
+            postInfo.put("videoFirstFrameUrl", post.getVideoFirstFrameUrl());
+            postInfo.put("text", post.getText());
+            postInfo.put("favoritesCount", post.getFavoritesCount());
+            postInfo.put("viewCount", post.getViewCount());
+            postInfo.put("rating", post.getRating());
+            postInfo.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
+            postInfo.put("repostCount", statusService.countReposts(post.getId()));
+            postInfo.put("commentCount", commentService.countPostComments(post.getId()));
+            User user = accountService.getUser(post.getUserId());
+            postInfo.put("userId", user.getId());
+            postInfo.put("screenName", user.getScreenName());
+            postInfo.put("profileImageUrl", user.getProfileImageUrl());
+            postInfos.add(postInfo);
+        }
+        return postInfos;
     }
 }

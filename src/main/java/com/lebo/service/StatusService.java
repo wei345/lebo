@@ -373,17 +373,17 @@ public class StatusService extends AbstractMongoService {
     /**
      * 读取热门帖子
      */
-    public List<StatusDto> hotPosts(Integer page, Integer size) {
+    public List<Post> hotPosts(Integer page, Integer size) {
         List<HotPost> hotPosts = mongoTemplate.find(
                 new Query().with(new PageRequest(page, size, new Sort(Sort.Direction.ASC, HotPost.ID_KEY))),
                 HotPost.class);
 
-        List<StatusDto> dtos = new ArrayList<StatusDto>(hotPosts.size());
+        List<Post> posts = new ArrayList<Post>(hotPosts.size());
         for (HotPost hotPost : hotPosts) {
-            StatusDto dto = toStatusDto(getPost(hotPost.getPostId()));
-            dtos.add(dto);
+            posts.add(getPost(hotPost.getPostId()));
         }
-        return dtos;
+
+        return posts;
     }
 
     private Comparator hotPostComparator = new Comparator<Post>() {

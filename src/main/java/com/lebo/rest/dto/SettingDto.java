@@ -8,6 +8,7 @@ package com.lebo.rest.dto;
 public class SettingDto {
     private String officialAccountId;
     private String digestAccountId;
+    private Integer imPollingIntervalSeconds;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -23,5 +24,13 @@ public class SettingDto {
 
     public void setDigestAccountId(String digestAccountId) {
         this.digestAccountId = digestAccountId;
+    }
+
+    public Integer getImPollingIntervalSeconds() {
+        return imPollingIntervalSeconds;
+    }
+
+    public void setImPollingIntervalSeconds(Integer imPollingIntervalSeconds) {
+        this.imPollingIntervalSeconds = imPollingIntervalSeconds;
     }
 }

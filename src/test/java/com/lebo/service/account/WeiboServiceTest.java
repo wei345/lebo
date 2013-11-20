@@ -14,7 +14,7 @@ public class WeiboServiceTest extends SpringContextTestCase {
     private WeiboService weiboService;
 
     @Test
-    public void getUid(){
+    public void getUid() {
         String uid = weiboService.getUid("2.00TgJysBz7QwTC50dd2ad1facNOSYD");
         System.out.println(uid);
     }
@@ -22,7 +22,7 @@ public class WeiboServiceTest extends SpringContextTestCase {
     @Test
     public void getFriends() throws Exception {
         WeiboService.WeiboFriend weiboFriend = weiboService.getFriends("2.00TgJysBz7QwTC50dd2ad1facNOSYD", "1728391885", 10, 0);
-        for(WeiboService.WeiboUser user : weiboFriend.getUsers()){
+        for (WeiboService.WeiboUser user : weiboFriend.getUsers()) {
             System.out.println(user.getScreen_name());
         }
     }

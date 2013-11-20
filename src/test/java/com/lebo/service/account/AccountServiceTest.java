@@ -46,7 +46,7 @@ public class AccountServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void isScreenNameValid(){
+    public void isScreenNameValid() {
         //合法字符
         assertTrue(accountService.isScreenNameValid("中文_-abc0A"));
         //不能少于4个字符
@@ -60,6 +60,10 @@ public class AccountServiceTest extends SpringContextTestCase {
         assertTrue("\uD83D\uDC94".matches(".+"));
         //中文不匹配Emoji
         assertFalse("\uD83D\uDC94".matches("[\u4e00-\u9fa5]+"));
+    }
 
+    @Test
+    public void refreshFastestRisingUsers(){
+        accountService.refreshFastestRisingUsers();
     }
 }

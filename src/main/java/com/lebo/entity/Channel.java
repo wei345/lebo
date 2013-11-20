@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "settings.channels")
-public class Channel extends IdEntity{
+public class Channel extends IdEntity {
     private String name;
     private String title;
     private String description;

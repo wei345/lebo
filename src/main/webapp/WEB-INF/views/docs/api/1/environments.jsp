@@ -64,7 +64,7 @@
             http://<b>app.lebooo.com</b>/play/<code>{帖子ID}</code>
         </td>
         <td>
-           分享到新浪微博、人人网
+            分享到新浪微博、人人网
         </td>
     </tr>
     <tr>

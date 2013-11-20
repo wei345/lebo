@@ -18,18 +18,18 @@ public class VideoUtilsTest {
     }
 
     @Test
-    public void convertVideo(){
+    public void convertVideo() {
         VideoUtils.convertVideo("http://file.lebooo.com/post/2013-10-08/5253ae270cf21c0e09f49bd6-video-656865.mp4", "target/convert.mp4");
     }
 
     @Test
-    public void printVideoInfo(){
+    public void printVideoInfo() {
         printVideoInfo("/Users/liuwei/Downloads/5253c70d0cf2afcb04d5d47b-video-621825.mp4", "android不可播放");
         printVideoInfo("/Users/liuwei/Downloads/52542e660cf29782abefb958-video-973351.mp4", "android可播放");
         printVideoInfo("target/convert.mp4", "android可播放");
     }
 
-    private void printVideoInfo(String videoUrl, String message){
+    private void printVideoInfo(String videoUrl, String message) {
         System.out.printf("\n---- %s ----\n", message);
         System.out.printf("File    : %s\n", videoUrl);
         IMediaReader reader = ToolFactory.makeReader(videoUrl);

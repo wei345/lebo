@@ -1,6 +1,7 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Notification;
+import com.lebo.rest.dto.NotificationGroupDto;
 import com.lebo.service.NotificationService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,7 +25,6 @@ import java.util.List;
  * Time: PM6:30
  */
 @Controller
-@RequestMapping("/api/1/notifications")
 public class NotificationRestController {
 
     @Autowired
@@ -30,18 +32,29 @@ public class NotificationRestController {
     @Autowired
     private AccountService accountService;
 
-    @RequestMapping(value = "list", method = RequestMethod.GET)
+    public static final String PREFIX_API_1 = "/api/1/notifications/";
+    public static final String PREFIX_API_1_1 = "/api/1.1/notifications/";
+
+    @RequestMapping(value = PREFIX_API_1 + "list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(@Valid PaginationParam param, @RequestParam(value = "unread", required = false) Boolean unread) {
+    public Object list(@Valid PaginationParam param,
+                       @RequestParam(value = "unread", required = false) Boolean unread) {
         List<Notification> notifications;
-        //在全部通知中查找，不区分是否未读
-        if (unread == null) {
-            notifications = notificationService.find(accountService.getCurrentUserId(), param);
-        }
-        //只查找未读的通知
-        else {
-            notifications = notificationService.findUnread(accountService.getCurrentUserId(), param);
-        }
+
+        List<String> activityTypes = Arrays.asList(
+                Notification.ACTIVITY_TYPE_REPOST,
+                Notification.ACTIVITY_TYPE_REPLY_POST,
+                Notification.ACTIVITY_TYPE_POST_AT,
+
+                Notification.ACTIVITY_TYPE_REPLY_COMMENT,
+                Notification.ACTIVITY_TYPE_COMMENT_AT,
+
+                Notification.ACTIVITY_TYPE_FAVORITE,
+                Notification.ACTIVITY_TYPE_FOLLOW
+        );
+
+        notifications = notificationService.find(accountService.getCurrentUserId(), unread, activityTypes, param);
+
         notificationService.markRead(notifications);
         return notificationService.toNotificationDtos(notifications);
     }
@@ -49,9 +62,92 @@ public class NotificationRestController {
     /**
      * 标记所有未读通知为已读。
      */
-    @RequestMapping(value = "markAllRead", method = RequestMethod.POST)
+    @RequestMapping(value = PREFIX_API_1 + "markAllRead", method = RequestMethod.POST)
     @ResponseBody
     public void markAllRead() {
-        notificationService.markAllRead(accountService.getCurrentUserId());
+        notificationService.markAllRead(accountService.getCurrentUserId(), Arrays.asList(
+                Notification.ACTIVITY_TYPE_REPOST,
+                Notification.ACTIVITY_TYPE_REPLY_POST,
+                Notification.ACTIVITY_TYPE_POST_AT,
+
+                Notification.ACTIVITY_TYPE_REPLY_COMMENT,
+                Notification.ACTIVITY_TYPE_COMMENT_AT,
+
+                Notification.ACTIVITY_TYPE_FAVORITE,
+                Notification.ACTIVITY_TYPE_FOLLOW
+        ));
+    }
+
+    //---- 1.1 ----//
+
+    @RequestMapping(value = PREFIX_API_1_1 + "list.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object list_v1_1(@Valid PaginationParam param,
+                            @RequestParam(value = "unread", required = false) Boolean unread,
+                            @RequestParam(value = "types", required = false) String types) {
+
+        List<String> activityTypes = null;
+        if (types != null) {
+            activityTypes = Arrays.asList(types.split("\\s*,\\s*"));
+        }
+
+        List<Notification> notifications;
+        notifications = notificationService.find(accountService.getCurrentUserId(), unread, activityTypes, param);
+
+        notificationService.markRead(notifications);
+
+        return notificationService.toNotificationDtos(notifications);
+    }
+
+    @RequestMapping(value = PREFIX_API_1_1 + "groups.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object groups() {
+        List<NotificationGroupDto> dtos = new ArrayList<NotificationGroupDto>(2);
+
+        //
+        NotificationGroupDto leboTeamGroup = new NotificationGroupDto();
+
+        leboTeamGroup.setActivityTypes(Arrays.asList(Notification.ACTIVITY_TYPE_LEBO_TEAM));
+
+        leboTeamGroup.setGroupName("通知");
+
+        leboTeamGroup.setUnreadCount(notificationService.count(
+                accountService.getCurrentUserId(), true, leboTeamGroup.getActivityTypes()));
+
+        leboTeamGroup.setRecentNotifications(
+                notificationService.toNotificationDtos(
+                        notificationService.find(
+                                accountService.getCurrentUserId(), leboTeamGroup.getActivityTypes(), 1)));
+
+        dtos.add(leboTeamGroup);
+
+        //
+        NotificationGroupDto otherGroup = new NotificationGroupDto();
+
+        otherGroup.setActivityTypes(Arrays.asList(
+                Notification.ACTIVITY_TYPE_REPOST,
+                Notification.ACTIVITY_TYPE_REPLY_POST,
+                Notification.ACTIVITY_TYPE_POST_AT,
+
+                Notification.ACTIVITY_TYPE_REPLY_COMMENT,
+                Notification.ACTIVITY_TYPE_COMMENT_AT,
+
+                Notification.ACTIVITY_TYPE_FAVORITE,
+                Notification.ACTIVITY_TYPE_FOLLOW
+        ));
+
+        otherGroup.setGroupName("互动");
+
+        otherGroup.setUnreadCount(notificationService.count(
+                accountService.getCurrentUserId(), true, otherGroup.getActivityTypes()));
+
+        otherGroup.setRecentNotifications(
+                notificationService.toNotificationDtos(
+                        notificationService.find(
+                                accountService.getCurrentUserId(), otherGroup.getActivityTypes(), 1)));
+
+        dtos.add(otherGroup);
+
+        return dtos;
     }
 }

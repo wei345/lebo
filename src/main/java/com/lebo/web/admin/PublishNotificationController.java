@@ -1,16 +1,18 @@
 package com.lebo.web.admin;
 
+import com.lebo.entity.FileInfo;
 import com.lebo.entity.Task;
 import com.lebo.entity.User;
 import com.lebo.service.TaskService;
 import com.lebo.service.account.AccountService;
+import com.lebo.web.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -41,7 +43,11 @@ public class PublishNotificationController {
         for (Task task : tasks) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("text", task.getNotificationText());
+            map.put("imageUrl", task.getNotificationImageUrl());
             map.put("count", task.getNotificationSentCount());
+            map.put("apnsCount", task.getNotificationApnsCount());
+            map.put("senderUrl", task.getNotificationSenderImageUrl());
+            map.put("senderName", task.getNotificationSenderName());
             //TODO 优化性能，只查screenName
             User user = accountService.getUser(task.getUserId());
             map.put("screenName", user.getScreenName());
@@ -59,16 +65,23 @@ public class PublishNotificationController {
 
     @RequestMapping(value = "apns-all-user", method = RequestMethod.POST)
     public String apnsAllUser(@RequestParam("text") String text,
+                              @RequestParam(value = "image", required = false) MultipartFile image,
+                              @RequestParam("senderName") String senderName,
                               RedirectAttributes redirectAttributes) {
         try {
-            Task task = taskService.publishApnsAllUser(text);
+            FileInfo imageFileInfo = null;
+            if (image != null) {
+                imageFileInfo = ControllerUtils.getFileInfo(image);
+            }
+
+            Task task = taskService.publishApnsAllUser(text, imageFileInfo, senderName);
 
             String message = new StringBuilder("成功. ")
-                    .append(task.getNotificationSentCount())
+                    .append(task.getNotificationApnsCount())
                     .append(" 条通知已加入推送队列并开始推送, 预计推送完成需要 ")
-                    .append((task.getNotificationSentCount() <= taskService.getApnsAllUserQueueTotalThreadCount()) ?
+                    .append((task.getNotificationApnsCount() <= taskService.getApnsAllUserQueueTotalThreadCount()) ?
                             taskService.getAvgPushTimeSeconds() :
-                            (task.getNotificationSentCount() * taskService.getAvgPushTimeSeconds()) / taskService.getApnsAllUserQueueTotalThreadCount())
+                            (task.getNotificationApnsCount() * taskService.getAvgPushTimeSeconds()) / taskService.getApnsAllUserQueueTotalThreadCount())
                     .append(" 秒")
                     .toString();
 

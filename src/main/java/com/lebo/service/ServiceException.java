@@ -2,6 +2,7 @@ package com.lebo.service;
 
 import com.lebo.rest.dto.ErrorDto;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Service层公用的Exception.

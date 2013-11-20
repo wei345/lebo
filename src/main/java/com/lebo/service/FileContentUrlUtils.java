@@ -19,6 +19,11 @@ public class FileContentUrlUtils implements ApplicationContextAware {
     }
 
     public static String getContentUrl(String id, String suffix) {
+
+        if (id == null) {
+            return null;
+        }
+
         if (fileStorageService == null) {
             fileStorageService = applicationContext.getBean(FileStorageService.class);
         }

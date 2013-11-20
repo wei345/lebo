@@ -2,13 +2,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		http://www.springframework.org/schema/data/mongo
         http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
         http://www.springframework.org/schema/aop
-	    http://www.springframework.org/schema/aop/spring-aop-3.1.xsd"
+	    http://www.springframework.org/schema/aop/spring-aop-3.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
        default-lazy-init="true">
 
     <description>Spring公共配置</description>
@@ -52,7 +52,7 @@
         <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
         <property name="typeAliasesPackage" value="com.lebo.entity" />
         <!-- 显式指定Mapper文件位置 -->
-        <!--<property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />-->
+        <property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />
     </bean>
     <!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
@@ -76,6 +76,14 @@
         <property name="username" value="${jdbc.username}" />
         <property name="password" value="${jdbc.password}" />
     </bean>
+
+    <!-- Jdbc单数据源事务 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- 使用annotation定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false" />
 
     <!-- Redis -->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
@@ -103,11 +111,11 @@
     <bean class="com.lebo.service.FileContentUrlUtils" lazy-init="false"/>
 
     <!-- aop -->
-    <aop:aspectj-autoproxy />
+    <aop:aspectj-autoproxy/>
 
     <!-- expose specific properties to application  -->
     <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="singleton" value="true" />
+        <property name="singleton" value="true"/>
         <property name="properties">
             <props>
                 <prop key="app.baseurl">${app.baseurl}</prop>

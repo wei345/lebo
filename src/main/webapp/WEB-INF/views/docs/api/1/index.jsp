@@ -65,6 +65,26 @@
     </tr>
 </table>
 
+<strong>上传</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/upload/newTmpUploadUrl" text="GET upload/newTmpUploadUrl"/>
+        </td>
+        <td>
+            返回有失效期的临时上传地址。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/upload/newImUploadUrls" text="GET upload/newImUploadUrls"/>
+        </td>
+        <td>
+            返回即时通讯文件上传地址。
+        </td>
+    </tr>
+</table>
+
 <strong>时间线</strong>
 <table class="table table-hover">
     <tr>
@@ -137,6 +157,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/statuses/hot" text="GET statuses/hot v1.1"/>
+        </td>
+        <td>
+            返回热门视频列表 + 广告。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/get/statuses/ranking" text="GET statuses/ranking"/>
         </td>
         <td>
@@ -161,6 +189,14 @@
         </td>
         <td>
             发布视频，返回发布的视频。
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <tags:link url="${ctx}/docs/api/1.1/post/statuses/update" text="POST statuses/update v1.1"/>
+        </td>
+        <td>
+            发布视频，返回发布的视频。客户端直接上传视频到阿里云云存储，发布时传给服务端url。
         </td>
     </tr>
     <tr>
@@ -226,6 +262,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/comments/createWithMedia" text="POST comments/createWithMedia v1.1"/>
+        </td>
+        <td>
+            发视频评论、语音评论，返回发布的评论。客户端直接上传视频到阿里云云存储。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/comments/destroy" text="POST comments/destroy"/>
         </td>
         <td>
@@ -270,6 +314,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/account/updateProfileWithMedia" text="POST account/updateProfile v1.1"/>
+        </td>
+        <td>
+            更新当前登录用户的Profile，返回更新后的用户信息。客户端直接上传文件到阿里云云服务器。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/account/checkScreenName" text="POST account/checkScreenName"/>
         </td>
         <td>
@@ -298,6 +350,22 @@
         </td>
         <td>
             返回红人榜按钮设置 & 推荐用户。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/users/fastestRising" text="GET users/fastestRising v1.1"/>
+        </td>
+        <td>
+            返回上升最快用户列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/users/top50" text="GET users/top50 v1.1"/>
+        </td>
+        <td>
+            返回Top50用户列表。
         </td>
     </tr>
 </table>
@@ -392,6 +460,14 @@
             返回符合条件的hashtag列表，可指定hashtag中出现的关键词。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/get/hashtags/suggestions" text="GET hashtags/suggestions"/>
+        </td>
+        <td>
+            返回系统推荐的标签列表。
+        </td>
+    </tr>
 </table>
 
 <strong>拉黑</strong>
@@ -434,14 +510,31 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/notifications/list" text="GET notifications/list v1.1"/>
+        </td>
+        <td>
+            返回当前登录用户的通知(消息)列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/notifications/markAllRead" text="POST notifications/markAllRead"/>
         </td>
         <td>
             将当前登录用户的所有未读通知标记为已读。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/notifications/groups" text="GET notifications/groups v1.1"/>
+        </td>
+        <td>
+            返回通知分组、未读数、最新通知。
+        </td>
+    </tr>
 </table>
 
+<%--未用到
 <strong>私信</strong>
 <table class="table table-hover">
     <tr>
@@ -452,16 +545,92 @@
             发送私信，返回发送的私信。
         </td>
     </tr>
-</table>
+</table>--%>
 
-<strong>版本</strong>
+<strong>即时通讯</strong>
 <table class="table table-hover">
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1/post/checkVersion" text="POST checkVersion"/>
+            <tags:link url="${ctx}/docs/api/1.1/get/ims/profiles" text="GET ims/profiles"/>
         </td>
         <td>
-            返回客户端最新版本信息，以及是否需要强制升级。
+            返回指定用户的profile。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/ims/new" text="POST ims/new"/>
+        </td>
+        <td>
+            保存新消息。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/ims/recent" text="GET ims/recent"/>
+        </td>
+        <td>
+            返回最近消息列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/ims/unread" text="GET ims/unread"/>
+        </td>
+        <td>
+            返回当前登录用户的未读消息。
+        </td>
+    </tr>
+</table>
+
+<strong>虚拟货币</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goods" text="GET vg/goods"/>
+        </td>
+        <td>
+            返回虚拟物品列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goldProducts" text="GET vg/goldProducts"/>
+        </td>
+        <td>
+            返回金币商品列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/alipaySigedParams" text="GET vg/alipaySigedParams"/>
+        </td>
+        <td>
+            返回用于支付宝请求RSA签名的参数字符串。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/goldOrders/detail" text="GET vg/goldOrders/detail"/>
+        </td>
+        <td>
+            返回订单详细。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/userVg" text="GET vg/userVg"/>
+        </td>
+        <td>
+            返回用户金币数和虚拟物品。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/vg/giveGoods" text="POST vg/giveGoods"/>
+        </td>
+        <td>
+            赠送物品。
         </td>
     </tr>
 </table>
@@ -474,6 +643,18 @@
         </td>
         <td>
             向服务器报告不能播放的视频，服务器会做转码处理。
+        </td>
+    </tr>
+</table>
+
+<strong>版本</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/checkVersion" text="POST checkVersion"/>
+        </td>
+        <td>
+            返回客户端最新版本信息，以及是否需要强制升级。
         </td>
     </tr>
 </table>

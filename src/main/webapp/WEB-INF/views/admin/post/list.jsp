@@ -1,3 +1,8 @@
+<%
+    /**
+     帖子管理 和 热门帖子 view
+     */
+%>
 <%@ page import="com.lebo.entity.Post" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -78,49 +83,58 @@
             padding-left: 30px;
         }
 
-        .result-status{
+        .result-status {
             padding: 0 0 6px 0;
         }
     </style>
 </head>
 <body>
 
-<form id="searchForm" class="form-search" method="GET" action="">
-    <input type="search" class="input-medium search-query" id="screenName" name="screenName" value="${param.screenName}"
-           placeholder="用户名字">
+<c:if test="${controllerMethod == 'list'}">
+    <form id="searchForm" class="form-search" method="GET" action="">
+        <input type="search" class="input-medium search-query" id="screenName" name="screenName"
+               value="${param.screenName}"
+               placeholder="用户名字">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
           onclick="$('input[name=screenName]').val('')"></span>
-    或
-    <input type="search" class="input-medium search-query" id="userId" name="userId" value="${param.userId}"
-           placeholder="用户ID">
+        或
+        <input type="search" class="input-medium search-query" id="userId" name="userId" value="${param.userId}"
+               placeholder="用户ID">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
           onclick="$('input[name=userId]').val('')"></span>
 
-    <input type="search" class="input-medium search-query" id="track" name="track" value="${param.track}"
-           placeholder="关键词">
+        <input type="search" class="input-medium search-query" id="track" name="track" value="${param.track}"
+               placeholder="关键词">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
           onclick="$('input[name=track]').val('')"></span>
 
-    <div style="padding-top: 15px;">
+        <div style="padding-top: 15px;">
 
-        <select name="orderBy" class="input-small">
-            <option value="<%=Post.ID_KEY%>" ${param.orderBy == "_id" ? "selected" : ""}>发布时间</option>
-            <option value="favoritesCount" ${param.orderBy == "favoritesCount" ? "selected" : ""}>红心数</option>
-            <option value="viewCount" ${param.orderBy == "viewCount" ? "selected" : ""}>播放数</option>
-        </select>
+            <select name="orderBy" class="input-small">
+                <option value="<%=Post.ID_KEY%>" ${param.orderBy == "_id" ? "selected" : ""}>发布时间</option>
+                <option value="favoritesCount" ${param.orderBy == "favoritesCount" ? "selected" : ""}>红心数</option>
+                <option value="viewCount" ${param.orderBy == "viewCount" ? "selected" : ""}>播放数</option>
+            </select>
 
-        <select name="order" class="input-mini">
-            <option value="DESC" ${param.order == "DESC" ? "selected" : ""}>降序</option>
-            <option value="ASC" ${param.order == "ASC" ? "selected" : ""}>升序</option>
-        </select>
+            <select name="order" class="input-mini">
+                <option value="DESC" ${param.order == "DESC" ? "selected" : ""}>降序</option>
+                <option value="ASC" ${param.order == "ASC" ? "selected" : ""}>升序</option>
+            </select>
 
-        <input type="text" class="input-mini" name="size" value="${page.size}">条/页
+            <input type="text" class="input-mini" name="size" value="${page.size}">条/页
 
-        <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
-    </div>
-</form>
+            <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
+        </div>
+    </form>
+</c:if>
 
-<div class="muted result-status">第 ${page.size * page.number + 1} - ${page.size * page.number + page.numberOfElements} 条，共 ${page.totalElements} 条（用时 ${spentSeconds} 秒）</div>
+<c:if test="${controllerMethod == 'hotPosts'}">
+    <h2>热门帖子</h2>
+</c:if>
+
+<div class="muted result-status">第 ${page.size * page.number + 1} - ${page.size * page.number + page.numberOfElements}
+    条，共 ${page.totalElements} 条（用时 ${spentSeconds} 秒）
+</div>
 
 <table id="contentTable" class="table table-hover">
     <tr>
@@ -190,7 +204,9 @@
     </c:forEach>
 </table>
 
-<tags:pagination-normal page="${page}" paginationSize="5"/>
+<c:if test="${controllerMethod == 'list'}">
+    <tags:pagination-normal page="${page}" paginationSize="5"/>
+</c:if>
 
 <script>
     $(function () {
@@ -290,6 +306,22 @@
         });
     }
 </script>
+
+<c:if test="${controllerMethod == 'hotPosts'}">
+    <h2>更新热门帖子</h2>
+    <ul>
+        <li>
+            系统会定时更新热门帖子，通常情况下，你不需要执行此操作。
+        </li>
+        <li>
+            如果你修改了帖子评分，想立刻看到效果，可以执行此操作。
+        </li>
+    </ul>
+
+    <form action="${ctx}/admin/post/refreshHotPosts" method="POST">
+        <input type="submit" value="立即更新热门帖子" class="btn"/>
+    </form>
+</c:if>
 
 </body>
 </html>

@@ -3,8 +3,6 @@ package com.lebo.entity;
 import com.lebo.service.FileContentUrlUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * 应用选项。
  *
@@ -14,12 +12,20 @@ import java.util.List;
  */
 @Document(collection = "settings")
 public class Setting extends IdEntity {
+    public static final int MAX_VIDEO_LENGTH_BYTES = 1024 * 1024 * 5; //5M
+    public static final int MAX_AUDIO_LENGTH_BYTES = 1024 * 1024; //1M
+    public static final int MAX_IMAGE_LENGTH_BYTES = 1024 * 1024; //1M
+    public static final int MAX_USER_PROFILE_IMAGE_LENGTH_BYTES = 1024 * 1024 * 5; //5M
+
     private String officialAccountId;
     private String editorAccountId;//编辑id，编辑发的视频将显示在小编制作频道
     private String digestAccountId; //该账号专门用来指定精品视频，不允许被关注，该账号转发的视频会出现在精华页
+    private String logoKey;
 
     private Integer digestDays = 2;
     private Integer hotDays = 2;
+    private Integer fastestRisingMinutes = 60;
+    private Integer top50Days = 7;
 
     private String appStoreLeboUrl = "https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8";
     private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
@@ -38,6 +44,10 @@ public class Setting extends IdEntity {
     private String hotuser_button3_backgroundColor = "#30B5F0";
     private String hotuser_button3_imageKey = "images/hotuser/btn3.png";
     private String hotuser_button3_text = "导演排行";
+
+    private boolean adsHotExpanded = true;
+
+    private Integer imPollingIntervalSeconds = 180;
 
     public String getOfficialAccountId() {
         return officialAccountId;
@@ -177,5 +187,49 @@ public class Setting extends IdEntity {
 
     public void setDigestAccountId(String digestAccountId) {
         this.digestAccountId = digestAccountId;
+    }
+
+    public Integer getFastestRisingMinutes() {
+        return fastestRisingMinutes;
+    }
+
+    public void setFastestRisingMinutes(Integer fastestRisingMinutes) {
+        this.fastestRisingMinutes = fastestRisingMinutes;
+    }
+
+    public Integer getTop50Days() {
+        return top50Days;
+    }
+
+    public void setTop50Days(Integer top50Days) {
+        this.top50Days = top50Days;
+    }
+
+    public String getLogoKey() {
+        return logoKey;
+    }
+
+    public void setLogoKey(String logoKey) {
+        this.logoKey = logoKey;
+    }
+
+    public String getLogoUrl(){
+        return FileContentUrlUtils.getContentUrl(logoKey);
+    }
+
+    public boolean isAdsHotExpanded() {
+        return adsHotExpanded;
+    }
+
+    public void setAdsHotExpanded(boolean adsHotExpanded) {
+        this.adsHotExpanded = adsHotExpanded;
+    }
+
+    public Integer getImPollingIntervalSeconds() {
+        return imPollingIntervalSeconds;
+    }
+
+    public void setImPollingIntervalSeconds(Integer imPollingIntervalSeconds) {
+        this.imPollingIntervalSeconds = imPollingIntervalSeconds;
     }
 }

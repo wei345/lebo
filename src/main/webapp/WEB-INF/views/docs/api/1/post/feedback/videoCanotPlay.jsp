@@ -11,6 +11,7 @@
         如果客户端遇到不能播放的视频，则调用此接口告知服务器，服务器会做转码处理，转码后视频信息中会增加<code>videoConverted</code>字段，
         详见<a href="${ctx}/docs/api/1/dataStructures">返回对象数据结构</a>。
     </p>
+
     <p>
         <code>${post}</code> 或 <code>${comment}</code>
     </p>
@@ -23,7 +24,8 @@
     <tags:field name="client"/>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/1/feedback/videoCanotPlay.json?objectType=post&objectId=5255473a1a887a7601ba082f&videoUrl=&client=">
+<tags:example method="POST"
+              url="http://localhost:8080/api/1/feedback/videoCanotPlay.json?objectType=post&objectId=5255473a1a887a7601ba082f&videoUrl=&client=">
     {
         ok: true
     }

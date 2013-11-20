@@ -110,4 +110,21 @@ public class HashtagService extends AbstractMongoService {
     public Hashtag findHashtagByName(String name) {
         return hashtagDao.findByName(name);
     }
+
+    /**
+     * @return 返回系统推荐的Hashtag列表
+     */
+    public List<Channel> getSuggestionHashtags() {
+        List<Channel> channels = settingService.getEnabledChannels();
+        List<Channel> suggestions = new ArrayList<Channel>(channels.size());
+
+        for (Channel channel : channels) {
+            if ("最新视频".equals(channel.getName()) || "新人报到".equals(channel.getName())) {
+                continue;
+            }
+            suggestions.add(channel);
+        }
+
+        return suggestions;
+    }
 }

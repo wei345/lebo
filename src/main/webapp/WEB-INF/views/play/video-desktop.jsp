@@ -11,7 +11,8 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'/>
     <meta name='description' content='乐播-6秒视频'/>
     <%-- 人人网分享 begin --%>
-    <meta property="og:videosrc" content="http://www.lebooo.com/movie/player.swf?vcastr_file=${post.video.contentUrl}&IsAutoPlay=1&IsContinue=1&IsShowBar=0"/>
+    <meta property="og:videosrc"
+          content="http://www.lebooo.com/movie/player.swf?vcastr_file=${post.video.contentUrl}&IsAutoPlay=1&IsContinue=1&IsShowBar=0"/>
     <meta property="og:type" content="video"/>
     <meta property="og:title" content="乐播-6秒视频"/>
     <meta property="og:url" content="${baseurl}/play/video/${post.id}"/>
@@ -28,91 +29,91 @@
     <%--<link rel='shortcut icon' href='/favicon.ico'/>--%>
     <%--<link rel='apple-touch-icon' href='/apple-touch-icon.png'/>--%>
     <style type='text/css'>
-    body {
-        background-color: #19212d;
-    }
+        body {
+            background-color: #19212d;
+        }
 
-    img {
-        border: none
-    }
+        img {
+            border: none
+        }
 
-    #wrap {
-        margin: auto
-    }
+        #wrap {
+            margin: auto
+        }
 
-    #content {
-        box-shadow: 0px 0px 5px 5px #080808;
-        width: 780px;
-        height: 480px;
-        margin: 100px auto;
-    }
+        #content {
+            box-shadow: 0px 0px 5px 5px #080808;
+            width: 780px;
+            height: 480px;
+            margin: 100px auto;
+        }
 
-    .left_part {
-        width: 500px;
-        height: 500px;
-        float: left;
-    }
+        .left_part {
+            width: 500px;
+            height: 500px;
+            float: left;
+        }
 
-    #right_part {
-        background-color: #EAD6D7;
-        width: 280px;
-        height: 500px;
-        float: left;
-        text-align: center;
-        background-color: #f4f4f4;
-    }
+        #right_part {
+            background-color: #EAD6D7;
+            width: 280px;
+            height: 500px;
+            float: left;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
 
-    #right_top_part {
-        padding-top: 30px;
-        background-color: #FFFFFF;
-    }
+        #right_top_part {
+            padding-top: 30px;
+            background-color: #FFFFFF;
+        }
 
-    #user_photo {
-        margin-bottom: 5px;
-    }
+        #user_photo {
+            margin-bottom: 5px;
+        }
 
-    #user_name {
-        margin-bottom: 10px;
-        font: 14px bold;
-    }
+        #user_name {
+            margin-bottom: 10px;
+            font: 14px bold;
+        }
 
-    #video_instruction {
-        font-size: 12px;
-        color: #90908F;
-        margin-bottom: 24px;
-        padding: 0 20px;
-    }
+        #video_instruction {
+            font-size: 12px;
+            color: #90908F;
+            margin-bottom: 24px;
+            padding: 0 20px;
+        }
 
-    #video_instruction .channel {
-        color: #000000;
-        padding-right: 5px;
-    }
+        #video_instruction .channel {
+            color: #000000;
+            padding-right: 5px;
+        }
 
-    #hr_white {
-        border-top: 1px solid #adadad;
-        border-bottom: 1px solid white
-    }
+        #hr_white {
+            border-top: 1px solid #adadad;
+            border-bottom: 1px solid white
+        }
 
-    #lebo_insturction {
-        margin-bottom: 10px;
-        margin-top: 50px;
-        font-size: 12px;
-        color: #90908F;
-    }
+        #lebo_insturction {
+            margin-bottom: 10px;
+            margin-top: 50px;
+            font-size: 12px;
+            color: #90908F;
+        }
 
-    #lebo_insturction .title {
-        font-size: 18px;
-        color: #404040;
-    }
+        #lebo_insturction .title {
+            font-size: 18px;
+            color: #404040;
+        }
 
-    #link_button {
-        margin-top: 35px;
-    }
+        #link_button {
+            margin-top: 35px;
+        }
 
-    #link_button a + a {
-        margin-top: 10px;
-        display: block;
-    }
+        #link_button a + a {
+            margin-top: 10px;
+            display: block;
+        }
     </style>
 </head>
 
@@ -123,7 +124,9 @@
             <div id='flashPlayer' class='left_part'>
 
                 <img style='display:none' src='${post.videoFirstFrameUrl}'/>
-                <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" height="500" width="500">
+                <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+                        codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" height="500"
+                        width="500">
                     <param name="movie"
                            value="http://www.lebooo.com/movie/player.swf?vcastr_file=${post.video.contentUrl}&IsAutoPlay=1&IsContinue=1&IsShowBar=0">
                     <param name="quality" value="high">
@@ -146,7 +149,8 @@
                 </div>
                 <div id='lebo_insturction'><span class='title'>乐播－6秒视频</span><br/><br/>视频版微博，零距离接触明星和女神</div>
                 <div id='link_button'><a href='${appStoreLeboUrl}'
-                                         target='_blank' onclick='this.blur()'><img src='${image_dl_iphone_app_url}'/></a><a
+                                         target='_blank' onclick='this.blur()'><img
+                        src='${image_dl_iphone_app_url}'/></a><a
                         href='${leboAppAndroidDownloadUrl}'><img src='${image_dl_android_app_url}'/></a>
                 </div>
             </div>
