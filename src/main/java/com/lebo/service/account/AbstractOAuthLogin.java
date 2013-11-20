@@ -85,6 +85,19 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
         }
     }
 
+    protected Character getGender(String gender){
+
+        if("女".equals(gender) || "FEMALE".equalsIgnoreCase(gender) || "f".equalsIgnoreCase(gender)){
+            return User.GENDER_FEMALE;
+        }
+
+        if("男".equals(gender) || "MALE".equalsIgnoreCase(gender) || "m".equalsIgnoreCase(gender)){
+            return User.GENDER_MALE;
+        }
+
+        return null;
+    }
+
     /**
      * 根据OAuth Token获取用户信息。
      *
