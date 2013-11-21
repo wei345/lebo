@@ -24,8 +24,10 @@ public class Setting extends IdEntity {
 
     private Integer digestDays = 2;
     private Integer hotDays = 2;
+    private Integer maxHotPostCountPerUser = 1; //一个用户最多上榜“热门”几个帖子
     private Integer fastestRisingMinutes = 60;
     private Integer top50Days = 7;
+    private Integer rankingPostsDays = 30;
 
     private String appStoreLeboUrl = "https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8";
     private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
@@ -231,5 +233,21 @@ public class Setting extends IdEntity {
 
     public void setImPollingIntervalSeconds(Integer imPollingIntervalSeconds) {
         this.imPollingIntervalSeconds = imPollingIntervalSeconds;
+    }
+
+    public Integer getRankingPostsDays() {
+        return rankingPostsDays;
+    }
+
+    public void setRankingPostsDays(Integer rankingPostsDays) {
+        this.rankingPostsDays = rankingPostsDays;
+    }
+
+    public Integer getMaxHotPostCountPerUser() {
+        return maxHotPostCountPerUser;
+    }
+
+    public void setMaxHotPostCountPerUser(Integer maxHotPostCountPerUser) {
+        this.maxHotPostCountPerUser = maxHotPostCountPerUser;
     }
 }
