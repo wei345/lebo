@@ -120,6 +120,7 @@
                 <option value="<%=Post.ID_KEY%>" ${param.orderBy == "_id" ? "selected" : ""}>发布时间</option>
                 <option value="favoritesCount" ${param.orderBy == "favoritesCount" ? "selected" : ""}>红心数</option>
                 <option value="viewCount" ${param.orderBy == "viewCount" ? "selected" : ""}>播放数</option>
+                <option value="rating" ${param.orderBy == "rating" ? "selected" : ""}>评分</option>
             </select>
 
             <select name="order" class="input-mini">
@@ -193,9 +194,9 @@
 
             </td>
 
-            <td>
+            <td title="评分">
                 <div class="rating-detail">
-                    <span class="rating">${item.rating == null ? 0 : item.rating}</span>
+                    <span class="rating">${item.rating == null ? '<i>无</i>' : item.rating}</span>
                         <span class="icon-pencil" style="display: none;"
                               onclick="showRateInputForm(event, '${item.id}')"></span>
                 </div>
