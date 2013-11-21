@@ -5,8 +5,7 @@ import com.lebo.entity.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author: Wei Liu
@@ -49,14 +48,14 @@ public class AccountServiceTest extends SpringContextTestCase {
     public void isScreenNameValid() {
         //合法字符
         assertTrue(accountService.isScreenNameValid("中文_-abc0A"));
-        //不能少于4个字符
-        assertFalse(accountService.isScreenNameValid("中文_"));
+        //不能少于2个字符
+        assertFalse(accountService.isScreenNameValid("中"));
         //不能多于24个字符
         assertFalse(accountService.isScreenNameValid("0123456789012345678901234"));
         //不能带有Emoji
         assertFalse(accountService.isScreenNameValid("中文_-abc0A\uD83D\uDC94"));
 
-        //.能匹配Emoji
+        //正则表达式.能匹配Emoji
         assertTrue("\uD83D\uDC94".matches(".+"));
         //中文不匹配Emoji
         assertFalse("\uD83D\uDC94".matches("[\u4e00-\u9fa5]+"));
@@ -65,5 +64,12 @@ public class AccountServiceTest extends SpringContextTestCase {
     @Test
     public void refreshFastestRisingUsers(){
         accountService.refreshFastestRisingUsers();
+    }
+
+    @Test
+    public void generateScreenName(){
+        assertNotEquals("admin", accountService.generateScreenName("admin"));
+        assertEquals("myNameName", accountService.generateScreenName("myNameName"));
+        assertEquals("myNameName", accountService.generateScreenName("myName Name "));
     }
 }

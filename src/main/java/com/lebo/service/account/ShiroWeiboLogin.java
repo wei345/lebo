@@ -48,7 +48,7 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
         // 新用户
         if (user == null) {
             user = new User();
-            user.setScreenName(newScreenName((String) userInfo.get("screen_name")));
+            user.setScreenName(accountService.generateScreenName((String) userInfo.get("screen_name")));
             user.setName((String) userInfo.get("name"));
             user.setGender(getGender((String) userInfo.get("gender")));
             user.setProfileImageNormal((String) userInfo.get("profile_image_url"));//50x50
