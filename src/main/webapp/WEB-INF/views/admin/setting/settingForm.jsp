@@ -83,6 +83,18 @@
         <div class="controls">
             最近<input type="text" id="hotDays" name="hotDays" value="${setting.hotDays}"
                    class="input-mini required"/>
+            天的帖子按 <code>红心数+评分</code> 排序，每用户最多上榜
+            <input type="text" id="maxHotPostCountPerUser" name="maxHotPostCountPerUser" value="${setting.maxHotPostCountPerUser}"
+                   class="input-mini required"/>
+            条
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label for="rankingPostsDays" class="control-label">作品榜:</label>
+        <div class="controls">
+            最近<input type="text" id="rankingPostsDays" name="rankingPostsDays" value="${setting.rankingPostsDays}"
+                     class="input-mini required"/>
             天的帖子按红心数排序
         </div>
     </div>

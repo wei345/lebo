@@ -418,7 +418,7 @@ public class StatusService extends AbstractMongoService {
         Collections.sort(posts, hotPostComparator);
 
         //为避免刷屏，每用户只可上榜1条
-        int max = 1;
+        int max = settingService.getSetting().getMaxHotPostCountPerUser();
         Map<String, Integer> userId2count = new HashMap<String, Integer>(1000);
 
         List<HotPost> hotPosts = new ArrayList<HotPost>(1000);
@@ -762,6 +762,9 @@ public class StatusService extends AbstractMongoService {
         Query query = new Query();
         //排除转发贴，因为转发贴不计收藏数(喜欢数)
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //时间范围
+        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getRankingPostsDays() * -1);
+        query.addCriteria(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
         //按收藏数(喜欢数)降序排序
         query.with(new PageRequest(page, size, new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY)));
 
