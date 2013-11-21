@@ -92,21 +92,27 @@
 
 <c:if test="${controllerMethod == 'list'}">
     <form id="searchForm" class="form-search" method="GET" action="">
+
         <input type="search" class="input-medium search-query" id="screenName" name="screenName"
                value="${param.screenName}"
                placeholder="用户名字">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-          onclick="$('input[name=screenName]').val('')"></span>
-        或
+        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+              onclick="$('input[name=screenName]').val('')"></span>
+
         <input type="search" class="input-medium search-query" id="userId" name="userId" value="${param.userId}"
                placeholder="用户ID">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-          onclick="$('input[name=userId]').val('')"></span>
+        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+              onclick="$('input[name=userId]').val('')"></span>
 
         <input type="search" class="input-medium search-query" id="track" name="track" value="${param.track}"
                placeholder="关键词">
-    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-          onclick="$('input[name=track]').val('')"></span>
+        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+              onclick="$('input[name=track]').val('')"></span>
+
+        <input type="search" class="input-medium search-query" id="postId" name="postId" value="${param.postId}"
+               placeholder="帖子ID">
+        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+              onclick="$('input[name=postId]').val('')"></span>
 
         <div style="padding-top: 15px;">
 
