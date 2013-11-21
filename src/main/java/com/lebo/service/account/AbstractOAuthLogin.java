@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
-
 /**
  * @author: Wei Liu
  * Date: 13-7-17
@@ -40,23 +38,6 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
 
     public static String oAuthId(String provider, String uid) {
         return provider + "/" + uid;
-    }
-
-    /**
-     * 返回一个未被占用、唯一的screenName，以给定字符串作为前缀。
-     */
-    protected String newScreenName(String prefix) {
-        User user;
-        String name = prefix;
-        do {
-            user = accountService.findUserByScreenName(name);
-            if (user == null) {
-                break;
-            }
-            name = prefix + new Date().hashCode();
-        } while (true);
-
-        return name;
     }
 
     @Override
@@ -85,13 +66,13 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
         }
     }
 
-    protected Character getGender(String gender){
+    protected Character getGender(String gender) {
 
-        if("女".equals(gender) || "FEMALE".equalsIgnoreCase(gender) || "f".equalsIgnoreCase(gender)){
+        if ("女".equals(gender) || "FEMALE".equalsIgnoreCase(gender) || "f".equalsIgnoreCase(gender)) {
             return User.GENDER_FEMALE;
         }
 
-        if("男".equals(gender) || "MALE".equalsIgnoreCase(gender) || "m".equalsIgnoreCase(gender)){
+        if ("男".equals(gender) || "MALE".equalsIgnoreCase(gender) || "m".equalsIgnoreCase(gender)) {
             return User.GENDER_MALE;
         }
 
