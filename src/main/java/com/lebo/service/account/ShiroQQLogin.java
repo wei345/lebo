@@ -61,7 +61,7 @@ public class ShiroQQLogin extends AbstractOAuthLogin {
         if (user == null) {
 
             user = new User();
-            user.setScreenName(newScreenName((String) userInfo.get("nickname")));
+            user.setScreenName(accountService.generateScreenName((String) userInfo.get("nickname")));
             user.setName((String) userInfo.get("nickname"));
             user.setGender(getGender((String) userInfo.get("gender")));
             user.setProfileImageNormal((String) userInfo.get("figureurl_qq_1")); //40x40

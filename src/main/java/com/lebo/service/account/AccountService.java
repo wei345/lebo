@@ -31,7 +31,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.nosql.redis.JedisTemplate;
 import org.springside.modules.security.utils.Digests;
@@ -47,7 +46,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * 用户管理类.
@@ -64,6 +62,8 @@ public class AccountService extends AbstractMongoService {
     public static final int HASH_INTERATIONS = 1024;
     private static final int SALT_SIZE = 8;
     public static final int REDIS_SESSION_EXPIRE_SECONDS = 60 * 60 * 24 * 90;
+    public static final int SCREEN_NAME_MAX_LENGTH = 24;
+    public static final int SCREEN_NAME_MIN_LENGTH = 2;
 
     @Autowired
     private UserDao userDao;
@@ -328,7 +328,7 @@ public class AccountService extends AbstractMongoService {
      * 检查对于userId来说，screenName是否可用。
      */
     public boolean isScreenNameAvailable(String screenName, String userId) {
-        Assert.hasText(screenName);
+        isScreenNameValid(screenName);
 
         Criteria criteria = new Criteria(User.SCREEN_NAME_KEY).is(screenName);
         if (StringUtils.isNotBlank(userId)) {
@@ -484,13 +484,6 @@ public class AccountService extends AbstractMongoService {
         return BeanMapper.map(user, AccountSettingDto.class);
     }
 
-    //2-24位字符，支持中文、英文、数字、"-"、"_"
-    Pattern screenNamePattern = Pattern.compile("[0-9a-zA-Z_\\-\u4e00-\u9fa5]{2,24}");
-
-    public boolean isScreenNameValid(String screenName) {
-        return screenNamePattern.matcher(screenName).matches();
-    }
-
     /**
      * 上升最快用户:按1小时内用户获得的红心数排名
      */
@@ -636,6 +629,100 @@ public class AccountService extends AbstractMongoService {
 
     public boolean isUserExists(String userId) {
         return userDao.exists(userId);
+    }
+
+    /**
+     * 如果<code>screenName</code>长度为2-24，且由数字、英文字母、中文（不包括标点）组成，则返回true，否则返回false
+     */
+    public boolean isScreenNameValid(String screenName) {
+
+        if (screenName == null || screenName.length() < SCREEN_NAME_MIN_LENGTH || screenName.length() > SCREEN_NAME_MAX_LENGTH) {
+            return false;
+        }
+
+        for (int i = 0; i < screenName.length(); i++) {
+            if (!isScreenNameValidChar(screenName.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 组成screenName的合法字符，如果<code>c</code>为数字、英文字母、中文（不包括标点），则返回true，否则返回false
+     */
+    public boolean isScreenNameValidChar(char c) {
+
+        if (c >= '0' && c <= '9') {
+            return true;
+        }
+
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+            return true;
+        }
+
+        if (c == '_' || c == '-') {
+            return true;
+        }
+
+        //中文，不包含标点
+        if (c >= '\u4e00' && c <= '\u9fa5') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 返回一个合法的、唯一的screenName。
+     *
+     * @param name 用户名字，可能成为screenName的一部分
+     */
+    public String generateScreenName(String name) {
+        String baseName = null;
+
+        //得到baseName
+        if (StringUtils.isNotBlank(name)) {
+
+            //去掉requestName中无效字符
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < name.length(); i++) {
+                char c = name.charAt(i);
+                if (isScreenNameValidChar(c)) {
+                    sb.append(c);
+                }
+            }
+            baseName = sb.toString();
+
+            //baseName可用
+            if (isScreenNameAvailable(baseName, null)) {
+                return baseName;
+            }
+            //baseName不可用
+            else {
+                baseName = StringUtils.substring(baseName, 0, SCREEN_NAME_MAX_LENGTH - 11); //预留11个字符位置添加生成的字符
+            }
+        }
+
+        //默认baseName
+        if(StringUtils.isBlank(baseName)){
+            baseName = "user";
+        }
+
+        //生成用户名
+        int maxTries = 100;
+        for (int i = 0; i < maxTries; i++) {
+            String screenName = baseName + (new Date().hashCode() + i); //Date().hashCode() 长度10-11
+            if (isScreenNameAvailable(screenName, null)) {
+                logger.debug("生成用户名 : {}, 尝试了 {} 次", screenName, i + 1);
+                return screenName;
+            }
+        }
+        logger.debug("生成用户名 : 尝试了 {} 次", maxTries);
+
+        //返回一个mongoId作为用户名
+        return new ObjectId().toString();    //长度24
     }
 
     //---- JMX ----
