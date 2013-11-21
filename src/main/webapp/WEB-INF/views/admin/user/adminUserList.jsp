@@ -27,24 +27,30 @@
 </head>
 
 <body>
-<c:if test="${not empty message}">
-    <div id="message" class="alert alert-success">
-        <button data-dismiss="alert" class="close">×</button>
-            ${message}</div>
-</c:if>
 
 <form id="searchForm" class="form-search pull-left" method="GET" action="">
-    <input type="search" class="input-medium search-query" id="q" name="q" value="${q}" placeholder="正则表达式">
+
+    <input type="search" class="input-large search-query" id="q" name="q" value="${q}" placeholder="用户名，支持正则表达式"
+           title="用户名，支持正则表达式">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
           onclick="$('input[name=q]').val('')"></span>
-    orderBy <input type="text" class="input-mini" name="orderBy" value="${orderBy}"
-                   placeholder="followersCount/beFavoritedCount/viewCount">
-    <select class="input-small" name="order">
-        <option ${order == "desc" ? "selected='selected'" : ""} value="desc">desc</option>
-        <option ${order == "asc" ? "selected='selected'" : ""} value="asc">asc</option>
-    </select>
-    <input type="text" class="input-mini" name="size" value="${size}">条/页
-    <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
+
+    <input type="search" class="input-large search-query" id="userId" name="userId" value="${param.userId}" placeholder="用户ID">
+    <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+          onclick="$('input[name=userId]').val('')"></span>
+
+    <div style="padding-top: 10px;">
+        按 <input type="text" class="input-mini" name="orderBy" value="${orderBy}"
+                       placeholder="followersCount/beFavoritedCount/viewCount">
+
+        <select class="input-small" name="order">
+            <option ${order == "DESC" ? "selected='selected'" : ""} value="DESC">降序</option>
+            <option ${order == "ASC" ? "selected='selected'" : ""} value="ASC">升序</option>
+        </select>
+
+        <input type="text" class="input-mini" name="size" value="${size}">条/页
+        <button type="submit" class="btn" style="margin-left: 2em;">搜索</button>
+    </div>
 </form>
 
 <a href="${ctx}/register" class="pull-right">+ 添加新用户</a>

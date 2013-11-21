@@ -9,6 +9,7 @@ import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PageRequest;
 import com.lebo.web.ControllerSetup;
 import com.lebo.web.ControllerUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 管理帖子.
@@ -52,21 +50,31 @@ public class PostController {
     public String list(@RequestParam(value = "userId", required = false) String userId,
                        @RequestParam(value = "screenName", required = false) String screenName,
                        @RequestParam(value = "track", required = false) String track,
+                       @RequestParam(value = "postId", required = false) String postId,
                        @RequestParam(value = "orderBy", defaultValue = Post.ID_KEY) String orderBy,
                        @RequestParam(value = "order", defaultValue = "DESC") String order,
                        @Valid PageRequest pageRequest,
                        Model model) {
         long beginTime = System.currentTimeMillis();
+        Page<Post> page = null;
 
-        try {
-            userId = accountService.getUserId(userId, screenName);
-        } catch (ServiceException e) {
-            userId = null;
+        //分析screenName和userId
+        if(StringUtils.isNotBlank(screenName)){
+            User user = accountService.findUserByScreenName(screenName);
+            if(StringUtils.isBlank(userId)){
+                userId = user.getId();
+            }else{
+                if(!user.getId().equals(userId)){
+                    page = new PageImpl<Post>(Collections.EMPTY_LIST);
+                }
+            }
         }
 
-        pageRequest.setSort(new Sort(Sort.Direction.fromString(order), orderBy));
-
-        Page<Post> page = statusService.findOriginPosts(userId, track, pageRequest);
+        //根据条件查询
+        if(page == null){
+            pageRequest.setSort(new Sort(Sort.Direction.fromString(order), orderBy));
+            page = statusService.findOriginPosts(userId, track, postId, pageRequest);
+        }
 
         model.addAttribute("posts", toModelPosts(page.getContent()));
         model.addAttribute("page", page);

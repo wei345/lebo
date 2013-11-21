@@ -96,7 +96,7 @@
         <div class="control-group">
             <label class="control-label">性别:</label>
             <div class="controls">
-                <span class="help-inline">${user.gender == 1 ? '男' : (user.gender == 0 ? '女' : '未知')}</span>
+                <span class="help-inline">${user.gender == 'm' ? '男' : (user.gender == 'f' ? '女' : '未知')}</span>
             </div>
         </div>
 
