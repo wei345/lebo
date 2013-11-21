@@ -776,13 +776,18 @@ public class StatusService extends AbstractMongoService {
     /**
      * 查找指定用户的帖子(不包含转发), 如果userId为null，则忽略该条件
      */
-    public Page<Post> findOriginPosts(String userId, String track, PageRequest pageRequest) {
+    public Page<Post> findOriginPosts(String userId, String track, String postId, PageRequest pageRequest) {
         Query query = new Query();
         //原帖
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
 
+        //帖子ID
+        if (StringUtils.isNotBlank(postId)) {
+            query.addCriteria(new Criteria(Post.ID_KEY).is(postId));
+        }
+
         //指定用户
-        if (userId != null) {
+        if (StringUtils.isNotBlank(userId)) {
             query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
         }
 

@@ -678,7 +678,7 @@ public class AccountService extends AbstractMongoService {
         }
 
         //默认baseName
-        if(StringUtils.isBlank(baseName)){
+        if (StringUtils.isBlank(baseName)) {
             baseName = "user";
         }
 
@@ -712,6 +712,22 @@ public class AccountService extends AbstractMongoService {
             updateFriendsCount(user.getId());
         }
         logger.debug("更新所有用户好友数 : 完成");
+    }
+
+    //---- 后台管理 ----
+    public List<User> adminSearchUser(String q, String userId, Pageable pageable) {
+        Query query = new Query();
+
+        if (StringUtils.isNotBlank(q)) {
+            query.addCriteria(new Criteria(User.SCREEN_NAME_KEY).regex(q, "i"));
+        }
+
+        if (StringUtils.isNotBlank(userId)) {
+            query.addCriteria(new Criteria(User.ID_KEY).is(userId));
+        }
+
+        query.with(pageable);
+        return mongoTemplate.find(query, User.class);
     }
 
 }
