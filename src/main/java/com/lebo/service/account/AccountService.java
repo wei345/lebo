@@ -584,6 +584,7 @@ public class AccountService extends AbstractMongoService {
 
     /**
      * 取出Shiro中的当前用户Id,并且该id在数据库中也存在.
+     * @throws UnknownAccountException 当用户不存在
      */
     public String getCurrentUserId() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();

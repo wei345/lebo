@@ -15,6 +15,7 @@ import com.lebo.service.param.*;
 import com.mongodb.DBCollection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,10 +76,11 @@ public class StatusService extends AbstractMongoService {
      * @param video
      * @param videoFirstFrame 视频第一帧
      * @param originPost      若是转发，为原Post ID，否则为null
+     * @param acl
      * @return
      * @throws IOException
      */
-    public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source) {
+    public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source, Integer acl) {
         Post post = new Post().initial();
 
         post.setUserId(userId);
@@ -90,6 +92,7 @@ public class StatusService extends AbstractMongoService {
         post.setMentionUserIds(mentionUserIds(post.getUserMentions()));
         post.setHashtags(findHashtags(text, true));
         post.setSearchTerms(buildSearchTerms(post));
+        post.setAcl(acl);
 
         //原始贴
         if (originPost == null) {
@@ -145,29 +148,58 @@ public class StatusService extends AbstractMongoService {
         mongoTemplate.remove(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(originPostId)), Post.class);
     }
 
-    public List<Post> userTimeline(TimelineParam param) {
-        Assert.hasText(param.getUserId(), "The userId can not be null");
+    private void addAclCriteria(Query query) {
 
-        if (param.canIgnoreIdCondition()) {
-            return postDao.findByUserId(param.getUserId(), param).getContent();
-        } else {
-            return postDao.userTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param).getContent();
+        Criteria aclCriteria = new Criteria(Post.ACL_KEY).is(Post.ACL_DEFAULT);
+
+        try {
+            String userId = accountService.getCurrentUserId();
+
+            aclCriteria = orOperator(Arrays.asList(
+                    aclCriteria,
+                    new Criteria(Post.USER_ID_KEY).is(userId)));
+
+        } catch (UnknownAccountException e) {
+            //什么都不做
         }
+
+        query.addCriteria(aclCriteria);
+    }
+
+    public List<Post> userTimeline(TimelineParam param) {
+        Assert.hasText(param.getUserId(), "userId不能为空");
+
+        Query query = new Query(new Criteria(Post.USER_ID_KEY).is(param.getUserId()));
+        paginationById(query, param);
+        addAclCriteria(query);
+
+        return mongoTemplate.find(query, Post.class);
     }
 
     public List<Post> homeTimeline(TimelineParam param) {
-        Assert.hasText(param.getUserId(), "The userId can not be null");
-        // 一次取出所有follows？如果数量很多怎么办？少峰 2013.07.18
+
+        Assert.hasText(param.getUserId(), "userId不能为空");
+
+        //TODO 一次取出所有follows？如果数量很多怎么办？
         List<String> followingIdList = friendshipService.getAllFriends(param.getUserId());
 
         followingIdList.add(param.getUserId());
 
-        return postDao.homeTimeline(followingIdList, param.getMaxId(), param.getSinceId(), param).getContent();
+        Query query = new Query(new Criteria(Post.ID_KEY).in(followingIdList));
+        paginationById(query, param);
+        addAclCriteria(query);
+
+        return mongoTemplate.find(query, Post.class);
     }
 
     public List<Post> mentionsTimeline(TimelineParam param) {
-        Assert.hasText(param.getUserId(), "The userId can not be null");
-        return postDao.mentionsTimeline(param.getUserId(), param.getMaxId(), param.getSinceId(), param);
+        Assert.hasText(param.getUserId(), "userId不能为空");
+
+        Query query = new Query(new Criteria(Post.MENTION_USER_IDS).is(param.getUserId()));
+        paginationById(query, param);
+        addAclCriteria(query);
+
+        return mongoTemplate.find(query, Post.class);
     }
 
     public Post getPost(String id) {
@@ -259,10 +291,6 @@ public class StatusService extends AbstractMongoService {
         return post.getOriginPostId() == null ? post.getId() : post.getOriginPostId();
     }
 
-    public boolean isOriginPost(Post post) {
-        return post.getOriginPostId() == null;
-    }
-
     public int countReposts(String postId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId)), Post.class);
     }
@@ -337,6 +365,8 @@ public class StatusService extends AbstractMongoService {
             query.addCriteria(queryCriteria);
         }
 
+        addAclCriteria(query);
+
         return mongoTemplate.find(query, Post.class);
     }
 
@@ -409,6 +439,8 @@ public class StatusService extends AbstractMongoService {
         Query query = new Query(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
         //原贴
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //完全公开
+        query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_DEFAULT));
         //按红心数降序排序，取出2000条
         query.with(new PageRequest(0, 2000, hotPostsSort));
 
@@ -725,24 +757,31 @@ public class StatusService extends AbstractMongoService {
         }
         //-- 添加置顶视频 end --//
 
+        addAclCriteria(query);
+
         return mongoTemplate.find(query, Post.class);
     }
 
     public List<Post> findDigest(PaginationParam paginationParam) {
+
         Setting setting = settingService.getSetting();
+
         Query query = new Query();
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
         paginationById(query, paginationParam);
+        addAclCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
 
     public List<Post> findUserDigest(String userId, PaginationParam paginationParam) {
         Setting setting = settingService.getSetting();
+
         Query query = new Query();
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
         query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
         paginationById(query, paginationParam);
+        addAclCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -767,6 +806,8 @@ public class StatusService extends AbstractMongoService {
         query.addCriteria(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
         //按收藏数(喜欢数)降序排序
         query.with(new PageRequest(page, size, new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY)));
+
+        addAclCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
