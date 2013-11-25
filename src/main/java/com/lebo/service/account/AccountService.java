@@ -560,7 +560,7 @@ public class AccountService extends AbstractMongoService {
      */
     public String getCurrentUserId() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-        if (userDao.exists(user.id)) {
+        if (user != null && userDao.exists(user.id)) {
             return user.id;
         } else {
             SecurityUtils.getSubject().logout();
