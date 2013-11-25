@@ -251,6 +251,10 @@
 
         var rating = ratingDetail.find('.rating').html();
 
+        if(isNaN(rating)){
+            rating = 0;
+        }
+
         //创建输入框和按钮
         var inputForm = $('<div class="rate-form">' +
                 '<input type="text" class="input-mini" value="' + rating + '" placeholder="整数"/>' +
