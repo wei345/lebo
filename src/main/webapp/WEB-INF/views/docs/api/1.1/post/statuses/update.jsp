@@ -15,6 +15,8 @@
     <tags:field name="duration"/>
     <p>上传图片的url</p>
     <tags:field name="imageUrl"/>
+    <p>是否只对所有者可见：<code>true</code>/<code>false</code></p>
+    <tags:field name="pvt" optional="true"/>
     <tags:textarea name="text" value=""/>
 </tags:form>
 

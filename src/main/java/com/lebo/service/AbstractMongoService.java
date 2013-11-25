@@ -87,19 +87,22 @@ public abstract class AbstractMongoService {
     }
 
     public static void paginationById(Query query, PaginationParam paginationParam) {
-        //分页
+
         Criteria criteria = new Criteria("_id");
-        boolean flag = false;
+
+        boolean add = false;
+
         if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
             criteria.lt(new ObjectId(paginationParam.getMaxId()));
-            flag = true;
-        }
-        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
-            criteria.gt(new ObjectId(paginationParam.getSinceId()));
-            flag = true;
+            add = true;
         }
 
-        if (flag) {
+        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
+            criteria.gt(new ObjectId(paginationParam.getSinceId()));
+            add = true;
+        }
+
+        if (add) {
             query.addCriteria(criteria);
         }
 
