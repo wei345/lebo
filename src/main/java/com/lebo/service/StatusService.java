@@ -171,7 +171,14 @@ public class StatusService extends AbstractMongoService {
 
         Query query = new Query(new Criteria(Post.USER_ID_KEY).is(param.getUserId()));
         paginationById(query, param);
-        addAclCriteria(query);
+
+        try {
+            if (!param.getUserId().equals(accountService.getCurrentUserId())) {
+                addAclCriteria(query);
+            }
+        } catch (UnknownAccountException e) {
+            addAclCriteria(query);
+        }
 
         return mongoTemplate.find(query, Post.class);
     }
