@@ -192,7 +192,7 @@ public class StatusService extends AbstractMongoService {
 
         followingIdList.add(param.getUserId());
 
-        Query query = new Query(new Criteria(Post.ID_KEY).in(followingIdList));
+        Query query = new Query(new Criteria(Post.USER_ID_KEY).in(followingIdList));
         paginationById(query, param);
         addAclCriteria(query);
 
