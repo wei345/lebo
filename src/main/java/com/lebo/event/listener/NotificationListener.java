@@ -83,16 +83,18 @@ public class NotificationListener {
         }
         //原帖，at通知
         else {
-            for (String userId : event.getPost().getMentionUserIds()) {
-                //自己at自己，不发at通知
-                if (event.getPost().getUserId().equals(userId)) {
-                    continue;
-                }
-                Notification notification = createNotification(Notification.ACTIVITY_TYPE_POST_AT,
-                        userId, event.getPost().getUserId(),
-                        Notification.OBJECT_TYPE_POST, event.getPost().getId());
+            if (!event.getPost().getPvt()) { //私有帖子不发at通知
+                for (String userId : event.getPost().getMentionUserIds()) {
+                    //自己at自己，不发at通知
+                    if (event.getPost().getUserId().equals(userId)) {
+                        continue;
+                    }
+                    Notification notification = createNotification(Notification.ACTIVITY_TYPE_POST_AT,
+                            userId, event.getPost().getUserId(),
+                            Notification.OBJECT_TYPE_POST, event.getPost().getId());
 
-                sendNotificationQueue(notification);
+                    sendNotificationQueue(notification);
+                }
             }
         }
     }
