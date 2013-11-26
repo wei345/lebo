@@ -3,6 +3,7 @@ package com.lebo.service;
 import com.lebo.repository.MongoConstant;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.util.ContentTypeMap;
+import com.mongodb.BasicDBList;
 import com.mongodb.MongoException;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -14,7 +15,6 @@ import org.springframework.util.Assert;
 import org.springside.modules.utils.DateProvider;
 import org.springside.modules.utils.Reflections;
 
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -29,10 +29,6 @@ public abstract class AbstractMongoService {
     @Autowired
     protected MongoTemplate mongoTemplate;
     protected DateProvider dateProvider = DateProvider.DEFAULT;
-    protected static Method orOperator = Reflections.getAccessibleMethod(new Criteria(), "orOperator",
-            new Class[]{Criteria[].class});
-    protected static Method andOperator = Reflections.getAccessibleMethod(new Criteria(), "andOperator",
-            new Class[]{Criteria[].class});
     protected static Pattern mongoIdPattern = Pattern.compile("^[0-9a-f]{24}$", Pattern.CASE_INSENSITIVE);
 
     /**
@@ -57,9 +53,10 @@ public abstract class AbstractMongoService {
 
     protected Criteria orOperator(List<Criteria> criterias) {
         try {
-            //orOperator是可变参数，只好反射调用。这蛋疼的语法。
-            return (Criteria) orOperator.invoke(
-                    new Criteria(), new Object[]{criterias.toArray(new Criteria[]{})});
+
+            BasicDBList bsonList = createCriteriaList(criterias.toArray(new Criteria[]{}));
+            return new Criteria("$or").is(bsonList);
+
         } catch (Exception e) {
             throw Reflections.convertReflectionExceptionToUnchecked(e);
         }
@@ -67,12 +64,24 @@ public abstract class AbstractMongoService {
 
     protected Criteria andOperator(List<Criteria> criterias) {
         try {
-            //orOperator是可变参数，只好反射调用。这蛋疼的语法。
-            return (Criteria) andOperator.invoke(
-                    new Criteria(), new Object[]{criterias.toArray(new Criteria[]{})});
+
+            BasicDBList bsonList = createCriteriaList(criterias.toArray(new Criteria[]{}));
+            return new Criteria("$and").is(bsonList);
+
         } catch (Exception e) {
             throw Reflections.convertReflectionExceptionToUnchecked(e);
         }
+    }
+
+    /**
+     * 拷贝自org.springframework.data.mongodb.core.query.Criteria#createCriteriaList
+     */
+    private BasicDBList createCriteriaList(Criteria[] criteria) {
+        BasicDBList bsonList = new BasicDBList();
+        for (Criteria c : criteria) {
+            bsonList.add(c.getCriteriaObject());
+        }
+        return bsonList;
     }
 
     public static boolean isMongoId(String str) {
