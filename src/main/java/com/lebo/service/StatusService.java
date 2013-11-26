@@ -236,6 +236,7 @@ public class StatusService extends AbstractMongoService {
             dto.setUserMentions(Post.UserMention.toDtos(post.getUserMentions()));
         }
         dto.setDigest(post.getDigest());
+        dto.setPvt(post.getPvt());
         return dto;
     }
 

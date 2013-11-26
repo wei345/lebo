@@ -88,13 +88,13 @@ public class Post extends IdEntity {
      * <li>所有者总是可见</li>
      * <li>转发帖不受权限限制</li>
      * </ul>
-     *
+     * <p/>
      * <p>
-     *     该字段只在服务端内部使用，对客户端不可见。服务端可以随时重新定义此字段。
+     * 该字段只在服务端内部使用，对客户端不可见。服务端可以随时重新定义此字段。
      * </p>
-     *
+     * <p/>
      * <p>
-     *     目前使用的值: null, 0
+     * 目前使用的值: null, 0
      * </p>
      */
     @Indexed
@@ -339,5 +339,9 @@ public class Post extends IdEntity {
 
     public void setAcl(Integer acl) {
         this.acl = acl;
+    }
+
+    public Boolean getPvt() {
+        return (acl != null && acl == ACL_PRIVATE);
     }
 }

@@ -30,6 +30,7 @@ public class StatusDto {
     private List<CommentDto> comments;
     private List<UserMentionDto> userMentions;
     private Boolean digest;//是否已被加精
+    private Boolean pvt;
 
     public static class UserMentionDto {
         private String userId;
@@ -215,5 +216,13 @@ public class StatusDto {
 
     public void setVideoConverted(FileInfoDto videoConverted) {
         this.videoConverted = videoConverted;
+    }
+
+    public Boolean getPvt() {
+        return pvt;
+    }
+
+    public void setPvt(Boolean pvt) {
+        this.pvt = pvt;
     }
 }
