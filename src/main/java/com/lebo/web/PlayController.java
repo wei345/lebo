@@ -50,6 +50,7 @@ public class PlayController {
         model.addAttribute("image_dl_android_app_url", FileContentUrlUtils.getContentUrl("images/btn-dl-lebo-android.png"));
         model.addAttribute("appStoreLeboUrl", settingService.getSetting().getAppStoreLeboUrl());
         model.addAttribute("leboAppAndroidDownloadUrl", settingService.getSetting().getLeboAppAndroidDownloadUrl());
+        model.addAttribute("pvt", post.getPvt());
 
         //移动版页面
         if (mobilePattern.matcher(userAgent).find()) {

@@ -155,9 +155,11 @@
 
 </div>
 <script type='text/javascript'>
+    <c:if test="${!pvt}"> <%--私有视频不跳到乐播APP--%>
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.location.href = 'lebo://topic/${post.id}'
     }
+    </c:if>
     var vdesc = document.getElementById('video_desc');
     if (vdesc) vdesc.innerHTML = document.getElementById('video_desc').innerHTML.replace(/^\s+|\s+$/, '').replace(/^(#[^#\n]+?#)/, '<span class="channel">$1</span>');
 </script>
