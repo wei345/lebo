@@ -25,31 +25,31 @@ public class HashtagRecorder {
     private StatusService statusService;
 
     /**
-     * post数增长。
+     * 标签帖子数增长。
      *
      * @param event
      */
     @Subscribe
-    public void saveHashtags(AfterPostCreateEvent event) {
+    public void increasePostCount(AfterPostCreateEvent event) {
         for (String name : event.getPost().getHashtags()) {
             hashtagService.increasePostsCount(name);
         }
     }
 
     /**
-     * post数减少。
+     * 标签帖子数减少。
      *
      * @param event
      */
     @Subscribe
-    public void removeHashtags(AfterPostDestroyEvent event) {
+    public void decreasePostCount(AfterPostDestroyEvent event) {
         for (String name : event.getPost().getHashtags()) {
             hashtagService.decreasePostsCount(name);
         }
     }
 
     /**
-     * 红心(收藏)数增长。
+     * 标签红心(收藏)数增长。
      *
      * @param e
      */
@@ -62,7 +62,7 @@ public class HashtagRecorder {
     }
 
     /**
-     * 红心(收藏)数减少。
+     * 标签红心(收藏)数减少。
      *
      * @param e
      */
