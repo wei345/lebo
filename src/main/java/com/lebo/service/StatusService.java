@@ -148,20 +148,9 @@ public class StatusService extends AbstractMongoService {
         mongoTemplate.remove(new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(originPostId)), Post.class);
     }
 
-    private void addAclCriteria(Query query) {
+    private void addAclPublicCriteria(Query query) {
 
         Criteria aclCriteria = new Criteria(Post.ACL_KEY).is(Post.ACL_DEFAULT);
-
-        try {
-            String userId = accountService.getCurrentUserId();
-
-            aclCriteria = orOperator(Arrays.asList(
-                    aclCriteria,
-                    new Criteria(Post.USER_ID_KEY).is(userId)));
-
-        } catch (UnknownAccountException e) {
-            //什么都不做
-        }
 
         query.addCriteria(aclCriteria);
     }
@@ -174,10 +163,10 @@ public class StatusService extends AbstractMongoService {
 
         try {
             if (!param.getUserId().equals(accountService.getCurrentUserId())) {
-                addAclCriteria(query);
+                addAclPublicCriteria(query);
             }
         } catch (UnknownAccountException e) {
-            addAclCriteria(query);
+            addAclPublicCriteria(query);
         }
 
         return mongoTemplate.find(query, Post.class);
@@ -194,7 +183,7 @@ public class StatusService extends AbstractMongoService {
 
         Query query = new Query(new Criteria(Post.USER_ID_KEY).in(followingIdList));
         paginationById(query, param);
-        addAclCriteria(query);
+        addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -204,7 +193,7 @@ public class StatusService extends AbstractMongoService {
 
         Query query = new Query(new Criteria(Post.MENTION_USER_IDS).is(param.getUserId()));
         paginationById(query, param);
-        addAclCriteria(query);
+        addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -215,6 +204,12 @@ public class StatusService extends AbstractMongoService {
 
     public int countUserStatus(String userId) {
         return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
+    }
+
+    public int countUserPublicStatus(String userId) {
+        Query query = new Query(new Criteria(Post.USER_ID_KEY).is(userId));
+        query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_DEFAULT));
+        return (int) mongoTemplate.count(query, Post.class);
     }
 
     public StatusDto mapStatusDto(Post post) {
@@ -373,7 +368,7 @@ public class StatusService extends AbstractMongoService {
             query.addCriteria(queryCriteria);
         }
 
-        addAclCriteria(query);
+        addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -765,7 +760,7 @@ public class StatusService extends AbstractMongoService {
         }
         //-- 添加置顶视频 end --//
 
-        addAclCriteria(query);
+        addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -777,7 +772,7 @@ public class StatusService extends AbstractMongoService {
         Query query = new Query();
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
         paginationById(query, paginationParam);
-        addAclCriteria(query);
+        addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -789,7 +784,7 @@ public class StatusService extends AbstractMongoService {
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
         query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
         paginationById(query, paginationParam);
-        addAclCriteria(query);
+        addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }
@@ -815,7 +810,7 @@ public class StatusService extends AbstractMongoService {
         //按收藏数(喜欢数)降序排序
         query.with(new PageRequest(page, size, new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY)));
 
-        addAclCriteria(query);
+        addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
     }

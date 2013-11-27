@@ -73,7 +73,8 @@ public class DigestPostRecorder {
     }
 
     public boolean isMarkDigest(Post post) {
-        return post.getOriginPostId() != null
+        return post.isPublic()
+                && post.getOriginPostId() != null
                 && post.getUserId().equals(settingService.getSetting().getDigestAccountId());
     }
 }

@@ -83,7 +83,7 @@ public class NotificationListener {
         }
         //原帖，at通知
         else {
-            if (!event.getPost().getPvt()) { //私有帖子不发at通知
+            if (event.getPost().isPublic()) {
                 for (String userId : event.getPost().getMentionUserIds()) {
                     //自己at自己，不发at通知
                     if (event.getPost().getUserId().equals(userId)) {

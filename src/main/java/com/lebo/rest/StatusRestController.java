@@ -149,6 +149,10 @@ public class StatusRestController {
                 }
             }
 
+            if (!originPost.isPublic()) {
+                return ErrorDto.badRequest("不能转发非所有人可见的视频");
+            }
+
             //转发
             Post post = statusService.getRepost(accountService.getCurrentUserId(), originPost);
             if (post == null) {
@@ -376,7 +380,8 @@ public class StatusRestController {
         String firstVideoHashtag = "#新人报到#";
         User user = accountService.getUser(accountService.getCurrentUserId());
         //用户第一次发视频
-        if (user.getStatusesCount() == null || user.getStatusesCount() == 0) {
+        if (acl != Post.ACL_DEFAULT
+                && (user.getStatusesCount() == null || user.getStatusesCount() == 0)) {
             if (!text.contains(firstVideoHashtag)) {
                 text += firstVideoHashtag;
                 logger.debug("自动添加了{} : {}", firstVideoHashtag, text);

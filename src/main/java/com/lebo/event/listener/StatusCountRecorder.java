@@ -26,16 +26,20 @@ public class StatusCountRecorder {
 
     @Subscribe
     public void updateStatusesCount(AfterPostCreateEvent event) {
-        updateStatusesCount(event.getPost().getUserId());
+        if (event.getPost().isPublic()) {
+            updateStatusesCount(event.getPost().getUserId());
+        }
     }
 
     @Subscribe
     public void updateStatusesCount(AfterPostDestroyEvent event) {
-        updateStatusesCount(event.getPost().getUserId());
+        if (event.getPost().isPublic()) {
+            updateStatusesCount(event.getPost().getUserId());
+        }
     }
 
     private void updateStatusesCount(String userId) {
-        int count = statusService.countUserStatus(userId);
+        int count = statusService.countUserPublicStatus(userId);
 
         mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
                 new Update().set(User.STATUSES_COUNT_KEY, count), User.class);

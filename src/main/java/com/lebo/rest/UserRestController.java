@@ -8,6 +8,7 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.HotUserListDto;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.SettingService;
+import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PageRequest;
 import com.lebo.service.param.PaginationParam;
@@ -38,6 +39,8 @@ public class UserRestController {
     private AccountService accountService;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private StatusService statusService;
 
     public static final String PREFIX_API_1_USERS = "/api/1/users/";
     public static final String PREFIX_API_1_1_USERS = "/api/1.1/users/";
@@ -89,7 +92,14 @@ public class UserRestController {
             return ErrorDto.notFound();
         }
 
-        return accountService.toUserDto(user);
+        UserDto dto = accountService.toUserDto(user);
+
+        //查看自己信息，查自己所有帖子数
+        if (id.equals(accountService.getCurrentUserId())) {
+            dto.setStatusesCount(statusService.countUserStatus(id));
+        }
+
+        return dto;
     }
 
     /**

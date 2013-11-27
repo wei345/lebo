@@ -341,7 +341,11 @@ public class Post extends IdEntity {
         this.acl = acl;
     }
 
-    public Boolean getPvt() {
+    public boolean getPvt() {
         return (acl != null && acl == ACL_PRIVATE);
+    }
+
+    public boolean isPublic(){
+        return acl == null;
     }
 }
