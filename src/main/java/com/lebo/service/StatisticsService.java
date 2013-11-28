@@ -200,10 +200,10 @@ public class StatisticsService extends AbstractMongoService {
 
     //-- JMX --
 
-    @ManagedOperation(description = "统计每日历史数据")
+    @ManagedOperation(description = "重新计算每日的历史数据, 可用于修复没有每日历史，或每日历史不完整的情况")
     public void dailyHistory() {
         long beginTime = System.currentTimeMillis();
-        logger.info("统计每日历史数据 : 开始");
+        logger.info("重新计算每日的历史数据 : 开始");
 
         //查数据最早日期
         Query query = new Query();
@@ -228,13 +228,13 @@ public class StatisticsService extends AbstractMongoService {
 
             Long now = new Date().getTime();
 
-            while ((statisticsDate.getTimeInMillis() + 1000 * 60 * 60 * 24) < now) {
+            while (statisticsDate.getTimeInMillis() < now) {
 
                 int year = statisticsDate.get(Calendar.YEAR);
                 int month = statisticsDate.get(Calendar.MONTH) + 1;
                 int date = statisticsDate.get(Calendar.DAY_OF_MONTH);
 
-                logger.debug("统计每日历史数据 : {}-{}-{}", year, month, date);
+                logger.debug("重新计算每日的历史数据 : {}-{}-{}", year, month, date);
 
                 createDaily(year, month, date);
 
@@ -242,6 +242,6 @@ public class StatisticsService extends AbstractMongoService {
             }
         }
 
-        logger.info("统计每日历史数据 : 完成，用时 {} s", (System.currentTimeMillis() - beginTime) / 1000);
+        logger.info("重新计算每日的历史数据 : 完成，用时 {} s", (System.currentTimeMillis() - beginTime) / 1000);
     }
 }
