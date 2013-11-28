@@ -13,6 +13,7 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -25,6 +26,8 @@ import java.util.*;
 public class StatisticsService extends AbstractMongoService {
 
     private Logger logger = LoggerFactory.getLogger(StatisticsService.class);
+
+    private SimpleDateFormat idFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * 统计总数
@@ -101,9 +104,17 @@ public class StatisticsService extends AbstractMongoService {
 
         Criteria dailyCriteria = new Criteria(Im.CREATED_AT_KEY).gte(beginDate.getTime()).lt(endDate.getTime());
 
+        //检查是否已存在
+        String id = idFormat.format(beginDate.getTime());
+        Statistics statistics = mongoTemplate.findOne(new Query(new Criteria(Statistics.ID_KEY).is(id)), Statistics.class, Statistics.COLLECTION_STATISTICS_DAILY);
+        if (statistics != null) {
+            return statistics;
+        }
+
         //统计
-        Statistics statistics = new Statistics();
+        statistics = new Statistics();
         statistics.setStatisticsDate(beginDate.getTime());
+        statistics.setId(id);
 
         //用户
         statistics.setUserCount(mongoTemplate.count(new Query(dailyCriteria), User.class));
@@ -177,10 +188,7 @@ public class StatisticsService extends AbstractMongoService {
             statistics.setImFromUserCount(0L);
         }
 
-
         //保存
-        mongoTemplate.remove(new Query(new Criteria(Statistics.STATISTICS_DATE_KEY).is(beginDate.getTime())), Statistics.COLLECTION_STATISTICS_DAILY);
-        throwOnMongoError();
         mongoTemplate.save(statistics, Statistics.COLLECTION_STATISTICS_DAILY);
 
         return statistics;
