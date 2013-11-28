@@ -26,3 +26,9 @@
     <li><a href="${ctx}/admin/task/publish-video">发布视频</a></li>
     <li><a href="${ctx}/admin/task/apns-all-user">推送通知</a></li>
 </ul>
+
+<h2>统计</h2>
+
+<ul>
+    <li><a href="${ctx}/admin/statistics/charts">统计图表</a></li>
+</ul>

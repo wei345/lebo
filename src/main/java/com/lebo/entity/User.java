@@ -52,6 +52,7 @@ public class User extends IdEntity {
     public static final int PROFILE_BACKGROUND_IMAGE_SIZE = 1024;
     @Indexed
     private Date createdAt;
+    public static final String CREATED_AT_KEY = "createdAt";
     private Boolean verified;
     //是否是新浪微博认证用户，即加V用户
     private Boolean weiboVerified;
@@ -80,6 +81,7 @@ public class User extends IdEntity {
     @Indexed
     private List<String> roles = new ArrayList<String>(1);
     public static final String ROLES_KEY = "roles";
+    public static final String ROLES_ADMIN = "admin";
 
     //用户的粉丝数
     @Indexed(direction = IndexDirection.DESCENDING)
