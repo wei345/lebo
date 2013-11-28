@@ -174,11 +174,23 @@ public class StatusRestController {
     @RequestMapping(value = API_1_PREFIX + "unrepost", method = RequestMethod.POST)
     @ResponseBody
     public Object unrepost(@RequestParam("id") String id) {
-        Post post = statusService.getRepost(accountService.getCurrentUserId(), id);
+
+        String currentUserId = accountService.getCurrentUserId();
+
+        Post post = statusService.getRepost(currentUserId, id);
 
         if (post != null) {
             statusService.destroyPost(post.getId());
-            return statusService.toBasicStatusDto(post);
+
+            StatusDto dto = statusService.toBasicStatusDto(post);
+
+            dto.getOriginStatus().setReposted(
+                    statusService.isReposted(currentUserId, post));
+
+            dto.getOriginStatus().setRepostsCount(
+                    statusService.countReposts(post.getOriginPostId()));
+
+            return dto;
         }
 
         return null;
