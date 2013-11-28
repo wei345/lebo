@@ -35,8 +35,8 @@ public class StatisticsController {
                          @RequestParam(value = "endDate", required = false) String endDateStr,
                          Model model) throws ParseException {
 
-        Date endDate = StringUtils.isNotBlank(endDateStr) ? sdf.parse(endDateStr) : new Date();
-        Date startDate = StringUtils.isNotBlank(startDateStr) ? sdf.parse(startDateStr) : prevMonth(endDate);
+        Date endDate = StringUtils.isNotBlank(endDateStr) ? sdf.parse(endDateStr) : prevDay(new Date(), 1);
+        Date startDate = StringUtils.isNotBlank(startDateStr) ? sdf.parse(startDateStr) : prevDay(endDate, 6);
 
         List<Statistics> dailyList = statisticsService.getDaily(startDate, endDate);
 
@@ -47,10 +47,10 @@ public class StatisticsController {
         return "admin/statistics/charts";
     }
 
-    private Date prevMonth(Date date) {
+    private Date prevDay(Date date, int amount) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.MONTH, -1);
+        calendar.add(Calendar.DAY_OF_MONTH, amount * -1);
         return calendar.getTime();
     }
 }
