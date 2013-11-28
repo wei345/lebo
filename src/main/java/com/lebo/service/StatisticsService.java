@@ -207,7 +207,11 @@ public class StatisticsService extends AbstractMongoService {
 
         //查数据最早日期
         Query query = new Query();
-        query.addCriteria(new Criteria(User.CREATED_AT_KEY).ne(null));
+
+        Calendar leboBeginYear = Calendar.getInstance();
+        leboBeginYear.set(2013, 0, 1, 0, 0, 0);
+        query.addCriteria(new Criteria(User.CREATED_AT_KEY).gt(leboBeginYear.getTime())); //避免从1970年开始
+
         query.fields().include(User.CREATED_AT_KEY);
         query.with(new Sort(Sort.Direction.ASC, User.CREATED_AT_KEY));
         query.limit(1);
