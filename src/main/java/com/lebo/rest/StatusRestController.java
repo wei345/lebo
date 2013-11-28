@@ -380,7 +380,7 @@ public class StatusRestController {
         String firstVideoHashtag = "#新人报到#";
         User user = accountService.getUser(accountService.getCurrentUserId());
         //用户第一次发视频
-        if (acl != Post.ACL_DEFAULT
+        if (acl == Post.ACL_DEFAULT
                 && (user.getStatusesCount() == null || user.getStatusesCount() == 0)) {
             if (!text.contains(firstVideoHashtag)) {
                 text += firstVideoHashtag;
