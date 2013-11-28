@@ -36,9 +36,10 @@ public class Statistics extends IdEntity{
     private Long quartzJobCount;
 
     private Long imCount;
-    private Long textImCount;
-    private Long videoImCount;
-    private Long audioImCount;
+    private Long imTextCount;
+    private Long imVideoCount;
+    private Long imAudioCount;
+    private Long imFromUserCount;
 
     private Date statisticsDate;
     public static final String STATISTICS_DATE_KEY = "statisticsDate";
@@ -180,28 +181,36 @@ public class Statistics extends IdEntity{
         this.imCount = imCount;
     }
 
-    public Long getTextImCount() {
-        return textImCount;
+    public Long getImTextCount() {
+        return imTextCount;
     }
 
-    public void setTextImCount(Long textImCount) {
-        this.textImCount = textImCount;
+    public void setImTextCount(Long imTextCount) {
+        this.imTextCount = imTextCount;
     }
 
-    public Long getVideoImCount() {
-        return videoImCount;
+    public Long getImVideoCount() {
+        return imVideoCount;
     }
 
-    public void setVideoImCount(Long videoImCount) {
-        this.videoImCount = videoImCount;
+    public void setImVideoCount(Long imVideoCount) {
+        this.imVideoCount = imVideoCount;
     }
 
-    public Long getAudioImCount() {
-        return audioImCount;
+    public Long getImAudioCount() {
+        return imAudioCount;
     }
 
-    public void setAudioImCount(Long audioImCount) {
-        this.audioImCount = audioImCount;
+    public void setImAudioCount(Long imAudioCount) {
+        this.imAudioCount = imAudioCount;
+    }
+
+    public Long getImFromUserCount() {
+        return imFromUserCount;
+    }
+
+    public void setImFromUserCount(Long imFromUserCount) {
+        this.imFromUserCount = imFromUserCount;
     }
 
     @Override
@@ -222,9 +231,10 @@ public class Statistics extends IdEntity{
                 ", notificationCount=" + notificationCount +
                 ", quartzJobCount=" + quartzJobCount +
                 ", imCount=" + imCount +
-                ", textImCount=" + textImCount +
-                ", videoImCount=" + videoImCount +
-                ", audioImCount=" + audioImCount +
+                ", imTextCount=" + imTextCount +
+                ", imVideoCount=" + imVideoCount +
+                ", imAudioCount=" + imAudioCount +
+                ", imFromUserCount=" + imFromUserCount +
                 ", statisticsDate=" + statisticsDate +
                 ", collectTimeMillis=" + collectTimeMillis +
                 "} " + super.toString();

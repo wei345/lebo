@@ -24,7 +24,7 @@ public class StatisticsServiceTest extends SpringContextTestCase {
 
     @Test
     public void createDaily(){
-        Statistics statistics = statisticsService.createDaily(2013, 11, 27);
+        Statistics statistics = statisticsService.createDaily(2013, 11, 15);
         JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
         System.out.println(jsonMapper.toJson(statistics));
     }

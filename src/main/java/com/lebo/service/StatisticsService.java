@@ -1,18 +1,19 @@
 package com.lebo.service;
 
 import com.lebo.entity.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: Wei Liu
@@ -67,11 +68,11 @@ public class StatisticsService extends AbstractMongoService {
         //定时任务
         statistics.setQuartzJobCount(mongoTemplate.count(new Query(), "quartz_jobs"));
 
-        //即时消息
+        //即时通讯
         statistics.setImCount(mongoTemplate.count(new Query(), Im.class));
-        statistics.setTextImCount(mongoTemplate.count(new Query(new Criteria(Im.TYPE_KEY).is(Im.TYPE_TEXT)), Im.class));
-        statistics.setAudioImCount(mongoTemplate.count(new Query(new Criteria(Im.TYPE_KEY).is(Im.TYPE_AUDIO)), Im.class));
-        statistics.setVideoImCount(mongoTemplate.count(new Query(new Criteria(Im.TYPE_KEY).is(Im.TYPE_VIDEO)), Im.class));
+        statistics.setImTextCount(mongoTemplate.count(new Query(new Criteria(Im.TYPE_KEY).is(Im.TYPE_TEXT)), Im.class));
+        statistics.setImAudioCount(mongoTemplate.count(new Query(new Criteria(Im.TYPE_KEY).is(Im.TYPE_AUDIO)), Im.class));
+        statistics.setImVideoCount(mongoTemplate.count(new Query(new Criteria(Im.TYPE_KEY).is(Im.TYPE_VIDEO)), Im.class));
 
         //用时
         statistics.setCollectTimeMillis(System.currentTimeMillis() - begin);
@@ -127,11 +128,55 @@ public class StatisticsService extends AbstractMongoService {
         //用时
         statistics.setCollectTimeMillis(System.currentTimeMillis() - begin);
 
-        //即时消息
+        //即时通讯
         statistics.setImCount(mongoTemplate.count(new Query(dailyCriteria), Im.class));
-        statistics.setTextImCount(mongoTemplate.count(new Query(dailyCriteria).addCriteria(new Criteria(Im.TYPE_KEY).is(Im.TYPE_TEXT)), Im.class));
-        statistics.setAudioImCount(mongoTemplate.count(new Query(dailyCriteria).addCriteria(new Criteria(Im.TYPE_KEY).is(Im.TYPE_AUDIO)), Im.class));
-        statistics.setVideoImCount(mongoTemplate.count(new Query(dailyCriteria).addCriteria(new Criteria(Im.TYPE_KEY).is(Im.TYPE_VIDEO)), Im.class));
+
+        if (statistics.getImCount() > 0) {
+
+            statistics.setImTextCount(mongoTemplate.count(new Query(dailyCriteria).addCriteria(new Criteria(Im.TYPE_KEY).is(Im.TYPE_TEXT)), Im.class));
+            statistics.setImAudioCount(mongoTemplate.count(new Query(dailyCriteria).addCriteria(new Criteria(Im.TYPE_KEY).is(Im.TYPE_AUDIO)), Im.class));
+            statistics.setImVideoCount(mongoTemplate.count(new Query(dailyCriteria).addCriteria(new Criteria(Im.TYPE_KEY).is(Im.TYPE_VIDEO)), Im.class));
+
+            //即时通讯使用人数
+            String mapFunction = "function(){var u = {}; u[this.fromUserId] = 1; emit('from', u);}";
+            String reduceFunction = "function (key, emits) {\n" +
+                    "    var u = {};\n" +
+                    "    for (var i = 0; i < emits.length; i++) {\n" +
+                    "       for(var p in emits[i]){\n" +
+                    "          u[p] = u[p] ? (u[p] + emits[i][p]) : emits[i][p];\n" +
+                    "       }\n" +
+                    "    }\n" +
+                    "    return u;\n" +
+                    "}";
+            String finalizeFunction = "function(key, reducedValue) {" +
+                    "var count = 0; " +
+                    "for(var p in reducedValue){count++;} " +
+                    "return count;" +
+                    "}";
+            MapReduceResults<Map> mapReduceResults = mongoTemplate.mapReduce(
+                    new Query(dailyCriteria),
+                    mongoTemplate.getCollectionName(Im.class),
+                    mapFunction,
+                    reduceFunction,
+                    new MapReduceOptions().outputTypeInline().finalizeFunction(finalizeFunction),
+                    Map.class);
+
+            Iterator<Map> it = mapReduceResults.iterator();
+            if (it.hasNext()) {
+                statistics.setImFromUserCount(
+                        Long.parseLong(
+                                StringUtils.substringBefore(
+                                        it.next().get("value").toString(), ".")));
+            } else {
+                statistics.setImFromUserCount(0L);
+            }
+        } else {
+            statistics.setImTextCount(0L);
+            statistics.setImAudioCount(0L);
+            statistics.setImVideoCount(0L);
+            statistics.setImFromUserCount(0L);
+        }
+
 
         //保存
         mongoTemplate.remove(new Query(new Criteria(Statistics.STATISTICS_DATE_KEY).is(beginDate.getTime())), Statistics.COLLECTION_STATISTICS_DAILY);
@@ -141,15 +186,15 @@ public class StatisticsService extends AbstractMongoService {
         return statistics;
     }
 
-    public List<Statistics> get(Date beginDate, Date endDate) {
+    public List<Statistics> get(Date startDate, Date endDate) {
         Query query = new Query();
-        query.addCriteria(new Criteria(Statistics.STATISTICS_DATE_KEY).gte(beginDate).lte(endDate));
+        query.addCriteria(new Criteria(Statistics.STATISTICS_DATE_KEY).gte(startDate).lte(endDate));
         return mongoTemplate.find(query, Statistics.class, Statistics.COLLECTION_STATISTICS);
     }
 
-    public List<Statistics> getDaily(Date beginDate, Date endDate) {
+    public List<Statistics> getDaily(Date startDate, Date endDate) {
         Query query = new Query();
-        query.addCriteria(new Criteria(Statistics.STATISTICS_DATE_KEY).gte(beginDate).lte(endDate));
+        query.addCriteria(new Criteria(Statistics.STATISTICS_DATE_KEY).gte(startDate).lte(endDate));
         return mongoTemplate.find(query, Statistics.class, Statistics.COLLECTION_STATISTICS_DAILY);
     }
 

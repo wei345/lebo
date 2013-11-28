@@ -42,9 +42,9 @@ public class StatisticsClusterableJob extends QuartzJobBean {
         logger.info("          hashtag count : {}", statistics.getHashtagCount());
         logger.info("     notification count : {}", statistics.getNotificationCount());
         logger.info("               im count : {}", statistics.getImCount());
-        logger.info("          im text count : {}", statistics.getTextImCount());
-        logger.info("         im audio count : {}", statistics.getAudioImCount());
-        logger.info("         im video count : {}", statistics.getVideoImCount());
+        logger.info("          im text count : {}", statistics.getImTextCount());
+        logger.info("         im audio count : {}", statistics.getImAudioCount());
+        logger.info("         im video count : {}", statistics.getImVideoCount());
         logger.info("{} ms, by quartz cluster job on node {}.", statistics.getCollectTimeMillis(), nodeName);
     }
 }
