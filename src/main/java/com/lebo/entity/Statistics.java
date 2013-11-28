@@ -10,33 +10,46 @@ import java.util.Date;
  * Time: PM2:36
  */
 public class Statistics extends IdEntity{
-    private Long totalUserCount;
+    public static final String COLLECTION_STATISTICS = "statistics";
+    public static final String COLLECTION_STATISTICS_DAILY = "statistics.daily";
+
+    private Long userCount;
     private Long adminUserCount;
 
-    private Long totalPostCount;
+    private Long postCount;
     private Long originPostCount;
     private Long repostPostCount;
 
-    private Long totalCommentCount;
+    private Long commentCount;
     private Long audioCommentCount;
     private Long videoCommentCount;
 
-    private Long totalFavoriteCount;
-    private Long totalFollowCount;
-    private Long totalFriendshipCount;
+    private Long favoriteCount;
+
+    private Long followCount;
+    private Long friendshipCount;
+
     private Long hashtagCount;
+
     private Long notificationCount;
+
     private Long quartzJobCount;
 
-    private Date createdAt;
+    private Long imCount;
+    private Long textImCount;
+    private Long videoImCount;
+    private Long audioImCount;
+
+    private Date statisticsDate;
+    public static final String STATISTICS_DATE_KEY = "statisticsDate";
     private Long collectTimeMillis; //本次收集数据花费的时间，毫秒
 
-    public Long getTotalUserCount() {
-        return totalUserCount;
+    public Long getUserCount() {
+        return userCount;
     }
 
-    public void setTotalUserCount(Long totalUserCount) {
-        this.totalUserCount = totalUserCount;
+    public void setUserCount(Long userCount) {
+        this.userCount = userCount;
     }
 
     public Long getAdminUserCount() {
@@ -47,12 +60,12 @@ public class Statistics extends IdEntity{
         this.adminUserCount = adminUserCount;
     }
 
-    public Long getTotalPostCount() {
-        return totalPostCount;
+    public Long getPostCount() {
+        return postCount;
     }
 
-    public void setTotalPostCount(Long totalPostCount) {
-        this.totalPostCount = totalPostCount;
+    public void setPostCount(Long postCount) {
+        this.postCount = postCount;
     }
 
     public Long getOriginPostCount() {
@@ -71,12 +84,12 @@ public class Statistics extends IdEntity{
         this.repostPostCount = repostPostCount;
     }
 
-    public Long getTotalCommentCount() {
-        return totalCommentCount;
+    public Long getCommentCount() {
+        return commentCount;
     }
 
-    public void setTotalCommentCount(Long totalCommentCount) {
-        this.totalCommentCount = totalCommentCount;
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
     }
 
     public Long getAudioCommentCount() {
@@ -95,20 +108,20 @@ public class Statistics extends IdEntity{
         this.videoCommentCount = videoCommentCount;
     }
 
-    public Long getTotalFavoriteCount() {
-        return totalFavoriteCount;
+    public Long getFavoriteCount() {
+        return favoriteCount;
     }
 
-    public void setTotalFavoriteCount(Long totalFavoriteCount) {
-        this.totalFavoriteCount = totalFavoriteCount;
+    public void setFavoriteCount(Long favoriteCount) {
+        this.favoriteCount = favoriteCount;
     }
 
-    public Long getTotalFollowCount() {
-        return totalFollowCount;
+    public Long getFollowCount() {
+        return followCount;
     }
 
-    public void setTotalFollowCount(Long totalFollowCount) {
-        this.totalFollowCount = totalFollowCount;
+    public void setFollowCount(Long followCount) {
+        this.followCount = followCount;
     }
 
     public Long getHashtagCount() {
@@ -135,14 +148,6 @@ public class Statistics extends IdEntity{
         this.quartzJobCount = quartzJobCount;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Long getCollectTimeMillis() {
         return collectTimeMillis;
     }
@@ -151,32 +156,76 @@ public class Statistics extends IdEntity{
         this.collectTimeMillis = collectTimeMillis;
     }
 
-    public Long getTotalFriendshipCount() {
-        return totalFriendshipCount;
+    public Long getFriendshipCount() {
+        return friendshipCount;
     }
 
-    public void setTotalFriendshipCount(Long totalFriendshipCount) {
-        this.totalFriendshipCount = totalFriendshipCount;
+    public void setFriendshipCount(Long friendshipCount) {
+        this.friendshipCount = friendshipCount;
+    }
+
+    public Date getStatisticsDate() {
+        return statisticsDate;
+    }
+
+    public void setStatisticsDate(Date statisticsDate) {
+        this.statisticsDate = statisticsDate;
+    }
+
+    public Long getImCount() {
+        return imCount;
+    }
+
+    public void setImCount(Long imCount) {
+        this.imCount = imCount;
+    }
+
+    public Long getTextImCount() {
+        return textImCount;
+    }
+
+    public void setTextImCount(Long textImCount) {
+        this.textImCount = textImCount;
+    }
+
+    public Long getVideoImCount() {
+        return videoImCount;
+    }
+
+    public void setVideoImCount(Long videoImCount) {
+        this.videoImCount = videoImCount;
+    }
+
+    public Long getAudioImCount() {
+        return audioImCount;
+    }
+
+    public void setAudioImCount(Long audioImCount) {
+        this.audioImCount = audioImCount;
     }
 
     @Override
     public String toString() {
         return "Statistics{" +
-                "totalUserCount=" + totalUserCount +
+                "userCount=" + userCount +
                 ", adminUserCount=" + adminUserCount +
-                ", totalPostCount=" + totalPostCount +
+                ", postCount=" + postCount +
                 ", originPostCount=" + originPostCount +
                 ", repostPostCount=" + repostPostCount +
-                ", totalCommentCount=" + totalCommentCount +
+                ", commentCount=" + commentCount +
                 ", audioCommentCount=" + audioCommentCount +
                 ", videoCommentCount=" + videoCommentCount +
-                ", totalFavoriteCount=" + totalFavoriteCount +
-                ", totalFollowCount=" + totalFollowCount +
-                ", totalFriendshipCount=" + totalFriendshipCount +
+                ", favoriteCount=" + favoriteCount +
+                ", followCount=" + followCount +
+                ", friendshipCount=" + friendshipCount +
                 ", hashtagCount=" + hashtagCount +
                 ", notificationCount=" + notificationCount +
                 ", quartzJobCount=" + quartzJobCount +
-                ", createdAt=" + createdAt +
+                ", imCount=" + imCount +
+                ", textImCount=" + textImCount +
+                ", videoImCount=" + videoImCount +
+                ", audioImCount=" + audioImCount +
+                ", statisticsDate=" + statisticsDate +
                 ", collectTimeMillis=" + collectTimeMillis +
                 "} " + super.toString();
     }

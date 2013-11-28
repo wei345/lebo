@@ -9,11 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import java.util.Calendar;
 import java.util.Map;
 
-public class StatisticsClusterableJob extends QuartzJobBean {
+public class StatisticsDailyClusterableJob extends QuartzJobBean {
 
-    private static Logger logger = LoggerFactory.getLogger(StatisticsClusterableJob.class);
+    private static Logger logger = LoggerFactory.getLogger(StatisticsDailyClusterableJob.class);
 
     private ApplicationContext applicationContext;
 
@@ -26,10 +27,19 @@ public class StatisticsClusterableJob extends QuartzJobBean {
         StatisticsService statisticsService = applicationContext.getBean(StatisticsService.class);
         Map config = (Map) applicationContext.getBean("timerJobConfig");
 
-        Statistics statistics = statisticsService.create();
+        Calendar yestoday = Calendar.getInstance();
+        yestoday.add(Calendar.DAY_OF_MONTH, -1);
+
+        int year = yestoday.get(Calendar.YEAR);
+        int month = yestoday.get(Calendar.MONTH) + 1;
+        int date = yestoday.get(Calendar.DAY_OF_MONTH);
+
+        //统计昨天数据
+        Statistics statistics = statisticsService.createDaily(year, month, date);
+
         String nodeName = (String) config.get("nodeName");
 
-        logger.info("统计 :");
+        logger.info("统计昨天({}-{}-{}) :", year, month, date);
         logger.info("             user count : {}", statistics.getUserCount());
         logger.info("             post count : {}", statistics.getPostCount());
         logger.info("      origin post count : {}", statistics.getOriginPostCount());
@@ -38,8 +48,6 @@ public class StatisticsClusterableJob extends QuartzJobBean {
         logger.info("    audio comment count : {}", statistics.getAudioCommentCount());
         logger.info("    video comment count : {}", statistics.getVideoCommentCount());
         logger.info("   favorite count count : {}", statistics.getFavoriteCount());
-        logger.info("           follow count : {}", statistics.getFollowCount());
-        logger.info("          hashtag count : {}", statistics.getHashtagCount());
         logger.info("     notification count : {}", statistics.getNotificationCount());
         logger.info("               im count : {}", statistics.getImCount());
         logger.info("          im text count : {}", statistics.getTextImCount());

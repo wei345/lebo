@@ -4,6 +4,7 @@ import com.lebo.SpringContextTestCase;
 import com.lebo.entity.Statistics;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springside.modules.mapper.JsonMapper;
 
 /**
  * @author: Wei Liu
@@ -19,5 +20,12 @@ public class StatisticsServiceTest extends SpringContextTestCase {
     public void create() throws Exception {
         Statistics statistics = statisticsService.create();
         System.out.println(statistics);
+    }
+
+    @Test
+    public void createDaily(){
+        Statistics statistics = statisticsService.createDaily(2013, 11, 27);
+        JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
+        System.out.println(jsonMapper.toJson(statistics));
     }
 }
