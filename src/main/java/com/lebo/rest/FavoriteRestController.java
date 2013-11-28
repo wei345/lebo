@@ -75,6 +75,9 @@ public class FavoriteRestController {
         }
 
         favoriteService.destroy(accountService.getCurrentUserId(), statusService.getOriginPostId(post));
-        return statusService.toStatusDto(post);
+
+        post = statusService.getPost(id); //获得新的收藏数
+
+        return statusService.toBasicStatusDto(post);
     }
 }
