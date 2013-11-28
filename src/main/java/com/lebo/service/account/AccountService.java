@@ -433,7 +433,12 @@ public class AccountService extends AbstractMongoService {
         fileStorageService.save(fileInfo);
         user.setProfileImageOriginal(fileInfo.getKey());
 
-        saveUser(user);
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(user.getId())),
+                new Update().set(User.PROFILE_IMAGE_NORMAL_KEY, user.getProfileImageNormal())
+                        .set(User.PROFILE_IMAGE_BIGGER_KEY, user.getProfileImageBigger())
+                        .set(User.PROFILE_IMAGE_ORIGIN_KEY, user.getProfileImageOriginal()),
+                User.class);
     }
 
     /**
