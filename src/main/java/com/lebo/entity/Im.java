@@ -23,7 +23,11 @@ public class Im extends IdEntity {
     private List<FileInfo> attachments;
     private Integer type;
     public static final String TYPE_KEY = "type";
+    public static final int TYPE_TEXT = 1;
+    public static final int TYPE_AUDIO = 2;
+    public static final int TYPE_VIDEO = 3;
     private Date createdAt;
+    public static final String CREATED_AT_KEY = "createdAt";
     @Indexed(direction = IndexDirection.DESCENDING)
     private Long messageTime;  //客户端提交的消息时间
     public static final String MESSAGE_TIME_KEY = "messageTime";

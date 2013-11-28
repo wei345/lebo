@@ -16,10 +16,12 @@
     <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
     <link href="${ctx}/static/bootstrap/2.2.2/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
     <link href="${ctx}/static/jquery-validation/1.11.0/validate.css" type="text/css" rel="stylesheet"/>
+    <link href="${ctx}/static/jquery-ui/jquery-ui-1.10.3.custom.css" type="text/css" rel="stylesheet"/>
     <link href="${ctx}/static/styles/default.css" type="text/css" rel="stylesheet"/>
     <script src="${ctx}/static/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-validation/1.11.0/jquery.validate.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-validation/1.11.0/messages_bs_zh.js" type="text/javascript"></script>
+    <script src="${ctx}/static/jquery-ui/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
     <script src="${ctx}/static/application.js" type="text/javascript"></script>
 
     <sitemesh:head/>
