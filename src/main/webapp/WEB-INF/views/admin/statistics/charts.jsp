@@ -36,8 +36,8 @@
         </a>
         <ul class="dropdown-menu">
             <li><a href="#" onclick="recentDateRange(7)">最近 1 周</a>
+            <li><a href="#" onclick="recentDateRange(14)">最近 2 周</a>
             <li><a href="#" onclick="recentDateRange(30)">最近 1 个月</a>
-            <li><a href="#" onclick="recentDateRange(30)">最近 2 个月</a>
         </ul>
     </div>
 
@@ -46,13 +46,17 @@
 
 <div id="daily-ims-chart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 
+<hr style="margin: 40px 0"/>
+
+<div id="daily-ims-user-chart" style="min-width: 400px; height: 300px; margin: 0 auto"></div>
+
 <script>
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: 'daily-ims-chart',
             type: 'line',
             marginRight: 130,
-            marginBottom: 40
+            marginBottom: 80
         },
         title: {
             text: '每日即时通讯统计',
@@ -69,7 +73,7 @@
             min: 0,
             allowDecimals: false,
             title: {
-                text: '数量'
+                text: '数量(条)'
             },
             plotLines: [
                 {
@@ -109,7 +113,57 @@
             {
                 name: '文字消息',
                 data: [<c:forEach items="${dailyList}" var="item" varStatus="status">${item.imTextCount}<c:if test="${!status.last}">, </c:if></c:forEach>]
+            }
+        ]
+    });
+
+    new Highcharts.Chart({
+        chart: {
+            renderTo: 'daily-ims-user-chart',
+            type: 'line',
+            marginRight: 130,
+            marginBottom: 80
+        },
+        title: {
+            text: '每日即时通讯统计',
+            x: -20 //center
+        },
+        subtitle: {
+            text: '${startDate} -- ${endDate}',
+            x: -20
+        },
+        xAxis: {
+            categories: [<c:forEach items="${dailyList}" var="item" varStatus="status">'<fmt:formatDate type="date" value="${item.statisticsDate}" pattern="M.d"/>'<c:if test="${!status.last}">, </c:if></c:forEach>]
+        },
+        yAxis: {
+            min: 0,
+            allowDecimals: false,
+            title: {
+                text: '数量(人)'
             },
+            plotLines: [
+                {
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }
+            ]
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                        this.x.replace('.', '月') + '日: ' + this.y + '人';
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -10,
+            y: 100,
+            borderWidth: 0
+        },
+        series: [
             {
                 name: '发消息的用户',
                 data: [<c:forEach items="${dailyList}" var="item" varStatus="status">${item.imFromUserCount}<c:if test="${!status.last}">, </c:if></c:forEach>]
