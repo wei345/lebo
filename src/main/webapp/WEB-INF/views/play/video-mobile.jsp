@@ -157,7 +157,7 @@
 <script type='text/javascript'>
     <c:if test="${!pvt}"> <%--私有视频不跳到乐播APP--%>
     if (/iPhone|iPad|iPod|iOS/i.test(navigator.userAgent)) {
-        window.location.href = 'lebo://topic/${post.id}'
+        window.location.href = 'lebo://topic/${post.id}';
     }
     </c:if>
     var vdesc = document.getElementById('video_desc');
