@@ -39,7 +39,9 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
         return String.format("https://api.weibo.com/oauth2/authorize?response_type=code&client_id=%s&redirect_uri=%s", weibo_api_key, baseurl + weibo_redirect_uri);
     }*/
 
-    public User getUser(String token) {
+    public User getUser(OauthToken oauthToken) {
+        String token = oauthToken.getToken();
+
         String uid = weiboService.getUid(token);
         Map userInfo = weiboService.getUserInfo(token, uid);
 

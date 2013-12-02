@@ -6,7 +6,6 @@ import com.lebo.event.AfterFavoriteCreateEvent;
 import com.lebo.event.AfterFavoriteDestroyEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.repository.FavoriteDao;
-import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PaginationParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,10 @@ public class FavoriteService extends AbstractMongoService {
             if (post == null) {
                 throw new ServiceException("原始Post不存在");
             }
+        }
+
+        if (!post.isPublic()) {
+            throw new ServiceException("不能喜欢非所有人可见的视频");
         }
 
         Favorite favorite = new Favorite(userId, post.getId(), post.getUserId());

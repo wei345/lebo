@@ -51,6 +51,7 @@ public class Post extends IdEntity {
     //提到的用户的ID
     @Indexed
     private LinkedHashSet<String> mentionUserIds;
+    public static final String MENTION_USER_IDS = "mentionUserIds";
     private List<UserMention> userMentions;
     @Indexed
     private LinkedHashSet<String> hashtags;
@@ -76,6 +77,34 @@ public class Post extends IdEntity {
 
     //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
     private String pikeId;
+
+    /**
+     * 访问控制列表
+     * <ul>
+     * <li>1 相互关注的人可见</li>
+     * <li>2 粉丝(不含相互关注)可见</li>
+     * <li>4 其他人可见</li>
+     * <li><code>null</code>和<code>7</code>(1 + 2 + 4)一样表示所有人可以访问</li>
+     * <li>所有者总是可见</li>
+     * <li>转发帖不受权限限制</li>
+     * </ul>
+     * <p/>
+     * <p>
+     * 该字段只在服务端内部使用，对客户端不可见。服务端可以随时重新定义此字段。
+     * </p>
+     * <p/>
+     * <p>
+     * 目前使用的值: null, 0
+     * </p>
+     */
+    @Indexed
+    private Integer acl;
+    public static final String ACL_KEY = "acl";
+    /**
+     * 只有所有者可见
+     */
+    public static final Integer ACL_PRIVATE = 0;
+    public static final Integer ACL_DEFAULT = null;
 
     public static class UserMention {
         private String userId;
@@ -302,5 +331,21 @@ public class Post extends IdEntity {
 
     public void setRating(Integer rating) {
         this.rating = rating;
+    }
+
+    public Integer getAcl() {
+        return acl;
+    }
+
+    public void setAcl(Integer acl) {
+        this.acl = acl;
+    }
+
+    public boolean getPvt() {
+        return (acl != null && acl == ACL_PRIVATE);
+    }
+
+    public boolean isPublic(){
+        return acl == null;
     }
 }

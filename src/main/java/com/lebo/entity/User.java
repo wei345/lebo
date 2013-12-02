@@ -46,6 +46,10 @@ public class User extends IdEntity {
     //origin 可以很大
     private String profileImageOriginal;
     public static final String PROFILE_IMAGE_ORIGIN_KEY = "profileImageOriginal";
+    //background image
+    private String profileBackgroundImage;
+    public static final String PROFILE_BACKGROUND_IMAGE_KEY = "profileBackgroundImage";
+    public static final int PROFILE_BACKGROUND_IMAGE_SIZE = 1024;
     @Indexed
     private Date createdAt;
     public static final String CREATED_AT_KEY = "createdAt";
@@ -117,6 +121,8 @@ public class User extends IdEntity {
     public static final String WEIBO_TOKEN_KEY = "weiboToken";
     private String renrenToken;//用人人账号登录的token
     public static final String RENREN_TOKEN_KEY = "renrenToken";
+    private String qqToken;
+    public static final String QQ_TOKEN_KEY = "qqToken";
 
     //查找好友功能用到的token
     private String findFriendWeiboToken;
@@ -510,6 +516,26 @@ public class User extends IdEntity {
 
     public void setFriendsCount(Integer friendsCount) {
         this.friendsCount = friendsCount;
+    }
+
+    public String getQqToken() {
+        return qqToken;
+    }
+
+    public void setQqToken(String qqToken) {
+        this.qqToken = qqToken;
+    }
+
+    public String getProfileBackgroundImage() {
+        return profileBackgroundImage;
+    }
+
+    public void setProfileBackgroundImage(String profileBackgroundImage) {
+        this.profileBackgroundImage = profileBackgroundImage;
+    }
+
+    public String getProfileBackgroundImageUrl(){
+        return FileContentUrlUtils.getContentUrl(profileBackgroundImage);
     }
 
     @Override

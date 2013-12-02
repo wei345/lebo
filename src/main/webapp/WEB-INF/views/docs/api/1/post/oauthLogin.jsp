@@ -5,10 +5,14 @@
 
 <tags:form name="OAuth登录" method="POST" action="${ctx}/api/1/oauthLogin.json">
     <p>
-        provider: weibo, renren
+        provider: weibo, renren, qq
     </p>
-    <tags:field name="provider" value="weibo"/>
-    <tags:field name="token" value="2.00vHLEwBz7QwTCbafc736d580QUCCY"/>
+    <tags:field name="provider" value=""/>
+    <p>
+        uid: qq登录必需
+    </p>
+    <tags:field name="uid" optional="true"/>
+    <tags:field name="token" value=""/>
 </tags:form>
 
 <tags:example method="POST" url="/api/1/oauthLogin.json?provider=weibo&token=2.00vHLEwBz7QwTCbafc736d580QUCCY">

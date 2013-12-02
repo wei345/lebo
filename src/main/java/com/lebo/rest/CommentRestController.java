@@ -89,6 +89,10 @@ public class CommentRestController {
                     return ErrorDto.badRequest(String.format("postId[%s]不存在", postId));
                 }
 
+                if(!post.isPublic()){
+                    return ErrorDto.badRequest("不能评论非所有人可见的视频");
+                }
+
                 if (post.getOriginPostId() == null) {
                     comment.setPostId(postId);
                 } else {
@@ -304,6 +308,11 @@ public class CommentRestController {
             if (post == null) {
                 return ErrorDto.badRequest(String.format("postId[%s]不存在", postId));
             }
+
+            if(!post.isPublic()){
+                return ErrorDto.badRequest("不能评论非所有人可见的视频");
+            }
+
             //回复原始贴
             if (post.getOriginPostId() == null) {
                 comment.setPostId(postId);

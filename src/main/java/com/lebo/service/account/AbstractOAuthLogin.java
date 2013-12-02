@@ -49,7 +49,7 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken, String realmName) throws AuthenticationException {
         OauthToken authcToken = (OauthToken) authenticationToken;
         try {
-            User user = getUser(authcToken.getToken());
+            User user = getUser(authcToken);
             OAuthAuthenticationInfo info = new OAuthAuthenticationInfo(
                     new ShiroUser(user.getId(), user.getScreenName(), user.getName(), user.getProfileImageUrl(), getPrivoder()),
                     realmName);
@@ -85,7 +85,7 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
      * @param token OAuth Token
      * @return 返回ShiroUser，不可返回null，如果OAuth验证失败，要抛出异常
      */
-    abstract public User getUser(String token);
+    abstract public User getUser(OauthToken token);
 
     abstract public String getPrivoder();
 }
@@ -118,6 +118,13 @@ class OauthToken extends UsernamePasswordToken {
     }
 
     public OauthToken(String provider, String token, boolean rememberMe) {
+        this.provider = provider;
+        this.token = token;
+        setRememberMe(rememberMe);
+    }
+
+    public OauthToken(String provider,  String uid, String token,boolean rememberMe) {
+        this.uid = uid;
         this.provider = provider;
         this.token = token;
         setRememberMe(rememberMe);

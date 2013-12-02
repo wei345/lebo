@@ -92,6 +92,7 @@ public class ALiYunStorageServiceImpl implements ALiYunStorageService {
 
         // 处理Object
         FileInfo fileInfo = new FileInfo();
+        fileInfo.setKey(id);
         fileInfo.setContent(object.getObjectContent());
         fileInfo.setLength(meta.getContentLength());
         fileInfo.setLastModified(meta.getLastModified().getTime());

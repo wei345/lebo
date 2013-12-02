@@ -74,7 +74,7 @@ public class StatusRestController {
                     + ")太大");
         }
 
-        return createPost(text, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image), source);
+        return createPost(text, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image), source, Post.ACL_DEFAULT);
     }
 
     /**
@@ -149,10 +149,14 @@ public class StatusRestController {
                 }
             }
 
+            if (!originPost.isPublic()) {
+                return ErrorDto.badRequest("不能转发非所有人可见的视频");
+            }
+
             //转发
             Post post = statusService.getRepost(accountService.getCurrentUserId(), originPost);
             if (post == null) {
-                post = statusService.createPost(accountService.getCurrentUserId(), text, null, null, originPost, source);
+                post = statusService.createPost(accountService.getCurrentUserId(), text, null, null, originPost, source, Post.ACL_DEFAULT);
             }
             return statusService.toStatusDto(post);
 
@@ -352,7 +356,8 @@ public class StatusRestController {
                               @RequestParam("imageUrl") String imageUrl,
                               @RequestParam("duration") Long duration,
                               @RequestParam(value = "text", defaultValue = "") String text,
-                              @RequestParam(value = "source", required = false) String source) throws IOException {
+                              @RequestParam(value = "source", required = false) String source,
+                              @RequestParam(value = "pvt", defaultValue = "false") boolean pvt) throws IOException {
 
         FileInfo videoFileInfo = aLiYunStorageService.getTmpFileInfoFromUrl(videoUrl);
         videoFileInfo.setDuration(duration);
@@ -370,10 +375,12 @@ public class StatusRestController {
             throw e;
         }
 
-        return createPost(text, videoFileInfo, imageFileInfo, source);
+        Integer acl = pvt ? Post.ACL_PRIVATE : Post.ACL_DEFAULT;
+
+        return createPost(text, videoFileInfo, imageFileInfo, source, acl);
     }
 
-    private Object createPost(String text, FileInfo video, FileInfo videoFirstFrame, String source) {
+    private Object createPost(String text, FileInfo video, FileInfo videoFirstFrame, String source, Integer acl) {
         //去掉 #最新视频#，永远不需要这个标签
         String newPostHashtag = "#最新视频#";
         if (text.contains(newPostHashtag)) {
@@ -385,7 +392,8 @@ public class StatusRestController {
         String firstVideoHashtag = "#新人报到#";
         User user = accountService.getUser(accountService.getCurrentUserId());
         //用户第一次发视频
-        if (user.getStatusesCount() == null || user.getStatusesCount() == 0) {
+        if (acl == Post.ACL_DEFAULT
+                && (user.getStatusesCount() == null || user.getStatusesCount() == 0)) {
             if (!text.contains(firstVideoHashtag)) {
                 text += firstVideoHashtag;
                 logger.debug("自动添加了{} : {}", firstVideoHashtag, text);
@@ -400,7 +408,7 @@ public class StatusRestController {
         }
 
         Post post = statusService.createPost(accountService.getCurrentUserId(), text, video,
-                videoFirstFrame, null, source);
+                videoFirstFrame, null, source, acl);
 
         return statusService.toStatusDto(post);
     }

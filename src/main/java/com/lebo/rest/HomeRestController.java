@@ -46,6 +46,7 @@ public class HomeRestController {
     @RequestMapping(value = "1/oauthLogin", method = RequestMethod.POST)
     @ResponseBody
     public Object oauthLogin(@RequestParam("provider") String provider,
+                             @RequestParam(value = "uid", required = false) String uid,
                              @RequestParam("token") String token) {
 
         // 登出当前用户
@@ -56,28 +57,28 @@ public class HomeRestController {
 
         // 登录
         try {
-            currentUser.login(AbstractShiroLogin.useOAuthLogin(provider, token, context));
+            currentUser.login(AbstractShiroLogin.useOAuthLogin(provider, uid, token, context));
 
             //返回用户设置和用户信息
             User user = accountService.getUser(accountService.getCurrentUserId());
             UserDto userDto = accountService.toBasicUserDto(user);
             AccountSettingDto settingDto = accountService.toAccountSettingDto(user);
 
-            Map<String, Object> ret = new HashMap<String, Object>();
-            BeanMapper.copy(userDto, ret);
-            BeanMapper.copy(settingDto, ret);
+            Map<String, Object> userInfo = new HashMap<String, Object>();
+            BeanMapper.copy(userDto, userInfo);
+            BeanMapper.copy(settingDto, userInfo);
             //去掉null值
             List<String> deletes = new ArrayList<String>();
-            for (Map.Entry<String, Object> entry : ret.entrySet()) {
+            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
                 if (entry.getValue() == null) {
                     deletes.add(entry.getKey());
                 }
             }
             for (String key : deletes) {
-                ret.remove(key);
+                userInfo.remove(key);
             }
 
-            return ret;
+            return userInfo;
         } catch (Exception e) {
             logger.info("登录失败", e);
             return ErrorDto.badRequest(e.getMessage());

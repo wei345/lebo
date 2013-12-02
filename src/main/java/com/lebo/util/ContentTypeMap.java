@@ -12,6 +12,9 @@ import java.util.Map;
  */
 public class ContentTypeMap {
 
+    public static final String IMAGE_JPEG = "image/jpeg";
+    public static final String IMAGE_PNG = "image/png";
+
     private static Map<String, String> contentType2extension = new HashMap<String, String>();
 
     private static Map<String, String> extension2ContentType = new HashMap<String, String>();

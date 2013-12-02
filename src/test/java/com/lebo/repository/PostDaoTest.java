@@ -22,29 +22,6 @@ public class PostDaoTest extends SpringContextTestCase implements UnStable {
     private PostDao postDao;
 
     @Test
-    public void findByUserId() {
-        Pageable pageRequest = new PageRequest(0, 2, new Sort(new Sort.Order(Sort.Direction.ASC, "_id")));
-        Page<Post> page = postDao.findByUserId("51da5bd71a881f1acdcb6308", pageRequest);
-        assertTrue(page.hasNextPage());
-        assertEquals(2, page.getTotalPages());
-
-        //验证ID顺序
-        assertTrue(page.getContent().get(0).getId().compareTo(page.getContent().get(1).getId()) < 0);
-    }
-
-    @Test
-    public void findByUserIdAndIdLessThanEquals() {
-        Pageable pageRequest = new PageRequest(0, 2, new Sort(new Sort.Order(Sort.Direction.DESC, "_id")));
-        Page<Post> page = postDao.userTimeline("51da5bd71a881f1acdcb6308",
-                "51da68381a88c135cf1f39de", "000000000000000000000000", pageRequest);
-
-        assertTrue(page.hasNextPage());
-        assertEquals(2, page.getTotalPages());
-        //验证ID顺序
-        assertTrue(page.getContent().get(0).getId().compareTo(page.getContent().get(1).getId()) > 0);
-    }
-
-    @Test
     public void findByUserIdAndOriginPostId() {
         Post post = postDao.findByUserIdAndOriginPostId("51e778ea1a8816dc79e40aaf", "51e3a0ca1a8890916e962c94");
         assertNotNull(post);

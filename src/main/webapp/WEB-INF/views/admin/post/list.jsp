@@ -181,6 +181,10 @@
                     </a>
 
                     <span class="time" title="发布时间">${item.createdAt}</span>
+
+                    <c:if test="${item.pvt}">
+                        <span class="icon-lock pull-right" title="只对作者本人可见"></span>
+                    </c:if>
                 </div>
 
                 <p class="content">${item.text}</p>

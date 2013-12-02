@@ -30,7 +30,9 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
     private Logger logger = LoggerFactory.getLogger(ShiroRenRenLogin.class);
 
     @Override
-    public User getUser(String token) {
+    public User getUser(OauthToken oauthToken) {
+        String token = oauthToken.getToken();
+
         String url = "https://api.renren.com/v2/user/get?access_token=" + token;
         Map map = restTemplate.getForObject(url, Map.class);
         if (map == null || ((Map) map.get("response")).get("name") == null) {

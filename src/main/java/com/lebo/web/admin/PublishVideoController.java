@@ -1,6 +1,7 @@
 package com.lebo.web.admin;
 
 import com.lebo.entity.FileInfo;
+import com.lebo.entity.Post;
 import com.lebo.entity.Task;
 import com.lebo.entity.User;
 import com.lebo.service.FileContentUrlUtils;
@@ -128,7 +129,7 @@ public class PublishVideoController {
             }
             //立即发布
             else {
-                statusService.createPost(userId, text, videoFileInfo, videoFirstFrameInfo, null, "后台");
+                statusService.createPost(userId, text, videoFileInfo, videoFirstFrameInfo, null, "后台", Post.ACL_DEFAULT);
             }
 
             // 删除临时文件

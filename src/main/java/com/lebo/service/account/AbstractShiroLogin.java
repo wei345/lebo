@@ -5,6 +5,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.springframework.util.Assert;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
@@ -18,9 +19,10 @@ public abstract class AbstractShiroLogin {
     private static final ThreadLocal<AbstractShiroLogin> shiroLogin = new ThreadLocal<AbstractShiroLogin>();
     private static ShiroWeiboLogin shiroWeiboLogin;
     private static ShiroRenRenLogin shiroRenRenLogin;
+    private static ShiroQQLogin shiroQqLogin;
     private static ShiroDbLogin shiroDbLogin;
 
-    public static OauthToken useOAuthLogin(String provider, String token, ServletContext application) {
+    public static OauthToken useOAuthLogin(String provider, String uid, String token, ServletContext application) {
         //新浪微博登录
         if (ShiroWeiboLogin.PROVIDER.equals(provider)) {
             if (shiroWeiboLogin == null) {
@@ -38,6 +40,17 @@ public abstract class AbstractShiroLogin {
             shiroLogin.set(shiroRenRenLogin);
 
             return new OauthToken(provider, token, true);
+        }
+        //QQ登录
+        else if (ShiroQQLogin.PROVIDER.equals(provider)) {
+            Assert.notNull(uid);
+
+            if (shiroQqLogin == null) {
+                shiroQqLogin = WebApplicationContextUtils.getWebApplicationContext(application).getBean(ShiroQQLogin.class);
+            }
+            shiroLogin.set(shiroQqLogin);
+
+            return new OauthToken(provider, uid, token, true);
         }
         //不支持的登录类型
         else {
