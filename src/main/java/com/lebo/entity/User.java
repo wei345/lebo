@@ -63,10 +63,10 @@ public class User extends IdEntity {
     // --- 下面是用户隐私数据 --- //
     @Indexed
     private LinkedHashSet<String> oAuthIds;
-    private Character gender;
+    private String gender;
     public static final String GENDER_KEY = "gender";
-    public static final char GENDER_MALE = 'm';
-    public static final char GENDER_FEMALE = 'f';
+    public static final String GENDER_MALE = "m";
+    public static final String GENDER_FEMALE = "f";
     //TODO 在设置email时，保证唯一
     @Indexed
     private String email;
@@ -241,11 +241,11 @@ public class User extends IdEntity {
         this.oAuthIds = oAuthIds;
     }
 
-    public Character getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Character gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

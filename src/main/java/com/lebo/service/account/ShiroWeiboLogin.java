@@ -69,7 +69,7 @@ public class ShiroWeiboLogin extends AbstractOAuthLogin {
 
             //TODO 2014年1月删除此段代码
             //早期，未获取登录用户性别
-            Character gender = getGender((String) userInfo.get("gender"));
+            String gender = getGender((String) userInfo.get("gender"));
             if (gender != null && !gender.equals(user.getGender())) {
                 mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(user.getId())),
                         new Update().set(User.GENDER_KEY, gender),

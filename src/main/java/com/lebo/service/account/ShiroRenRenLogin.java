@@ -79,7 +79,7 @@ public class ShiroRenRenLogin extends AbstractOAuthLogin {
             //TODO 2014年1月删除此段代码
             //早期，未获取登录用户性别
             Map basicInformation = (Map) userInfo.get("basicInformation");
-            Character gender = getGender((String) basicInformation.get("sex"));
+            String gender = getGender((String) basicInformation.get("sex"));
             if(gender != null && !gender.equals(user.getGender())){
                 mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(user.getId())),
                         new Update().set(User.GENDER_KEY, gender),

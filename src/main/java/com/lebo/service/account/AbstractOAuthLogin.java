@@ -66,7 +66,7 @@ public abstract class AbstractOAuthLogin extends AbstractShiroLogin {
         }
     }
 
-    protected Character getGender(String gender) {
+    protected String getGender(String gender) {
 
         if ("女".equals(gender) || "FEMALE".equalsIgnoreCase(gender) || "f".equalsIgnoreCase(gender)) {
             return User.GENDER_FEMALE;
