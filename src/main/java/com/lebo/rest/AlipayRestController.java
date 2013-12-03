@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -64,9 +66,15 @@ public class AlipayRestController {
                                HttpServletRequest request) {
 
         logger.debug("支付宝回调参数:");
-        Map<String, String> params = request.getParameterMap();
-        for (Map.Entry entry : params.entrySet()) {
-            logger.debug("    {} : {}", entry.getKey(), entry.getValue());
+
+        Enumeration names = request.getParameterNames();
+        Map<String, String> params = new HashMap<String, String>();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement().toString();
+            String value = request.getParameter(name);
+
+            logger.debug("    {} : {}", name, value);
+            params.put(name, value);
         }
 
         logger.debug("正在验证签名..");
