@@ -9,7 +9,6 @@
         <result property="name" column="name"/>
         <result property="description" column="description"/>
         <result property="price" column="price"/>
-        <result property="discount" column="discount"/>
         <result property="imageNormal" column="image_normal"/>
         <result property="imageBigger" column="image_bigger"/>
     </resultMap>
@@ -19,7 +18,6 @@
         name,
         description,
         price,
-        discount,
         image_normal,
         image_bigger
         from vg_goods
@@ -31,7 +29,6 @@
         name,
         description,
         price,
-        discount,
         image_normal,
         image_bigger
         from vg_goods

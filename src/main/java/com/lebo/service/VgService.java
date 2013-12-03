@@ -57,8 +57,8 @@ public class VgService {
     @Value("${alipay.seller_id}")
     public String alipaySellerId;
 
-    public GoldOrder createOrder(Long goldProductId, String mongoUserId) {
-        GoldOrder goldOrder = new GoldOrder(mongoUserId, BigDecimal.ZERO, GoldOrder.Status.UNPAID);
+    public GoldOrder createOrder(Long goldProductId, String userId) {
+        GoldOrder goldOrder = new GoldOrder(userId, BigDecimal.ZERO, GoldOrder.Status.UNPAID);
 
         GoldProduct goldProduct = goldProductDao.get(goldProductId);
         Assert.notNull(goldProduct);
