@@ -158,7 +158,21 @@ public class StatusService extends AbstractMongoService {
     public List<Post> userTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "userId不能为空");
 
+        if (!param.isIncludeOriginPosts() && !param.isIncludeReposts()) {
+            //既不含原始帖也不含转发贴，那就没内容了
+            return Collections.EMPTY_LIST;
+        }
+
         Query query = new Query(new Criteria(Post.USER_ID_KEY).is(param.getUserId()));
+
+        if (!param.isIncludeReposts()) {
+            query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        }
+
+        if (!param.isIncludeOriginPosts()) {
+            query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).ne(null));
+        }
+
         paginationById(query, param);
 
         try {
