@@ -5,10 +5,9 @@
 
 <tags:form name="赠送物品" method="POST" action="${ctx}/api/1.1/vg/giveGoods.json">
     <p>
-        <code>toUserId</code>和<code>toScreenName</code>二选一
+        原始帖子ID
     </p>
-    <tags:field name="toUserId" optional="true"/>
-    <tags:field name="toScreenName" optional="true"/>
+    <tags:field name="postId"/>
     <tags:field name="goodsId"/>
     <tags:field name="quantity"/>
 </tags:form>

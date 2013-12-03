@@ -13,6 +13,7 @@ public class GiveGoods {
     private String toUserId;
     private Long goodsId;
     private Integer quantity;
+    private String postId;
     private Date giveDate;
 
     public Long getId() {
@@ -61,5 +62,13 @@ public class GiveGoods {
 
     public void setGiveDate(Date giveDate) {
         this.giveDate = giveDate;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }

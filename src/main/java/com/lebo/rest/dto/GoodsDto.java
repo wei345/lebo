@@ -12,6 +12,7 @@ public class GoodsDto {
     private Integer price;
     private String imageUrl;
     private String imageBiggerUrl;
+    private String quantityUnit;
 
     public Long getId() {
         return id;
@@ -59,5 +60,13 @@ public class GoodsDto {
 
     public void setImageBiggerUrl(String imageBiggerUrl) {
         this.imageBiggerUrl = imageBiggerUrl;
+    }
+
+    public String getQuantityUnit() {
+        return quantityUnit;
+    }
+
+    public void setQuantityUnit(String quantityUnit) {
+        this.quantityUnit = quantityUnit;
     }
 }

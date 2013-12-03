@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * Time: PM5:30
  */
 public class GoldProductDto {
-    private Long productId;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
@@ -19,12 +19,12 @@ public class GoldProductDto {
     private BigDecimal cost;
     private String imageUrl;
 
-    public Long getProductId() {
-        return productId;
+    public Long getId() {
+        return id;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
