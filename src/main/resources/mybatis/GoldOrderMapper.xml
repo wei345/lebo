@@ -49,10 +49,10 @@
         update vg_gold_order
         <set>
             <if test="status != null">
-                status = #{status}
+                status = #{status},
             </if>
             <if test="alipayStatus != null">
-                alipay_status = #{alipayStatus}
+                alipay_status = #{alipayStatus},
             </if>
             <if test="alipayNotifyId != null">
                 alipay_notify_id = #{alipayNotifyId}
