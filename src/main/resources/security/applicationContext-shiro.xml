@@ -37,12 +37,13 @@
                 /isalive.html = anon
                 /static/** = anon
                 /favicon.ico = anon
-                /login = authc
-                /logout = logout
                 /play/** = anon
                 /api/*/everyday10/** = anon
                 /api/*/login.json = anon
                 /api/*/oauthLogin.json = anon
+                /api/*/alipay/notify = anon
+                /login = authc
+                /logout = logout
                 /api/** = api
                 /admin/** = roles[admin]
                 /register/** = roles[admin]
