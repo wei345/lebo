@@ -820,7 +820,7 @@ public class StatusService extends AbstractMongoService {
     /**
      * 查找指定用户的帖子(不包含转发), 如果userId为null，则忽略该条件
      */
-    public Page<Post> findOriginPosts(String userId, String track, String postId, PageRequest pageRequest) {
+    public Page<Post> findOriginPosts(String userId, String track, String postId, PageRequest pageRequest, Date startDate, Date endDate) {
         Query query = new Query();
         //原帖
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
@@ -838,6 +838,18 @@ public class StatusService extends AbstractMongoService {
         //搜索文字内容
         if (StringUtils.isNotBlank(track)) {
             query.addCriteria(new Criteria(Post.SEARCH_TERMS_KEY).is(track));
+        }
+
+        //日期范围
+        if (startDate != null || endDate != null) {
+            Criteria dateCriteria = new Criteria(Post.CREATED_AT_KEY);
+            if (startDate != null) {
+                dateCriteria.gte(startDate);
+            }
+            if (endDate != null) {
+                dateCriteria.lt(endDate);
+            }
+            query.addCriteria(dateCriteria);
         }
 
         //分页、排序

@@ -22,6 +22,7 @@
     <script src="${ctx}/static/jquery-validation/1.11.0/jquery.validate.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-validation/1.11.0/messages_bs_zh.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-ui/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
+    <script src="${ctx}/static/jquery-ui/jquery.ui.datepicker-zh-CN.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/application.js" type="text/javascript"></script>
 
     <sitemesh:head/>
