@@ -172,24 +172,33 @@
     });
 
     $(function () {
-        $("#startDate").datepicker({
-            defaultDate: "-1w",
-            changeMonth: true,
-            numberOfMonths: 3,
-            dateFormat: "yy-mm-dd",
-            onClose: function (selectedDate) {
-                $("#endDate").datepicker("option", "minDate", selectedDate);
-            }
-        });
-        $("#endDate").datepicker({
-            defaultDate: "+0",
-            changeMonth: true,
-            numberOfMonths: 3,
-            dateFormat: "yy-mm-dd",
-            onClose: function (selectedDate) {
-                $("#startDate").datepicker("option", "maxDate", selectedDate);
-            }
-        });
+        //日期条件
+        $("#startDate")
+                .datepicker({
+                    defaultDate: "-1w",
+                    changeMonth: true,
+                    numberOfMonths: 2,
+                    dateFormat: "yy-mm-dd",
+                    onClose: function (selectedDate) {
+                        $("#endDate").datepicker("option", "minDate", selectedDate);
+                    }
+                })
+                .datepicker($.datepicker.regional["zh-CN"])
+                .datepicker("option", "maxDate", '${endDate == null ? today : endDate}');
+
+        $("#endDate")
+                .datepicker({
+                    defaultDate: "+0",
+                    changeMonth: true,
+                    numberOfMonths: 2,
+                    dateFormat: "yy-mm-dd",
+                    onClose: function (selectedDate) {
+                        $("#startDate").datepicker("option", "maxDate", selectedDate);
+                    }
+                })
+                .datepicker($.datepicker.regional["zh-CN"])
+                .datepicker("option", "minDate", '${startDate}')
+                .datepicker("option", "maxDate", '${today}');
     });
 
     function recentDateRange(amount){

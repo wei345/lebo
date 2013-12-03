@@ -202,7 +202,7 @@ public class StatisticsService extends AbstractMongoService {
 
     public List<Statistics> getDaily(Date startDate, Date endDate) {
         Query query = new Query();
-        query.addCriteria(new Criteria(Statistics.STATISTICS_DATE_KEY).gte(startDate).lte(endDate));
+        query.addCriteria(new Criteria(Statistics.STATISTICS_DATE_KEY).gte(startDate).lt(endDate));
         return mongoTemplate.find(query, Statistics.class, Statistics.COLLECTION_STATISTICS_DAILY);
     }
 
