@@ -25,6 +25,7 @@ create table vg_gold_order (
     order_date datetime not null,
     status varchar(32),
     alipay_status varchar(32),
+    alipay_notify_id varchar(255),
     foreign key (gold_product_id) references vg_gold_product(id)
 ) engine=InnoDB;
 

@@ -2,8 +2,11 @@ package com.lebo.service;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.lebo.repository.mybatis.GoldOrderDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
@@ -25,6 +28,11 @@ public class AlipayService {
     @Value("${alipay.seller_id}")
     public String alipaySellerId;
     public static final String DEFAULT_CHARSET = "UTF-8";
+
+    private RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    private GoldOrderDao goldOrderDao;
 
     public String sign(String stringToSign) {
         try {
@@ -60,5 +68,28 @@ public class AlipayService {
 
     public String getSignContent(Map<String, String> params) {
         return AlipaySignature.getSignContent(params);
+    }
+
+    public boolean checkIfAlipayRequest(String notifyId) {
+
+        try {
+
+            String url = new StringBuilder("https://mapi.alipay.com/gateway.do?service=notify_verify")
+                    .append("&partner=").append(alipayPartnerId)
+                    .append("&notify_id=").append(notifyId)
+                    .toString();
+
+            String responseText = restTemplate.getForObject(url, String.class);
+
+            return "true".equals(responseText);
+
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    public boolean isNotifyIdProcessed(String notifyId) {
+        return goldOrderDao.countByAlipayNotifyId(notifyId) > 0;
     }
 }

@@ -21,6 +21,7 @@ public class GoldOrder {
     private Date orderDate;
     private Status status;
     private String alipayStatus;
+    private String alipayNotifyId;
 
     public static enum Status {
         PAID("已支付"),
@@ -129,5 +130,13 @@ public class GoldOrder {
 
     public Long getGoldQuantity(){
         return goldProduct.getGoldQuantity() * quantity;
+    }
+
+    public String getAlipayNotifyId() {
+        return alipayNotifyId;
+    }
+
+    public void setAlipayNotifyId(String alipayNotifyId) {
+        this.alipayNotifyId = alipayNotifyId;
     }
 }

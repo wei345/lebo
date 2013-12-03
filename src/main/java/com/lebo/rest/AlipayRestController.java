@@ -66,7 +66,6 @@ public class AlipayRestController {
                                HttpServletRequest request) {
 
         logger.debug("支付宝回调参数:");
-
         Enumeration names = request.getParameterNames();
         Map<String, String> params = new HashMap<String, String>();
         while (names.hasMoreElements()) {
@@ -81,9 +80,24 @@ public class AlipayRestController {
         if (alipayService.rsaCheckV1(params)) {
             logger.debug("通过");
         } else {
-            logger.debug("未通过");
+            logger.debug("未通过, 忽略, 仍然继续");
+        }
+
+        logger.debug("正在验证是否支付宝请求..");
+        if (alipayService.checkIfAlipayRequest(notifyId)) {
+            logger.debug("是支付宝请求");
+        } else {
+            logger.debug("不是支付宝请求, 退出");
             return "error";
         }
+
+        logger.debug("正在验证notifyId({})是否已处理过..", notifyId);
+        if (alipayService.isNotifyIdProcessed(notifyId)) {
+            logger.debug("notifyId已处理过, 退出");
+            return "success";
+        }
+
+        logger.debug("notifyId未处理过");
 
         try {
 
