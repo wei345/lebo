@@ -39,6 +39,9 @@
         <!-- app -->
         <!-- http://{host}:{port}{context} -->
         <replace key="app.baseurl">http://app.dev.lebooo.com:8080</replace>
+
+        <!-- alipay -->
+        <replace key="alipay.notify_url">http://app.dev.lebooo.com:8080/api/1/alipay/notify</replace>
     </config-file>
 
     <!-- quartz-cluster.properties -->
