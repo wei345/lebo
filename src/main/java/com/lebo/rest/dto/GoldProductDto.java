@@ -17,7 +17,7 @@ public class GoldProductDto {
     private GoldProduct.PriceUnit priceUnit;
     private BigDecimal discount;
     private BigDecimal cost;
-    private String image;
+    private String imageUrl;
 
     public Long getProductId() {
         return productId;
@@ -67,12 +67,12 @@ public class GoldProductDto {
         this.discount = discount;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public BigDecimal getCost() {

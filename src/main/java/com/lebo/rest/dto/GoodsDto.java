@@ -1,7 +1,5 @@
 package com.lebo.rest.dto;
 
-import java.math.BigDecimal;
-
 /**
  * @author: Wei Liu
  * Date: 13-11-4
@@ -11,10 +9,9 @@ public class GoodsDto {
     private Long id;
     private String name;
     private String description;
-    private BigDecimal price;
-    private BigDecimal discount;
-    private String imageNormal;
-    private String imageBigger;
+    private Integer price;
+    private String imageUrl;
+    private String imageBiggerUrl;
 
     public Long getId() {
         return id;
@@ -40,35 +37,27 @@ public class GoodsDto {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public BigDecimal getDiscount() {
-        return discount;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setDiscount(BigDecimal discount) {
-        this.discount = discount;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public String getImageNormal() {
-        return imageNormal;
+    public String getImageBiggerUrl() {
+        return imageBiggerUrl;
     }
 
-    public void setImageNormal(String imageNormal) {
-        this.imageNormal = imageNormal;
-    }
-
-    public String getImageBigger() {
-        return imageBigger;
-    }
-
-    public void setImageBigger(String imageBigger) {
-        this.imageBigger = imageBigger;
+    public void setImageBiggerUrl(String imageBiggerUrl) {
+        this.imageBiggerUrl = imageBiggerUrl;
     }
 }

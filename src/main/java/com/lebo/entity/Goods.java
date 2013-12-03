@@ -1,6 +1,6 @@
 package com.lebo.entity;
 
-import java.math.BigDecimal;
+import com.lebo.service.FileContentUrlUtils;
 
 /**
  * @author: Wei Liu
@@ -12,7 +12,6 @@ public class Goods {
     private String name;
     private String description;
     private Integer price;
-    private BigDecimal discount;
     private String imageNormal;
     private String imageBigger;
 
@@ -48,14 +47,6 @@ public class Goods {
         this.price = price;
     }
 
-    public BigDecimal getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(BigDecimal discount) {
-        this.discount = discount;
-    }
-
     public String getImageNormal() {
         return imageNormal;
     }
@@ -70,5 +61,21 @@ public class Goods {
 
     public void setImageBigger(String imageBigger) {
         this.imageBigger = imageBigger;
+    }
+
+    public String getImageUrl() {
+        if (imageNormal == null) {
+            return null;
+        }
+
+        return FileContentUrlUtils.getContentUrl(imageNormal);
+    }
+
+    public String getImageBiggerUrl() {
+        if (imageBigger == null) {
+            return null;
+        }
+
+        return FileContentUrlUtils.getContentUrl(imageBigger);
     }
 }
