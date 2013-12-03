@@ -1,13 +1,16 @@
 package com.lebo.rest;
 
 import com.lebo.entity.Goods;
+import com.lebo.entity.Post;
 import com.lebo.entity.User;
 import com.lebo.entity.UserGoods;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.UserGoodsDto;
 import com.lebo.rest.dto.UserVgDto;
+import com.lebo.service.StatusService;
 import com.lebo.service.VgService;
 import com.lebo.service.account.AccountService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,8 @@ public class VgRestController {
     private VgService vgService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private StatusService statusService;
 
     private static final String API_1_1_VG = "/api/1.1/vg/";
 
@@ -109,14 +114,27 @@ public class VgRestController {
 
     @RequestMapping(value = API_1_1_VG + "giveGoods.json", method = RequestMethod.POST)
     @ResponseBody
-    public Object giveGoods(@RequestParam(value = "toUserId", required = false) String toUserId,
-                            @RequestParam(value = "toScreenName", required = false) String toScreenName,
+    public Object giveGoods(@RequestParam(value = "postId") String postId,
                             @RequestParam("goodsId") long goodsId,
                             @RequestParam("quantity") int quantity) {
 
-        toUserId = accountService.getUserId(toUserId, toScreenName);
+        if (StringUtils.isBlank(postId)) {
+            return ErrorDto.badRequest("postId不能为空");
+        }
 
-        vgService.giveGoods(accountService.getCurrentUserId(), toUserId, goodsId, quantity);
+        Post post = statusService.getPost(postId);
+
+        if (post == null) {
+            return ErrorDto.badRequest("帖子不存在(postId=" + postId + ")");
+        }
+
+        if (post.getOriginPostId() != null) {
+            return ErrorDto.badRequest("postId不能为转发贴");
+        }
+
+        String toUserId = post.getUserId();
+
+        vgService.giveGoods(accountService.getCurrentUserId(), toUserId, postId, goodsId, quantity);
 
         return ErrorDto.OK;
     }

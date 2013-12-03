@@ -14,6 +14,7 @@ public class Goods {
     private Integer price;
     private String imageNormal;
     private String imageBigger;
+    private String quantityUnit;
 
     public Long getId() {
         return id;
@@ -78,4 +79,13 @@ public class Goods {
 
         return FileContentUrlUtils.getContentUrl(imageBigger);
     }
+
+    public String getQuantityUnit() {
+        return quantityUnit;
+    }
+
+    public void setQuantityUnit(String quantityUnit) {
+        this.quantityUnit = quantityUnit;
+    }
+
 }

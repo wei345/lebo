@@ -1,16 +1,12 @@
 package com.lebo.event.listener;
 
 import com.google.common.eventbus.Subscribe;
-import com.lebo.entity.Notification;
-import com.lebo.entity.Post;
-import com.lebo.entity.User;
-import com.lebo.event.AfterCommentCreateEvent;
-import com.lebo.event.AfterFavoriteCreateEvent;
-import com.lebo.event.AfterFollowingCreatEvent;
-import com.lebo.event.AfterPostCreateEvent;
+import com.lebo.entity.*;
+import com.lebo.event.*;
 import com.lebo.jms.ApnsMessageProducer;
 import com.lebo.service.NotificationService;
 import com.lebo.service.StatusService;
+import com.lebo.service.VgService;
 import com.lebo.service.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +33,8 @@ public class NotificationListener {
     private AccountService accountService;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private VgService vgService;
 
     private Logger logger = LoggerFactory.getLogger(NotificationListener.class);
 
@@ -152,6 +150,31 @@ public class NotificationListener {
         }
     }
 
+    @Subscribe
+    public void afterGiveGoods(AfterGiveGoodsEvent event) {
+
+        GiveGoods giveGoods = event.getGiveGoods();
+
+        Notification notification = createNotification(
+                Notification.ACTIVITY_TYPE_GIVE_GOODS,
+                giveGoods.getToUserId(),
+                giveGoods.getFromUserId(),
+                Notification.OBJECT_TYPE_POST,
+                giveGoods.getPostId());
+
+        User fromUser = accountService.getUser(giveGoods.getFromUserId());
+        Goods goods = vgService.getGoodsById(giveGoods.getGoodsId());
+
+        notification.setText(
+                String.format("%s 送了您 %s %s %s",
+                        fromUser.getScreenName(),
+                        giveGoods.getQuantity(),
+                        goods.getQuantityUnit(),
+                        goods.getName()));
+
+        sendNotificationQueue(notification);
+    }
+
     private void sendNotificationQueue(Notification notification) {
         User recipient = accountService.getUser(notification.getRecipientId());
         //如果用户设置不接收，则不发推送通知
@@ -181,7 +204,9 @@ public class NotificationListener {
         if (StringUtils.isNotBlank(recipient.getApnsProductionToken())) {
 
             String message = "";
-            if (Notification.ACTIVITY_TYPE_FOLLOW.equals(notification.getActivityType())) {
+            if (StringUtils.isNotBlank(notification.getText())) {
+                message = notification.getText();
+            } else if (Notification.ACTIVITY_TYPE_FOLLOW.equals(notification.getActivityType())) {
                 message = String.format("%s 关注了你", sender.getScreenName());
             } else if (Notification.ACTIVITY_TYPE_FAVORITE.equals(notification.getActivityType())) {
                 message = String.format("%s 喜欢你的视频", sender.getScreenName());

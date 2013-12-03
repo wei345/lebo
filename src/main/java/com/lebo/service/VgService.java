@@ -8,7 +8,9 @@ package com.lebo.service;
  * Time: PM5:53
  */
 
+import com.google.common.eventbus.EventBus;
 import com.lebo.entity.*;
+import com.lebo.event.AfterGiveGoodsEvent;
 import com.lebo.repository.mybatis.*;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.GoldOrderDto;
@@ -45,6 +47,8 @@ public class VgService {
     private GoodsDao goodsDao;
     @Autowired
     private GiveGoodsDao giveGoodsDao;
+    @Autowired
+    private EventBus eventBus;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -194,7 +198,7 @@ public class VgService {
         return goodsDtos;
     }
 
-    public void giveGoods(String fromUserId, String toUserId, Long goodsId, Integer quantity) {
+    public void giveGoods(String fromUserId, String toUserId, String postId, Long goodsId, Integer quantity) {
         Long fromUserGold = getUserGoldQuantity(fromUserId);
         Goods goods = getGoodsById(goodsId);
         Integer totalCost = goods.getPrice() * quantity;
@@ -214,10 +218,13 @@ public class VgService {
         GiveGoods giveGoods = new GiveGoods();
         giveGoods.setFromUserId(fromUserId);
         giveGoods.setToUserId(toUserId);
+        giveGoods.setPostId(postId);
         giveGoods.setGoodsId(goodsId);
         giveGoods.setQuantity(quantity);
         giveGoods.setGiveDate(new Date());
         giveGoodsDao.insert(giveGoods);
+
+        eventBus.post(new AfterGiveGoodsEvent(giveGoods));
     }
 
     private void addUserGoodsQuantity(String userId, long goodsId, int quantity) {
