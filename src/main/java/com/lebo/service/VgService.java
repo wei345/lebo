@@ -147,7 +147,7 @@ public class VgService {
         updateTradeStatus(orderId, GoldOrder.Status.PAID, alipayStatus);
 
         //更新用户金币数
-        GoldOrder goldOrder = goldOrderDao.get(orderId);
+        GoldOrder goldOrder = getOrderWithDetail(orderId);
         addUserGoldQuantity(goldOrder.getUserId(), goldOrder.getGoldQuantity());
     }
 
