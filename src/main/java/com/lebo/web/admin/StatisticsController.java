@@ -3,7 +3,6 @@ package com.lebo.web.admin;
 import com.lebo.entity.Statistics;
 import com.lebo.service.StatisticsService;
 import com.lebo.web.ControllerSetup;
-import com.lebo.web.ControllerUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -38,14 +36,15 @@ public class StatisticsController {
                          @RequestParam(value = "endDate", required = false) String endDateStr,
                          Model model) throws ParseException {
 
-        Date endDate = StringUtils.isNotBlank(endDateStr) ? sdf.parse(endDateStr) : DateUtils.addDays(new Date(), -1);
-        Date startDate = StringUtils.isNotBlank(startDateStr) ? sdf.parse(startDateStr) : DateUtils.addDays(endDate, -6);
+        Date endDate = StringUtils.isNotBlank(endDateStr) ? DateUtils.addDays(sdf.parse(endDateStr), 1) : new Date();
+        Date startDate = StringUtils.isNotBlank(startDateStr) ? sdf.parse(startDateStr) : DateUtils.addDays(endDate, -7);
 
         List<Statistics> dailyList = statisticsService.getDaily(startDate, endDate);
 
         model.addAttribute("dailyList", dailyList);
         model.addAttribute("startDate", sdf.format(startDate));
-        model.addAttribute("endDate", sdf.format(endDate));
+        model.addAttribute("endDate", sdf.format(DateUtils.addDays(endDate, -1)));
+        model.addAttribute("today", sdf.format(new Date()));
 
         return "admin/statistics/charts";
     }
