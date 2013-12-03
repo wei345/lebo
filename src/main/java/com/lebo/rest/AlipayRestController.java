@@ -29,7 +29,7 @@ public class AlipayRestController {
     @Autowired
     private VgService vgService;
 
-    private Logger logger = LoggerFactory.getLogger(VgRestController.class);
+    private Logger logger = LoggerFactory.getLogger(AlipayRestController.class);
 
     /**
      * 支付宝支付回调接口。
