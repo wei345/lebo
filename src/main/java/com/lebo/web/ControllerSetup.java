@@ -20,6 +20,11 @@ public class ControllerSetup {
      */
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT;
 
+    /**
+     * 后台管理，查询条件，日期格式
+     */
+    public static final SimpleDateFormat ADMIN_QUERY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
     static {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
         dateFormat.setLenient(false);

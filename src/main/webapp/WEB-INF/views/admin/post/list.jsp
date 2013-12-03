@@ -97,22 +97,35 @@
                value="${param.screenName}"
                placeholder="用户名字">
         <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=screenName]').val('')"></span>
+              onclick="$('input[name=screenName]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="userId" name="userId" value="${param.userId}"
                placeholder="用户ID">
         <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=userId]').val('')"></span>
+              onclick="$('input[name=userId]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="track" name="track" value="${param.track}"
                placeholder="关键词">
         <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=track]').val('')"></span>
+              onclick="$('input[name=track]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="postId" name="postId" value="${param.postId}"
                placeholder="帖子ID">
         <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=postId]').val('')"></span>
+              onclick="$('input[name=postId]').val('')" title="清除输入内容"></span>
+
+        <div style="padding-top: 15px;">
+            从
+            <input type="text" id="startDate" name="startDate" class="input-medium search-query" value="${startDate}"
+                   class="form-inline" placeholder="起始日期"/>
+            <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+                  onclick="$('input[name=startDate]').val('')" title="清除输入内容"></span>
+            到
+            <input type="text" id="endDate" name="endDate" class="input-medium search-query" value="${endDate}"
+                   placeholder="结束日期"/>
+            <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
+                  onclick="$('input[name=endDate]').val('')" title="清除输入内容"></span>
+        </div>
 
         <div style="padding-top: 15px;">
 
@@ -183,7 +196,7 @@
                     <span class="time" title="发布时间">${item.createdAt}</span>
 
                     <c:if test="${item.pvt}">
-                        <span class="icon-lock pull-right" title="只对作者本人可见"></span>
+                        <span class="icon-lock pull-right" title="仅作者本人可见"></span>
                     </c:if>
                 </div>
 
@@ -233,6 +246,33 @@
                     $(this).find('.icon-pencil').hide();
                 });
 
+        //日期条件
+        $("#startDate")
+                .datepicker({
+                    defaultDate: "-1w",
+                    changeMonth: true,
+                    numberOfMonths: 2,
+                    dateFormat: "yy-mm-dd",
+                    onClose: function (selectedDate) {
+                        $("#endDate").datepicker("option", "minDate", selectedDate);
+                    }
+                })
+                .datepicker($.datepicker.regional["zh-CN"])
+                .datepicker("option", "maxDate", '${endDate == null ? today : endDate}');
+
+        $("#endDate")
+                .datepicker({
+                    defaultDate: "+0",
+                    changeMonth: true,
+                    numberOfMonths: 2,
+                    dateFormat: "yy-mm-dd",
+                    onClose: function (selectedDate) {
+                        $("#startDate").datepicker("option", "maxDate", selectedDate);
+                    }
+                })
+                .datepicker($.datepicker.regional["zh-CN"])
+                .datepicker("option", "minDate", '${startDate}')
+                .datepicker("option", "maxDate", '${today}');
     });
 
     function deletePost(id, btn) {
@@ -255,7 +295,7 @@
 
         var rating = ratingDetail.find('.rating').html();
 
-        if(isNaN(rating)){
+        if (isNaN(rating)) {
             rating = 0;
         }
 

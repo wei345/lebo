@@ -3,13 +3,13 @@ package com.lebo.web.admin;
 import com.lebo.entity.Post;
 import com.lebo.entity.User;
 import com.lebo.service.CommentService;
-import com.lebo.service.ServiceException;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PageRequest;
 import com.lebo.web.ControllerSetup;
 import com.lebo.web.ControllerUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -39,6 +41,8 @@ public class PostController {
     @Autowired
     private CommentService commentService;
 
+    private SimpleDateFormat sdf = ControllerSetup.ADMIN_QUERY_DATE_FORMAT;
+
     private static int HOT_POST_COUNT = 60;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -53,33 +57,45 @@ public class PostController {
                        @RequestParam(value = "postId", required = false) String postId,
                        @RequestParam(value = "orderBy", defaultValue = Post.ID_KEY) String orderBy,
                        @RequestParam(value = "order", defaultValue = "DESC") String order,
+                       @RequestParam(value = "startDate", required = false) String startDateStr,
+                       @RequestParam(value = "endDate", required = false) String endDateStr,
                        @Valid PageRequest pageRequest,
-                       Model model) {
+                       Model model) throws ParseException {
         long beginTime = System.currentTimeMillis();
+
+        Date endDate = StringUtils.isNotBlank(endDateStr) ? DateUtils.addDays(sdf.parse(endDateStr), 1) : null;
+        Date startDate = StringUtils.isNotBlank(startDateStr) ? sdf.parse(startDateStr) : null;
+
         Page<Post> page = null;
 
-        //分析screenName和userId
-        if(StringUtils.isNotBlank(screenName)){
+        //读取screenName的userId
+        if (StringUtils.isNotBlank(screenName)) {
             User user = accountService.findUserByScreenName(screenName);
-            if(StringUtils.isBlank(userId)){
+            //使用screenName的userId
+            if (StringUtils.isBlank(userId)) {
                 userId = user.getId();
-            }else{
-                if(!user.getId().equals(userId)){
+            }
+            //检查参数中的screenName和userId是否对应
+            else {
+                if (!user.getId().equals(userId)) {
                     page = new PageImpl<Post>(Collections.EMPTY_LIST);
                 }
             }
         }
 
         //根据条件查询
-        if(page == null){
+        if (page == null) {
             pageRequest.setSort(new Sort(Sort.Direction.fromString(order), orderBy));
-            page = statusService.findOriginPosts(userId, track, postId, pageRequest);
+            page = statusService.findOriginPosts(userId, track, postId, pageRequest, startDate, endDate);
         }
 
         model.addAttribute("posts", toModelPosts(page.getContent()));
         model.addAttribute("page", page);
         model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime) / 1000.0);
         model.addAttribute("controllerMethod", "list");
+        model.addAttribute("startDate", startDate == null ? null : sdf.format(startDate));
+        model.addAttribute("endDate", endDate == null ? null : sdf.format(DateUtils.addDays(endDate, -1)));
+        model.addAttribute("today", sdf.format(new Date()));
 
         return "admin/post/list";
     }
