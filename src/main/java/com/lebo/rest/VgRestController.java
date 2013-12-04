@@ -100,10 +100,10 @@ public class VgRestController {
         List<UserGoods> userGoodsList = vgService.getUserGoodsByUserId(userId);
         List<UserGoodsDto> userGoodsDtos = new ArrayList<UserGoodsDto>(userGoodsList.size());
         for (UserGoods userGoods : userGoodsList) {
+
             UserGoodsDto userGoodsDto = new UserGoodsDto();
             Goods goods = vgService.getGoodsById(userGoods.getGoodsId());
             BeanMapper.copy(goods, userGoodsDto);
-
             userGoodsDto.setQuantity(userGoods.getQuantity());
 
             userGoodsDtos.add(userGoodsDto);
