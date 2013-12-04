@@ -59,7 +59,7 @@ public class VgRestController {
                     alipayPaymentType);
 
             Map<String, String> result = new HashMap<String, String>(1);
-            result.put("alipaySigedParams", params);
+            result.put("alipaySignedParams", params);
 
             return result;
         } else {
