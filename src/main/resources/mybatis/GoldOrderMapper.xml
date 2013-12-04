@@ -11,7 +11,9 @@
         <result property="quantity" column="quantity"/>
         <result property="discount" column="discount"/>
         <result property="status" column="status"/>
+        <result property="paymentMethod" column="payment_method"/>
         <result property="alipayStatus" column="alipay_status"/>
+        <result property="alipayNotifyId" column="alipay_notify_id"/>
         <result property="goldProduct.id" column="gold_product_id"/>
     </resultMap>
 
@@ -22,14 +24,16 @@
 		quantity,
 		discount,
 		order_date,
-		status)
+		status,
+		payment_method)
 		values (
 		#{userId},
 		#{goldProduct.id},
 		#{quantity},
 		#{discount},
 		#{orderDate},
-		#{status})
+		#{status},
+		#{paymentMethod})
 	</insert>
 
     <select id="get" parameterType="long" resultMap="goldOrderMap">
@@ -40,7 +44,9 @@
         discount,
         order_date,
         status,
-        alipay_status
+        payment_method,
+        alipay_status,
+        alipay_notify_id
         from vg_gold_order
         where id = #{id}
     </select>

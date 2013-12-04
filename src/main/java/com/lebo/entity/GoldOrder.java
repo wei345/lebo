@@ -20,6 +20,7 @@ public class GoldOrder {
     private BigDecimal discount;
     private Date orderDate;
     private Status status;
+    private PaymentMethod paymentMethod;
     private String alipayStatus;
     private String alipayNotifyId;
 
@@ -32,14 +33,25 @@ public class GoldOrder {
         }
     }
 
+    public static enum PaymentMethod {
+        ALIPAY("支付宝");
+
+        private String name;
+
+        PaymentMethod(String name) {
+            this.name = name;
+        }
+    }
+
     public GoldOrder() {
     }
 
-    public GoldOrder(String userId, BigDecimal discount, Status status) {
+    public GoldOrder(String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
         this.userId = userId;
         this.discount = discount;
         this.status = status;
         this.orderDate = new Date();
+        this.paymentMethod = paymentMethod;
     }
 
     public Long getId() {
@@ -128,7 +140,7 @@ public class GoldOrder {
         this.alipayStatus = alipayStatus;
     }
 
-    public Long getGoldQuantity(){
+    public Long getGoldQuantity() {
         return goldProduct.getGoldQuantity() * quantity;
     }
 
@@ -138,5 +150,13 @@ public class GoldOrder {
 
     public void setAlipayNotifyId(String alipayNotifyId) {
         this.alipayNotifyId = alipayNotifyId;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

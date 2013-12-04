@@ -24,6 +24,7 @@ create table vg_gold_order (
     discount decimal (5,2) not null,
     order_date datetime not null,
     status varchar(32),
+    payment_method varchar(32),
     alipay_status varchar(32),
     alipay_notify_id varchar(255),
     foreign key (gold_product_id) references vg_gold_product(id)

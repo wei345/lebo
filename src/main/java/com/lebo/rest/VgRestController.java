@@ -1,9 +1,6 @@
 package com.lebo.rest;
 
-import com.lebo.entity.Goods;
-import com.lebo.entity.Post;
-import com.lebo.entity.User;
-import com.lebo.entity.UserGoods;
+import com.lebo.entity.*;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.UserGoodsDto;
 import com.lebo.rest.dto.UserVgDto;
@@ -46,17 +43,29 @@ public class VgRestController {
         return vgService.toProductDtos(vgService.findAllGoldProducts());
     }
 
-    @RequestMapping(value = API_1_1_VG + "alipaySigedParams.json", method = RequestMethod.GET)
+    @RequestMapping(value = API_1_1_VG + "buyGold.json", method = RequestMethod.POST)
     @ResponseBody
-    public Object alipaySigedParams(@RequestParam("productId") Long productId,
-                                    @RequestParam("service") String service,
-                                    @RequestParam("paymentType") String paymentType) {
+    public Object buyGold(@RequestParam("productId") Long productId,
+                          @RequestParam("paymentMethod") GoldOrder.PaymentMethod paymentMethod,
+                          @RequestParam("alipayService") String alipayService,
+                          @RequestParam("alipayPaymentType") String alipayPaymentType) {
 
-        String signed = vgService.getAlipayParams(accountService.getCurrentUserId(), productId, service, paymentType);
+        if (GoldOrder.PaymentMethod.ALIPAY == paymentMethod) {
 
-        Map<String, String> result = new HashMap<String, String>(1);
-        result.put("signed", signed);
-        return result;
+            String params = vgService.getAlipayParams(
+                    accountService.getCurrentUserId(),
+                    productId,
+                    alipayService,
+                    alipayPaymentType);
+
+            Map<String, String> result = new HashMap<String, String>(1);
+            result.put("alipaySigedParams", params);
+
+            return result;
+        } else {
+            return ErrorDto.badRequest("不支持该付款方式: [" + paymentMethod + "]");
+        }
+
     }
 
     @RequestMapping(value = API_1_1_VG + "goldOrders/detail.json", method = RequestMethod.GET)

@@ -611,10 +611,10 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/vg/alipaySigedParams" text="GET vg/alipaySigedParams"/>
+            <tags:link url="${ctx}/docs/api/1.1/post/vg/buyGold" text="POST vg/buyGold"/>
         </td>
         <td>
-            返回用于支付宝请求RSA签名的参数字符串。
+            购买金币，返回用于付款的签名的参数字符串。
         </td>
     </tr>
     <tr>

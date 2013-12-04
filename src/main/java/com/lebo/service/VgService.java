@@ -61,8 +61,9 @@ public class VgService {
     @Value("${alipay.seller_id}")
     public String alipaySellerId;
 
-    public GoldOrder createOrder(Long goldProductId, String userId) {
-        GoldOrder goldOrder = new GoldOrder(userId, BigDecimal.ZERO, GoldOrder.Status.UNPAID);
+    public GoldOrder createOrder(Long goldProductId, String userId, GoldOrder.PaymentMethod paymentMethod) {
+
+        GoldOrder goldOrder = new GoldOrder(userId, BigDecimal.ZERO, GoldOrder.Status.UNPAID, paymentMethod);
 
         GoldProduct goldProduct = goldProductDao.get(goldProductId);
         Assert.notNull(goldProduct);
@@ -85,7 +86,8 @@ public class VgService {
     }
 
     public String getAlipayParams(String userId, Long productId, String service, String paymentType) {
-        GoldOrder goldOrder = createOrder(productId, userId);
+
+        GoldOrder goldOrder = createOrder(productId, userId, GoldOrder.PaymentMethod.ALIPAY);
 
         Map<String, String> params = new HashMap<String, String>(10);
         //基本参数，不可空
