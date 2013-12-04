@@ -57,6 +57,7 @@ create table vg_give_goods (
     id bigint not null auto_increment primary key,
     from_user_id varchar(24) not null,
     to_user_id varchar(24) not null,
+    post_id varchar(24) not null,
     goods_id bigint not null,
     quantity int not null,
     give_date datetime not null,
