@@ -18,6 +18,7 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.GoldOrderDto;
 import com.lebo.rest.dto.GoldProductDto;
 import com.lebo.rest.dto.GoodsDto;
+import com.lebo.service.param.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,8 @@ public class VgService {
     private UserDao userDao;
     @Autowired
     private PostDao postDao;
+    @Autowired
+    private GiverValueDao giverValueDao;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -216,16 +219,16 @@ public class VgService {
         Goods goods = getGoodsById(goodsId);
         Assert.notNull(goods);
 
-        Integer totalCost = goods.getPrice() * quantity;
+        Integer totalPrice = goods.getPrice() * quantity;
         Long fromUserGold = getUserGoldQuantity(fromUserId);
 
         //检查金币余额
-        if (fromUserGold < totalCost) {
+        if (fromUserGold < totalPrice) {
             throw new ServiceException(ErrorDto.INSUFFICIENT_GOLD);
         }
 
         //支付金币
-        userGoldDao.updateUserGoldQuantity(new UserGold(fromUserId, fromUserGold - totalCost));
+        userGoldDao.updateUserGoldQuantity(new UserGold(fromUserId, fromUserGold - totalPrice));
 
         //增加物品
         addUserGoodsQuantity(toUserId, goodsId, quantity);
@@ -240,7 +243,20 @@ public class VgService {
         giveGoods.setGiveDate(new Date());
         giveGoodsDao.insert(giveGoods);
 
+        //更新排名数据
+        addGiveValue(toUserId, fromUserId, totalPrice);
+
         eventBus.post(new AfterGiveGoodsEvent(giveGoods));
+    }
+
+    public List<GiverValue> getGiverRanking(String userId, PageRequest pageRequest) {
+
+        Map<String, Object> params = new HashMap<String, Object>(3);
+        params.put("userId", userId);
+        params.put("offset", pageRequest.getOffset());
+        params.put("count", pageRequest.getPageSize());
+
+        return giverValueDao.getByUserIdOrderByGiveValueDesc(params);
     }
 
     private void addUserGoodsQuantity(String userId, long goodsId, int quantity) {
@@ -251,6 +267,27 @@ public class VgService {
             userGoods.setQuantity(userGoods.getQuantity() + quantity);
             userGoodsDao.updateQuantityByUserIdAndGoodsId(userGoods);
         }
+    }
+
+    private void addGiveValue(String userId, String giverId, int giveValue) {
+        GiverValue giverValue = new GiverValue(userId, giverId);
+
+        GiverValue old = giverValueDao.getByUserIdGiverId(giverValue);
+        if (old == null) {
+            giverValue.setGiveValue(giveValue);
+            giverValueDao.insert(giverValue);
+        } else {
+            old.setGiveValue(old.getGiveValue() + giveValue);
+            giverValueDao.updateGiveValue(giverValue);
+        }
+    }
+
+    public GiverValue getGiverValue(String userId, String giverId){
+        return giverValueDao.getByUserIdGiverId(new GiverValue(userId, giverId));
+    }
+
+    public int getGiverRank(GiverValue giverValue){
+        return giverValueDao.countBefore(giverValue) + 1;
     }
 
 }

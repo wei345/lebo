@@ -2,11 +2,13 @@ package com.lebo.rest;
 
 import com.lebo.entity.*;
 import com.lebo.rest.dto.ErrorDto;
+import com.lebo.rest.dto.GiverRankingDto;
 import com.lebo.rest.dto.UserGoodsDto;
 import com.lebo.rest.dto.UserVgDto;
 import com.lebo.service.StatusService;
 import com.lebo.service.VgService;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.param.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springside.modules.mapper.BeanMapper;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,7 +134,7 @@ public class VgRestController {
             return ErrorDto.badRequest("postId不能为空");
         }
 
-        if(quantity <= 0){
+        if (quantity <= 0) {
             return ErrorDto.badRequest("数量必须大于0");
         }
 
@@ -149,13 +152,54 @@ public class VgRestController {
 
         String currentUserId = accountService.getCurrentUserId();
 
-        if(currentUserId.equals(toUserId)){
+        if (currentUserId.equals(toUserId)) {
             return ErrorDto.badRequest("不能给自己送礼物");
         }
 
         vgService.giveGoods(currentUserId, toUserId, postId, goodsId, quantity);
 
         return ErrorDto.OK;
+    }
+
+    @RequestMapping(value = API_1_1_VG + "giverRanking.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object giverRanking(@RequestParam(value = "userId", required = false) String userId,
+                               @RequestParam(value = "screenName", required = false) String screenName,
+                               @Valid PageRequest pageRequest) {
+
+        userId = accountService.getUserId(userId, screenName);
+
+        //送礼者列表
+        GiverRankingDto dto = new GiverRankingDto();
+
+        List<GiverValue> giverValueList = vgService.getGiverRanking(userId, pageRequest);
+
+        for (GiverValue giverValue : giverValueList) {
+
+            User user = accountService.getUser(giverValue.getGiverId());
+            GiverRankingDto.Giver giver = BeanMapper.map(user, GiverRankingDto.Giver.class);
+            giver.setGiveValue(giverValue.getGiveValue());
+
+            dto.getGiverList().add(giver);
+        }
+
+        //当前用户
+        String currentUserId = accountService.getCurrentUserId();
+        if (!currentUserId.equals(userId)) {
+            GiverValue giverValue = vgService.getGiverValue(userId, currentUserId);
+            if (giverValue != null) {
+                //查排名
+                GiverRankingDto.Giver me = BeanMapper.map(
+                        accountService.getUser(currentUserId),
+                        GiverRankingDto.Giver.class);
+                me.setGiveValue(giverValue.getGiveValue());
+                me.setRank(vgService.getGiverRank(giverValue));
+
+                dto.setMe(me);
+            }
+        }
+
+        return dto;
     }
 
 }

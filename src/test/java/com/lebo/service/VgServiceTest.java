@@ -28,6 +28,6 @@ public class VgServiceTest extends SpringContextTestCase {
 
     @Test
     public void tradeSuccess(){
-        vgService.tradeSuccess(2L, "TRADE_SUCCESS");
+        vgService.tradeSuccess(2L, "TRADE_SUCCESS", "test-123456");
     }
 }

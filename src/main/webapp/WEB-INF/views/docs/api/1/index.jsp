@@ -641,6 +641,14 @@
             赠送物品。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/giverRanking" text="GET vg/giverRanking"/>
+        </td>
+        <td>
+            送礼者排名，返回送礼者列表和送礼者中当前用户信息。
+        </td>
+    </tr>
 </table>
 
 <strong>反馈</strong>

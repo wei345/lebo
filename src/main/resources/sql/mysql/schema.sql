@@ -1,3 +1,4 @@
+drop table if exists vg_giver_value;
 drop table if exists vg_gold_order;
 drop table if exists vg_gold_product;
 drop table if exists vg_user_gold;
@@ -63,6 +64,13 @@ create table vg_give_goods (
     give_date datetime not null,
     foreign key (goods_id) references vg_goods(id)
 ) engine=InnoDB;
+
+create table vg_giver_value (
+    user_id varchar(24) not null,
+    giver_id varchar(24) not null,
+    give_value int not null,
+    primary key(user_id, giver_id)
+)  engine=InnoDB;
 
 insert into vg_gold_product(id, name, description, price, price_unit, discount, image, gold_quantity) values(1, '10个金币', '金币是一种全部或大部份由黄金制造的硬币。', 1, 'CNY', 0, 'images/gold/gold-10.png', 10);
 insert into vg_gold_product(id, name, description, price, price_unit, discount, image, gold_quantity) values(2, '50个金币', '黄金差不多在硬币发明之初，就因其价值被用来当作硬币。', 5, 'CNY', 0, 'images/gold/gold-50.png', 50);

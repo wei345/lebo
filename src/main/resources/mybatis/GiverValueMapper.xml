@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.lebo.repository.mybatis.GiverValueDao">
+
+    <resultMap id="giverValueMap" type="GiverValue">
+        <result property="userId" column="user_id"/>
+        <result property="giverId" column="giver_id"/>
+        <result property="giveValue" column="give_value"/>
+    </resultMap>
+
+    <select id="getByUserIdGiverId" parameterType="GiverValue" resultMap="giverValueMap">
+        select user_id,
+        giver_id,
+        give_value
+        from vg_giver_value
+        where user_id = #{userId}
+        and giver_id = #{giverId}
+    </select>
+
+    <update id="updateGiveValue" parameterType="GiverValue">
+        update vg_giver_value
+        set give_value = #{giveValue}
+        where user_id = #{userId}
+        and giver_id = #{giverId}
+    </update>
+
+    <insert id="insert" parameterType="GiverValue">
+        insert into vg_giver_value(
+        user_id,
+        giver_id,
+        give_value
+        ) values (
+        #{userId},
+        #{giverId},
+        #{giveValue}
+        )
+    </insert>
+
+    <select id="getByUserIdOrderByGiveValueDesc" parameterType="map" resultMap="giverValueMap">
+        select user_id,
+        giver_id,
+        give_value
+        from vg_giver_value
+        where user_id = #{userId}
+        order by give_value desc
+        limit #{offset}, #{count}
+    </select>
+
+    <select id="countBefore" parameterType="GiverValue" resultType="int">
+        select count(1)
+        from vg_giver_value
+        where user_id = #{userId}
+        and give_value > #{giveValue}
+    </select>
+
+</mapper>
