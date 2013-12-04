@@ -104,22 +104,22 @@ public class AlipayRestController {
             logger.debug("正在处理订单..");
             if ("TRADE_SUCCESS".equals(tradeStatus)) {
 
-                vgService.tradeSuccess(outTradeNo, tradeStatus);
+                vgService.tradeSuccess(outTradeNo, tradeStatus, notifyId);
                 logger.debug("购买金币成功 : 支付宝交易完成，用户金币已增加");
 
             } else if ("TRADE_FINISHED".equals(tradeStatus)) {
 
-                vgService.tradeSuccess(outTradeNo, tradeStatus);
+                vgService.tradeSuccess(outTradeNo, tradeStatus, notifyId);
                 logger.debug("购买金币成功 : 支付宝交易完成，用户金币已增加");
 
             } else if ("WAIT_BUYER_PAY".equals(tradeStatus)) {
 
-                vgService.updateTradeStatus(outTradeNo, GoldOrder.Status.UNPAID, tradeStatus);
+                vgService.updateTradeStatus(outTradeNo, GoldOrder.Status.UNPAID, tradeStatus, notifyId);
                 logger.debug("未支付 : 支付宝等待用户支付");
 
             } else if ("TRADE_CLOSED".equals(tradeStatus)) {
 
-                vgService.updateTradeStatus(outTradeNo, GoldOrder.Status.OBSOLETE, tradeStatus);
+                vgService.updateTradeStatus(outTradeNo, GoldOrder.Status.OBSOLETE, tradeStatus, notifyId);
                 logger.debug("订单作废 : 支付宝交易关闭");
             }
 

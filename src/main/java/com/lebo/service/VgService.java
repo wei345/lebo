@@ -144,9 +144,9 @@ public class VgService {
     /**
      * 购买金币，支付宝支付成功.
      */
-    public void tradeSuccess(Long orderId, String alipayStatus) {
+    public void tradeSuccess(Long orderId, String alipayStatus, String alipayNotifyId) {
         //更新订单状态
-        updateTradeStatus(orderId, GoldOrder.Status.PAID, alipayStatus);
+        updateTradeStatus(orderId, GoldOrder.Status.PAID, alipayStatus, alipayNotifyId);
 
         //更新用户金币数
         GoldOrder goldOrder = getOrderWithDetail(orderId);
@@ -163,11 +163,12 @@ public class VgService {
         }
     }
 
-    public void updateTradeStatus(Long orderId, GoldOrder.Status status, String alipayStatus) {
+    public void updateTradeStatus(Long orderId, GoldOrder.Status status, String alipayStatus, String alipayNotifyId) {
         GoldOrder goldOrder = new GoldOrder();
         goldOrder.setId(orderId);
         goldOrder.setStatus(status);
         goldOrder.setAlipayStatus(alipayStatus);
+        goldOrder.setAlipayNotifyId(alipayNotifyId);
         goldOrderDao.updateStatus(goldOrder);
     }
 
