@@ -84,7 +84,7 @@ public class VgRestController {
 
         User user = accountService.getUser(userId);
         if (user == null) {
-            ErrorDto.badRequest("userId[" + userId + "]不存在");
+            ErrorDto.badRequest("用户[" + userId + "]不存在");
         }
 
         //用户名字、头像
@@ -131,6 +131,10 @@ public class VgRestController {
             return ErrorDto.badRequest("postId不能为空");
         }
 
+        if(quantity <= 0){
+            return ErrorDto.badRequest("数量必须大于0");
+        }
+
         Post post = statusService.getPost(postId);
 
         if (post == null) {
@@ -143,7 +147,13 @@ public class VgRestController {
 
         String toUserId = post.getUserId();
 
-        vgService.giveGoods(accountService.getCurrentUserId(), toUserId, postId, goodsId, quantity);
+        String currentUserId = accountService.getCurrentUserId();
+
+        if(currentUserId.equals(toUserId)){
+            return ErrorDto.badRequest("不能给自己送礼物");
+        }
+
+        vgService.giveGoods(currentUserId, toUserId, postId, goodsId, quantity);
 
         return ErrorDto.OK;
     }

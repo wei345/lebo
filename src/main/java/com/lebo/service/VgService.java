@@ -11,6 +11,8 @@ package com.lebo.service;
 import com.google.common.eventbus.EventBus;
 import com.lebo.entity.*;
 import com.lebo.event.AfterGiveGoodsEvent;
+import com.lebo.repository.PostDao;
+import com.lebo.repository.UserDao;
 import com.lebo.repository.mybatis.*;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.GoldOrderDto;
@@ -49,6 +51,10 @@ public class VgService {
     private GiveGoodsDao giveGoodsDao;
     @Autowired
     private EventBus eventBus;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private PostDao postDao;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -202,9 +208,16 @@ public class VgService {
     }
 
     public void giveGoods(String fromUserId, String toUserId, String postId, Long goodsId, Integer quantity) {
-        Long fromUserGold = getUserGoldQuantity(fromUserId);
+        Assert.isTrue(quantity > 0);
+        Assert.isTrue(userDao.exists(fromUserId));
+        Assert.isTrue(userDao.exists(toUserId));
+        Assert.isTrue(postDao.exists(postId));
+
         Goods goods = getGoodsById(goodsId);
+        Assert.notNull(goods);
+
         Integer totalCost = goods.getPrice() * quantity;
+        Long fromUserGold = getUserGoldQuantity(fromUserId);
 
         //检查金币余额
         if (fromUserGold < totalCost) {
