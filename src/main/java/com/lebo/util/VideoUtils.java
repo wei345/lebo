@@ -7,6 +7,7 @@ import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
 import com.xuggle.xuggler.Global;
 import com.xuggle.xuggler.ICodec;
+import com.xuggle.xuggler.IContainer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -111,6 +112,30 @@ public class VideoUtils {
 
     static class Done extends RuntimeException {
 
+    }
+
+    /**
+     * Fetches a video's duration in microseconds.
+     */
+    public static long getVideoDuration(String videoFile) {
+        // Create a Xuggler container object
+        IContainer container = IContainer.make();
+
+        // Open up the container
+        if (container.open(videoFile, IContainer.Type.READ, null) < 0) {
+            throw new IllegalArgumentException("Could not open file: " + videoFile);
+        }
+
+        return container.getDuration();
+    }
+
+    public static int getVideoDurationInSeconds(String videoFile) {
+
+        long duration = getVideoDuration(videoFile);
+
+        int microsecondsPerSecond = 1000000;
+
+        return (int) duration / microsecondsPerSecond;
     }
 
     //-- 视频转码 --//
