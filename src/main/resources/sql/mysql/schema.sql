@@ -82,4 +82,6 @@ insert into vg_goods(id, name, description, price, image_normal, image_bigger, q
 insert into vg_goods(id, name, description, price, image_normal, image_bigger, quantity_unit) values(2, '玫瑰', '玫瑰（学名：Rosa rugosa）是蔷薇科蔷薇属植物，在日常生活中是蔷薇属一系列花大艳丽的栽培品种的统称。', 10, 'images/goods/rose.png', 'images/goods/rose-bigger.png', '朵');
 insert into vg_goods(id, name, description, price, image_normal, image_bigger, quantity_unit) values(3, '钻石', '钻石（英文：Diamond），化学中一般称为金刚石，钻石为经过琢磨的金刚石，金刚石则是指钻石的原石。', 100, 'images/goods/diamond.png', 'images/goods/diamond-bigger.png', '个');
 
-
+/* 测试数据
+update vg_gold_product set price = 0.01, discount = 0;
+ */
