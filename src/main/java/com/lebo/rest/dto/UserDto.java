@@ -20,6 +20,8 @@ public class UserDto {
     private Integer followersCount;
     private Integer friendsCount;
     private Integer statusesCount;
+    private Integer originPostsCount;
+    private Integer repostsCount;
     private Integer favoritesCount;
     private Integer beFavoritedCount;
     private Integer viewCount;
@@ -199,5 +201,21 @@ public class UserDto {
 
     public void setProfileBackgroundImageUrl(String profileBackgroundImageUrl) {
         this.profileBackgroundImageUrl = profileBackgroundImageUrl;
+    }
+
+    public Integer getOriginPostsCount() {
+        return originPostsCount;
+    }
+
+    public void setOriginPostsCount(Integer originPostsCount) {
+        this.originPostsCount = originPostsCount;
+    }
+
+    public Integer getRepostsCount() {
+        return repostsCount;
+    }
+
+    public void setRepostsCount(Integer repostsCount) {
+        this.repostsCount = repostsCount;
     }
 }

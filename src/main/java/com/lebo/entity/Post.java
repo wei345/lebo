@@ -104,7 +104,7 @@ public class Post extends IdEntity {
      * 只有所有者可见
      */
     public static final Integer ACL_PRIVATE = 0;
-    public static final Integer ACL_DEFAULT = null;
+    public static final Integer ACL_PUBLIC = null;
 
     public static class UserMention {
         private String userId;

@@ -110,6 +110,10 @@ public class User extends IdEntity {
     //用户视频数
     private Integer statusesCount;
     public static final String STATUSES_COUNT_KEY = "statusesCount";
+    private Integer originPostsCount;
+    public static final String ORIGIN_POSTS_COUNT_KEY = "originPostsCount";
+    private Integer repostsCount;
+    public static final String REPOSTS_COUNT_KEY = "repostsCount";
 
     //Apple Push Notification Service Token
     private String apnsProductionToken = "";
@@ -534,8 +538,24 @@ public class User extends IdEntity {
         this.profileBackgroundImage = profileBackgroundImage;
     }
 
-    public String getProfileBackgroundImageUrl(){
+    public String getProfileBackgroundImageUrl() {
         return FileContentUrlUtils.getContentUrl(profileBackgroundImage);
+    }
+
+    public Integer getOriginPostsCount() {
+        return originPostsCount;
+    }
+
+    public void setOriginPostsCount(Integer originPostsCount) {
+        this.originPostsCount = originPostsCount;
+    }
+
+    public Integer getRepostsCount() {
+        return repostsCount;
+    }
+
+    public void setRepostsCount(Integer repostsCount) {
+        this.repostsCount = repostsCount;
     }
 
     @Override
@@ -547,13 +567,14 @@ public class User extends IdEntity {
                 ", profileImageNormal='" + profileImageNormal + '\'' +
                 ", profileImageBigger='" + profileImageBigger + '\'' +
                 ", profileImageOriginal='" + profileImageOriginal + '\'' +
+                ", profileBackgroundImage='" + profileBackgroundImage + '\'' +
                 ", createdAt=" + createdAt +
                 ", verified=" + verified +
                 ", weiboVerified=" + weiboVerified +
                 ", location='" + location + '\'' +
                 ", timeZone='" + timeZone + '\'' +
                 ", oAuthIds=" + oAuthIds +
-                ", gender=" + gender +
+                ", gender='" + gender + '\'' +
                 ", email='" + email + '\'' +
                 ", lastSignInAt=" + lastSignInAt +
                 ", plainPassword='" + plainPassword + '\'' +
@@ -566,10 +587,13 @@ public class User extends IdEntity {
                 ", viewCount=" + viewCount +
                 ", digestCount=" + digestCount +
                 ", statusesCount=" + statusesCount +
+                ", originPostsCount=" + originPostsCount +
+                ", repostsCount=" + repostsCount +
                 ", apnsProductionToken='" + apnsProductionToken + '\'' +
                 ", apnsDevelopmentToken='" + apnsDevelopmentToken + '\'' +
                 ", weiboToken='" + weiboToken + '\'' +
                 ", renrenToken='" + renrenToken + '\'' +
+                ", qqToken='" + qqToken + '\'' +
                 ", findFriendWeiboToken='" + findFriendWeiboToken + '\'' +
                 ", findFriendWeiboUid='" + findFriendWeiboUid + '\'' +
                 ", findFriendRenrenToken='" + findFriendRenrenToken + '\'' +
