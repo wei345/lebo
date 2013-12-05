@@ -20,6 +20,17 @@
         #todoTable .text {
             width: 400px;
         }
+
+        .preview a {
+            position: relative;
+            display: block;
+        }
+
+        .preview .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
     </style>
 </head>
 
@@ -87,9 +98,12 @@
     <c:forEach items="${tasks}" var="task">
         <tr>
             <td></td>
-            <td>
+            <td class="preview">
                 <a href="${task.videoUrl}">
                     <img src="${task.videoFirstFrameUrl}"/>
+                    <c:if test="${task.duration != null}">
+                        <span class="badge badge-important">${task.duration}''</span>
+                    </c:if>
                 </a>
             </td>
             <td class="text">
