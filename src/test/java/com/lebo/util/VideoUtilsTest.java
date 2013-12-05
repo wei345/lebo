@@ -29,6 +29,12 @@ public class VideoUtilsTest {
         printVideoInfo("target/convert.mp4", "android可播放");
     }
 
+    @Test
+    public void getVideoDuration(){
+        long duration = VideoUtils.getVideoDurationInSeconds("/Users/liuwei/lebo/video/2013-07-03_11-30-29.mp4");
+        System.out.println(duration);
+    }
+
     private void printVideoInfo(String videoUrl, String message) {
         System.out.printf("\n---- %s ----\n", message);
         System.out.printf("File    : %s\n", videoUrl);

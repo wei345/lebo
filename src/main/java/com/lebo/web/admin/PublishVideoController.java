@@ -47,24 +47,33 @@ public class PublishVideoController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public String publishVideoForm(Model model) {
-        List<Task> tasks = taskService.getPublishVideoTodoTask();
+        List<Task> taskList = taskService.getPublishVideoTodoTask();
 
-        List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(tasks.size());
-        for (Task task : tasks) {
+        List<Map<String, Object>> tasks = new ArrayList<Map<String, Object>>(taskList.size());
+
+        for (Task task : taskList) {
             Map<String, Object> map = new HashMap<String, Object>();
+
             map.put("videoUrl", FileContentUrlUtils.getContentUrl(task.getVideo().getKey()));
+
             map.put("videoFirstFrameUrl", FileContentUrlUtils.getContentUrl(task.getVideoFirstFrame().getKey()));
+
+            map.put("duration", task.getVideo().getDuration());
+
             //TODO 优化性能，只查screenName
             User user = accountService.getUser(task.getVideoUserId());
             map.put("screenName", user.getScreenName());
+
             map.put("text", task.getVideoText());
+
             map.put("scheduledAt", scheduleDateFormat.format(task.getScheduledAt()));
+
             map.put("id", task.getId());
 
-            maps.add(map);
+            tasks.add(map);
         }
 
-        model.addAttribute("tasks", maps);
+        model.addAttribute("tasks", tasks);
         return "admin/task/publishVideo";
     }
 
@@ -79,7 +88,7 @@ public class PublishVideoController {
                                @RequestParam(value = "publishTime", required = false) String publishTime,
                                RedirectAttributes redirectAttributes) {
         //无论成功或失败都返回同一view
-        String view = "redirect:/admin/task/publish-video";
+        String publisVideoView = "redirect:/admin/task/publish-video";
 
         boolean isSchedule = StringUtils.isNotBlank(publishDate);
 
@@ -92,7 +101,7 @@ public class PublishVideoController {
         //检查视频格式
         if (!TaskService.UPLOAD_VIDEO_EXT.equals(FilenameUtils.getExtension(video.getOriginalFilename()))) {
             redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, String.format("视频文件格式错误，只允许 %s", TaskService.UPLOAD_VIDEO_EXT));
-            return view;
+            return publisVideoView;
         }
 
         //查找用户ID
@@ -101,13 +110,14 @@ public class PublishVideoController {
             userId = accountService.getUserId(null, screenName);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, String.format("失败，找不到用户[%s]", screenName));
-            return view;
+            return publisVideoView;
         }
 
         try {
             // 接收文件，获得视频第一帧截图
             File tempVideoFile = File.createTempFile(Task.TYPE_VALUE_PUBLISH_VIDEO, "." + TaskService.UPLOAD_VIDEO_EXT);
             video.transferTo(tempVideoFile);
+
             //截图，视频第一帧
             File tempPhotoFile = File.createTempFile(Task.TYPE_VALUE_PUBLISH_VIDEO, "." + TaskService.UPLOAD_PHOTO_EXT);
             VideoUtils.writeVideoFirstFrame(tempVideoFile, tempPhotoFile);
@@ -115,18 +125,28 @@ public class PublishVideoController {
             FileInfo videoFileInfo = new FileInfo(new FileInputStream(tempVideoFile), video.getContentType(), tempVideoFile.length(), tempVideoFile.getName());
             FileInfo videoFirstFrameInfo = new FileInfo(new FileInputStream(tempPhotoFile), ContentTypeMap.getContentType(FilenameUtils.getExtension(tempPhotoFile.getName())), tempPhotoFile.length(), tempPhotoFile.getName());
 
+            //视频时长
+            videoFileInfo.setDuration((long) VideoUtils.getVideoDurationInSeconds(tempVideoFile.getAbsolutePath()));
+
             //定时发布
             if (isSchedule) {
+
                 Date scheduledAt;
+
                 try {
-                    scheduledAt = scheduleDateFormat.parse(String.format("%s %s", publishDate, publishTime));
+
+                    scheduledAt = scheduleDateFormat.parse(publishDate + " " + publishTime);
+
                 } catch (ParseException ex) {
-                    redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, String.format("日期格式错误，正确格式为: %s", scheduleDateFormat.toPattern()));
-                    return view;
+
+                    redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, "日期格式错误，正确格式为: " + scheduleDateFormat.toPattern());
+
+                    return publisVideoView;
                 }
 
                 taskService.createTaskPublishVideo(userId, text, videoFileInfo, videoFirstFrameInfo, "后台", scheduledAt);
             }
+
             //立即发布
             else {
                 statusService.createPost(userId, text, videoFileInfo, videoFirstFrameInfo, null, "后台", Post.ACL_PUBLIC);
@@ -138,12 +158,16 @@ public class PublishVideoController {
 
             redirectAttributes.asMap().clear(); //发布成功，不回填表单数据
             redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_SUCCESS_KEY, (isSchedule ? "发布视频成功(定时发布)" : "发布视频成功"));
+
             logger.debug("后台发布视频成功");
-            return view;
+            return publisVideoView;
+
         } catch (Exception e) {
+
             logger.warn("后台发布视频失败", e);
             redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, "发布视频失败，请重试");
-            return view;
+
+            return publisVideoView;
         }
     }
 
