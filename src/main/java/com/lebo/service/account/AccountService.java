@@ -172,6 +172,8 @@ public class AccountService extends AbstractMongoService {
         dto.setFollowersCount(user.getFollowersCount());
         dto.setFriendsCount(user.getFriendsCount());
         dto.setStatusesCount(user.getStatusesCount());
+        dto.setOriginPostsCount(user.getOriginPostsCount());
+        dto.setRepostsCount(user.getRepostsCount());
         dto.setBeFavoritedCount(user.getBeFavoritedCount());
         dto.setViewCount(user.getViewCount());
         dto.setDigestCount(user.getDigestCount());

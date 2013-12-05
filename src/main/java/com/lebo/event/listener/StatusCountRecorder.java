@@ -27,21 +27,34 @@ public class StatusCountRecorder {
     @Subscribe
     public void updateStatusesCount(AfterPostCreateEvent event) {
         if (event.getPost().isPublic()) {
-            updateStatusesCount(event.getPost().getUserId());
+            updatePostCount(event.getPost().getUserId(), event.getPost().getOriginPostId() == null);
         }
     }
 
     @Subscribe
     public void updateStatusesCount(AfterPostDestroyEvent event) {
         if (event.getPost().isPublic()) {
-            updateStatusesCount(event.getPost().getUserId());
+            updatePostCount(event.getPost().getUserId(), event.getPost().getOriginPostId() == null);
         }
     }
 
-    private void updateStatusesCount(String userId) {
-        int count = statusService.countUserPublicStatus(userId);
+    private void updatePostCount(String userId, boolean isOrigin) {
 
-        mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(userId)),
-                new Update().set(User.STATUSES_COUNT_KEY, count), User.class);
+        if (isOrigin) {
+            mongoTemplate.updateFirst(
+                    new Query(new Criteria(User.ID_KEY).is(userId)),
+                    new Update()
+                            .set(User.STATUSES_COUNT_KEY, statusService.countPost(userId, true, null))
+                            .set(User.ORIGIN_POSTS_COUNT_KEY, statusService.countPost(userId, true, true)),
+                    User.class);
+        } else {
+            mongoTemplate.updateFirst(
+                    new Query(new Criteria(User.ID_KEY).is(userId)),
+                    new Update()
+                            .set(User.STATUSES_COUNT_KEY, statusService.countPost(userId, true, null))
+                            .set(User.REPOSTS_COUNT_KEY, statusService.countPost(userId, null, false)),
+                    User.class);
+        }
+
     }
 }
