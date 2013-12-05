@@ -63,14 +63,14 @@ public class StatusServiceTest extends SpringContextTestCase {
         String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(classPathResource.getFile());
         FileInfo fileInfo = new FileInfo(classPathResource.getInputStream(), contentType, classPathResource.getFile().length(), classPathResource.getFilename());
         FileInfo fileInfo1 = new FileInfo(classPathResource.getInputStream(), contentType, classPathResource.getFile().length(), classPathResource.getFilename());
-        Post post = statusService.createPost("51d3221a1a883ebc140f7284", "测试发布视频", fileInfo, fileInfo1, null, null, Post.ACL_DEFAULT);
+        Post post = statusService.createPost("51d3221a1a883ebc140f7284", "测试发布视频", fileInfo, fileInfo1, null, null, Post.ACL_PUBLIC);
 
         assertNotNull(post);
     }
 
     @Test
     public void countUserStatus() {
-        int count = statusService.countUserStatus("51def1e61a883914869e46f3");
+        int count = statusService.countPost("51def1e61a883914869e46f3");
         System.out.println(count);
     }
 

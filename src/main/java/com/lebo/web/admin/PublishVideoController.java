@@ -129,7 +129,7 @@ public class PublishVideoController {
             }
             //立即发布
             else {
-                statusService.createPost(userId, text, videoFileInfo, videoFirstFrameInfo, null, "后台", Post.ACL_DEFAULT);
+                statusService.createPost(userId, text, videoFileInfo, videoFirstFrameInfo, null, "后台", Post.ACL_PUBLIC);
             }
 
             // 删除临时文件

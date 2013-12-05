@@ -150,7 +150,7 @@ public class StatusService extends AbstractMongoService {
 
     private void addAclPublicCriteria(Query query) {
 
-        Criteria aclCriteria = new Criteria(Post.ACL_KEY).is(Post.ACL_DEFAULT);
+        Criteria aclCriteria = new Criteria(Post.ACL_KEY).is(Post.ACL_PUBLIC);
 
         query.addCriteria(aclCriteria);
     }
@@ -202,13 +202,30 @@ public class StatusService extends AbstractMongoService {
         return postDao.findOne(id);
     }
 
-    public int countUserStatus(String userId) {
-        return (int) mongoTemplate.count(new Query(new Criteria(Post.USER_ID_KEY).is(userId)), Post.class);
+    public int countPost(String userId) {
+        return countPost(userId, null, null);
     }
 
-    public int countUserPublicStatus(String userId) {
+    public int countPost(String userId, Boolean isPublic, Boolean isOrigin) {
+
         Query query = new Query(new Criteria(Post.USER_ID_KEY).is(userId));
-        query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_DEFAULT));
+
+        if (isPublic != null) {
+            if (isPublic) {
+                query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_PUBLIC));
+            } else {
+                query.addCriteria(new Criteria(Post.ACL_KEY).ne(Post.ACL_PUBLIC));
+            }
+        }
+
+        if (isOrigin != null) {
+            if (isOrigin) {
+                query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+            } else {
+                query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).ne(null));
+            }
+        }
+
         return (int) mongoTemplate.count(query, Post.class);
     }
 
@@ -443,7 +460,7 @@ public class StatusService extends AbstractMongoService {
         //原贴
         query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
         //完全公开
-        query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_DEFAULT));
+        query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_PUBLIC));
         //按红心数降序排序，取出2000条
         query.with(new PageRequest(0, 2000, hotPostsSort));
 
@@ -484,6 +501,36 @@ public class StatusService extends AbstractMongoService {
         tmpCollection.rename(collectionName, true);
 
         logger.debug("更新热门帖子 : 完成");
+    }
+
+    @ManagedOperation(description = "重新计算所有用户总帖子数、原始帖子数、转发帖子数")
+    public void updateAllUserPostsCount() {
+        String logPrefix = "更新所有用户总帖子数、原始帖子数、转发帖子数";
+
+        logger.debug("{} : 开始", logPrefix);
+        Query query = new Query();
+        query.fields().include(User.ID_KEY);
+
+        logger.debug("{} : 正在获取所有用户ID", logPrefix);
+        List<User> users = mongoTemplate.find(query, User.class);
+        logger.debug("{} : 共 {} 用户", logPrefix, users.size());
+
+        for (int i = 0; i < users.size(); i++) {
+            String userId = users.get(i).getId();
+
+            if (i % 1000 == 0) {
+                logger.debug("{} : 已完成 {}/{}", logPrefix, i, users.size());
+            }
+
+            mongoTemplate.updateFirst(
+                    new Query(new Criteria(User.ID_KEY).is(userId)),
+                    new Update()
+                            .set(User.STATUSES_COUNT_KEY, countPost(userId, true, null))
+                            .set(User.ORIGIN_POSTS_COUNT_KEY, countPost(userId, true, true))
+                            .set(User.REPOSTS_COUNT_KEY, countPost(userId, null, false)),
+                    User.class);
+        }
+        logger.debug("{} : 完成", logPrefix);
     }
 
     /* 不使用这种算法

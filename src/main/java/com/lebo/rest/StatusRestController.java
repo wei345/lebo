@@ -74,7 +74,7 @@ public class StatusRestController {
                     + ")太大");
         }
 
-        return createPost(text, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image), source, Post.ACL_DEFAULT);
+        return createPost(text, ControllerUtils.getFileInfo(video), ControllerUtils.getFileInfo(image), source, Post.ACL_PUBLIC);
     }
 
     /**
@@ -156,7 +156,7 @@ public class StatusRestController {
             //转发
             Post post = statusService.getRepost(accountService.getCurrentUserId(), originPost);
             if (post == null) {
-                post = statusService.createPost(accountService.getCurrentUserId(), text, null, null, originPost, source, Post.ACL_DEFAULT);
+                post = statusService.createPost(accountService.getCurrentUserId(), text, null, null, originPost, source, Post.ACL_PUBLIC);
             }
             return statusService.toStatusDto(post);
 
@@ -375,7 +375,7 @@ public class StatusRestController {
             throw e;
         }
 
-        Integer acl = pvt ? Post.ACL_PRIVATE : Post.ACL_DEFAULT;
+        Integer acl = pvt ? Post.ACL_PRIVATE : Post.ACL_PUBLIC;
 
         return createPost(text, videoFileInfo, imageFileInfo, source, acl);
     }
@@ -392,7 +392,7 @@ public class StatusRestController {
         String firstVideoHashtag = "#新人报到#";
         User user = accountService.getUser(accountService.getCurrentUserId());
         //用户第一次发视频
-        if (acl == Post.ACL_DEFAULT
+        if (acl == Post.ACL_PUBLIC
                 && (user.getStatusesCount() == null || user.getStatusesCount() == 0)) {
             if (!text.contains(firstVideoHashtag)) {
                 text += firstVideoHashtag;

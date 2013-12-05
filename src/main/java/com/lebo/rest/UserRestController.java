@@ -96,7 +96,9 @@ public class UserRestController {
 
         //查看自己信息，查自己所有帖子数
         if (id.equals(accountService.getCurrentUserId())) {
-            dto.setStatusesCount(statusService.countUserStatus(id));
+            dto.setStatusesCount(statusService.countPost(id));
+            dto.setOriginPostsCount(statusService.countPost(id, null, true));
+            dto.setRepostsCount(statusService.countPost(id, null, false));
         }
 
         return dto;

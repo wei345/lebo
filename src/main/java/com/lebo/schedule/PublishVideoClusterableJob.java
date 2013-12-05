@@ -76,7 +76,7 @@ public class PublishVideoClusterableJob extends QuartzJobBean {
             String taskVideoFirstFrameKey = task.getVideoFirstFrame().getKey();
 
             //发布视频
-            Post post = statusService.createPost(task.getVideoUserId(), task.getVideoText(), task.getVideo(), task.getVideoFirstFrame(), null, task.getVideoSource(), Post.ACL_DEFAULT);
+            Post post = statusService.createPost(task.getVideoUserId(), task.getVideoText(), task.getVideo(), task.getVideoFirstFrame(), null, task.getVideoSource(), Post.ACL_PUBLIC);
 
             //删除任务文件
             fileStorageService.delete(taskVideoKey);
