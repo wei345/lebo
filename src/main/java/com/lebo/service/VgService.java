@@ -278,7 +278,7 @@ public class VgService {
             giverValueDao.insert(giverValue);
         } else {
             old.setGiveValue(old.getGiveValue() + giveValue);
-            giverValueDao.updateGiveValue(giverValue);
+            giverValueDao.updateGiveValue(old);
         }
     }
 
