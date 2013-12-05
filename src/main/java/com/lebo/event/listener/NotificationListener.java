@@ -9,6 +9,7 @@ import com.lebo.event.AfterFavoriteCreateEvent;
 import com.lebo.event.AfterFollowingCreatEvent;
 import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.jms.ApnsMessageProducer;
+import com.lebo.service.BlockService;
 import com.lebo.service.NotificationService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
@@ -37,6 +38,8 @@ public class NotificationListener {
     private AccountService accountService;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private BlockService blockService;
 
     private Logger logger = LoggerFactory.getLogger(NotificationListener.class);
 
@@ -89,6 +92,11 @@ public class NotificationListener {
                     if (event.getPost().getUserId().equals(userId)) {
                         continue;
                     }
+                    //用户被黑名单中的人at，不发通知
+                    if(blockService.isBlocking(userId, event.getPost().getUserId())){
+                        continue;
+                    }
+
                     Notification notification = createNotification(Notification.ACTIVITY_TYPE_POST_AT,
                             userId, event.getPost().getUserId(),
                             Notification.OBJECT_TYPE_POST, event.getPost().getId());
@@ -144,6 +152,11 @@ public class NotificationListener {
             if (event.getComment().getUserId().equals(userId)) {
                 continue;
             }
+            //用户被黑名单中的人at，不发通知
+            if(blockService.isBlocking(userId, event.getComment().getUserId())){
+                continue;
+            }
+
             Notification notification = createNotification(Notification.ACTIVITY_TYPE_COMMENT_AT,
                     userId, event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
