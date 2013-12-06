@@ -106,6 +106,9 @@ public class Post extends IdEntity {
     public static final Integer ACL_PRIVATE = 0;
     public static final Integer ACL_PUBLIC = null;
 
+    private Integer popularity; //人气
+    public static final String POPULARITY_KEY = "popularity";
+
     public static class UserMention {
         private String userId;
         private String screenName;
@@ -347,5 +350,13 @@ public class Post extends IdEntity {
 
     public boolean isPublic(){
         return acl == null;
+    }
+
+    public Integer getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
     }
 }

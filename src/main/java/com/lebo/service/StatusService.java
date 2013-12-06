@@ -876,6 +876,14 @@ public class StatusService extends AbstractMongoService {
         return mongoTemplate.find(query, Post.class);
     }
 
+    public void addPopularity(String postId, int amount) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(Post.ID_KEY).is(postId)),
+                new Update().inc(Post.POPULARITY_KEY, amount),
+                Post.class
+        );
+    }
+
     //-- 帖子管理 --//
 
     /**

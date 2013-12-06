@@ -58,6 +58,8 @@ public class VgService {
     private PostDao postDao;
     @Autowired
     private GiverValueDao giverValueDao;
+    @Autowired
+    private StatusService statusService;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -246,6 +248,9 @@ public class VgService {
         //更新排名数据
         addGiveValue(toUserId, fromUserId, totalPrice);
 
+        //增长帖子人气
+        statusService.addPopularity(postId, totalPrice);
+
         eventBus.post(new AfterGiveGoodsEvent(giveGoods));
     }
 
@@ -282,11 +287,11 @@ public class VgService {
         }
     }
 
-    public GiverValue getGiverValue(String userId, String giverId){
+    public GiverValue getGiverValue(String userId, String giverId) {
         return giverValueDao.getByUserIdGiverId(new GiverValue(userId, giverId));
     }
 
-    public int getGiverRank(GiverValue giverValue){
+    public int getGiverRank(GiverValue giverValue) {
         return giverValueDao.countBefore(giverValue) + 1;
     }
 
