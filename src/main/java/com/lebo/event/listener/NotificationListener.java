@@ -47,7 +47,7 @@ public class NotificationListener {
     @Subscribe
     public void afterFollowingCreate(AfterFollowingCreatEvent event) {
         Notification notification = createNotification(Notification.ACTIVITY_TYPE_FOLLOW,
-                event.getFollowingId(), event.getUserId(), null, null);
+                event.getFollowingId(), event.getUserId(), null, null, null);
 
         sendNotificationQueue(notification);
     }
@@ -60,7 +60,7 @@ public class NotificationListener {
         if (!event.getFavorite().getPostUserId().equals(event.getFavorite().getUserId())) {//自己收藏自己的帖子，不发通知
             Notification notification = createNotification(Notification.ACTIVITY_TYPE_FAVORITE,
                     event.getFavorite().getPostUserId(), event.getFavorite().getUserId(),
-                    Notification.OBJECT_TYPE_POST, event.getFavorite().getPostId());
+                    Notification.OBJECT_TYPE_POST, event.getFavorite().getPostId(), null);
 
             sendNotificationQueue(notification);
         }
@@ -77,7 +77,7 @@ public class NotificationListener {
             if (!event.getPost().getOriginPostUserId().equals(event.getPost().getUserId())) { //转发自己的帖子不发通知
                 Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPOST,
                         event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
-                        Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId());
+                        Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId(), null);
 
                 sendNotificationQueue(notification);
             }
@@ -97,7 +97,7 @@ public class NotificationListener {
 
                     Notification notification = createNotification(Notification.ACTIVITY_TYPE_POST_AT,
                             userId, event.getPost().getUserId(),
-                            Notification.OBJECT_TYPE_POST, event.getPost().getId());
+                            Notification.OBJECT_TYPE_POST, event.getPost().getId(), null);
 
                     sendNotificationQueue(notification);
                 }
@@ -119,7 +119,7 @@ public class NotificationListener {
             } else {
                 Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPLY_COMMENT,
                         event.getComment().getReplyCommentUserId(), event.getComment().getUserId(),
-                        Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
+                        Notification.OBJECT_TYPE_COMMENT, event.getComment().getId(), null);
 
                 sendNotificationQueue(notification);
             }
@@ -139,7 +139,7 @@ public class NotificationListener {
         } else {
             Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPLY_POST,
                     post.getUserId(), event.getComment().getUserId(),
-                    Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
+                    Notification.OBJECT_TYPE_COMMENT, event.getComment().getId(), null);
 
             sendNotificationQueue(notification);
         }
@@ -157,7 +157,7 @@ public class NotificationListener {
 
             Notification notification = createNotification(Notification.ACTIVITY_TYPE_COMMENT_AT,
                     userId, event.getComment().getUserId(),
-                    Notification.OBJECT_TYPE_COMMENT, event.getComment().getId());
+                    Notification.OBJECT_TYPE_COMMENT, event.getComment().getId(), null);
 
             sendNotificationQueue(notification);
         }
@@ -168,17 +168,15 @@ public class NotificationListener {
 
         GiveGoods giveGoods = event.getGiveGoods();
 
+        User fromUser = accountService.getUser(giveGoods.getFromUserId());
+        Goods goods = vgService.getGoodsById(giveGoods.getGoodsId());
+
         Notification notification = createNotification(
                 Notification.ACTIVITY_TYPE_GIVE_GOODS,
                 giveGoods.getToUserId(),
                 giveGoods.getFromUserId(),
                 Notification.OBJECT_TYPE_POST,
-                giveGoods.getPostId());
-
-        User fromUser = accountService.getUser(giveGoods.getFromUserId());
-        Goods goods = vgService.getGoodsById(giveGoods.getGoodsId());
-
-        notification.setText(
+                giveGoods.getPostId(),
                 String.format("%s 送了您 %s %s %s",
                         fromUser.getScreenName(),
                         giveGoods.getQuantity(),
@@ -242,7 +240,7 @@ public class NotificationListener {
     }
 
     private Notification createNotification(String activityType, String recipientId, String senderId,
-                                            String objectType, String objectId) {
+                                            String objectType, String objectId, String text) {
         Notification notification = new Notification();
         notification.setActivityType(activityType);
         notification.setCreatedAt(new Date());
@@ -251,6 +249,7 @@ public class NotificationListener {
         notification.setSenderId(senderId);
         notification.setObjectType(objectType);
         notification.setObjectId(objectId);
+        notification.setText(text);
         return notificationService.create(notification);
     }
 }
