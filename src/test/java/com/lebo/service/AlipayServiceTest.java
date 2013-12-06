@@ -67,12 +67,13 @@ public class AlipayServiceTest extends SpringContextTestCase {
         params.put("seller_email", "626070255@qq.com");
         params.put("payment_type", "1");
 
-        System.out.println(alipayService.rsaCheckV1(params));
+        assertTrue(alipayService.rsaCheckV1(params));
     }
 
     @Test
     public void checkIfAlipayRequest() {
-        assertTrue(alipayService.checkIfAlipayRequest("a165ad6fb216c1b9baee8bac3d85bd5f3y"));
+        assertTrue(alipayService.checkIfAlipayRequest("a165ad6fb216c1b9baee8bac3d85bd5f3y")); //过期为false, 多长时间过期？
         assertFalse(alipayService.checkIfAlipayRequest("123456"));
     }
+
 }
