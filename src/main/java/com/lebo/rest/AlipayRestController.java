@@ -80,7 +80,8 @@ public class AlipayRestController {
         if (alipayService.rsaCheckV1(params)) {
             logger.debug("通过");
         } else {
-            logger.debug("未通过, 忽略, 仍然继续");
+            logger.debug("未通过, 退出");
+            return "error";
         }
 
         logger.debug("正在验证是否支付宝请求..");
@@ -124,7 +125,9 @@ public class AlipayRestController {
             }
 
             return "success";
+
         } catch (Exception e) {
+
             logger.warn("处理订单时发生错误", e);
             return "error";
         }
