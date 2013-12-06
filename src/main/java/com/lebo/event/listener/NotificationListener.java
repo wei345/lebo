@@ -49,7 +49,7 @@ public class NotificationListener {
         Notification notification = createNotification(Notification.ACTIVITY_TYPE_FOLLOW,
                 event.getFollowingId(), event.getUserId(), null, null, null);
 
-        sendNotificationQueue(notification);
+        sendNotificationQueue(notification, null);
     }
 
     /**
@@ -62,7 +62,7 @@ public class NotificationListener {
                     event.getFavorite().getPostUserId(), event.getFavorite().getUserId(),
                     Notification.OBJECT_TYPE_POST, event.getFavorite().getPostId(), null);
 
-            sendNotificationQueue(notification);
+            sendNotificationQueue(notification, null);
         }
     }
 
@@ -79,7 +79,7 @@ public class NotificationListener {
                         event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
                         Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId(), null);
 
-                sendNotificationQueue(notification);
+                sendNotificationQueue(notification, null);
             }
         }
         //原帖，at通知
@@ -99,7 +99,7 @@ public class NotificationListener {
                             userId, event.getPost().getUserId(),
                             Notification.OBJECT_TYPE_POST, event.getPost().getId(), null);
 
-                    sendNotificationQueue(notification);
+                    sendNotificationQueue(notification, null);
                 }
             }
         }
@@ -121,7 +121,7 @@ public class NotificationListener {
                         event.getComment().getReplyCommentUserId(), event.getComment().getUserId(),
                         Notification.OBJECT_TYPE_COMMENT, event.getComment().getId(), null);
 
-                sendNotificationQueue(notification);
+                sendNotificationQueue(notification, null);
             }
         }
 
@@ -141,7 +141,7 @@ public class NotificationListener {
                     post.getUserId(), event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId(), null);
 
-            sendNotificationQueue(notification);
+            sendNotificationQueue(notification, null);
         }
 
         //comment中at
@@ -159,7 +159,7 @@ public class NotificationListener {
                     userId, event.getComment().getUserId(),
                     Notification.OBJECT_TYPE_COMMENT, event.getComment().getId(), null);
 
-            sendNotificationQueue(notification);
+            sendNotificationQueue(notification, null);
         }
     }
 
@@ -177,16 +177,15 @@ public class NotificationListener {
                 giveGoods.getFromUserId(),
                 Notification.OBJECT_TYPE_POST,
                 giveGoods.getPostId(),
-                String.format("%s 送了您 %s %s %s",
-                        fromUser.getScreenName(),
+                String.format("送了您%s%s%s",
                         giveGoods.getQuantity(),
                         goods.getQuantityUnit(),
                         goods.getName()));
 
-        sendNotificationQueue(notification);
+        sendNotificationQueue(notification, fromUser.getScreenName() + " " + notification.getText());
     }
 
-    private void sendNotificationQueue(Notification notification) {
+    private void sendNotificationQueue(Notification notification, String msg) {
         User recipient = accountService.getUser(notification.getRecipientId());
         //如果用户设置不接收，则不发推送通知
         if (notification.getActivityType().equals(Notification.ACTIVITY_TYPE_FOLLOW)) {
@@ -215,8 +214,8 @@ public class NotificationListener {
         if (StringUtils.isNotBlank(recipient.getApnsProductionToken())) {
 
             String message = "";
-            if (StringUtils.isNotBlank(notification.getText())) {
-                message = notification.getText();
+            if (StringUtils.isNotBlank(msg)) {
+                message = msg;
             } else if (Notification.ACTIVITY_TYPE_FOLLOW.equals(notification.getActivityType())) {
                 message = String.format("%s 关注了你", sender.getScreenName());
             } else if (Notification.ACTIVITY_TYPE_FAVORITE.equals(notification.getActivityType())) {
