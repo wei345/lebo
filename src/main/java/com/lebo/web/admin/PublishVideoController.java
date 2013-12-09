@@ -144,7 +144,15 @@ public class PublishVideoController {
                     return publisVideoView;
                 }
 
-                taskService.createTaskPublishVideo(userId, text, videoFileInfo, videoFirstFrameInfo, "后台", scheduledAt);
+                //未来发布
+                if (scheduledAt.getTime() > new Date().getTime()) {
+                    taskService.createTaskPublishVideo(userId, text, videoFileInfo, videoFirstFrameInfo, "后台", scheduledAt);
+                }
+
+                //设为过去的日期并立即发布
+                else {
+                    statusService.createPost(userId, text, videoFileInfo, videoFirstFrameInfo, null, "后台", Post.ACL_PUBLIC, scheduledAt);
+                }
             }
 
             //立即发布
