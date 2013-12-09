@@ -81,10 +81,14 @@ public class StatusService extends AbstractMongoService {
      * @throws IOException
      */
     public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source, Integer acl) {
+        return createPost(userId, text, video, videoFirstFrame, originPost, source, acl, new Date());
+    }
+
+    public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source, Integer acl, Date createdAt) {
         Post post = new Post().initial();
 
         post.setUserId(userId);
-        post.setCreatedAt(new Date());
+        post.setCreatedAt(createdAt == null ? new Date() : createdAt);
         post.setId(newMongoId(post.getCreatedAt()));
         post.setSource(source);
         post.setText(text);
