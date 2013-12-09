@@ -5,6 +5,8 @@ import com.lebo.entity.GoldOrder;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.lebo.service.AlipayService.AlipayStatus.*;
+
 /**
  * @author: Wei Liu
  * Date: 13-10-31
@@ -28,6 +30,11 @@ public class VgServiceTest extends SpringContextTestCase {
 
     @Test
     public void tradeSuccess(){
-        vgService.tradeSuccess(2L, "TRADE_SUCCESS", "test-123456");
+        vgService.tradeSuccess(1L, AlipayService.AlipayStatus.TRADE_SUCCESS, "test-123456");
+    }
+
+    @Test
+    public void handleAlipayNotify(){
+        vgService.handleAlipayNotify(2L, TRADE_SUCCESS, "test-12345678");
     }
 }

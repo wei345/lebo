@@ -19,6 +19,8 @@ import com.lebo.rest.dto.GoldOrderDto;
 import com.lebo.rest.dto.GoldProductDto;
 import com.lebo.rest.dto.GoodsDto;
 import com.lebo.service.param.PageRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ import org.springside.modules.utils.Encodes;
 
 import java.math.BigDecimal;
 import java.util.*;
+
+import static com.lebo.service.AlipayService.AlipayStatus;
+import static com.lebo.service.AlipayService.AlipayStatus.WAIT_BUYER_PAY;
 
 @Service
 @Transactional
@@ -71,6 +76,8 @@ public class VgService {
     public String alipayNotifyUrl;
     @Value("${alipay.seller_id}")
     public String alipaySellerId;
+
+    private Logger logger = LoggerFactory.getLogger(VgService.class);
 
     public GoldOrder createOrder(Long goldProductId, String userId, GoldOrder.PaymentMethod paymentMethod) {
 
@@ -152,10 +159,65 @@ public class VgService {
         return BeanMapper.map(goldOrder, GoldOrderDto.class);
     }
 
+    public void handleAlipayNotify(long outTradeNo, AlipayStatus alipayStatus, String alipayNotifyId) {
+
+        //TODO  使用redis记录2天之内处理的通知id
+        if (alipayService.isNotifyIdProcessed(alipayNotifyId)) {
+            logger.debug("alipayNotifyId({})已处理过", alipayNotifyId);
+            return;
+        }
+
+        GoldOrder goldOrder = goldOrderDao.get(outTradeNo);
+        AlipayStatus currentAlipayStatus = goldOrder.getAlipayStatus();
+        if (currentAlipayStatus == null || goldOrder.getAlipayStatus().canChangeTo(alipayStatus)) {
+
+            logger.debug("正在更新订单状态: {} -> {}", goldOrder.getAlipayStatus(), alipayStatus);
+
+            switch (alipayStatus) {
+                //null -> WAIT_BUYER_PAY
+                case WAIT_BUYER_PAY:
+                    updateTradeStatus(outTradeNo, GoldOrder.Status.UNPAID, alipayStatus, alipayNotifyId);
+                    logger.debug("未支付 : 支付宝等待用户支付");
+                    break;
+                case TRADE_SUCCESS:
+                    //null -> TRADE_SUCCESS, WAIT_BUYER_PAY -> TRADE_SUCCESS
+                    tradeSuccess(outTradeNo, alipayStatus, alipayNotifyId);
+                    logger.debug("已支付 : 支付宝交易完成，用户金币已增加");
+                    break;
+                case TRADE_FINISHED:
+                    //null -> TRADE_FINISHED, WAIT_BUYER_PAY -> TRADE_FINISHED
+                    if (currentAlipayStatus == null || currentAlipayStatus == WAIT_BUYER_PAY) {
+                        tradeSuccess(outTradeNo, alipayStatus, alipayNotifyId);
+                        logger.debug("已支付 : 支付宝交易完成，用户金币已增加");
+                    }
+                    //TRADE_SUCCESS -> TRADE_FINISHED, 不会出现这种情况吧
+                    else {
+                        throw new ServiceException("不知如何处理订单状态变化: " + currentAlipayStatus + " -> " + alipayStatus);
+                    }
+                    break;
+                case TRADE_CLOSED:
+                    //null -> TRADE_CLOSED, WAIT_BUYER_PAY -> TRADE_CLOSED
+                    if (currentAlipayStatus == null || currentAlipayStatus == WAIT_BUYER_PAY) {
+                        updateTradeStatus(outTradeNo, GoldOrder.Status.OBSOLETE, alipayStatus, alipayNotifyId);
+                        logger.debug("订单作废 : 支付宝交易关闭");
+                    }
+                    //TRADE_SUCCESS -> TRADE_CLOSED? 退款？
+                    else {
+                        throw new ServiceException("不知如何处理订单状态变化: " + currentAlipayStatus + " -> " + alipayStatus);
+                    }
+                    break;
+                default:
+                    throw new ServiceException("未知的订单类型: " + alipayStatus);
+            }
+        } else {
+            logger.debug("订单状态变化不符合支付宝规则，{} -> {}, 不做处理", goldOrder.getAlipayStatus(), alipayStatus);
+        }
+    }
+
     /**
      * 购买金币，支付宝支付成功.
      */
-    public void tradeSuccess(Long orderId, String alipayStatus, String alipayNotifyId) {
+    public void tradeSuccess(Long orderId, AlipayStatus alipayStatus, String alipayNotifyId) {
         //更新订单状态
         updateTradeStatus(orderId, GoldOrder.Status.PAID, alipayStatus, alipayNotifyId);
 
@@ -174,7 +236,7 @@ public class VgService {
         }
     }
 
-    public void updateTradeStatus(Long orderId, GoldOrder.Status status, String alipayStatus, String alipayNotifyId) {
+    public void updateTradeStatus(Long orderId, GoldOrder.Status status, AlipayStatus alipayStatus, String alipayNotifyId) {
         GoldOrder goldOrder = new GoldOrder();
         goldOrder.setId(orderId);
         goldOrder.setStatus(status);

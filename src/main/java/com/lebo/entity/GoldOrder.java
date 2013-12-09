@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import com.lebo.service.AlipayService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ public class GoldOrder {
     private Date orderDate;
     private Status status;
     private PaymentMethod paymentMethod;
-    private String alipayStatus;
+    private AlipayService.AlipayStatus alipayStatus;
     private String alipayNotifyId;
 
     public static enum Status {
@@ -132,11 +133,11 @@ public class GoldOrder {
                         .append("×").append(quantity).toString(), 0, 128);
     }
 
-    public String getAlipayStatus() {
+    public AlipayService.AlipayStatus getAlipayStatus() {
         return alipayStatus;
     }
 
-    public void setAlipayStatus(String alipayStatus) {
+    public void setAlipayStatus(AlipayService.AlipayStatus alipayStatus) {
         this.alipayStatus = alipayStatus;
     }
 

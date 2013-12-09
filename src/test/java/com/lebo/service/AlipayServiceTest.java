@@ -76,4 +76,9 @@ public class AlipayServiceTest extends SpringContextTestCase {
         assertFalse(alipayService.checkIfAlipayRequest("123456"));
     }
 
+    @Test
+    public void alipayStatus(){
+        assertTrue(AlipayService.AlipayStatus.TRADE_SUCCESS == AlipayService.AlipayStatus.valueOf("TRADE_SUCCESS"));
+    }
+
 }

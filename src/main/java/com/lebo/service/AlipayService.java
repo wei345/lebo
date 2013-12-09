@@ -92,4 +92,24 @@ public class AlipayService {
     public boolean isNotifyIdProcessed(String notifyId) {
         return goldOrderDao.countByAlipayNotifyId(notifyId) > 0;
     }
+
+    public static enum AlipayStatus {
+        WAIT_BUYER_PAY(1),  //￼交易创建,等待买家付款。
+        TRADE_SUCCESS(2),   //交易成功,且可对该交易做操作,如:多级分润、退款等。
+        TRADE_FINISHED(3), //交易成功且结束,即不可再做任何操作。
+        TRADE_CLOSED(3);  //在指定时间段内未支付时关闭的交易; 在交易完成全额退款成功时关闭的交易。
+
+        int value;
+
+        AlipayStatus(int value) {
+            this.value = value;
+        }
+
+        public boolean canChangeTo(AlipayStatus anotherStatus) {
+            if(anotherStatus == null){
+                return false;
+            }
+            return anotherStatus.value > this.value;
+        }
+    }
 }
