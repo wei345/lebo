@@ -34,4 +34,12 @@
     <bean id="jmxAccessFilePath" class="com.lebo.jmx.FilePathFactoryBean">
         <property name="classpath" value="jmx/jmxremote.access"/>
     </bean>
+
+    <bean id="dataSourceJmxExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+        <property name="beans">
+            <map>
+                <entry key="bean:name=DataSource" value="#{dataSource.getPool().getJmxPool()}"/>
+            </map>
+        </property>
+    </bean>
 </beans>
