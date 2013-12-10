@@ -154,6 +154,11 @@ public class HomeRestController {
     @RequestMapping(value = "**")
     @ResponseBody
     public Object notFound(HttpServletRequest request) {
-        return ErrorDto.notFound(String.format("URL[%s] does not exist", request.getRequestURL()));
+        return ErrorDto.notFound(
+                new StringBuilder("地址不存在: ")
+                        .append(request.getMethod())
+                        .append(" ")
+                        .append(request.getRequestURL())
+                        .toString());
     }
 }

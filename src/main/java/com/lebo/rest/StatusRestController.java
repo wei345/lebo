@@ -346,7 +346,7 @@ public class StatusRestController {
                                     @RequestParam(value = "userIds") String userIds) {
         statusService.increaseViewCount(Arrays.asList(postIds.split("\\s*,\\s*")));
         accountService.increaseViewCount(Arrays.asList(userIds.split("\\s*,\\s*")));
-        return null;
+        return ErrorDto.OK;
     }
 
     //-- v1.1 --//
@@ -432,6 +432,16 @@ public class StatusRestController {
         dto.setStatuses(statuses);
 
         return dto;
+    }
+
+    /**
+     * 帖子分享次数+1
+     */
+    @RequestMapping(value = API_1_1_PREFIX + "increaseShareCount.json", method = RequestMethod.POST)
+    @ResponseBody
+    public Object increaseShareCount(@RequestParam(value = "postId") String postId) {
+        statusService.increaseShareCount(postId);
+        return ErrorDto.OK;
     }
 
 }

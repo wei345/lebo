@@ -240,6 +240,15 @@
             视频播放次数+1。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/statuses/increaseShareCount"
+                       text="POST statuses/increaseShareCount"/>
+        </td>
+        <td>
+            视频分享次数+1。
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>
