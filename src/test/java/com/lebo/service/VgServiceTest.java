@@ -35,6 +35,6 @@ public class VgServiceTest extends SpringContextTestCase {
 
     @Test
     public void handleAlipayNotify(){
-        vgService.handleAlipayNotify(2L, TRADE_SUCCESS, "test-12345678");
+        vgService.handleAlipayNotify(1L, TRADE_FINISHED, "test-12345678");
     }
 }

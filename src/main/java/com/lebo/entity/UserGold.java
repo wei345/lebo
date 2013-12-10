@@ -7,13 +7,13 @@ package com.lebo.entity;
  */
 public class UserGold {
     private String userId;
-    private Long goldQuantity;
+    private Integer goldQuantity;
 
     public UserGold(){
 
     }
 
-    public UserGold(String userId, Long goldQuantity){
+    public UserGold(String userId, Integer goldQuantity){
         this.userId = userId;
         this.goldQuantity = goldQuantity;
     }
@@ -26,11 +26,11 @@ public class UserGold {
         this.userId = userId;
     }
 
-    public Long getGoldQuantity() {
+    public Integer getGoldQuantity() {
         return goldQuantity;
     }
 
-    public void setGoldQuantity(Long goldQuantity) {
+    public void setGoldQuantity(Integer goldQuantity) {
         this.goldQuantity = goldQuantity;
     }
 }

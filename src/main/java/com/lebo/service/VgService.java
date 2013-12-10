@@ -79,13 +79,22 @@ public class VgService {
 
     public GoldOrder createOrder(Long goldProductId, String userId, GoldOrder.PaymentMethod paymentMethod) {
 
-        GoldOrder goldOrder = new GoldOrder(userId, BigDecimal.ZERO, GoldOrder.Status.UNPAID, paymentMethod);
+        BigDecimal discount = BigDecimal.ZERO;
+        int quantity = 1;
+
+        GoldOrder goldOrder = new GoldOrder(userId, discount, GoldOrder.Status.UNPAID, paymentMethod);
 
         GoldProduct goldProduct = goldProductDao.get(goldProductId);
         Assert.notNull(goldProduct);
         goldOrder.setGoldProduct(goldProduct);
 
-        goldOrder.setQuantity(1);
+        goldOrder.setQuantity(quantity);
+
+        goldOrder.setSubject(goldProduct.getName() + "×" + quantity);
+
+        goldOrder.setTotalCost(goldProduct.getCost().multiply(new BigDecimal(quantity)).add(discount));
+
+        goldOrder.setGoldQuantity(goldProduct.getGoldQuantity() * quantity);
 
         goldOrderDao.save(goldOrder);
         return goldOrder;
@@ -212,11 +221,11 @@ public class VgService {
         updateTradeStatus(orderId, GoldOrder.Status.PAID, alipayStatus, alipayNotifyId);
 
         //更新用户金币数
-        GoldOrder goldOrder = getOrderWithDetail(orderId);
+        GoldOrder goldOrder = goldOrderDao.get(orderId);
         addUserGoldQuantity(goldOrder.getUserId(), goldOrder.getGoldQuantity());
     }
 
-    private void addUserGoldQuantity(String userId, Long goldQuantity) {
+    private void addUserGoldQuantity(String userId, Integer goldQuantity) {
         UserGold userGold = userGoldDao.getByUserId(userId);
         if (userGold == null) {
             userGoldDao.insert(new UserGold(userId, goldQuantity));
@@ -235,8 +244,8 @@ public class VgService {
         goldOrderDao.updateStatus(goldOrder);
     }
 
-    public Long getUserGoldQuantity(String userId) {
-        Long quantity = userGoldDao.getUserGoldQuantity(userId);
+    public Integer getUserGoldQuantity(String userId) {
+        Integer quantity = userGoldDao.getUserGoldQuantity(userId);
         return quantity == null ? 0 : quantity;
     }
 
@@ -274,7 +283,7 @@ public class VgService {
         Assert.notNull(goods);
 
         Integer totalPrice = goods.getPrice() * quantity;
-        Long fromUserGold = getUserGoldQuantity(fromUserId);
+        Integer fromUserGold = getUserGoldQuantity(fromUserId);
 
         //检查金币余额
         if (fromUserGold < totalPrice) {

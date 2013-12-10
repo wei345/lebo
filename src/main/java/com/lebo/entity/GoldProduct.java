@@ -18,7 +18,7 @@ public class GoldProduct {
     private PriceUnit priceUnit;
     private BigDecimal discount;
     private String image;
-    private Long goldQuantity;
+    private Integer goldQuantity;
 
     public static enum PriceUnit {
         CNY
@@ -80,11 +80,11 @@ public class GoldProduct {
         this.discount = discount;
     }
 
-    public Long getGoldQuantity() {
+    public Integer getGoldQuantity() {
         return goldQuantity;
     }
 
-    public void setGoldQuantity(Long goldQuantity) {
+    public void setGoldQuantity(Integer goldQuantity) {
         this.goldQuantity = goldQuantity;
     }
 

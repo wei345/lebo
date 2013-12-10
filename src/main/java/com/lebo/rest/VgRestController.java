@@ -99,7 +99,7 @@ public class VgRestController {
         userVgDto.setGoldQuantity(vgService.getUserGoldQuantity(userId));
 
         //用户物品
-        Long goodsTotalPrice = 0L;
+        Integer goodsTotalPrice = 0;
         List<UserGoods> userGoodsList = vgService.getUserGoodsByUserId(userId);
         List<UserGoodsDto> userGoodsDtos = new ArrayList<UserGoodsDto>(userGoodsList.size());
         for (UserGoods userGoods : userGoodsList) {

@@ -14,9 +14,9 @@ public class UserVgDto {
     private String profileImageUrl;
     private String profileImageBiggerUrl;
     private String profileImageOriginalUrl;
-    private Long goldQuantity;
+    private Integer goldQuantity;
     private List<UserGoodsDto> goods = new ArrayList<UserGoodsDto>();
-    private Long goodsTotalPrice;
+    private Integer goodsTotalPrice;
 
     public String getUserId() {
         return userId;
@@ -58,11 +58,11 @@ public class UserVgDto {
         this.profileImageOriginalUrl = profileImageOriginalUrl;
     }
 
-    public Long getGoldQuantity() {
+    public Integer getGoldQuantity() {
         return goldQuantity;
     }
 
-    public void setGoldQuantity(Long goldQuantity) {
+    public void setGoldQuantity(Integer goldQuantity) {
         this.goldQuantity = goldQuantity;
     }
 
@@ -74,11 +74,11 @@ public class UserVgDto {
         this.goods = goods;
     }
 
-    public Long getGoodsTotalPrice() {
+    public Integer getGoodsTotalPrice() {
         return goodsTotalPrice;
     }
 
-    public void setGoodsTotalPrice(Long goodsTotalPrice) {
+    public void setGoodsTotalPrice(Integer goodsTotalPrice) {
         this.goodsTotalPrice = goodsTotalPrice;
     }
 }
