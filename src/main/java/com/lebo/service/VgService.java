@@ -117,15 +117,7 @@ public class VgService {
         params.put("subject", "购买" + goldOrder.getAlipaySubject());
         params.put("payment_type", paymentType);
         params.put("seller_id", alipaySellerId);
-        //开发环境，订单支付1分钱
-        if (appEnv.isDevelopment()) {
-            params.put("total_fee", "0.01");
-        }
-        //生成环境，订单支付实际金额
-        else {
-            params.put("total_fee", goldOrder.getTotalCost().setScale(2).toString());
-        }
-        //
+        params.put("total_fee", goldOrder.getTotalCost().setScale(2).toString());
         params.put("body", goldOrder.getAlipayBody());
         params.put("notify_url", Encodes.urlEncode(alipayNotifyUrl));
 
