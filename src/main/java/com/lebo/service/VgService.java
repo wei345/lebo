@@ -46,8 +46,6 @@ public class VgService {
     @Autowired
     private AlipayService alipayService;
     @Autowired
-    private AppEnv appEnv;
-    @Autowired
     private UserGoldDao userGoldDao;
     @Autowired
     private UserGoodsDao userGoodsDao;
