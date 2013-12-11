@@ -349,7 +349,7 @@ public class VgService {
     }
 
     private void addUserGoodsQuantity(String userId, long goodsId, int quantity) {
-        UserGoods userGoods = userGoodsDao.getByUserIdGoodsId(new UserGoods(userId, goodsId));
+        UserGoods userGoods = userGoodsDao.get(new UserGoods(userId, goodsId));
         if (userGoods == null) {
             userGoodsDao.insert(new UserGoods(userId, goodsId, quantity));
         } else {

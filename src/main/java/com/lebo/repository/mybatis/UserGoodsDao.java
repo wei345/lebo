@@ -14,7 +14,7 @@ import java.util.List;
 public interface UserGoodsDao {
     List<UserGoods> getByUserId(String userId);
 
-    UserGoods getByUserIdGoodsId(UserGoods userGoods);
+    UserGoods get(UserGoods userGoods);
 
     void insert(UserGoods userGoods);
 
