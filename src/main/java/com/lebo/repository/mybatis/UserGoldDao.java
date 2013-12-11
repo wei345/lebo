@@ -10,11 +10,11 @@ import com.lebo.repository.MyBatisRepository;
  */
 @MyBatisRepository
 public interface UserGoldDao {
-    Integer getUserGoldQuantity(String userId);
+    Integer getUserGold(String userId);
 
     UserGold getByUserId(String userId);
 
-    void updateUserGoldQuantity(UserGold userGold);
+    void update(UserGold userGold);
 
     void insert(UserGold userGold);
 }

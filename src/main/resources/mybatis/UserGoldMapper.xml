@@ -6,35 +6,65 @@
 
     <resultMap id="userGoldMap" type="UserGold">
         <id property="userId" column="user_id"/>
-        <result property="goldQuantity" column="gold_quantity"/>
+        <result property="gold" column="gold"/>
+        <result property="consumeGold" column="consume_gold"/>
+        <result property="recharge" column="recharge"/>
     </resultMap>
 
     <select id="getByUserId" parameterType="string" resultMap="userGoldMap">
         select user_id,
-        gold_quantity
+        gold,
+        consume_gold,
+        recharge
         from vg_user_gold
         where user_id = #{userId}
     </select>
 
-    <select id="getUserGoldQuantity" parameterType="string" resultType="long">
-        select gold_quantity
+    <select id="getUserGold" parameterType="string" resultType="int">
+        select gold
         from vg_user_gold
         where user_id = #{userId}
     </select>
 
-    <update id="updateUserGoldQuantity" parameterType="UserGold">
+    <update id="update" parameterType="UserGold">
         update vg_user_gold
-        set gold_quantity = #{goldQuantity}
+        <set>
+            <if test="gold != null">
+                gold = #{gold},
+            </if>
+            <if test="consumeGold != null">
+                consume_gold = #{consumeGold},
+            </if>
+            <if test="recharge != null">
+                recharge = #{recharge},
+            </if>
+        </set>
         where user_id = #{userId}
     </update>
 
     <insert id="insert" parameterType="UserGold">
         insert into vg_user_gold(
-        user_id,
-        gold_quantity
+        <if test="gold != null">
+            gold,
+        </if>
+        <if test="consumeGold != null">
+            consume_gold,
+        </if>
+        <if test="recharge != null">
+            recharge,
+        </if>
+        user_id
         ) values (
-        #{userId},
-        #{goldQuantity}
+        <if test="gold != null">
+            #{gold},
+        </if>
+        <if test="consumeGold != null">
+            #{consumeGold},
+        </if>
+        <if test="recharge != null">
+            #{recharge},
+        </if>
+        #{userId}
         )
     </insert>
 

@@ -94,7 +94,7 @@ public class VgService {
 
         goldOrder.setTotalCost(goldProduct.getCost().multiply(new BigDecimal(quantity)).add(discount));
 
-        goldOrder.setGoldQuantity(goldProduct.getGoldQuantity() * quantity);
+        goldOrder.setGold(goldProduct.getGold() * quantity);
 
         goldOrderDao.save(goldOrder);
         return goldOrder;
@@ -222,16 +222,17 @@ public class VgService {
 
         //更新用户金币数
         GoldOrder goldOrder = goldOrderDao.get(orderId);
-        addUserGoldQuantity(goldOrder.getUserId(), goldOrder.getGoldQuantity());
+        addUserGold(goldOrder.getUserId(), goldOrder.getGold(), goldOrder.getTotalCost());
     }
 
-    private void addUserGoldQuantity(String userId, Integer goldQuantity) {
+    private void addUserGold(String userId, Integer gold, BigDecimal recharge) {
         UserGold userGold = userGoldDao.getByUserId(userId);
         if (userGold == null) {
-            userGoldDao.insert(new UserGold(userId, goldQuantity));
+            userGoldDao.insert(new UserGold(userId, gold, recharge));
         } else {
-            userGold.setGoldQuantity(userGold.getGoldQuantity() + goldQuantity);
-            userGoldDao.updateUserGoldQuantity(userGold);
+            userGold.setGold(userGold.getGold() + gold);
+            userGold.setRecharge(userGold.getRecharge().add(recharge));
+            userGoldDao.update(userGold);
         }
     }
 
@@ -244,9 +245,19 @@ public class VgService {
         goldOrderDao.updateStatus(goldOrder);
     }
 
-    public Integer getUserGoldQuantity(String userId) {
-        Integer quantity = userGoldDao.getUserGoldQuantity(userId);
-        return quantity == null ? 0 : quantity;
+    public UserGold getUserGoldDefaultIfNull(String userId) {
+        UserGold userGold = userGoldDao.getByUserId(userId);
+
+        //如果数据库没有，则返回默认值
+        if(userGold == null){
+            userGold = new UserGold();
+            userGold.setUserId(userId);
+            userGold.setGold(0);
+            userGold.setConsumeGold(0);
+            userGold.setRecharge(BigDecimal.ZERO);
+        }
+
+        return userGold;
     }
 
     public List<UserGoods> getUserGoodsByUserId(String userId) {
@@ -283,15 +294,20 @@ public class VgService {
         Assert.notNull(goods);
 
         Integer totalPrice = goods.getPrice() * quantity;
-        Integer fromUserGold = getUserGoldQuantity(fromUserId);
+
+
+        UserGold fromUserGold = userGoldDao.getByUserId(fromUserId);
 
         //检查金币余额
-        if (fromUserGold < totalPrice) {
+        if (fromUserGold.getGold() < totalPrice) {
             throw new ServiceException(ErrorDto.INSUFFICIENT_GOLD);
         }
 
         //支付金币
-        userGoldDao.updateUserGoldQuantity(new UserGold(fromUserId, fromUserGold - totalPrice));
+        fromUserGold.setGold(fromUserGold.getGold() - totalPrice);
+        fromUserGold.setConsumeGold(fromUserGold.getConsumeGold() + totalPrice);
+        fromUserGold.setRecharge(null); //不更新recharge字段
+        userGoldDao.update(fromUserGold);
 
         //增加物品
         addUserGoodsQuantity(toUserId, goodsId, quantity);

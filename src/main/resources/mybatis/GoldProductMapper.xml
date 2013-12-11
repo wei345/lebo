@@ -12,7 +12,7 @@
         <result property="priceUnit" column="price_unit" />
         <result property="discount" column="discount" />
         <result property="image" column="image" />
-        <result property="goldQuantity" column="gold_quantity" />
+        <result property="gold" column="gold" />
     </resultMap>
 
     <select id="get" parameterType="long" resultMap="goldProductMap">
@@ -23,7 +23,7 @@
         price_unit,
         discount,
         image,
-        gold_quantity
+        gold
         from vg_gold_product
         where id = #{id}
     </select>
@@ -36,7 +36,7 @@
         price_unit,
         discount,
         image,
-        gold_quantity
+        gold
         from vg_gold_product
     </select>
 

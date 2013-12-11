@@ -92,13 +92,18 @@ public class VgRestController {
 
         //用户名字、头像
         UserVgDto userVgDto = new UserVgDto();
-        BeanMapper.copy(user, userVgDto);
         userVgDto.setUserId(user.getId());
+        userVgDto.setScreenName(user.getScreenName());
+        userVgDto.setProfileImageUrl(user.getProfileImageUrl());
+        userVgDto.setProfileImageBiggerUrl(user.getProfileImageBiggerUrl());
+        userVgDto.setProfileImageOriginalUrl(user.getProfileImageOriginalUrl());
 
         //用户金币数
-        userVgDto.setGoldQuantity(vgService.getUserGoldQuantity(userId));
+        UserGold userGold = vgService.getUserGoldDefaultIfNull(userId);
+        userVgDto.setGold(userGold.getGold());
+        userVgDto.setConsumeGold(userGold.getConsumeGold());
 
-        //用户物品
+        //用户物品和总价值
         Integer goodsTotalPrice = 0;
         List<UserGoods> userGoodsList = vgService.getUserGoodsByUserId(userId);
         List<UserGoodsDto> userGoodsDtos = new ArrayList<UserGoodsDto>(userGoodsList.size());

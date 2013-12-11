@@ -18,7 +18,7 @@
         profileImageUrl: "http://file.dev.lebooo.com/525124e91a88ac9dfcbd9ce1",
         profileImageBiggerUrl: "http://file.dev.lebooo.com/525124e91a88ac9dfcbd9ce3",
         profileImageOriginalUrl: "http://file.dev.lebooo.com/525124e91a88ac9dfcbd9ce5",
-        goldQuantity: 0,
+        gold: 0,
         goods: [ ],
         goodsTotalPrice: 0
     }

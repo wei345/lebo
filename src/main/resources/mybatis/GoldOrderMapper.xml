@@ -12,7 +12,7 @@
         <result property="discount" column="discount"/>
         <result property="subject" column="subject"/>
         <result property="totalCost" column="total_cost"/>
-        <result property="goldQuantity" column="gold_quantity"/>
+        <result property="gold" column="gold"/>
         <result property="status" column="status"/>
         <result property="paymentMethod" column="payment_method"/>
         <result property="alipayStatus" column="alipay_status"/>
@@ -28,7 +28,7 @@
 		discount,
 		subject,
 		total_cost,
-		gold_quantity,
+		gold,
 		order_date,
 		status,
 		payment_method)
@@ -39,7 +39,7 @@
 		#{discount},
 		#{subject},
 		#{totalCost},
-		#{goldQuantity},
+		#{gold},
 		#{orderDate},
 		#{status},
 		#{paymentMethod})
@@ -53,7 +53,7 @@
         discount,
         subject,
 		total_cost,
-		gold_quantity,
+		gold,
         order_date,
         status,
         payment_method,

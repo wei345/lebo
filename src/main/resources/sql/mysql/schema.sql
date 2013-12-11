@@ -7,14 +7,14 @@ DROP TABLE IF EXISTS vg_give_goods;
 DROP TABLE IF EXISTS vg_goods;
 
 CREATE TABLE vg_gold_product (
-  id            BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name          VARCHAR(255)  NOT NULL UNIQUE,
-  description   VARCHAR(1024),
-  price         DECIMAL(5, 2) NOT NULL,
-  price_unit    VARCHAR(100)  NOT NULL,
-  discount      DECIMAL(5, 2) NOT NULL,
-  image         VARCHAR(1024),
-  gold_quantity INT           NOT NULL
+  id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name        VARCHAR(255)  NOT NULL UNIQUE,
+  description VARCHAR(1024),
+  price       DECIMAL(5, 2) NOT NULL,
+  price_unit  VARCHAR(100)  NOT NULL,
+  discount    DECIMAL(5, 2) NOT NULL,
+  image       VARCHAR(1024),
+  gold        INT           NOT NULL
 )
   ENGINE =InnoDB;
 
@@ -26,7 +26,7 @@ CREATE TABLE vg_gold_order (
   discount         DECIMAL(5, 2) NOT NULL,
   subject          VARCHAR(1024) NOT NULL,
   total_cost       DECIMAL(5, 2) NOT NULL,
-  gold_quantity    INT           NOT NULL,
+  gold             INT           NOT NULL,
   order_date       DATETIME      NOT NULL,
   status           VARCHAR(32),
   payment_method   VARCHAR(32),
@@ -48,8 +48,10 @@ CREATE TABLE vg_goods (
   ENGINE =InnoDB;
 
 CREATE TABLE vg_user_gold (
-  user_id       VARCHAR(24) PRIMARY KEY,
-  gold_quantity BIGINT NOT NULL
+  user_id      VARCHAR(24) PRIMARY KEY,
+  gold         INT           NOT NULL DEFAULT 0,
+  consume_gold INT           NOT NULL DEFAULT 0,
+  recharge     DECIMAL(9, 2) NOT NULL DEFAULT 0
 )
   ENGINE =InnoDB;
 
@@ -82,11 +84,11 @@ CREATE TABLE vg_giver_value (
 )
   ENGINE =InnoDB;
 
-INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold_quantity) VALUES (1, '10个金币', '金币是一种全部或大部份由黄金制造的硬币。', 1, 'CNY', 0, 'images/gold/gold-10.png', 10);
-INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold_quantity) VALUES (2, '50个金币', '黄金差不多在硬币发明之初，就因其价值被用来当作硬币。', 5, 'CNY', 0, 'images/gold/gold-50.png', 50);
-INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold_quantity) VALUES (3, '200个金币', '黄金作为货币有很多理由。它的买卖价差低。', 20, 'CNY', -2, 'images/gold/gold-200.png', 200);
-INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold_quantity) VALUES (4, '500个金币', '黄金可以分割成小单位，而不损害其价值；它也可以熔成锭，并且重铸成硬币。', 50, 'CNY', -10, 'images/gold/gold-500.png', 500);
-INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold_quantity) VALUES (5, '1000个金币', '黄金的密度比大多数金属高，使假币很难流通。', 100, 'CNY', -30, 'images/gold/gold-1000.png', 1000);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (1, '10个金币', '金币是一种全部或大部份由黄金制造的硬币。', 1, 'CNY', 0, 'images/gold/gold-10.png', 10);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (2, '50个金币', '黄金差不多在硬币发明之初，就因其价值被用来当作硬币。', 5, 'CNY', 0, 'images/gold/gold-50.png', 50);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (3, '200个金币', '黄金作为货币有很多理由。它的买卖价差低。', 20, 'CNY', -2, 'images/gold/gold-200.png', 200);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (4, '500个金币', '黄金可以分割成小单位，而不损害其价值；它也可以熔成锭，并且重铸成硬币。', 50, 'CNY', -10, 'images/gold/gold-500.png', 500);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (5, '1000个金币', '黄金的密度比大多数金属高，使假币很难流通。', 100, 'CNY', -30, 'images/gold/gold-1000.png', 1000);
 
 INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (1, '贝壳', '贝壳，泛指软体动物的外壳。贝壳通常可以在海滩发现到，内里的生物通常已在冲上岸前消失。由于部份贝壳外形漂亮，有人会有收集贝壳的嗜好。', 3, 'images/vg/shell-118x118.png', 'images/vg/shell-220x222.png', '个');
 INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (2, '玫瑰', '玫瑰（学名：Rosa rugosa）是蔷薇科蔷薇属植物，在日常生活中是蔷薇属一系列花大艳丽的栽培品种的统称。', 10, 'images/vg/rose-118x118.png', 'images/vg/rose-220x222.png', '朵');

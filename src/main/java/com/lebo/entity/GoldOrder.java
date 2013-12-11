@@ -21,7 +21,7 @@ public class GoldOrder {
     private BigDecimal discount;
     private String subject;        //购买内容描述
     private BigDecimal totalCost;  //折扣之后用户需支付的费用
-    private Integer goldQuantity;  //需交付给用户的金币数
+    private Integer gold;  //需交付给用户的金币数
     private Date orderDate;
     private Status status;
     private PaymentMethod paymentMethod;
@@ -168,11 +168,11 @@ public class GoldOrder {
         this.totalCost = totalCost;
     }
 
-    public void setGoldQuantity(Integer goldQuantity) {
-        this.goldQuantity = goldQuantity;
+    public void setGold(Integer gold) {
+        this.gold = gold;
     }
 
-    public Integer getGoldQuantity() {
-        return goldQuantity;
+    public Integer getGold() {
+        return gold;
     }
 }
