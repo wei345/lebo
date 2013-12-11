@@ -50,7 +50,12 @@ public class GoldOrder {
     public GoldOrder() {
     }
 
-    public GoldOrder(String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
+    public GoldOrder(long id){
+        this.id = id;
+    }
+
+    public GoldOrder(long id, String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
+        this.id = id;
         this.userId = userId;
         this.discount = discount;
         this.status = status;

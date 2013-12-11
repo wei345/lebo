@@ -30,6 +30,7 @@ import org.springside.modules.mapper.BeanMapper;
 import org.springside.modules.utils.Encodes;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.lebo.service.AlipayService.AlipayStatus;
@@ -82,7 +83,7 @@ public class VgService {
         BigDecimal discount = BigDecimal.ZERO;
         int quantity = 1;
 
-        GoldOrder goldOrder = new GoldOrder(userId, discount, GoldOrder.Status.UNPAID, paymentMethod);
+        GoldOrder goldOrder = new GoldOrder(nextOrderId(), userId, discount, GoldOrder.Status.UNPAID, paymentMethod);
 
         GoldProduct goldProduct = goldProductDao.get(goldProductId);
         Assert.notNull(goldProduct);
@@ -96,7 +97,7 @@ public class VgService {
 
         goldOrder.setGold(goldProduct.getGold() * quantity);
 
-        goldOrderDao.save(goldOrder);
+        goldOrderDao.insert(goldOrder);
         return goldOrder;
     }
 
@@ -390,6 +391,24 @@ public class VgService {
 
     public int getGiverRank(GiverValue giverValue) {
         return giverValueDao.countBefore(giverValue) + 1;
+    }
+
+    long nextOrderId() {
+        return IdWorker.nextId();
+    }
+
+    private static class IdWorker {
+
+        private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //17位
+
+        public static synchronized long nextId() {
+
+            int n = (int) Thread.currentThread().getId() % 100;
+
+            return Long.parseLong(
+                    sdf.format(new Date())
+                            + (n < 10 ? "0" + n : n));
+        }
     }
 
 }

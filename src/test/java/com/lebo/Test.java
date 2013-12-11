@@ -3,6 +3,8 @@ package com.lebo;
 import org.springside.modules.utils.Encodes;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.mongodb.util.MyAsserts.assertTrue;
 
@@ -28,6 +30,12 @@ public class Test {
         }
 
         System.out.println(base62Str);
+    }
+
+    @org.junit.Test
+    public void format() throws InterruptedException {
+        System.out.println(Thread.currentThread().getId());
+
     }
 }
 
@@ -81,8 +89,4 @@ class Base62 {
         return result;
     }
 
-    @org.junit.Test
-    public void urlEncode(){
-        System.out.println(Encodes.urlEncode("626070255@qq.com"));
-    }
 }

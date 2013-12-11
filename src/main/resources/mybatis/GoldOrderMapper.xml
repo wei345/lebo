@@ -20,8 +20,9 @@
         <result property="goldProduct.id" column="gold_product_id"/>
     </resultMap>
 
-    <insert id="save" parameterType="GoldOrder" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="GoldOrder" useGeneratedKeys="true" keyProperty="id">
 		insert into vg_gold_order (
+		id,
 		user_id,
 		gold_product_id,
 		quantity,
@@ -33,6 +34,7 @@
 		status,
 		payment_method)
 		values (
+		#{id},
 		#{userId},
 		#{goldProduct.id},
 		#{quantity},

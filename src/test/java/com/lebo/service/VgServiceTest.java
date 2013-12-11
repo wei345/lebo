@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.lebo.service.AlipayService.AlipayStatus.*;
 
+import static org.junit.Assert.*;
+
 /**
  * @author: Wei Liu
  * Date: 13-10-31
@@ -36,5 +38,10 @@ public class VgServiceTest extends SpringContextTestCase {
     @Test
     public void handleAlipayNotify(){
         vgService.handleAlipayNotify(1L, TRADE_FINISHED, "test-12345678");
+    }
+
+    @Test
+    public void nextOrderId(){
+        assertEquals(19, String.valueOf(vgService.nextOrderId()).length());
     }
 }
