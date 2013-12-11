@@ -18,12 +18,12 @@
         consume_gold,
         recharge,
         popularity
-        from vg_user_gold
+        from vg_user_info
         where user_id = #{userId}
     </select>
 
     <update id="update" parameterType="UserInfo">
-        update vg_user_gold
+        update vg_user_info
         <set>
             <if test="gold != null">
                 gold = #{gold},
@@ -42,7 +42,7 @@
     </update>
 
     <insert id="insert" parameterType="UserInfo">
-        insert into vg_user_gold(
+        insert into vg_user_info(
         <if test="gold != null">
             gold,
         </if>
