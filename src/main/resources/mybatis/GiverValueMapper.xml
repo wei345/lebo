@@ -10,7 +10,7 @@
         <result property="giveValue" column="give_value"/>
     </resultMap>
 
-    <select id="getByUserIdGiverId" parameterType="GiverValue" resultMap="giverValueMap">
+    <select id="get" parameterType="GiverValue" resultMap="giverValueMap">
         select user_id,
         giver_id,
         give_value
@@ -19,7 +19,7 @@
         and giver_id = #{giverId}
     </select>
 
-    <update id="updateGiveValue" parameterType="GiverValue">
+    <update id="update" parameterType="GiverValue">
         update vg_giver_value
         set give_value = #{giveValue}
         where user_id = #{userId}

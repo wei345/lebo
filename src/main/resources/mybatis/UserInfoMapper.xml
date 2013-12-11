@@ -2,31 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
-<mapper namespace="com.lebo.repository.mybatis.UserGoldDao">
+<mapper namespace="com.lebo.repository.mybatis.UserInfoDao">
 
-    <resultMap id="userGoldMap" type="UserGold">
+    <resultMap id="userInfoMap" type="UserInfo">
         <id property="userId" column="user_id"/>
         <result property="gold" column="gold"/>
         <result property="consumeGold" column="consume_gold"/>
         <result property="recharge" column="recharge"/>
+        <result property="popularity" column="popularity"/>
     </resultMap>
 
-    <select id="getByUserId" parameterType="string" resultMap="userGoldMap">
+    <select id="get" parameterType="string" resultMap="userInfoMap">
         select user_id,
         gold,
         consume_gold,
-        recharge
+        recharge,
+        popularity
         from vg_user_gold
         where user_id = #{userId}
     </select>
 
-    <select id="getUserGold" parameterType="string" resultType="int">
-        select gold
-        from vg_user_gold
-        where user_id = #{userId}
-    </select>
-
-    <update id="update" parameterType="UserGold">
+    <update id="update" parameterType="UserInfo">
         update vg_user_gold
         <set>
             <if test="gold != null">
@@ -38,11 +34,14 @@
             <if test="recharge != null">
                 recharge = #{recharge},
             </if>
+            <if test="popularity != null">
+                popularity = #{popularity},
+            </if>
         </set>
         where user_id = #{userId}
     </update>
 
-    <insert id="insert" parameterType="UserGold">
+    <insert id="insert" parameterType="UserInfo">
         insert into vg_user_gold(
         <if test="gold != null">
             gold,
@@ -52,6 +51,9 @@
         </if>
         <if test="recharge != null">
             recharge,
+        </if>
+        <if test="popularity != null">
+            popularity,
         </if>
         user_id
         ) values (
@@ -63,6 +65,9 @@
         </if>
         <if test="recharge != null">
             #{recharge},
+        </if>
+        <if test="popularity != null">
+            #{popularity},
         </if>
         #{userId}
         )

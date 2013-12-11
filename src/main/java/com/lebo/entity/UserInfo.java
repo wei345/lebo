@@ -7,25 +7,19 @@ import java.math.BigDecimal;
  * Date: 13-11-4
  * Time: PM4:46
  */
-public class UserGold {
+public class UserInfo {
     private String userId;
     private Integer gold;
     private Integer consumeGold;
     private BigDecimal recharge;
+    private Integer popularity; //人气
 
-    public UserGold() {
+    public UserInfo() {
 
     }
 
-    public UserGold(String userId, Integer gold) {
+    public UserInfo(String userId) {
         this.userId = userId;
-        this.gold = gold;
-    }
-
-    public UserGold(String userId, Integer gold, BigDecimal recharge) {
-        this.userId = userId;
-        this.gold = gold;
-        this.recharge = recharge;
     }
 
     public String getUserId() {
@@ -58,5 +52,13 @@ public class UserGold {
 
     public void setRecharge(BigDecimal recharge) {
         this.recharge = recharge;
+    }
+
+    public Integer getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
     }
 }

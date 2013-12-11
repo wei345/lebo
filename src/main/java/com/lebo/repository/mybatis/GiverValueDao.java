@@ -14,9 +14,9 @@ import java.util.Map;
 @MyBatisRepository
 public interface GiverValueDao {
 
-    GiverValue getByUserIdGiverId(GiverValue giverValue);
+    GiverValue get(GiverValue giverValue);
 
-    void updateGiveValue (GiverValue giverValue);
+    void update(GiverValue giverValue);
 
     void insert (GiverValue giverValue);
 

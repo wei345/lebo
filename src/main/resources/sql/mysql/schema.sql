@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS vg_giver_value;
 DROP TABLE IF EXISTS vg_gold_order;
 DROP TABLE IF EXISTS vg_gold_product;
-DROP TABLE IF EXISTS vg_user_gold;
+DROP TABLE IF EXISTS vg_user_info;
 DROP TABLE IF EXISTS vg_user_goods;
 DROP TABLE IF EXISTS vg_give_goods;
 DROP TABLE IF EXISTS vg_goods;
@@ -47,11 +47,12 @@ CREATE TABLE vg_goods (
 )
   ENGINE =InnoDB;
 
-CREATE TABLE vg_user_gold (
+CREATE TABLE vg_user_info (
   user_id      VARCHAR(24) PRIMARY KEY,
   gold         INT           NOT NULL DEFAULT 0,
   consume_gold INT           NOT NULL DEFAULT 0,
-  recharge     DECIMAL(9, 2) NOT NULL DEFAULT 0
+  recharge     DECIMAL(9, 2) NOT NULL DEFAULT 0,
+  popularity   INT           NOT NULL DEFAULT 0
 )
   ENGINE =InnoDB;
 

@@ -99,9 +99,9 @@ public class VgRestController {
         userVgDto.setProfileImageOriginalUrl(user.getProfileImageOriginalUrl());
 
         //用户金币数
-        UserGold userGold = vgService.getUserGoldDefaultIfNull(userId);
-        userVgDto.setGold(userGold.getGold());
-        userVgDto.setConsumeGold(userGold.getConsumeGold());
+        UserInfo userInfo = vgService.getUserInfoNullToDefault(userId);
+        userVgDto.setGold(userInfo.getGold());
+        userVgDto.setConsumeGold(userInfo.getConsumeGold());
 
         //用户物品和总价值
         Integer goodsTotalPrice = 0;

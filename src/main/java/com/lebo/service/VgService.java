@@ -46,7 +46,7 @@ public class VgService {
     @Autowired
     private AlipayService alipayService;
     @Autowired
-    private UserGoldDao userGoldDao;
+    private UserInfoDao userInfoDao;
     @Autowired
     private UserGoodsDao userGoodsDao;
     @Autowired
@@ -226,13 +226,17 @@ public class VgService {
     }
 
     private void addUserGold(String userId, Integer gold, BigDecimal recharge) {
-        UserGold userGold = userGoldDao.getByUserId(userId);
-        if (userGold == null) {
-            userGoldDao.insert(new UserGold(userId, gold, recharge));
+        UserInfo userInfo = userInfoDao.get(userId);
+        if (userInfo == null) {
+            userInfo = new UserInfo(userId);
+            userInfo.setGold(gold);
+            userInfo.setRecharge(recharge);
+            userInfoDao.insert(userInfo);
         } else {
-            userGold.setGold(userGold.getGold() + gold);
-            userGold.setRecharge(userGold.getRecharge().add(recharge));
-            userGoldDao.update(userGold);
+            UserInfo up = new UserInfo(userId); //只更新需要更新的字段
+            up.setGold(userInfo.getGold() + gold);
+            up.setRecharge(userInfo.getRecharge().add(recharge));
+            userInfoDao.update(up);
         }
     }
 
@@ -245,19 +249,19 @@ public class VgService {
         goldOrderDao.updateStatus(goldOrder);
     }
 
-    public UserGold getUserGoldDefaultIfNull(String userId) {
-        UserGold userGold = userGoldDao.getByUserId(userId);
+    public UserInfo getUserInfoNullToDefault(String userId) {
+        UserInfo userInfo = userInfoDao.get(userId);
 
         //如果数据库没有，则返回默认值
-        if(userGold == null){
-            userGold = new UserGold();
-            userGold.setUserId(userId);
-            userGold.setGold(0);
-            userGold.setConsumeGold(0);
-            userGold.setRecharge(BigDecimal.ZERO);
+        if (userInfo == null) {
+            userInfo = new UserInfo();
+            userInfo.setUserId(userId);
+            userInfo.setGold(0);
+            userInfo.setConsumeGold(0);
+            userInfo.setRecharge(BigDecimal.ZERO);
         }
 
-        return userGold;
+        return userInfo;
     }
 
     public List<UserGoods> getUserGoodsByUserId(String userId) {
@@ -295,22 +299,24 @@ public class VgService {
 
         Integer totalPrice = goods.getPrice() * quantity;
 
-
-        UserGold fromUserGold = userGoldDao.getByUserId(fromUserId);
+        UserInfo fromUserInfo = userInfoDao.get(fromUserId);
 
         //检查金币余额
-        if (fromUserGold.getGold() < totalPrice) {
+        if (fromUserInfo == null || fromUserInfo.getGold() < totalPrice) {
             throw new ServiceException(ErrorDto.INSUFFICIENT_GOLD);
         }
 
         //支付金币
-        fromUserGold.setGold(fromUserGold.getGold() - totalPrice);
-        fromUserGold.setConsumeGold(fromUserGold.getConsumeGold() + totalPrice);
-        fromUserGold.setRecharge(null); //不更新recharge字段
-        userGoldDao.update(fromUserGold);
+        UserInfo up = new UserInfo(fromUserId);
+        up.setGold(fromUserInfo.getGold() - totalPrice);
+        up.setConsumeGold(fromUserInfo.getConsumeGold() + totalPrice);
+        userInfoDao.update(up);
 
         //增加物品
         addUserGoodsQuantity(toUserId, goodsId, quantity);
+
+        //增加人气
+        addUserPopularity(toUserId, totalPrice);
 
         //记录历史
         GiveGoods giveGoods = new GiveGoods();
@@ -351,21 +357,35 @@ public class VgService {
         }
     }
 
-    private void addGiveValue(String userId, String giverId, int giveValue) {
-        GiverValue giverValue = new GiverValue(userId, giverId);
+    private void addUserPopularity(String userId, int popularity) {
+        UserInfo userInfo = userInfoDao.get(userId);
+        if (userInfo == null) {
+            userInfo = new UserInfo(userId);
+            userInfo.setPopularity(popularity);
+            userInfoDao.insert(userInfo);
+        } else {
+            UserInfo up = new UserInfo(userId);
+            up.setPopularity(userInfo.getPopularity() + popularity);
+            userInfoDao.update(up);
+        }
+    }
 
-        GiverValue old = giverValueDao.getByUserIdGiverId(giverValue);
-        if (old == null) {
+    private void addGiveValue(String userId, String giverId, int giveValue) {
+
+        GiverValue giverValue = giverValueDao.get(new GiverValue(userId, giverId));
+
+        if (giverValue == null) {
+            giverValue = new GiverValue(userId, giverId);
             giverValue.setGiveValue(giveValue);
             giverValueDao.insert(giverValue);
         } else {
-            old.setGiveValue(old.getGiveValue() + giveValue);
-            giverValueDao.updateGiveValue(old);
+            giverValue.setGiveValue(giverValue.getGiveValue() + giveValue);
+            giverValueDao.update(giverValue);
         }
     }
 
     public GiverValue getGiverValue(String userId, String giverId) {
-        return giverValueDao.getByUserIdGiverId(new GiverValue(userId, giverId));
+        return giverValueDao.get(new GiverValue(userId, giverId));
     }
 
     public int getGiverRank(GiverValue giverValue) {
