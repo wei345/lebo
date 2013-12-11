@@ -270,7 +270,7 @@ public class VgService {
     }
 
     public Goods getGoodsById(Long goodsId) {
-        return goodsDao.getById(goodsId);
+        return goodsDao.get(goodsId);
     }
 
     public List<Goods> getAllGoods() {
