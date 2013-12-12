@@ -87,10 +87,7 @@ public class StatusService extends AbstractMongoService {
     public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source, Integer acl, Date createdAt) {
         Post post = new Post();
 
-        if (originPost == null) {  //某些字段只有原帖才有，转贴不设置，以节省存储空间
-            post.initialCounts();
-        }
-
+        post.initialCounts();
         post.setUserId(userId);
         post.setCreatedAt(createdAt == null ? new Date() : createdAt);
         post.setId(newMongoId(post.getCreatedAt()));
