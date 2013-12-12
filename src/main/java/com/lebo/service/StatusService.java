@@ -595,6 +595,42 @@ public class StatusService extends AbstractMongoService {
         logger.debug("{} : 完成，{} ms", logPrefix, System.currentTimeMillis() - beginTime);
     }
 
+    @ManagedOperation(description = "计算用户原帖数、转贴数，仅处理未计算过的用户")
+    public void updateAllUserOriginPostsCountAndRepostsCount() {
+
+        long beginTime = System.currentTimeMillis();
+        String prefix = "计算用户原帖数、转贴数: ";
+
+        logger.debug("{}开始", prefix);
+
+        Query query = new Query(new Criteria(User.ORIGIN_POSTS_COUNT_KEY).is(null));
+        query.fields().include(User.ID_KEY);
+        query.limit(10000);
+
+        List<User> users = mongoTemplate.find(query, User.class);
+        int totalCount = 0;
+
+        while (users.size() > 0) {
+
+            for (User user : users) {
+                String userId = user.getId();
+                mongoTemplate.updateFirst(
+                        new Query(new Criteria(User.ID_KEY).is(userId)),
+                        new Update()
+                                .set(User.REPOSTS_COUNT_KEY, countPost(userId, null, false))
+                                .set(User.ORIGIN_POSTS_COUNT_KEY, countPost(userId, true, true)),
+                        User.class);
+            }
+
+            totalCount += users.size();
+            logger.debug("{}{}", prefix, users.size());
+
+            users = mongoTemplate.find(query, User.class);
+        }
+
+        logger.debug("{}完成, 共 {}, 用时 {} ms", prefix, totalCount, System.currentTimeMillis() - beginTime);
+    }
+
     /* 不使用这种算法
     /**
      * 刷新热门帖子列表:最近2天被收藏的帖子按2天内的收藏数排序
