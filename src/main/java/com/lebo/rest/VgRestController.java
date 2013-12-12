@@ -132,7 +132,7 @@ public class VgRestController {
     @RequestMapping(value = API_1_1_VG + "giveGoods.json", method = RequestMethod.POST)
     @ResponseBody
     public Object giveGoods(@RequestParam(value = "postId") String postId,
-                            @RequestParam("goodsId") long goodsId,
+                            @RequestParam("goodsId") int goodsId,
                             @RequestParam("quantity") int quantity) {
 
         if (StringUtils.isBlank(postId)) {

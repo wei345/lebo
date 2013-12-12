@@ -7,18 +7,18 @@ package com.lebo.entity;
  */
 public class UserGoods {
     private String userId;
-    private Long goodsId;
+    private Integer goodsId;
     private Integer quantity;
 
     public UserGoods() {
     }
 
-    public UserGoods(String userId, Long goodsId) {
+    public UserGoods(String userId, Integer goodsId) {
         this.userId = userId;
         this.goodsId = goodsId;
     }
 
-    public UserGoods(String userId, Long goodsId, int quantity) {
+    public UserGoods(String userId, Integer goodsId, int quantity) {
         this.userId = userId;
         this.goodsId = goodsId;
         this.quantity = quantity;
@@ -32,11 +32,11 @@ public class UserGoods {
         this.userId = userId;
     }
 
-    public Long getGoodsId() {
+    public Integer getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(Long goodsId) {
+    public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
     }
 

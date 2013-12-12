@@ -8,7 +8,7 @@ import com.lebo.service.FileContentUrlUtils;
  * Time: PM7:18
  */
 public class Goods {
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
     private Integer price;
@@ -16,11 +16,11 @@ public class Goods {
     private String imageBigger;
     private String quantityUnit;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

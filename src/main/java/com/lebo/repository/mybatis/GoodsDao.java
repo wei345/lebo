@@ -12,6 +12,6 @@ import java.util.List;
  */
 @MyBatisRepository
 public interface GoodsDao {
-    Goods get(Long id);
+    Goods get(Integer id);
     List<Goods> getAll();
 }

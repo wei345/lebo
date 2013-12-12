@@ -37,7 +37,7 @@ CREATE TABLE vg_gold_order (
   ENGINE =InnoDB;
 
 CREATE TABLE vg_goods (
-  id            BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id            INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name          VARCHAR(255) NOT NULL UNIQUE,
   description   VARCHAR(1024),
   price         INT          NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE vg_user_info (
 
 CREATE TABLE vg_user_goods (
   user_id  VARCHAR(24) NOT NULL,
-  goods_id BIGINT      NOT NULL,
+  goods_id INT         NOT NULL,
   quantity INT         NOT NULL,
   FOREIGN KEY (goods_id) REFERENCES vg_goods (id),
   PRIMARY KEY (user_id, goods_id)

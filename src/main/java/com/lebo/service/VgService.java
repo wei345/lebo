@@ -269,7 +269,7 @@ public class VgService {
         return userGoodsDao.getByUserId(userId);
     }
 
-    public Goods getGoodsById(Long goodsId) {
+    public Goods getGoodsById(Integer goodsId) {
         return goodsDao.get(goodsId);
     }
 
@@ -289,7 +289,7 @@ public class VgService {
         return goodsDtos;
     }
 
-    public void giveGoods(String fromUserId, String toUserId, String postId, Long goodsId, Integer quantity) {
+    public void giveGoods(String fromUserId, String toUserId, String postId, Integer goodsId, Integer quantity) {
         Assert.isTrue(quantity > 0);
         Assert.isTrue(userDao.exists(fromUserId));
         Assert.isTrue(userDao.exists(toUserId));
@@ -348,7 +348,7 @@ public class VgService {
         return giverValueDao.getByUserIdOrderByGiveValueDesc(params);
     }
 
-    private void addUserGoodsQuantity(String userId, long goodsId, int quantity) {
+    private void addUserGoodsQuantity(String userId, int goodsId, int quantity) {
         UserGoods userGoods = userGoodsDao.get(new UserGoods(userId, goodsId));
         if (userGoods == null) {
             userGoodsDao.insert(new UserGoods(userId, goodsId, quantity));

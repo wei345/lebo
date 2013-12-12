@@ -6,7 +6,7 @@ package com.lebo.rest.dto;
  * Time: PM7:17
  */
 public class GoodsDto {
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
     private Integer price;
@@ -14,11 +14,11 @@ public class GoodsDto {
     private String imageBiggerUrl;
     private String quantityUnit;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
