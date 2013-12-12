@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS vg_gold_order;
 DROP TABLE IF EXISTS vg_gold_product;
 DROP TABLE IF EXISTS vg_user_info;
 DROP TABLE IF EXISTS vg_user_goods;
+DROP TABLE IF EXISTS vg_post_goods;
 DROP TABLE IF EXISTS vg_give_goods;
 DROP TABLE IF EXISTS vg_goods;
 
@@ -65,12 +66,21 @@ CREATE TABLE vg_user_goods (
 )
   ENGINE =InnoDB;
 
+CREATE TABLE vg_post_goods (
+  post_id  VARCHAR(24) NOT NULL,
+  goods_id INT         NOT NULL,
+  quantity INT         NOT NULL,
+  FOREIGN KEY (goods_id) REFERENCES vg_goods (id),
+  PRIMARY KEY (post_id, goods_id)
+)
+  ENGINE =InnoDB;
+
 CREATE TABLE vg_give_goods (
   id           BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
   from_user_id VARCHAR(24) NOT NULL,
   to_user_id   VARCHAR(24) NOT NULL,
   post_id      VARCHAR(24) NOT NULL,
-  goods_id     BIGINT      NOT NULL,
+  goods_id     INT         NOT NULL,
   quantity     INT         NOT NULL,
   give_date    DATETIME    NOT NULL,
   FOREIGN KEY (goods_id) REFERENCES vg_goods (id)
