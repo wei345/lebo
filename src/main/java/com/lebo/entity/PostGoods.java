@@ -2,34 +2,34 @@ package com.lebo.entity;
 
 /**
  * @author: Wei Liu
- * Date: 13-11-5
- * Time: AM11:02
+ * Date: 13-12-12
+ * Time: PM3:07
  */
-public class UserGoods {
-    private String userId;
+public class PostGoods {
+    private String postId;
     private Integer goodsId;
     private Integer quantity;
 
-    public UserGoods() {
+    public PostGoods() {
     }
 
-    public UserGoods(String userId, Integer goodsId) {
-        this.userId = userId;
+    public PostGoods(String postId, Integer goodsId) {
+        this.postId = postId;
         this.goodsId = goodsId;
     }
 
-    public UserGoods(String userId, Integer goodsId, int quantity) {
-        this.userId = userId;
+    public PostGoods(String postId, Integer goodsId, int quantity) {
+        this.postId = postId;
         this.goodsId = goodsId;
         this.quantity = quantity;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public Integer getGoodsId() {

@@ -61,6 +61,8 @@ public class VgService {
     @Autowired
     private PostDao postDao;
     @Autowired
+    private PostGoodsDao postGoodsDao;
+    @Autowired
     private GiverValueDao giverValueDao;
     @Autowired
     private StatusService statusService;
@@ -269,7 +271,7 @@ public class VgService {
         return userGoodsDao.getByUserId(userId);
     }
 
-    public Goods getGoodsById(Long goodsId) {
+    public Goods getGoodsById(Integer goodsId) {
         return goodsDao.get(goodsId);
     }
 
@@ -289,7 +291,7 @@ public class VgService {
         return goodsDtos;
     }
 
-    public void giveGoods(String fromUserId, String toUserId, String postId, Long goodsId, Integer quantity) {
+    public void giveGoods(String fromUserId, String toUserId, String postId, Integer goodsId, Integer quantity) {
         Assert.isTrue(quantity > 0);
         Assert.isTrue(userDao.exists(fromUserId));
         Assert.isTrue(userDao.exists(toUserId));
@@ -313,8 +315,11 @@ public class VgService {
         up.setConsumeGold(fromUserInfo.getConsumeGold() + totalPrice);
         userInfoDao.update(up);
 
-        //增加物品
+        //增加用户物品
         addUserGoodsQuantity(toUserId, goodsId, quantity);
+
+        //增加帖子物品
+        addPostGoodsQuantity(postId, goodsId, quantity);
 
         //增加人气
         addUserPopularity(toUserId, totalPrice);
@@ -348,13 +353,23 @@ public class VgService {
         return giverValueDao.getByUserIdOrderByGiveValueDesc(params);
     }
 
-    private void addUserGoodsQuantity(String userId, long goodsId, int quantity) {
+    private void addUserGoodsQuantity(String userId, int goodsId, int quantity) {
         UserGoods userGoods = userGoodsDao.get(new UserGoods(userId, goodsId));
         if (userGoods == null) {
             userGoodsDao.insert(new UserGoods(userId, goodsId, quantity));
         } else {
             userGoods.setQuantity(userGoods.getQuantity() + quantity);
-            userGoodsDao.updateQuantityByUserIdAndGoodsId(userGoods);
+            userGoodsDao.updateQuantity(userGoods);
+        }
+    }
+
+    private void addPostGoodsQuantity(String postId, int goodsId, int quantity) {
+        PostGoods postGoods = postGoodsDao.get(new PostGoods(postId, goodsId));
+        if (postGoods == null) {
+            postGoodsDao.insert(new PostGoods(postId, goodsId, quantity));
+        } else {
+            postGoods.setQuantity(postGoods.getQuantity() + quantity);
+            postGoodsDao.updateQuantity(postGoods);
         }
     }
 

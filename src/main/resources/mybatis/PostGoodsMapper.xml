@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.lebo.repository.mybatis.PostGoodsDao">
+
+    <resultMap id="postGoodsMap" type="PostGoods">
+        <result property="postId" column="post_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="quantity" column="quantity"/>
+    </resultMap>
+
+    <select id="getByPostId" parameterType="string" resultMap="postGoodsMap">
+        select post_id,
+        goods_id,
+        quantity
+        from vg_post_goods
+        where post_id = #{postId}
+    </select>
+
+    <select id="get" parameterType="PostGoods" resultMap="postGoodsMap">
+        select post_id,
+        goods_id,
+        quantity
+        from vg_post_goods
+        where post_id = #{postId}
+        and goods_id = #{goodsId}
+    </select>
+
+    <insert id="insert" parameterType="PostGoods">
+        insert into vg_post_goods (
+        post_id,
+        goods_id,
+        quantity
+        ) values (
+        #{postId},
+        #{goodsId},
+        #{quantity}
+        )
+    </insert>
+
+    <update id="updateQuantity" parameterType="PostGoods">
+        update vg_post_goods
+        set quantity = #{quantity}
+        where post_id = #{postId}
+        and goods_id = #{goodsId}
+    </update>
+
+</mapper>

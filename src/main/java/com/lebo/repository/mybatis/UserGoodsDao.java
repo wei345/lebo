@@ -18,5 +18,5 @@ public interface UserGoodsDao {
 
     void insert(UserGoods userGoods);
 
-    void updateQuantityByUserIdAndGoodsId(UserGoods userGoods);
+    void updateQuantity(UserGoods userGoods);
 }

@@ -14,7 +14,7 @@
         <result property="quantityUnit" column="quantity_unit"/>
     </resultMap>
 
-    <select id="get" parameterType="long" resultMap="goodsMap">
+    <select id="get" parameterType="int" resultMap="goodsMap">
         select id,
         name,
         description,
