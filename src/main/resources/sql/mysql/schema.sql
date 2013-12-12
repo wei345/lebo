@@ -91,9 +91,9 @@ INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount,
 INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (4, '500个金币', '黄金可以分割成小单位，而不损害其价值；它也可以熔成锭，并且重铸成硬币。', 50, 'CNY', -10, 'images/gold/gold-500.png', 500);
 INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (5, '1000个金币', '黄金的密度比大多数金属高，使假币很难流通。', 100, 'CNY', -30, 'images/gold/gold-1000.png', 1000);
 
-INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (1, '贝壳', '贝壳，泛指软体动物的外壳。贝壳通常可以在海滩发现到，内里的生物通常已在冲上岸前消失。由于部份贝壳外形漂亮，有人会有收集贝壳的嗜好。', 3, 'images/vg/shell-118x118.png', 'images/vg/shell-220x222.png', '个');
-INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (2, '玫瑰', '玫瑰（学名：Rosa rugosa）是蔷薇科蔷薇属植物，在日常生活中是蔷薇属一系列花大艳丽的栽培品种的统称。', 10, 'images/vg/rose-118x118.png', 'images/vg/rose-220x222.png', '朵');
-INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (3, '钻石', '钻石（英文：Diamond），化学中一般称为金刚石，钻石为经过琢磨的金刚石，金刚石则是指钻石的原石。', 100, 'images/vg/diamond-118x118.png', 'images/vg/diamond-220x222.png', '个');
+INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (1, '贝壳', '点缀海滩的可爱动物，据说每得到一个贝壳可以增加3点人气哦！', 3, 'images/vg/shell-118x118.png', 'images/vg/shell-220x222.png', '个');
+INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (2, '玫瑰', 'Rosa rugosa，浪漫的象征。如果你送一束玫瑰给你的好友，那么TA会很浪漫的增长10点人气', 10, 'images/vg/rose-118x118.png', 'images/vg/rose-220x222.png', '朵');
+INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (3, '钻石', '身为土豪的你每赠送出一颗钻石，得到的人都会增长100点人气。证明你身份的时候到了！', 100, 'images/vg/diamond-118x118.png', 'images/vg/diamond-220x222.png', '个');
 
 /* 测试数据
 update vg_gold_product set price = 0.01, discount = 0;
