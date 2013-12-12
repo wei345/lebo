@@ -562,6 +562,7 @@ public class StatusService extends AbstractMongoService {
 
         //查询
         Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null))
+                .addCriteria(new Criteria(Post.COMMENTS_COUNT_KEY).is(null))
                 .with(new Sort(Sort.Direction.DESC, Post.ID_KEY))
                 .limit(10000);
         query.fields().include(Post.ID_KEY);
@@ -588,12 +589,6 @@ public class StatusService extends AbstractMongoService {
             logger.debug("{} : {}", logPrefix, doneCount);
 
             //查询
-            query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null))
-                    .addCriteria(new Criteria(Post.ID_KEY).lt(posts.get(posts.size() - 1).getId()))
-                    .with(new Sort(Sort.Direction.DESC, Post.ID_KEY))
-                    .limit(10000);
-            query.fields().include(Post.ID_KEY);
-
             posts = mongoTemplate.find(query, Post.class);
         }
 
