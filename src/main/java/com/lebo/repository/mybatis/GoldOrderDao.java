@@ -15,6 +15,4 @@ public interface GoldOrderDao {
     void insert(GoldOrder goldOrder);
 
     void updateStatus(GoldOrder goldOrder);
-
-    int countByAlipayNotifyId(String alipayNotifyId);
 }
