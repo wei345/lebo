@@ -7,7 +7,7 @@
 <!DOCTYPE html><html prefix='og: http://ogp.me/ns#'>
 <head>
     <meta charset='utf-8'/>
-    <title>乐播-6秒视频,分享精彩瞬间！</title>
+    <title>乐播</title>
     <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'/>
     <meta name='description' content='乐播-6秒视频'/>
     <%-- 人人网分享 begin --%>

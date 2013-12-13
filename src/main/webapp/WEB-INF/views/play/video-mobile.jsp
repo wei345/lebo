@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>乐播-6秒视频,分享精彩瞬间！</title>
+    <title>乐播</title>
     <meta charset='utf-8'/>
     <meta name='viewport' content='width=640'>
     <style type='text/css'>
