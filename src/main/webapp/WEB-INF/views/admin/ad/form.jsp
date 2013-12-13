@@ -97,8 +97,8 @@
                     <ul class="dropdown-menu">
                         <li><a href="#" onclick="setUrlPrefix('http://www.example.com', '', false, this)">HTTP地址</a>
                         <li><a href="#" onclick="setUrlPrefix('', 'lebo://channels/频道名', false, this)">乐播频道</a>
-                        <li><a href="#" onclick="setUrlPrefix('', 'lebo://fastest-rising-and-top50', true, this)">上升最快 & Top50</a>
-                        <li><a href="#" onclick="setUrlPrefix('', 'lebo://topic/帖子ID', true, this)">打开帖子</a>
+                        <li><a href="#" onclick="setUrlPrefix('', 'lebo://fastest-rising-and-top50', true, this)">乐播上升最快 & Top50</a>
+                        <li><a href="#" onclick="setUrlPrefix('', 'lebo://topic/帖子ID', false, this)">乐播帖子</a>
                     </ul>
                 </div>
 
@@ -131,7 +131,7 @@
 
 <script>
     function setUrlPrefix(placeholder, val, readonly, option){
-        $('#url').val(val).attr('readonly', readonly).attr('placeholder', placeholder);
+        $('#url').val(val).attr('readonly', readonly).attr('placeholder', placeholder).focus();
         $('#urlSelected').html(option.innerHTML);
     }
 </script>
