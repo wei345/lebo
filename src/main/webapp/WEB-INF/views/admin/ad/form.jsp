@@ -1,7 +1,16 @@
+<%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="com.lebo.service.AppEnv" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+
+<%
+    ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
+    AppEnv appEnv = applicationContext.getBean(AppEnv.class);
+    request.setAttribute("baseurl", appEnv.getBaseurl());
+%>
 
 <html>
 <head>
@@ -98,7 +107,8 @@
                         <li><a href="#" onclick="setUrlPrefix('http://www.example.com', '', false, this)">HTTP地址</a>
                         <li><a href="#" onclick="setUrlPrefix('', 'lebo://channels/频道名', false, this)">乐播频道</a>
                         <li><a href="#" onclick="setUrlPrefix('', 'lebo://fastest-rising-and-top50', true, this)">乐播上升最快 & Top50</a>
-                        <li><a href="#" onclick="setUrlPrefix('', 'lebo://topic/帖子ID', false, this)">乐播帖子</a>
+                        <li><a href="#" onclick="setUrlPrefix('', 'lebo://topic/帖子ID', false, this)">乐播帖子(需要乐播iOS客户端3.0+)</a>
+                        <li><a href="#" onclick="setUrlPrefix('', '${baseurl}/play/帖子ID', false, this)">乐播帖子(先跳到浏览器，再跳回乐播)</a>
                     </ul>
                 </div>
 
