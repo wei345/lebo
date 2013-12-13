@@ -81,8 +81,4 @@
         where id = #{id}
     </update>
 
-    <select id="countByAlipayNotifyId" parameterType="string" resultType="int">
-        select count(1) from vg_gold_order where alipay_notify_id = #{alipayNotifyId}
-    </select>
-
 </mapper>
