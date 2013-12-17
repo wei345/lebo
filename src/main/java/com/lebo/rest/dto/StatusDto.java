@@ -24,6 +24,7 @@ public class StatusDto {
     private Boolean reposted;
     private Integer commentsCount;
     private Integer viewCount;
+    private Integer shareCount;
     private Integer hotFavoritesCount; //仅热门帖子列表有此字段
     private StatusDto originStatus;
     //最近3条评论
@@ -224,5 +225,13 @@ public class StatusDto {
 
     public void setPvt(Boolean pvt) {
         this.pvt = pvt;
+    }
+
+    public Integer getShareCount() {
+        return shareCount;
+    }
+
+    public void setShareCount(Integer shareCount) {
+        this.shareCount = shareCount;
     }
 }

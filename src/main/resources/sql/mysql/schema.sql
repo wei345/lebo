@@ -1,74 +1,110 @@
-drop table if exists vg_gold_order;
-drop table if exists vg_gold_product;
-drop table if exists vg_user_gold;
-drop table if exists vg_user_goods;
-drop table if exists vg_give_goods;
-drop table if exists vg_goods;
+DROP TABLE IF EXISTS vg_giver_value;
+DROP TABLE IF EXISTS vg_gold_order;
+DROP TABLE IF EXISTS vg_gold_product;
+DROP TABLE IF EXISTS vg_user_info;
+DROP TABLE IF EXISTS vg_user_goods;
+DROP TABLE IF EXISTS vg_post_goods;
+DROP TABLE IF EXISTS vg_give_goods;
+DROP TABLE IF EXISTS vg_goods;
 
-create table vg_gold_product (
-      id bigint not null auto_increment primary key,
-    	name varchar(255) not null unique,
-    	description varchar(1024),
-    	price decimal (19,2) not null,
-    	price_unit varchar(100) not null,
-      discount decimal (5,2) not null,
-    	image varchar(1024),
-    	gold_quantity int not null
-) engine=InnoDB;
+CREATE TABLE vg_gold_product (
+  id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name        VARCHAR(255)  NOT NULL UNIQUE,
+  description VARCHAR(1024),
+  price       DECIMAL(5, 2) NOT NULL,
+  price_unit  VARCHAR(100)  NOT NULL,
+  discount    DECIMAL(5, 2) NOT NULL,
+  image       VARCHAR(1024),
+  gold        INT           NOT NULL
+)
+  ENGINE =InnoDB;
 
-create table vg_gold_order (
-    id bigint not null auto_increment primary key,
-    user_id varchar(24) not null,
-    gold_product_id bigint not null,
-    quantity int not null,
-    discount decimal (5,2) not null,
-    order_date datetime not null,
-    status varchar(32),
-    alipay_status varchar(32),
-    foreign key (gold_product_id) references vg_gold_product(id)
-) engine=InnoDB;
+CREATE TABLE vg_gold_order (
+  id               BIGINT        NOT NULL PRIMARY KEY,
+  user_id          VARCHAR(24)   NOT NULL,
+  gold_product_id  BIGINT        NOT NULL,
+  quantity         INT           NOT NULL,
+  discount         DECIMAL(5, 2) NOT NULL,
+  subject          VARCHAR(1024) NOT NULL,
+  total_cost       DECIMAL(5, 2) NOT NULL,
+  gold             INT           NOT NULL,
+  order_date       DATETIME      NOT NULL,
+  status           VARCHAR(32),
+  payment_method   VARCHAR(32),
+  alipay_status    VARCHAR(32),
+  alipay_notify_id VARCHAR(255),
+  FOREIGN KEY (gold_product_id) REFERENCES vg_gold_product (id)
+)
+  ENGINE =InnoDB;
 
-create table vg_goods (
-      id bigint not null auto_increment primary key,
-    	name varchar(255) not null unique,
-    	description varchar(1024),
-    	price int not null,
-      discount decimal (5,2) not null,
-    	image_normal varchar(1024),
-    	image_bigger varchar(1024)
-) engine=InnoDB;
+CREATE TABLE vg_goods (
+  id            INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name          VARCHAR(255) NOT NULL UNIQUE,
+  description   VARCHAR(1024),
+  price         INT          NOT NULL,
+  image_normal  VARCHAR(1024),
+  image_bigger  VARCHAR(1024),
+  quantity_unit VARCHAR(8)
+)
+  ENGINE =InnoDB;
 
-create table vg_user_gold (
-    user_id varchar(24) primary key,
-    gold_quantity bigint not null
-) engine=InnoDB;
+CREATE TABLE vg_user_info (
+  user_id      VARCHAR(24) PRIMARY KEY,
+  gold         INT           NOT NULL DEFAULT 0,
+  consume_gold INT           NOT NULL DEFAULT 0,
+  recharge     DECIMAL(9, 2) NOT NULL DEFAULT 0,
+  popularity   INT           NOT NULL DEFAULT 0
+)
+  ENGINE =InnoDB;
 
-create table vg_user_goods (
-    user_id varchar(24) not null,
-    goods_id bigint not null,
-    quantity int not null,
-    foreign key (goods_id) references vg_goods(id),
-    primary key(user_id, goods_id)
-) engine=InnoDB;
+CREATE TABLE vg_user_goods (
+  user_id  VARCHAR(24) NOT NULL,
+  goods_id INT         NOT NULL,
+  quantity INT         NOT NULL,
+  FOREIGN KEY (goods_id) REFERENCES vg_goods (id),
+  PRIMARY KEY (user_id, goods_id)
+)
+  ENGINE =InnoDB;
 
-create table vg_give_goods (
-    id bigint not null auto_increment primary key,
-    from_user_id varchar(24) not null,
-    to_user_id varchar(24) not null,
-    goods_id bigint not null,
-    quantity int not null,
-    give_date datetime not null,
-    foreign key (goods_id) references vg_goods(id)
-) engine=InnoDB;
+CREATE TABLE vg_post_goods (
+  post_id  VARCHAR(24) NOT NULL,
+  goods_id INT         NOT NULL,
+  quantity INT         NOT NULL,
+  FOREIGN KEY (goods_id) REFERENCES vg_goods (id),
+  PRIMARY KEY (post_id, goods_id)
+)
+  ENGINE =InnoDB;
 
-insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(1, '10个金币', 1, 'RMB', 0, 'images/gold/gold-10.png', 10);
-insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(2, '50个金币', 5, 'RMB', 0, 'images/gold/gold-50.png', 50);
-insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(3, '200个金币', 20, 'RMB', -2, 'images/gold/gold-200.png', 200);
-insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(4, '500个金币', 50, 'RMB', -10, 'images/gold/gold-500.png', 500);
-insert into vg_gold_product(id, name, price, price_unit, discount, image, gold_quantity) values(5, '1000个金币', 100, 'RMB', -30, 'images/gold/gold-1000.png', 1000);
+CREATE TABLE vg_give_goods (
+  id           BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  from_user_id VARCHAR(24) NOT NULL,
+  to_user_id   VARCHAR(24) NOT NULL,
+  post_id      VARCHAR(24) NOT NULL,
+  goods_id     INT         NOT NULL,
+  quantity     INT         NOT NULL,
+  give_date    DATETIME    NOT NULL,
+  FOREIGN KEY (goods_id) REFERENCES vg_goods (id)
+)
+  ENGINE =InnoDB;
 
-insert into vg_goods(id, name, price, discount, image_normal, image_bigger) values(1, '贝壳', 3, 0, 'images/goods/shell.png', 'images/goods/shell-bigger.png');
-insert into vg_goods(id, name, price, discount, image_normal, image_bigger) values(2, '玫瑰', 10, 0, 'images/goods/rose.png', 'images/goods/rose-bigger.png');
-insert into vg_goods(id, name, price, discount, image_normal, image_bigger) values(3, '钻石', 100, 0, 'images/goods/diamond.png', 'images/goods/diamond-bigger.png');
+CREATE TABLE vg_giver_value (
+  user_id    VARCHAR(24) NOT NULL,
+  giver_id   VARCHAR(24) NOT NULL,
+  give_value INT         NOT NULL,
+  PRIMARY KEY (user_id, giver_id)
+)
+  ENGINE =InnoDB;
 
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (1, '10个金币', '金币是一种全部或大部份由黄金制造的硬币。', 1, 'CNY', 0, 'images/gold/gold-10.png', 10);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (2, '50个金币', '黄金差不多在硬币发明之初，就因其价值被用来当作硬币。', 5, 'CNY', 0, 'images/gold/gold-50.png', 50);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (3, '200个金币', '黄金作为货币有很多理由。它的买卖价差低。', 20, 'CNY', -2, 'images/gold/gold-200.png', 200);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (4, '500个金币', '黄金可以分割成小单位，而不损害其价值；它也可以熔成锭，并且重铸成硬币。', 50, 'CNY', -10, 'images/gold/gold-500.png', 500);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold) VALUES (5, '1000个金币', '黄金的密度比大多数金属高，使假币很难流通。', 100, 'CNY', -30, 'images/gold/gold-1000.png', 1000);
 
+INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (1, '贝壳', '点缀海滩的可爱动物，据说每得到一个贝壳可以增加3点人气哦！', 3, 'images/vg/shell-118x118.png', 'images/vg/shell-220x222.png', '个');
+INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (2, '玫瑰', 'Rosa rugosa，浪漫的象征。如果你送一束玫瑰给你的好友，那么TA会很浪漫的增长10点人气', 10, 'images/vg/rose-118x118.png', 'images/vg/rose-220x222.png', '朵');
+INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (3, '钻石', '身为土豪的你每赠送出一颗钻石，得到的人都会增长100点人气。证明你身份的时候到了！', 100, 'images/vg/diamond-118x118.png', 'images/vg/diamond-220x222.png', '个');
+
+/* 测试数据
+update vg_gold_product set price = 0.01, discount = 0;
+ */

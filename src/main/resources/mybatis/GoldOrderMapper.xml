@@ -10,26 +10,41 @@
         <result property="orderDate" column="order_date"/>
         <result property="quantity" column="quantity"/>
         <result property="discount" column="discount"/>
+        <result property="subject" column="subject"/>
+        <result property="totalCost" column="total_cost"/>
+        <result property="gold" column="gold"/>
         <result property="status" column="status"/>
+        <result property="paymentMethod" column="payment_method"/>
         <result property="alipayStatus" column="alipay_status"/>
+        <result property="alipayNotifyId" column="alipay_notify_id"/>
         <result property="goldProduct.id" column="gold_product_id"/>
     </resultMap>
 
-    <insert id="save" parameterType="GoldOrder" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="GoldOrder" useGeneratedKeys="true" keyProperty="id">
 		insert into vg_gold_order (
+		id,
 		user_id,
 		gold_product_id,
 		quantity,
 		discount,
+		subject,
+		total_cost,
+		gold,
 		order_date,
-		status)
+		status,
+		payment_method)
 		values (
+		#{id},
 		#{userId},
 		#{goldProduct.id},
 		#{quantity},
 		#{discount},
+		#{subject},
+		#{totalCost},
+		#{gold},
 		#{orderDate},
-		#{status})
+		#{status},
+		#{paymentMethod})
 	</insert>
 
     <select id="get" parameterType="long" resultMap="goldOrderMap">
@@ -38,9 +53,14 @@
         gold_product_id,
         quantity,
         discount,
+        subject,
+		total_cost,
+		gold,
         order_date,
         status,
-        alipay_status
+        payment_method,
+        alipay_status,
+        alipay_notify_id
         from vg_gold_order
         where id = #{id}
     </select>
@@ -49,10 +69,13 @@
         update vg_gold_order
         <set>
             <if test="status != null">
-                status = #{status}
+                status = #{status},
             </if>
             <if test="alipayStatus != null">
-                alipay_status = #{alipayStatus}
+                alipay_status = #{alipayStatus},
+            </if>
+            <if test="alipayNotifyId != null">
+                alipay_notify_id = #{alipayNotifyId}
             </if>
         </set>
         where id = #{id}

@@ -9,19 +9,19 @@
         <result property="name" column="name"/>
         <result property="description" column="description"/>
         <result property="price" column="price"/>
-        <result property="discount" column="discount"/>
         <result property="imageNormal" column="image_normal"/>
         <result property="imageBigger" column="image_bigger"/>
+        <result property="quantityUnit" column="quantity_unit"/>
     </resultMap>
 
-    <select id="getById" parameterType="long" resultMap="goodsMap">
+    <select id="get" parameterType="int" resultMap="goodsMap">
         select id,
         name,
         description,
         price,
-        discount,
         image_normal,
-        image_bigger
+        image_bigger,
+        quantity_unit
         from vg_goods
         where id = #{id}
     </select>
@@ -31,9 +31,9 @@
         name,
         description,
         price,
-        discount,
         image_normal,
-        image_bigger
+        image_bigger,
+        quantity_unit
         from vg_goods
     </select>
 </mapper>

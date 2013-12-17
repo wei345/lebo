@@ -3,6 +3,7 @@ package com.lebo.service.account;
 import com.lebo.entity.*;
 import com.lebo.event.AfterUserCreateEvent;
 import com.lebo.event.ApplicationEventBus;
+import com.lebo.redis.RedisKeys;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.AccountSettingDto;
 import com.lebo.rest.dto.UserDto;
@@ -591,6 +592,7 @@ public class AccountService extends AbstractMongoService {
 
     /**
      * 取出Shiro中的当前用户Id,并且该id在数据库中也存在.
+     *
      * @throws UnknownAccountException 当用户不存在
      */
     public String getCurrentUserId() {
@@ -609,7 +611,7 @@ public class AccountService extends AbstractMongoService {
      */
     public String getRedisSessionKey() {
         ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-        return new StringBuilder("session:").append(user.id).append(".").append(user.sessionId).toString();
+        return RedisKeys.getLeboSessionKey(user.id, user.sessionId);
     }
 
     public String getRedisSessionAttribute(final String attr) {

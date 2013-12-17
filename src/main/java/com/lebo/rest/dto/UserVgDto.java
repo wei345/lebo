@@ -14,9 +14,10 @@ public class UserVgDto {
     private String profileImageUrl;
     private String profileImageBiggerUrl;
     private String profileImageOriginalUrl;
-    private Long goldQuantity;
+    private Integer gold;
+    private Integer consumeGold;
     private List<UserGoodsDto> goods = new ArrayList<UserGoodsDto>();
-    private Long goodsTotalPrice;
+    private Integer goodsTotalPrice;
 
     public String getUserId() {
         return userId;
@@ -58,12 +59,12 @@ public class UserVgDto {
         this.profileImageOriginalUrl = profileImageOriginalUrl;
     }
 
-    public Long getGoldQuantity() {
-        return goldQuantity;
+    public Integer getGold() {
+        return gold;
     }
 
-    public void setGoldQuantity(Long goldQuantity) {
-        this.goldQuantity = goldQuantity;
+    public void setGold(Integer gold) {
+        this.gold = gold;
     }
 
     public List<UserGoodsDto> getGoods() {
@@ -74,11 +75,19 @@ public class UserVgDto {
         this.goods = goods;
     }
 
-    public Long getGoodsTotalPrice() {
+    public Integer getGoodsTotalPrice() {
         return goodsTotalPrice;
     }
 
-    public void setGoodsTotalPrice(Long goodsTotalPrice) {
+    public void setGoodsTotalPrice(Integer goodsTotalPrice) {
         this.goodsTotalPrice = goodsTotalPrice;
+    }
+
+    public Integer getConsumeGold() {
+        return consumeGold;
+    }
+
+    public void setConsumeGold(Integer consumeGold) {
+        this.consumeGold = consumeGold;
     }
 }

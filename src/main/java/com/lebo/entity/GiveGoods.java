@@ -11,8 +11,9 @@ public class GiveGoods {
     private Long id;
     private String fromUserId;
     private String toUserId;
-    private Long goodsId;
+    private Integer goodsId;
     private Integer quantity;
+    private String postId;
     private Date giveDate;
 
     public Long getId() {
@@ -39,11 +40,11 @@ public class GiveGoods {
         this.toUserId = toUserId;
     }
 
-    public Long getGoodsId() {
+    public Integer getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(Long goodsId) {
+    public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
     }
 
@@ -61,5 +62,13 @@ public class GiveGoods {
 
     public void setGiveDate(Date giveDate) {
         this.giveDate = giveDate;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }

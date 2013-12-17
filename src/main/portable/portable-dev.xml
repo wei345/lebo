@@ -17,9 +17,9 @@
         <replace key="mongo.host">localhost</replace>
 
         <!-- mysql settings -->
-        <replace key="jdbc.url">jdbc:mysql://rdsevaf7rer36rn.mysql.rds.aliyuncs.com/lebodev?useUnicode=true&amp;characterEncoding=utf-8</replace>
+        <replace key="jdbc.url">jdbc:mysql://localhost/lebodev?useUnicode=true&amp;characterEncoding=utf-8</replace>
         <replace key="jdbc.username">lebodev</replace>
-        <replace key="jdbc.password">0750333219294d05b222a765582cf34d</replace>
+        <replace key="jdbc.password">1341b553e57bccf72ef778832f558ebe</replace>
 
         <!-- activemq settings -->
         <replace key="jms.broker_url">vm://lebo?broker.persistent=false&amp;broker.useJmx=false&amp;broker.schedulerSupport=false</replace>
@@ -39,6 +39,9 @@
         <!-- app -->
         <!-- http://{host}:{port}{context} -->
         <replace key="app.baseurl">http://app.dev.lebooo.com:8080</replace>
+
+        <!-- alipay -->
+        <replace key="alipay.notify_url">http://app.dev.lebooo.com:8080/api/1/alipay/notify</replace>
     </config-file>
 
     <!-- quartz-cluster.properties -->

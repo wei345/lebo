@@ -240,6 +240,15 @@
             视频播放次数+1。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/statuses/increaseShareCount"
+                       text="POST statuses/increaseShareCount"/>
+        </td>
+        <td>
+            视频分享次数+1。
+        </td>
+    </tr>
 </table>
 
 <strong>评论</strong>
@@ -611,10 +620,10 @@
     </tr>
     <tr>
         <td class="td1">
-            <tags:link url="${ctx}/docs/api/1.1/get/vg/alipaySigedParams" text="GET vg/alipaySigedParams"/>
+            <tags:link url="${ctx}/docs/api/1.1/post/vg/buyGold" text="POST vg/buyGold"/>
         </td>
         <td>
-            返回用于支付宝请求RSA签名的参数字符串。
+            购买金币，返回用于付款的签名的参数字符串。
         </td>
     </tr>
     <tr>
@@ -639,6 +648,14 @@
         </td>
         <td>
             赠送物品。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/vg/giverRanking" text="GET vg/giverRanking"/>
+        </td>
+        <td>
+            送礼者排名，返回送礼者列表和送礼者中当前用户信息。
         </td>
     </tr>
 </table>

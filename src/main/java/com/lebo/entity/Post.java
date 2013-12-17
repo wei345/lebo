@@ -65,8 +65,17 @@ public class Post extends IdEntity {
     private Integer favoritesCount;
     public static final String FAVOURITES_COUNT_KEY = "favoritesCount";
 
+    private Integer repostsCount;
+    public static final String REPOSTS_COUNT_KEY = "repostsCount";
+
+    private Integer commentsCount;
+    public static final String COMMENTS_COUNT_KEY = "commentsCount";
+
     private Integer viewCount;
     public static final String VIEW_COUNT_KEY = "viewCount";
+
+    private Integer shareCount;
+    public static final String SHARE_COUNT_KEY = "shareCount";
 
     // 是否精品
     private boolean digest;
@@ -105,6 +114,9 @@ public class Post extends IdEntity {
      */
     public static final Integer ACL_PRIVATE = 0;
     public static final Integer ACL_PUBLIC = null;
+
+    private Integer popularity; //人气
+    public static final String POPULARITY_KEY = "popularity";
 
     public static class UserMention {
         private String userId;
@@ -152,9 +164,12 @@ public class Post extends IdEntity {
         }
     }
 
-    public Post initial() {
-        setViewCount(0);
-        setFavoritesCount(0);
+    public Post initialCounts() {
+        viewCount = 0;
+        favoritesCount = 0;
+        repostsCount = 0;
+        commentsCount = 0;
+        shareCount = 0;
         return this;
     }
 
@@ -345,7 +360,47 @@ public class Post extends IdEntity {
         return (acl != null && acl == ACL_PRIVATE);
     }
 
-    public boolean isPublic(){
+    public boolean isPublic() {
         return acl == null;
+    }
+
+    public Integer getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
+    }
+
+    public Integer getShareCount() {
+        return shareCount;
+    }
+
+    public void setShareCount(Integer shareCount) {
+        this.shareCount = shareCount;
+    }
+
+    public Integer getRepostsCount() {
+        return repostsCount;
+    }
+
+    public void setRepostsCount(Integer repostsCount) {
+        this.repostsCount = repostsCount;
+    }
+
+    public Integer getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(Integer commentsCount) {
+        this.commentsCount = commentsCount;
+    }
+
+    public boolean isRepost() {
+        return originPostId != null;
+    }
+
+    public boolean isOriginPost() {
+        return originPostId == null;
     }
 }

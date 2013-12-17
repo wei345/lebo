@@ -8,12 +8,14 @@
         insert into vg_give_goods(
         from_user_id,
         to_user_id,
+        post_id,
         goods_id,
         quantity,
         give_date
         ) values (
         #{fromUserId},
         #{toUserId},
+        #{postId},
         #{goodsId},
         #{quantity},
         #{giveDate}

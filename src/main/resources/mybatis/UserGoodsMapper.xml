@@ -18,7 +18,7 @@
         where user_id = #{userId}
     </select>
 
-    <select id="getByUserIdGoodsId" parameterType="string" resultMap="userGoodsMap">
+    <select id="get" parameterType="UserGoods" resultMap="userGoodsMap">
         select user_id,
         goods_id,
         quantity
@@ -39,7 +39,7 @@
         )
     </insert>
 
-    <update id="updateQuantityByUserIdAndGoodsId" parameterType="UserGoods">
+    <update id="updateQuantity" parameterType="UserGoods">
         update vg_user_goods
         set quantity = #{quantity}
         where user_id = #{userId}

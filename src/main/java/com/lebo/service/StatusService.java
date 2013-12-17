@@ -85,8 +85,9 @@ public class StatusService extends AbstractMongoService {
     }
 
     public Post createPost(String userId, String text, FileInfo video, FileInfo videoFirstFrame, Post originPost, String source, Integer acl, Date createdAt) {
-        Post post = new Post().initial();
+        Post post = new Post();
 
+        post.initialCounts();
         post.setUserId(userId);
         post.setCreatedAt(createdAt == null ? new Date() : createdAt);
         post.setId(newMongoId(post.getCreatedAt()));
@@ -162,7 +163,21 @@ public class StatusService extends AbstractMongoService {
     public List<Post> userTimeline(TimelineParam param) {
         Assert.hasText(param.getUserId(), "userId不能为空");
 
+        if (!param.isIncludeOriginPosts() && !param.isIncludeReposts()) {
+            //既不含原始帖也不含转发贴，那就没内容了
+            return Collections.EMPTY_LIST;
+        }
+
         Query query = new Query(new Criteria(Post.USER_ID_KEY).is(param.getUserId()));
+
+        if (!param.isIncludeReposts()) {
+            query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        }
+
+        if (!param.isIncludeOriginPosts()) {
+            query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).ne(null));
+        }
+
         paginationById(query, param);
 
         try {
@@ -245,6 +260,9 @@ public class StatusService extends AbstractMongoService {
             dto.setVideoConverted(post.getVideoConverted().toDto());
         }
         dto.setVideoFirstFrameUrl(post.getVideoFirstFrameUrl());
+        dto.setRepostsCount(post.getRepostsCount());
+        dto.setCommentsCount(post.getCommentsCount());
+        dto.setShareCount(post.getShareCount());
         dto.setSource(post.getSource());
         dto.setFavoritesCount(post.getFavoritesCount());
         dto.setViewCount(post.getViewCount());
@@ -286,10 +304,8 @@ public class StatusService extends AbstractMongoService {
 
         //原帖
         if (post.getOriginPostId() == null) {
-            dto.setRepostsCount(countReposts(post.getId()));
             dto.setReposted(isReposted(accountService.getCurrentUserId(), post));
             dto.setFavorited(favoriteService.isFavorited(accountService.getCurrentUserId(), post.getId()));
-            dto.setCommentsCount(commentService.countPostComments(post.getId()));
 
             //前3条评论
             CommentListParam commentListParam = new CommentListParam();
@@ -537,6 +553,84 @@ public class StatusService extends AbstractMongoService {
         logger.debug("{} : 完成", logPrefix);
     }
 
+    @ManagedOperation(description = "重新计算所有帖子的转发数、评论数")
+    public void updateAllPostRepostsCountAndCommentsCount() {
+        long beginTime = System.currentTimeMillis();
+        String logPrefix = "更新所有帖子的转发数、评论数";
+
+        logger.debug("{} : 开始", logPrefix);
+
+        //查询
+        Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null))
+                .addCriteria(new Criteria(Post.COMMENTS_COUNT_KEY).is(null))
+                .with(new Sort(Sort.Direction.DESC, Post.ID_KEY))
+                .limit(10000);
+        query.fields().include(Post.ID_KEY);
+
+        List<Post> posts = mongoTemplate.find(query, Post.class);
+
+        int doneCount = 0;
+
+        while (posts.size() > 0) {
+            //更新
+            for (int i = 0; i < posts.size(); i++) {
+                String postId = posts.get(i).getId();
+
+                mongoTemplate.updateFirst(
+                        new Query(new Criteria(Post.ID_KEY).is(postId)),
+                        new Update()
+                                .set(Post.REPOSTS_COUNT_KEY, countReposts(postId))
+                                .set(Post.COMMENTS_COUNT_KEY, commentService.countPostComments(postId)),
+                        Post.class);
+
+                doneCount++;
+            }
+
+            logger.debug("{} : {}", logPrefix, doneCount);
+
+            //查询
+            posts = mongoTemplate.find(query, Post.class);
+        }
+
+        logger.debug("{} : 完成，{} ms", logPrefix, System.currentTimeMillis() - beginTime);
+    }
+
+    @ManagedOperation(description = "计算用户原帖数、转贴数，仅处理未计算过的用户")
+    public void updateAllUserOriginPostsCountAndRepostsCount() {
+
+        long beginTime = System.currentTimeMillis();
+        String prefix = "计算用户原帖数、转贴数: ";
+
+        logger.debug("{}开始", prefix);
+
+        Query query = new Query(new Criteria(User.ORIGIN_POSTS_COUNT_KEY).is(null));
+        query.fields().include(User.ID_KEY);
+        query.limit(10000);
+
+        List<User> users = mongoTemplate.find(query, User.class);
+        int totalCount = 0;
+
+        while (users.size() > 0) {
+
+            for (User user : users) {
+                String userId = user.getId();
+                mongoTemplate.updateFirst(
+                        new Query(new Criteria(User.ID_KEY).is(userId)),
+                        new Update()
+                                .set(User.REPOSTS_COUNT_KEY, countPost(userId, null, false))
+                                .set(User.ORIGIN_POSTS_COUNT_KEY, countPost(userId, true, true)),
+                        User.class);
+            }
+
+            totalCount += users.size();
+            logger.debug("{}{}", prefix, users.size());
+
+            users = mongoTemplate.find(query, User.class);
+        }
+
+        logger.debug("{}完成, 共 {}, 用时 {} ms", prefix, totalCount, System.currentTimeMillis() - beginTime);
+    }
+
     /* 不使用这种算法
     /**
      * 刷新热门帖子列表:最近2天被收藏的帖子按2天内的收藏数排序
@@ -673,6 +767,18 @@ public class StatusService extends AbstractMongoService {
     public void increaseViewCount(List<String> ids) {
         mongoTemplate.updateMulti(new Query(new Criteria("_id").in(ids)),
                 new Update().inc(Post.VIEW_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    /**
+     * 分享次数+1
+     */
+    public void increaseShareCount(String postId) {
+        Query query = new Query(new Criteria(Post.ID_KEY).is(postId));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null)); //确保是原帖，不给转发贴计数
+
+        mongoTemplate.updateFirst(query,
+                new Update().inc(Post.SHARE_COUNT_KEY, 1),
                 Post.class);
     }
 
@@ -864,6 +970,14 @@ public class StatusService extends AbstractMongoService {
         addAclPublicCriteria(query);
 
         return mongoTemplate.find(query, Post.class);
+    }
+
+    public void addPopularity(String postId, int amount) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(Post.ID_KEY).is(postId)),
+                new Update().inc(Post.POPULARITY_KEY, amount),
+                Post.class
+        );
     }
 
     //-- 帖子管理 --//

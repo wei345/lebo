@@ -23,6 +23,7 @@ public class Notification extends IdEntity {
     public static final String ACTIVITY_TYPE_REPLY_POST = "reply_post";
     public static final String ACTIVITY_TYPE_REPLY_COMMENT = "reply_comment";
     public static final String ACTIVITY_TYPE_LEBO_TEAM = "lebo_team";
+    public static final String ACTIVITY_TYPE_GIVE_GOODS = "give_goods";
 
     public static final String OBJECT_TYPE_POST = "post";
     public static final String OBJECT_TYPE_COMMENT = "comment";

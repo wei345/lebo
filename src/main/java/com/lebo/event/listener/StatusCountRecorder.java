@@ -1,9 +1,13 @@
 package com.lebo.event.listener;
 
 import com.google.common.eventbus.Subscribe;
+import com.lebo.entity.Post;
 import com.lebo.entity.User;
+import com.lebo.event.AfterCommentCreateEvent;
+import com.lebo.event.AfterCommentDestroyEvent;
 import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.event.AfterPostDestroyEvent;
+import com.lebo.service.CommentService;
 import com.lebo.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,22 +27,24 @@ public class StatusCountRecorder {
     private MongoTemplate mongoTemplate;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private CommentService commentService;
 
     @Subscribe
-    public void updateStatusesCount(AfterPostCreateEvent event) {
+    public void updateUserPostCount(AfterPostCreateEvent event) {
         if (event.getPost().isPublic()) {
-            updatePostCount(event.getPost().getUserId(), event.getPost().getOriginPostId() == null);
+            updateUserPostCount(event.getPost().getUserId(), event.getPost().isOriginPost());
         }
     }
 
     @Subscribe
-    public void updateStatusesCount(AfterPostDestroyEvent event) {
+    public void updateUserPostCount(AfterPostDestroyEvent event) {
         if (event.getPost().isPublic()) {
-            updatePostCount(event.getPost().getUserId(), event.getPost().getOriginPostId() == null);
+            updateUserPostCount(event.getPost().getUserId(), event.getPost().isOriginPost());
         }
     }
 
-    private void updatePostCount(String userId, boolean isOrigin) {
+    private void updateUserPostCount(String userId, boolean isOrigin) {
 
         if (isOrigin) {
             mongoTemplate.updateFirst(
@@ -56,5 +62,43 @@ public class StatusCountRecorder {
                     User.class);
         }
 
+    }
+
+    @Subscribe
+    public void updatePostRepostsCount(AfterPostCreateEvent event) {
+        if (event.getPost().isRepost()) {
+            updatePostRepostsCount(event.getPost().getOriginPostId());
+        }
+    }
+
+    @Subscribe
+    public void updatePostRepostsCount(AfterPostDestroyEvent event) {
+        if (event.getPost().isRepost()) {
+            updatePostRepostsCount(event.getPost().getOriginPostId());
+        }
+    }
+
+    private void updatePostRepostsCount(String originPostId) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(Post.ID_KEY).is(originPostId)),
+                new Update().set(Post.REPOSTS_COUNT_KEY, statusService.countReposts(originPostId)),
+                Post.class);
+    }
+
+    @Subscribe
+    public void updatePostCommentsCount(AfterCommentCreateEvent event) {
+        updatePostCommentsCount(event.getComment().getPostId());
+    }
+
+    @Subscribe
+    public void updatePostCommentsCount(AfterCommentDestroyEvent event) {
+        updatePostCommentsCount(event.getComment().getPostId());
+    }
+
+    private void updatePostCommentsCount(String postId) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(Post.ID_KEY).is(postId)),
+                new Update().set(Post.COMMENTS_COUNT_KEY, commentService.countPostComments(postId)),
+                Post.class);
     }
 }

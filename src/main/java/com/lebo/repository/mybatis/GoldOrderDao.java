@@ -12,7 +12,7 @@ import com.lebo.repository.MyBatisRepository;
 public interface GoldOrderDao {
     GoldOrder get(Long id);
 
-    void save(GoldOrder goldOrder);
+    void insert(GoldOrder goldOrder);
 
     void updateStatus(GoldOrder goldOrder);
 }

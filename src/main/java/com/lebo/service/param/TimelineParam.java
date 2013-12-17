@@ -8,8 +8,8 @@ package com.lebo.service.param;
 public class TimelineParam extends PaginationParam {
     private String userId;
     private String screenName;
-    private boolean trimUser = false;
-    private boolean includeRts = true;
+    private boolean includeReposts = true;
+    private boolean includeOriginPosts = true;
 
     public String getUserId() {
         return userId;
@@ -19,20 +19,12 @@ public class TimelineParam extends PaginationParam {
         this.userId = userId;
     }
 
-    public boolean isTrimUser() {
-        return trimUser;
+    public boolean isIncludeReposts() {
+        return includeReposts;
     }
 
-    public void setTrimUser(boolean trimUser) {
-        this.trimUser = trimUser;
-    }
-
-    public boolean isIncludeRts() {
-        return includeRts;
-    }
-
-    public void setIncludeRts(boolean includeRts) {
-        this.includeRts = includeRts;
+    public void setIncludeReposts(boolean includeReposts) {
+        this.includeReposts = includeReposts;
     }
 
     public String getScreenName() {
@@ -41,5 +33,13 @@ public class TimelineParam extends PaginationParam {
 
     public void setScreenName(String screenName) {
         this.screenName = screenName;
+    }
+
+    public boolean isIncludeOriginPosts() {
+        return includeOriginPosts;
+    }
+
+    public void setIncludeOriginPosts(boolean includeOriginPosts) {
+        this.includeOriginPosts = includeOriginPosts;
     }
 }

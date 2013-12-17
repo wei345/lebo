@@ -1,6 +1,5 @@
 package com.lebo.rest;
 
-import com.lebo.entity.GoldOrder;
 import com.lebo.service.AlipayService;
 import com.lebo.service.VgService;
 import org.slf4j.Logger;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,7 +30,7 @@ public class AlipayRestController {
     @Autowired
     private VgService vgService;
 
-    private Logger logger = LoggerFactory.getLogger(VgRestController.class);
+    private Logger logger = LoggerFactory.getLogger(AlipayRestController.class);
 
     /**
      * 支付宝支付回调接口。
@@ -63,47 +64,43 @@ public class AlipayRestController {
                                @RequestParam(value = "discount", required = false) String discount,
                                HttpServletRequest request) {
 
+        logger.debug("正在验证是否支付宝请求..");
+        if (alipayService.checkIfAlipayRequest(notifyId)) {
+            logger.debug("是支付宝请求");
+        } else {
+            logger.debug("不是支付宝请求, 退出");
+            return "error";
+        }
+
         logger.debug("支付宝回调参数:");
-        Map<String, String> params = request.getParameterMap();
-        for (Map.Entry entry : params.entrySet()) {
-            logger.debug("    {} : {}", entry.getKey(), entry.getValue());
+        Enumeration names = request.getParameterNames();
+        Map<String, String> params = new HashMap<String, String>();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement().toString();
+            String value = request.getParameter(name);
+
+            logger.info("    {} : {}", name, value);
+            params.put(name, value);
         }
 
         logger.debug("正在验证签名..");
         if (alipayService.rsaCheckV1(params)) {
             logger.debug("通过");
         } else {
-            logger.debug("未通过");
+            logger.debug("未通过, 退出");
             return "error";
         }
 
         try {
 
-            logger.debug("正在处理订单..");
-            if ("TRADE_SUCCESS".equals(tradeStatus)) {
-
-                vgService.tradeSuccess(outTradeNo, tradeStatus);
-                logger.debug("购买金币成功 : 支付宝交易完成，用户金币已增加");
-
-            } else if ("TRADE_FINISHED".equals(tradeStatus)) {
-
-                vgService.tradeSuccess(outTradeNo, tradeStatus);
-                logger.debug("购买金币成功 : 支付宝交易完成，用户金币已增加");
-
-            } else if ("WAIT_BUYER_PAY".equals(tradeStatus)) {
-
-                vgService.updateTradeStatus(outTradeNo, GoldOrder.Status.UNPAID, tradeStatus);
-                logger.debug("未支付 : 支付宝等待用户支付");
-
-            } else if ("TRADE_CLOSED".equals(tradeStatus)) {
-
-                vgService.updateTradeStatus(outTradeNo, GoldOrder.Status.OBSOLETE, tradeStatus);
-                logger.debug("订单作废 : 支付宝交易关闭");
-            }
+            vgService.handleAlipayNotify(outTradeNo, AlipayService.AlipayStatus.valueOf(tradeStatus), notifyId);
+            logger.debug("处理支付宝通知完成");
 
             return "success";
+
         } catch (Exception e) {
-            logger.warn("处理订单时发生错误", e);
+
+            logger.warn("处理支付宝通知发生错误", e);
             return "error";
         }
     }

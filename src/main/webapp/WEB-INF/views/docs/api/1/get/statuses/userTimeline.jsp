@@ -7,6 +7,14 @@
     userId、screenName任选其一。
     <tags:field name="userId" optional="true"/>
     <tags:field name="screenName" optional="true"/>
+    <p>
+        是否包含转发贴：<code>true</code>或<code>false</code>，默认true
+    </p>
+    <tags:field name="includeReposts" optional="true"/>
+    <p>
+        是否包含原始贴：<code>true</code>或<code>false</code>，默认true
+    </p>
+    <tags:field name="includeOriginPosts" optional="true"/>
     <tags:field name="count" optional="true"/>
     <tags:field name="maxId" optional="true"/>
     <tags:field name="sinceId" optional="true"/>

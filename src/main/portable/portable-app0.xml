@@ -44,6 +44,9 @@
         <!-- http://{host}:{port}{context} -->
         <replace key="app.baseurl">http://app.lebooo.com</replace>
 
+        <!-- alipay -->
+        <replace key="alipay.notify_url">http://app.lebooo.com/api/1/alipay/notify</replace>
+
         <!-- jmx -->
         <replace key="jmx.rmi_port">9099</replace>
     </config-file>

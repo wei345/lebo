@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import com.lebo.service.AlipayService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -18,9 +19,14 @@ public class GoldOrder {
     private GoldProduct goldProduct;
     private Integer quantity;
     private BigDecimal discount;
+    private String subject;        //购买内容描述
+    private BigDecimal totalCost;  //折扣之后用户需支付的费用
+    private Integer gold;  //需交付给用户的金币数
     private Date orderDate;
     private Status status;
-    private String alipayStatus;
+    private PaymentMethod paymentMethod;
+    private AlipayService.AlipayStatus alipayStatus;
+    private String alipayNotifyId;
 
     public static enum Status {
         PAID("已支付"),
@@ -31,14 +37,30 @@ public class GoldOrder {
         }
     }
 
+    public static enum PaymentMethod {
+        ALIPAY("支付宝");
+
+        private String name;
+
+        PaymentMethod(String name) {
+            this.name = name;
+        }
+    }
+
     public GoldOrder() {
     }
 
-    public GoldOrder(String userId, BigDecimal discount, Status status) {
+    public GoldOrder(long id){
+        this.id = id;
+    }
+
+    public GoldOrder(long id, String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
+        this.id = id;
         this.userId = userId;
         this.discount = discount;
         this.status = status;
         this.orderDate = new Date();
+        this.paymentMethod = paymentMethod;
     }
 
     public Long getId() {
@@ -97,37 +119,65 @@ public class GoldOrder {
         this.quantity = quantity;
     }
 
-    public BigDecimal getTotalCost() {
-        return goldProduct.getCost().multiply(new BigDecimal(quantity)).add(discount);
-    }
-
     /**
      * 详细描述, 支付宝接口body参数, 最多300字符
      */
     public String getAlipayBody() {
-        return StringUtils.substring(
-                new StringBuilder(goldProduct.getName())
-                        .append("×").append(quantity).toString(), 0, 300);
+        return StringUtils.substring(subject, 0, 300);
     }
 
     /**
      * 支付宝接口subject参数,最长为 128 个汉字
      */
     public String getAlipaySubject() {
-        return StringUtils.substring(
-                new StringBuilder(goldProduct.getName())
-                        .append("×").append(quantity).toString(), 0, 128);
+        return StringUtils.substring(subject, 0, 128);
     }
 
-    public String getAlipayStatus() {
+    public AlipayService.AlipayStatus getAlipayStatus() {
         return alipayStatus;
     }
 
-    public void setAlipayStatus(String alipayStatus) {
+    public void setAlipayStatus(AlipayService.AlipayStatus alipayStatus) {
         this.alipayStatus = alipayStatus;
     }
 
-    public Long getGoldQuantity(){
-        return goldProduct.getGoldQuantity() * quantity;
+    public String getAlipayNotifyId() {
+        return alipayNotifyId;
+    }
+
+    public void setAlipayNotifyId(String alipayNotifyId) {
+        this.alipayNotifyId = alipayNotifyId;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public void setGold(Integer gold) {
+        this.gold = gold;
+    }
+
+    public Integer getGold() {
+        return gold;
     }
 }

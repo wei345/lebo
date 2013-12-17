@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import com.lebo.service.FileContentUrlUtils;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
@@ -17,10 +18,10 @@ public class GoldProduct {
     private PriceUnit priceUnit;
     private BigDecimal discount;
     private String image;
-    private Long goldQuantity;
+    private Integer gold;
 
     public static enum PriceUnit {
-        RMB
+        CNY
     }
 
     public String getName() {
@@ -79,12 +80,20 @@ public class GoldProduct {
         this.discount = discount;
     }
 
-    public Long getGoldQuantity() {
-        return goldQuantity;
+    public Integer getGold() {
+        return gold;
     }
 
-    public void setGoldQuantity(Long goldQuantity) {
-        this.goldQuantity = goldQuantity;
+    public void setGold(Integer gold) {
+        this.gold = gold;
+    }
+
+    public String  getImageUrl(){
+        if(image == null){
+            return null;
+        }
+
+        return FileContentUrlUtils.getContentUrl(image);
     }
 
     /**

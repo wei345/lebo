@@ -245,6 +245,17 @@
         <td>无</td>
         <td>无</td>
     </tr>
+    <tr>
+        <td>
+            用户收到赠送的虚拟物品
+        </td>
+        <td>
+            <%=Notification.ACTIVITY_TYPE_GIVE_GOODS%>
+        </td>
+        <td>谁送的</td>
+        <td>在哪个视频发起的送礼操作</td>
+        <td>无</td>
+    </tr>
 </table>
 
 <p>

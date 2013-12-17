@@ -159,4 +159,9 @@ public class StatusServiceTest extends SpringContextTestCase {
         assertTrue(19 == userMentions.get(1).getIndices().get(1));
     }
 
+    @Test
+    public void addPopularity(){
+        statusService.addPopularity("525540df1a880aa92b6f6e17", 1);
+    }
+
 }

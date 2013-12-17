@@ -1,26 +1,24 @@
 package com.lebo.rest.dto;
 
-import java.math.BigDecimal;
-
 /**
  * @author: Wei Liu
  * Date: 13-11-4
  * Time: PM7:17
  */
 public class GoodsDto {
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
-    private BigDecimal price;
-    private BigDecimal discount;
-    private String imageNormal;
-    private String imageBigger;
+    private Integer price;
+    private String imageUrl;
+    private String imageBiggerUrl;
+    private String quantityUnit;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -40,35 +38,35 @@ public class GoodsDto {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public BigDecimal getDiscount() {
-        return discount;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setDiscount(BigDecimal discount) {
-        this.discount = discount;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public String getImageNormal() {
-        return imageNormal;
+    public String getImageBiggerUrl() {
+        return imageBiggerUrl;
     }
 
-    public void setImageNormal(String imageNormal) {
-        this.imageNormal = imageNormal;
+    public void setImageBiggerUrl(String imageBiggerUrl) {
+        this.imageBiggerUrl = imageBiggerUrl;
     }
 
-    public String getImageBigger() {
-        return imageBigger;
+    public String getQuantityUnit() {
+        return quantityUnit;
     }
 
-    public void setImageBigger(String imageBigger) {
-        this.imageBigger = imageBigger;
+    public void setQuantityUnit(String quantityUnit) {
+        this.quantityUnit = quantityUnit;
     }
 }
