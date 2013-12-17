@@ -3,7 +3,6 @@ package com.lebo.service.account;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import redis.clients.jedis.Jedis;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -20,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * Date: 13-7-16
  * Time: PM11:42
  */
-public class ShiroFormAuthenticationFilter extends FormAuthenticationFilter {
+public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.FormAuthenticationFilter {
     @Autowired
     private JedisTemplate jedisTemplate;
 
@@ -30,13 +28,7 @@ public class ShiroFormAuthenticationFilter extends FormAuthenticationFilter {
 
     private static int MAX_LOGIN_RETRY_TIMES = 6;
 
-    private Logger logger = LoggerFactory.getLogger(ShiroFormAuthenticationFilter.class);
-
-    @Override
-    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
-        AbstractShiroLogin.useDbLogin(null, null, ((HttpServletRequest) request).getSession().getServletContext());
-        return super.createToken(request, response);
-    }
+    private Logger logger = LoggerFactory.getLogger(FormAuthenticationFilter.class);
 
     /**
      * 当登录失败时，记录失败次数.

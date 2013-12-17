@@ -19,12 +19,20 @@
             OAuth登录，返回当前用户信息。
         </td>
     </tr>
-    <tr class="disabled" title="未用到">
+    <%--<tr class="disabled" title="未用到">
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/login" text="POST login"/>
         </td>
         <td>
             本地登录，返回当前用户信息。
+        </td>
+    </tr>--%>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/guestLogin" text="POST guestLogin"/>
+        </td>
+        <td>
+            游客登录，返回游客用户信息。
         </td>
     </tr>
     <tr>

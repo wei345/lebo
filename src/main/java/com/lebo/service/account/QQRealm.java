@@ -1,9 +1,8 @@
 package com.lebo.service.account;
 
 import com.lebo.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -15,29 +14,31 @@ import java.util.Map;
 
 /**
  * @author: Wei Liu
- * Date: 13-11-19
- * Time: PM2:56
+ * Date: 13-12-17
+ * Time: AM11:51
  */
 @Service
-public class ShiroQQLogin extends AbstractOAuthLogin {
-
-    public static final String PROVIDER = "qq";
+public class QQRealm extends AbstractOAuthRealm {
 
     private static final Integer SUCCESS_CODE = 0;
 
     @Value("${qq_appid}")
     private String qqAppId;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
     private JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
 
     @Override
-    public User getUser(OauthToken oauthToken) {
+    public boolean supports(AuthenticationToken token) {
+        return (token instanceof QQToken);
+    }
 
-        String token = oauthToken.getToken();
-        String uid = oauthToken.getUid();
+    @Override
+    public User getUser(AbstractOAuthToken abstractOAuthToken) {
+
+        QQToken qqToken = (QQToken) abstractOAuthToken;
+
+        String token = qqToken.getToken();
+        String uid = qqToken.getUid();
 
         //QQ验证
         String url = new StringBuilder("https://graph.qq.com/user/get_user_info")
@@ -55,37 +56,18 @@ public class ShiroQQLogin extends AbstractOAuthLogin {
         }
 
         //QQ验证成功
-        User user = accountService.findByOAuthId(oAuthId(PROVIDER, uid));
+        User user = getAccountService().findByOAuthId(oAuthId(QQToken.PROVIDER, uid));
 
         // 新用户
         if (user == null) {
-
-            user = new User();
-            user.setScreenName(accountService.generateScreenName((String) userInfo.get("nickname")));
-            user.setName((String) userInfo.get("nickname"));
-            user.setGender(getGender((String) userInfo.get("gender")));
-            user.setProfileImageNormal((String) userInfo.get("figureurl_qq_1")); //40x40
-            user.setProfileImageBigger((String) userInfo.get("figureurl_qq_2")); //100x100
-            user.setProfileImageOriginal((String) userInfo.get("figureurl_qq_2")); //100x100
-            LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
-            oAuthIds.add(oAuthId(PROVIDER, uid));
-            user.setoAuthIds(oAuthIds);
-            user.setQqToken(token);
-
-            accountService.createUser(user);
+            return createUser(userInfo, token, uid);
         }
 
         //老用户
         else {
-
-            if (!token.equals(user.getQqToken())) {
-                mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(user.getId())),
-                        new Update().set(User.QQ_TOKEN_KEY, token),
-                        User.class);
-            }
+            updateUser(user, token);
+            return user;
         }
-
-        return user;
     }/*
     文档：
     http://wiki.connect.qq.com/get_user_info
@@ -113,8 +95,31 @@ public class ShiroQQLogin extends AbstractOAuthLogin {
 
     */
 
-    @Override
-    public String getPrivoder() {
-        return PROVIDER;
+    public User createUser(Map userInfo, String token, String uid) {
+        User user = new User();
+        user.setScreenName(getAccountService().generateScreenName((String) userInfo.get("nickname")));
+        user.setName((String) userInfo.get("nickname"));
+        user.setGender(getGender((String) userInfo.get("gender")));
+        user.setProfileImageNormal((String) userInfo.get("figureurl_qq_1")); //40x40
+        user.setProfileImageBigger((String) userInfo.get("figureurl_qq_2")); //100x100
+        user.setProfileImageOriginal((String) userInfo.get("figureurl_qq_2")); //100x100
+        LinkedHashSet<String> oAuthIds = new LinkedHashSet<String>(1);
+        oAuthIds.add(oAuthId(QQToken.PROVIDER, uid));
+        user.setoAuthIds(oAuthIds);
+        user.setQqToken(token);
+
+        getAccountService().createUser(user);
+
+        return user;
     }
+
+    public void updateUser(User user, String token) {
+
+        if (!token.equals(user.getQqToken())) {
+            mongoTemplate.updateFirst(new Query(new Criteria(User.ID_KEY).is(user.getId())),
+                    new Update().set(User.QQ_TOKEN_KEY, token),
+                    User.class);
+        }
+    }
+
 }

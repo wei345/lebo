@@ -8,18 +8,22 @@
 
     <!-- Shiro's main business-tier object for web-enabled applications -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-        <property name="realm" ref="shiroRealm"/>
+        <property name="realms">
+            <util:set>
+                <ref bean="weiboRealm"/>
+                <ref bean="dbRealm"/>
+                <ref bean="QQRealm"/>
+                <ref bean="renrenRealm"/>
+                <ref bean="guestRealm"/>
+            </util:set>
+        </property>
         <property name="cacheManager" ref="shiroEhcacheManager"/>
     </bean>
 
-    <!-- 項目自定义的Realm, 所有accountService依赖的dao都需要用depends-on声明 -->
-    <bean id="shiroRealm" class="com.lebo.service.account.ShiroRealm">
-        <!--<property name="accountService" ref="accountService"/>-->
-    </bean>
-
     <!-- Shiro Filter -->
-    <bean id="authcFilter" class="com.lebo.service.account.ShiroFormAuthenticationFilter"/>
-    <bean id="apiFilter" class="com.lebo.service.account.ShiroApiUserFilter"/>
+    <bean id="authcFilter" class="com.lebo.service.account.FormAuthenticationFilter"/>
+
+    <bean id="apiFilter" class="com.lebo.service.account.ApiUserFilter"/>
 
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
@@ -41,6 +45,7 @@
                 /api/*/everyday10/** = anon
                 /api/*/login.json = anon
                 /api/*/oauthLogin.json = anon
+                /api/*/guestLogin.json = anon
                 /api/*/alipay/notify = anon
                 /login = authc
                 /logout = logout
