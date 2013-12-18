@@ -124,7 +124,7 @@
             <tags:link url="${ctx}/docs/api/1/get/statuses/channelTimeline" text="GET statuses/channelTimeline"/>
         </td>
         <td>
-            返回id参数指定的频道的视频列表。
+            返回name参数指定的频道的视频列表。
         </td>
     </tr>
     <tr class="disabled">
@@ -177,6 +177,14 @@
         </td>
         <td>
             返回作品榜视频列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/statuses/channel" text="GET statuses/channel v1.1"/>
+        </td>
+        <td>
+            返回name参数指定的频道的视频列表。
         </td>
     </tr>
     <%--未用到 而且这个接口排序有问题 <tr>
