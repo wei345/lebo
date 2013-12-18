@@ -5,10 +5,10 @@ import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.WeiboUserDto;
 import com.lebo.service.FriendshipService;
-import com.lebo.service.account.AbstractOAuthLogin;
+import com.lebo.service.account.AbstractOAuthRealm;
 import com.lebo.service.account.AccountService;
-import com.lebo.service.account.ShiroWeiboLogin;
 import com.lebo.service.account.WeiboService;
+import com.lebo.service.account.WeiboToken;
 import com.lebo.service.param.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -144,7 +144,7 @@ public class FriendRestController {
                 cursor++;
                 readCount++;
                 //查找微博用户对应的乐播用户
-                User u = accountService.findByOAuthId(AbstractOAuthLogin.oAuthId(ShiroWeiboLogin.PROVIDER, weiboUser.getId()));
+                User u = accountService.findByOAuthId(AbstractOAuthRealm.oAuthId(WeiboToken.PROVIDER, weiboUser.getId()));
                 //该微博用户也在乐播中
                 if (u != null) {
                     WeiboUserDto weiboUserDto = new WeiboUserDto();

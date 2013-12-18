@@ -15,7 +15,7 @@ import java.io.PrintWriter;
  * Date: 13-6-28
  * Time: PM5:23
  */
-public class ShiroApiUserFilter extends UserFilter {
+public class ApiUserFilter extends UserFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {

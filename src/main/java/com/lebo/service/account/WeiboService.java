@@ -135,6 +135,13 @@ public class WeiboService {
         return weiboFriend;
     }
 
+    /*需在开发者账号设置回调URL，iOS客户端在程序内写死了回调URL，不知修改是否有影响，暂不做web微博登录
+    private String weibo_redirect_uri = "/weibo_callback";
+
+    public String authorizeUrl(String baseurl) {
+        return String.format("https://api.weibo.com/oauth2/authorize?response_type=code&client_id=%s&redirect_uri=%s", weibo_api_key, baseurl + weibo_redirect_uri);
+    }*/
+
     public static class WeiboFriend {
         private List<WeiboUser> users;
         private int next_cursor;
