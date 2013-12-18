@@ -59,7 +59,7 @@
             <label for="screenName" class="control-label">用户名:</label>
 
             <div class="controls">
-                <input type="text" id="screenName" name="screenName" class="input-large required" minlength="3"/>
+                <input type="text" id="screenName" name="screenName" class="input-large required" minlength="2"/>
             </div>
         </div>
         <div class="control-group">
