@@ -41,15 +41,15 @@ public class GuestRealm extends AbstractRealm {
             return null;
         }
 
-        return new SimpleAuthenticationInfo(
-                new ShiroUser(user.getId(),
-                        user.getScreenName(),
-                        user.getName(),
-                        user.getProfileImageUrl(),
-                        PROVIDER),
-                null,
-                getName());
+        ShiroUser shiroUser = new ShiroUser(user.getId(),
+                user.getScreenName(),
+                user.getName(),
+                user.getProfileImageUrl(),
+                PROVIDER);
 
+        shiroUser.setGuest(true);
+
+        return new SimpleAuthenticationInfo(shiroUser, null, getName());
     }
 
     @Override

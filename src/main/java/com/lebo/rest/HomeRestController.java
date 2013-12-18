@@ -118,7 +118,11 @@ public class HomeRestController {
 
             subject.login(new GuestToken());
 
-            return getUserInfo();
+            Map<String, Object> userInfo = getUserInfo();
+
+            userInfo.put("guest", true);
+
+            return userInfo;
 
         } catch (Exception e) {
 

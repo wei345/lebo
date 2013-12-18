@@ -16,6 +16,7 @@ public class ShiroUser implements Serializable {
     public String profileImageUrl;
     public String provider;
     public String sessionId;
+    private boolean guest;
 
     public ShiroUser(String id, String screenName, String name, String profileImageUrl, String provider) {
         this.id = id;
@@ -81,5 +82,13 @@ public class ShiroUser implements Serializable {
 
     public String getSessionId() {
         return sessionId;
+    }
+
+    public boolean isGuest() {
+        return guest;
+    }
+
+    public void setGuest(boolean guest) {
+        this.guest = guest;
     }
 }

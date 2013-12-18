@@ -23,6 +23,7 @@
         notifySound: false,
         notifyOnFollow: true,
         digestCount: 0,
+        guest: true,
         followersCount: 0,
         statusesCount: 0,
         viewCount: 0
