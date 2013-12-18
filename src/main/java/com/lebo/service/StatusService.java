@@ -797,22 +797,65 @@ public class StatusService extends AbstractMongoService {
     /**
      * 查找某频道的Posts，按ID降序排序，按ID分页。
      */
-    //TODO 精简代码
-    //(follow || track) && page
     public List<Post> getChannelPosts(String name, PaginationParam paginationParam) {
-        //-- 解析follow和track begin --//
-        //查找配置中的channel
-        Channel channel = null;
-        List<Channel> channels = settingService.getAllChannels();
-        for (Channel c : channels) {
-            if (name.equals(c.getName())) {
-                channel = c;
-                break;
+
+        return getChannelPosts(name, paginationParam, null);
+    }
+
+    public List<Post> getChannelPosts(String name, PageRequest pageRequest) {
+        return getChannelPosts(name, null, pageRequest);
+    }
+
+    public List<Post> getChannelPosts(String name, PaginationParam paginationParam, PageRequest pageRequest) {
+
+        Channel channel = settingService.getChannelByName(name);
+
+        Criteria queryCriteria = parseChannelFollowAndTrack(name, channel);
+
+        Query query = new Query(queryCriteria);
+
+        addAclPublicCriteria(query);
+
+        //按id分页
+        if (paginationParam != null) {
+
+            paginationById(query, paginationParam);
+
+            //带有置顶视频
+            if (channel != null
+                    && StringUtils.isNotBlank(channel.getTopPostId())                         //该频道有置顶视频
+                    && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
+
+                return getChannelPostsWithTopPost(query, channel, paginationParam.getCount());
             }
         }
+        //按pageNumber和pageSize分页
+        else if (pageRequest != null) {
 
+            query.with(pageRequest);
+
+            //带有置顶视频
+            if (channel != null
+                    && StringUtils.isNotBlank(channel.getTopPostId())                         //该频道有置顶视频
+                    && pageRequest.getPage() == 0) {                                          //第一页
+
+                return getChannelPostsWithTopPost(query, channel, pageRequest.getPageSize());
+            }
+        } else {
+            throw new IllegalArgumentException("paginationParam和pageRequest不能都为null");
+        }
+
+        //e.g. : find using query: { "$and" : [ { "searchTerms" : { "$all" : [ "#小编制作#"]}} , { "originPostId" :  null } , { "_id" : { "$ne" : { "$oid" : "5285b9c01a884fbe3e165681"}}}] , "_id" : { "$lt" : { "$oid" : "5285b9c01a884fbe3e165681"}} , "acl" :  null }
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    /**
+     * @return queryCriteria, 最外层不可有"_id"key，否则会和com.lebo.service.AbstractMongoService#paginationById冲突
+     */
+    private Criteria parseChannelFollowAndTrack(String name, Channel channel) {
+        //-- 解析follow和track begin --//
         String follow = null;
-        String track = null;
+        String track;
         //未配置的频道，返回含有hashtag的内容
         if (channel == null) {
             track = "#" + name + "#";
@@ -877,14 +920,6 @@ public class StatusService extends AbstractMongoService {
             criteriaList.add(new Criteria(Post.ID_KEY).ne(new ObjectId(channel.getTopPostId())));
         }
 
-        //分页
-        if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
-            criteriaList.add(new Criteria(Post.ID_KEY).lt(new ObjectId(paginationParam.getMaxId())));
-        }
-        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
-            criteriaList.add(new Criteria(Post.ID_KEY).gt(new ObjectId(paginationParam.getSinceId())));
-        }
-
         //各条件间是and关系
         Criteria queryCriteria = null;
         if (criteriaList.size() > 1) {
@@ -893,32 +928,22 @@ public class StatusService extends AbstractMongoService {
             queryCriteria = criteriaList.get(0);
         }
 
-        //根据条件执行查询
-        Query query = new Query();
-        if (queryCriteria != null) {
-            query.addCriteria(queryCriteria);
-        }
-        query.with(PaginationParam.ID_DESC_SORT).limit(paginationParam.getCount());
+        Assert.notNull(queryCriteria);
+        return queryCriteria;
+    }
 
-        //-- 添加置顶视频 begin --//
-        if (channel != null && StringUtils.isNotBlank(channel.getTopPostId()) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
+    private List<Post> getChannelPostsWithTopPost(Query query, Channel channel, int count) {
+        Post post = getPost(channel.getTopPostId());
+        if (post != null) {
+            query.limit(count - 1); //少查一项，给置顶留位置
+            List<Post> posts = mongoTemplate.find(query, Post.class);
 
-            Post post = getPost(channel.getTopPostId());
-            if (post != null) {
-                query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
-                List<Post> posts = mongoTemplate.find(query, Post.class);
-
-                if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
-                    posts.add(0, post);
-                }
-
-                return posts;
+            if (posts.size() < count) { //在顶部插入置顶视频
+                posts.add(0, post);
             }
+
+            return posts;
         }
-        //-- 添加置顶视频 end --//
-
-        addAclPublicCriteria(query);
-
         return mongoTemplate.find(query, Post.class);
     }
 

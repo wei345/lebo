@@ -2,11 +2,14 @@ package com.lebo.entity;
 
 import com.lebo.service.FileContentUrlUtils;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "settings.channels")
 public class Channel extends IdEntity {
+    @Indexed
     private String name;
+    public static final String NAME_KEY = "name";
     private String title;
     private String description;
     private String image;
