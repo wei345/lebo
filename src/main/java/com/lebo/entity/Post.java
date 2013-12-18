@@ -77,6 +77,10 @@ public class Post extends IdEntity {
     private Integer shareCount;
     public static final String SHARE_COUNT_KEY = "shareCount";
 
+    @Indexed(direction = IndexDirection.DESCENDING)
+    private Date lastCommentCreatedAt;
+    public static final String LAST_COMMENT_CREATED_AT_KEY = "lastCommentCreatedAt";
+
     // 是否精品
     private boolean digest;
     public static final String DIGEST_KEY = "digest";
@@ -402,5 +406,13 @@ public class Post extends IdEntity {
 
     public boolean isOriginPost() {
         return originPostId == null;
+    }
+
+    public Date getLastCommentCreatedAt() {
+        return lastCommentCreatedAt;
+    }
+
+    public void setLastCommentCreatedAt(Date lastCommentCreatedAt) {
+        this.lastCommentCreatedAt = lastCommentCreatedAt;
     }
 }

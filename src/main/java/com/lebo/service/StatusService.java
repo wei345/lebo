@@ -271,6 +271,7 @@ public class StatusService extends AbstractMongoService {
         }
         dto.setDigest(post.getDigest());
         dto.setPvt(post.getPvt());
+        dto.setLastCommentCreatedAt(post.getLastCommentCreatedAt());
         return dto;
     }
 
