@@ -444,4 +444,36 @@ public class StatusRestController {
         return ErrorDto.OK;
     }
 
+    /**
+     * 返回指定频道的post
+     */
+    @RequestMapping(value = API_1_1_PREFIX + "channel.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object channel_v1_1(@RequestParam(value = "name") String name,
+                               @RequestParam(value = "orderBy") String orderBy,
+                               PageRequest pageRequest) {
+
+        if (StringUtils.isBlank(name)) {
+            return ErrorDto.badRequest("name参数不能为空");
+        }
+
+        if (!Post.LAST_COMMENT_CREATED_AT_KEY.equals(orderBy)
+                && !Post.CREATED_AT_KEY.equals(orderBy)
+                && !Post.FAVOURITES_COUNT_KEY.equals(orderBy)) {
+
+            return ErrorDto.badRequest("不支持的orderBy [" + orderBy + "]");
+        }
+
+        Sort sort = Post.CREATED_AT_KEY.equals(orderBy) ?
+                new Sort(Sort.Direction.DESC, orderBy)
+                :
+                new Sort(Sort.Direction.DESC, orderBy, Post.ID_KEY);
+
+        pageRequest.setSort(sort);
+
+        List<Post> posts = statusService.getChannelPosts(name, pageRequest);
+
+        return statusService.toStatusDtos(posts);
+    }
+
 }

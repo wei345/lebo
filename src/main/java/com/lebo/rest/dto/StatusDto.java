@@ -32,6 +32,7 @@ public class StatusDto {
     private List<UserMentionDto> userMentions;
     private Boolean digest;//是否已被加精
     private Boolean pvt;
+    private Date lastCommentCreatedAt;
 
     public static class UserMentionDto {
         private String userId;
@@ -233,5 +234,13 @@ public class StatusDto {
 
     public void setShareCount(Integer shareCount) {
         this.shareCount = shareCount;
+    }
+
+    public Date getLastCommentCreatedAt() {
+        return lastCommentCreatedAt;
+    }
+
+    public void setLastCommentCreatedAt(Date lastCommentCreatedAt) {
+        this.lastCommentCreatedAt = lastCommentCreatedAt;
     }
 }
