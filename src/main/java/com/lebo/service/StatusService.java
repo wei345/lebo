@@ -466,172 +466,6 @@ public class StatusService extends AbstractMongoService {
         }
     };
 
-    /**
-     * 刷新热门帖子列表:最近2天的帖子按红心数降序排序
-     * 为避免刷屏，每用户只可上榜2条
-     */
-    @ManagedOperation(description = "刷新热门帖子列表")
-    public void refreshHotPosts() {
-        logger.debug("更新热门帖子 : 开始");
-
-        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
-
-        //2天内
-        Query query = new Query(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
-        //原贴
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
-        //完全公开
-        query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_PUBLIC));
-        //按红心数降序排序，取出2000条
-        query.with(new PageRequest(0, 2000, hotPostsSort));
-
-        List<Post> posts = mongoTemplate.find(query, Post.class);
-        logger.debug("更新热门帖子 : 正在处理 {} 个帖子", posts.size());
-
-        Collections.sort(posts, hotPostComparator);
-
-        //为避免刷屏，每用户只可上榜1条
-        int max = settingService.getSetting().getMaxHotPostCountPerUser();
-        Map<String, Integer> userId2count = new HashMap<String, Integer>(1000);
-
-        List<HotPost> hotPosts = new ArrayList<HotPost>(1000);
-        for (Post post : posts) {
-
-            Integer count = userId2count.get(post.getUserId());
-
-            if (count == null) {
-                count = 0;
-                userId2count.put(post.getUserId(), 0);
-            }
-
-            if (count < max) {
-                hotPosts.add(new HotPost(hotPosts.size() + 1, post.getId()));
-                userId2count.put(post.getUserId(), count + 1);
-            }
-        }
-
-        logger.debug("更新热门帖子 : 处理后得到 {} 个帖子", hotPosts.size());
-
-        //更新热门帖子
-        String collectionName = mongoTemplate.getCollectionName(HotPost.class);
-        DBCollection tmpCollection = mongoTemplate.createCollection(String.format("%s.%s", collectionName, new ObjectId().toString()));
-
-        mongoTemplate.insert(hotPosts, tmpCollection.getName());
-        //重命名集合，原子性操作
-        logger.debug("更新热门帖子 : 正在重命名集合 {} -> {}", tmpCollection.getName(), collectionName);
-        tmpCollection.rename(collectionName, true);
-
-        logger.debug("更新热门帖子 : 完成");
-    }
-
-    @ManagedOperation(description = "重新计算所有用户总帖子数、原始帖子数、转发帖子数")
-    public void updateAllUserPostsCount() {
-        String logPrefix = "更新所有用户总帖子数、原始帖子数、转发帖子数";
-
-        logger.debug("{} : 开始", logPrefix);
-        Query query = new Query();
-        query.fields().include(User.ID_KEY);
-
-        logger.debug("{} : 正在获取所有用户ID", logPrefix);
-        List<User> users = mongoTemplate.find(query, User.class);
-        logger.debug("{} : 共 {} 用户", logPrefix, users.size());
-
-        for (int i = 0; i < users.size(); i++) {
-            String userId = users.get(i).getId();
-
-            if (i % 1000 == 0) {
-                logger.debug("{} : 已完成 {}/{}", logPrefix, i, users.size());
-            }
-
-            mongoTemplate.updateFirst(
-                    new Query(new Criteria(User.ID_KEY).is(userId)),
-                    new Update()
-                            .set(User.STATUSES_COUNT_KEY, countPost(userId, true, null))
-                            .set(User.ORIGIN_POSTS_COUNT_KEY, countPost(userId, true, true))
-                            .set(User.REPOSTS_COUNT_KEY, countPost(userId, null, false)),
-                    User.class);
-        }
-        logger.debug("{} : 完成", logPrefix);
-    }
-
-    @ManagedOperation(description = "重新计算所有帖子的转发数、评论数")
-    public void updateAllPostRepostsCountAndCommentsCount() {
-        long beginTime = System.currentTimeMillis();
-        String logPrefix = "更新所有帖子的转发数、评论数";
-
-        logger.debug("{} : 开始", logPrefix);
-
-        //查询
-        Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null))
-                .addCriteria(new Criteria(Post.COMMENTS_COUNT_KEY).is(null))
-                .with(new Sort(Sort.Direction.DESC, Post.ID_KEY))
-                .limit(10000);
-        query.fields().include(Post.ID_KEY);
-
-        List<Post> posts = mongoTemplate.find(query, Post.class);
-
-        int doneCount = 0;
-
-        while (posts.size() > 0) {
-            //更新
-            for (int i = 0; i < posts.size(); i++) {
-                String postId = posts.get(i).getId();
-
-                mongoTemplate.updateFirst(
-                        new Query(new Criteria(Post.ID_KEY).is(postId)),
-                        new Update()
-                                .set(Post.REPOSTS_COUNT_KEY, countReposts(postId))
-                                .set(Post.COMMENTS_COUNT_KEY, commentService.countPostComments(postId)),
-                        Post.class);
-
-                doneCount++;
-            }
-
-            logger.debug("{} : {}", logPrefix, doneCount);
-
-            //查询
-            posts = mongoTemplate.find(query, Post.class);
-        }
-
-        logger.debug("{} : 完成，{} ms", logPrefix, System.currentTimeMillis() - beginTime);
-    }
-
-    @ManagedOperation(description = "计算用户原帖数、转贴数，仅处理未计算过的用户")
-    public void updateAllUserOriginPostsCountAndRepostsCount() {
-
-        long beginTime = System.currentTimeMillis();
-        String prefix = "计算用户原帖数、转贴数: ";
-
-        logger.debug("{}开始", prefix);
-
-        Query query = new Query(new Criteria(User.ORIGIN_POSTS_COUNT_KEY).is(null));
-        query.fields().include(User.ID_KEY);
-        query.limit(10000);
-
-        List<User> users = mongoTemplate.find(query, User.class);
-        int totalCount = 0;
-
-        while (users.size() > 0) {
-
-            for (User user : users) {
-                String userId = user.getId();
-                mongoTemplate.updateFirst(
-                        new Query(new Criteria(User.ID_KEY).is(userId)),
-                        new Update()
-                                .set(User.REPOSTS_COUNT_KEY, countPost(userId, null, false))
-                                .set(User.ORIGIN_POSTS_COUNT_KEY, countPost(userId, true, true)),
-                        User.class);
-            }
-
-            totalCount += users.size();
-            logger.debug("{}{}", prefix, users.size());
-
-            users = mongoTemplate.find(query, User.class);
-        }
-
-        logger.debug("{}完成, 共 {}, 用时 {} ms", prefix, totalCount, System.currentTimeMillis() - beginTime);
-    }
-
     /* 不使用这种算法
     /**
      * 刷新热门帖子列表:最近2天被收藏的帖子按2天内的收藏数排序
@@ -1058,5 +892,235 @@ public class StatusService extends AbstractMongoService {
         mongoTemplate.updateFirst(new Query(new Criteria(Post.ID_KEY).is(postId)),
                 new Update().set(Post.RATING_KEY, rating),
                 Post.class);
+    }
+
+    //---- JMX ----//
+
+    /**
+     * 刷新热门帖子列表:最近2天的帖子按红心数降序排序
+     * 为避免刷屏，每用户只可上榜2条
+     */
+    @ManagedOperation(description = "刷新热门帖子列表")
+    public void refreshHotPosts() {
+        logger.debug("更新热门帖子 : 开始");
+
+        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
+
+        //2天内
+        Query query = new Query(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
+        //原贴
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //完全公开
+        query.addCriteria(new Criteria(Post.ACL_KEY).is(Post.ACL_PUBLIC));
+        //按红心数降序排序，取出2000条
+        query.with(new PageRequest(0, 2000, hotPostsSort));
+
+        List<Post> posts = mongoTemplate.find(query, Post.class);
+        logger.debug("更新热门帖子 : 正在处理 {} 个帖子", posts.size());
+
+        Collections.sort(posts, hotPostComparator);
+
+        //为避免刷屏，每用户只可上榜1条
+        int max = settingService.getSetting().getMaxHotPostCountPerUser();
+        Map<String, Integer> userId2count = new HashMap<String, Integer>(1000);
+
+        List<HotPost> hotPosts = new ArrayList<HotPost>(1000);
+        for (Post post : posts) {
+
+            Integer count = userId2count.get(post.getUserId());
+
+            if (count == null) {
+                count = 0;
+                userId2count.put(post.getUserId(), 0);
+            }
+
+            if (count < max) {
+                hotPosts.add(new HotPost(hotPosts.size() + 1, post.getId()));
+                userId2count.put(post.getUserId(), count + 1);
+            }
+        }
+
+        logger.debug("更新热门帖子 : 处理后得到 {} 个帖子", hotPosts.size());
+
+        //更新热门帖子
+        String collectionName = mongoTemplate.getCollectionName(HotPost.class);
+        DBCollection tmpCollection = mongoTemplate.createCollection(String.format("%s.%s", collectionName, new ObjectId().toString()));
+
+        mongoTemplate.insert(hotPosts, tmpCollection.getName());
+        //重命名集合，原子性操作
+        logger.debug("更新热门帖子 : 正在重命名集合 {} -> {}", tmpCollection.getName(), collectionName);
+        tmpCollection.rename(collectionName, true);
+
+        logger.debug("更新热门帖子 : 完成");
+    }
+
+    @ManagedOperation(description = "重新计算所有用户总帖子数、原始帖子数、转发帖子数")
+    public void updateAllUserPostsCount() {
+        String logPrefix = "更新所有用户总帖子数、原始帖子数、转发帖子数";
+
+        logger.debug("{} : 开始", logPrefix);
+        Query query = new Query();
+        query.fields().include(User.ID_KEY);
+
+        logger.debug("{} : 正在获取所有用户ID", logPrefix);
+        List<User> users = mongoTemplate.find(query, User.class);
+        logger.debug("{} : 共 {} 用户", logPrefix, users.size());
+
+        for (int i = 0; i < users.size(); i++) {
+            String userId = users.get(i).getId();
+
+            if (i % 1000 == 0) {
+                logger.debug("{} : 已完成 {}/{}", logPrefix, i, users.size());
+            }
+
+            mongoTemplate.updateFirst(
+                    new Query(new Criteria(User.ID_KEY).is(userId)),
+                    new Update()
+                            .set(User.STATUSES_COUNT_KEY, countPost(userId, true, null))
+                            .set(User.ORIGIN_POSTS_COUNT_KEY, countPost(userId, true, true))
+                            .set(User.REPOSTS_COUNT_KEY, countPost(userId, null, false)),
+                    User.class);
+        }
+        logger.debug("{} : 完成", logPrefix);
+    }
+
+    @ManagedOperation(description = "重新计算所有帖子的转发数、评论数")
+    public void updateAllPostRepostsCountAndCommentsCount() {
+        long beginTime = System.currentTimeMillis();
+        String logPrefix = "更新所有帖子的转发数、评论数";
+
+        logger.debug("{} : 开始", logPrefix);
+
+        //查询
+        Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null))
+                .addCriteria(new Criteria(Post.COMMENTS_COUNT_KEY).is(null))
+                .with(new Sort(Sort.Direction.DESC, Post.ID_KEY))
+                .limit(10000);
+        query.fields().include(Post.ID_KEY);
+
+        List<Post> posts = mongoTemplate.find(query, Post.class);
+
+        int doneCount = 0;
+
+        while (posts.size() > 0) {
+            //更新
+            for (int i = 0; i < posts.size(); i++) {
+                String postId = posts.get(i).getId();
+
+                mongoTemplate.updateFirst(
+                        new Query(new Criteria(Post.ID_KEY).is(postId)),
+                        new Update()
+                                .set(Post.REPOSTS_COUNT_KEY, countReposts(postId))
+                                .set(Post.COMMENTS_COUNT_KEY, commentService.countPostComments(postId)),
+                        Post.class);
+
+                doneCount++;
+            }
+
+            logger.debug("{} : {}", logPrefix, doneCount);
+
+            //查询
+            posts = mongoTemplate.find(query, Post.class);
+        }
+
+        logger.debug("{} : 完成，{} ms", logPrefix, System.currentTimeMillis() - beginTime);
+    }
+
+    @ManagedOperation(description = "计算用户原帖数、转贴数，仅处理未计算过的用户")
+    public void updateAllUserOriginPostsCountAndRepostsCount() {
+
+        long beginTime = System.currentTimeMillis();
+        String prefix = "计算用户原帖数、转贴数: ";
+
+        logger.debug("{}开始", prefix);
+
+        Query query = new Query(new Criteria(User.ORIGIN_POSTS_COUNT_KEY).is(null));
+        query.fields().include(User.ID_KEY);
+        query.limit(10000);
+
+        List<User> users = mongoTemplate.find(query, User.class);
+        int totalCount = 0;
+
+        while (users.size() > 0) {
+
+            for (User user : users) {
+                String userId = user.getId();
+                mongoTemplate.updateFirst(
+                        new Query(new Criteria(User.ID_KEY).is(userId)),
+                        new Update()
+                                .set(User.REPOSTS_COUNT_KEY, countPost(userId, null, false))
+                                .set(User.ORIGIN_POSTS_COUNT_KEY, countPost(userId, true, true)),
+                        User.class);
+            }
+
+            totalCount += users.size();
+            logger.debug("{}{}", prefix, users.size());
+
+            users = mongoTemplate.find(query, User.class);
+        }
+
+        logger.debug("{}完成, 共 {}, 用时 {} ms", prefix, totalCount, System.currentTimeMillis() - beginTime);
+    }
+
+    @ManagedOperation(description = "添加字段:Post.lastCommentCreatedAt")
+    public void addPostFieldLastCommentCreatedAt() {
+
+        class Q {
+            List<Post> find(String maxId) {
+                Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+                query.addCriteria(new Criteria(Post.LAST_COMMENT_CREATED_AT_KEY).is(null));
+                query.addCriteria(new Criteria(Post.ID_KEY).lt(new ObjectId(maxId)));
+                query.with(new Sort(Sort.Direction.DESC, Post.ID_KEY));
+                query.limit(10);
+                query.fields().include(Post.ID_KEY);
+                return mongoTemplate.find(query, Post.class);
+            }
+
+            Date getLastCommentCreatedAt(Post post) {
+                Query query = new Query(new Criteria(Comment.POST_ID_KEY).is(post.getId()));
+                query.with(new Sort(Sort.Direction.DESC, Comment.ID_KEY));
+                query.fields().include(Comment.CREATED_AT_KEY);
+
+                Comment comment = mongoTemplate.findOne(query, Comment.class);
+
+                return comment == null ?
+                        null
+                        :
+                        comment.getCreatedAt();
+            }
+        }
+
+        long beginTime = System.currentTimeMillis();
+        String prefix = "添加字段:Post.lastCommentCreatedAt : ";
+        int count = 0;
+
+        Q q = new Q();
+        List<Post> posts;
+        String maxId = MongoConstant.MONGO_ID_MAX_VALUE;
+
+        logger.debug("{}开始", prefix);
+
+        while ((posts = q.find(maxId)).size() > 0) {
+            for (Post post : posts) {
+
+                Date commentCreatedAt = q.getLastCommentCreatedAt(post);
+
+                if (commentCreatedAt != null) {
+
+                    mongoTemplate.updateFirst(
+                            new Query(new Criteria(Post.ID_KEY).is(post.getId())),
+                            new Update().set(Post.LAST_COMMENT_CREATED_AT_KEY, commentCreatedAt),
+                            Post.class);
+                }
+            }
+
+            maxId = posts.get(posts.size() - 1).getId();
+
+            count += posts.size();
+
+            logger.debug("{}完成 {}", prefix, count);
+        }
+
+        logger.debug("{}完成 {} ms", prefix, System.currentTimeMillis() - beginTime);
     }
 }

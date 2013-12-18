@@ -19,6 +19,7 @@ public class Comment extends IdEntity {
     private String userId;
     public static final String USER_ID_KEY = "userId";
     private Date createdAt;
+    public static final String CREATED_AT_KEY = "createdAt";
     private String text;
     private boolean truncated;
     //视频(mp4)
