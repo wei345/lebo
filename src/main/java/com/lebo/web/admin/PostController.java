@@ -154,7 +154,8 @@ public class PostController {
             postInfo.put("favoritesCount", post.getFavoritesCount());
             postInfo.put("viewCount", post.getViewCount());
             postInfo.put("rating", post.getRating());
-            postInfo.put("pvt", post.getAcl() != null && post.getAcl() == Post.ACL_PRIVATE);
+            postInfo.put("pvt", post.getPvt());
+            postInfo.put("popularity", post.getPopularity() == null ? 0 : post.getPopularity());
             postInfo.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
             postInfo.put("repostCount", statusService.countReposts(post.getId()));
             postInfo.put("commentCount", commentService.countPostComments(post.getId()));

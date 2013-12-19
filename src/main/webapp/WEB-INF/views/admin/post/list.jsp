@@ -221,6 +221,7 @@
                     <label title="转发"><span class="icon-retweet"></span>${item.repostCount}</label>
                     <label title="播放"><span class="icon-play"></span>${item.viewCount}</label>
                     <label title="评论"><span class="icon-comment"></span>${item.commentCount}</label>
+                    <label title="人气"><span class="icon-gift"></span>${item.popularity}</label>
                 </div>
 
             </td>
