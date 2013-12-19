@@ -161,6 +161,7 @@
 
 <c:if test="${controllerMethod == 'hotPosts'}">
     <h2>热门帖子</h2>
+    <p>最近 ${hotDays} 天的帖子按 <code>红心数+人气+评分</code> 排序，每用户最多上榜 ${maxHotPostCountPerUser} 条。</p>
 </c:if>
 
 <div class="muted result-status">第 ${page.size * page.number + 1} - ${page.size * page.number + page.numberOfElements}
@@ -217,11 +218,12 @@
                 <p class="content">${item.text}</p>
 
                 <div class="info">
-                    <label title="喜欢"><span class="icon-heart"></span>${item.favoritesCount}</label>
+                    <label title="红心"><span class="icon-heart"></span>${item.favoritesCount}</label>
                     <label title="转发"><span class="icon-retweet"></span>${item.repostCount}</label>
                     <label title="播放"><span class="icon-play"></span>${item.viewCount}</label>
                     <label title="评论"><span class="icon-comment"></span>${item.commentCount}</label>
                     <label title="人气"><span class="icon-gift"></span>${item.popularity}</label>
+                    <label title="红心+人气+评分"><span class="icon-star"></span><span class="starValue">${item.favoritesCount + item.popularity + item.rating}</span></label>
                 </div>
 
             </td>
@@ -364,6 +366,9 @@
                 if (data == 'ok') {
                     $('.rating', ratingDetail).html(newRating);
                     $(inputForm).remove();
+                    updateStarValue(
+                            $(ratingDetail).parents('tr'),
+                            newRating);
                 } else {
                     $('.muted', inputForm).hide();
                     $('.text-error', inputForm).html('保存失败').show();
@@ -374,6 +379,12 @@
                 $('.text-error', inputForm).html('保存失败').show();
             }
         });
+    }
+
+    function updateStarValue(tr, rating){
+        var favoritesCount = parseInt($(tr).find('label[title="红心"]').text());
+        var popularity = parseInt($(tr).find('label[title="人气"]').text());
+        $(tr).find('.starValue').html(favoritesCount + popularity + rating);
     }
 </script>
 

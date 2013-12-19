@@ -1,8 +1,10 @@
 package com.lebo.web.admin;
 
 import com.lebo.entity.Post;
+import com.lebo.entity.Setting;
 import com.lebo.entity.User;
 import com.lebo.service.CommentService;
+import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PageRequest;
@@ -40,6 +42,8 @@ public class PostController {
     private AccountService accountService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private SettingService settingService;
 
     private SimpleDateFormat sdf = ControllerSetup.ADMIN_QUERY_DATE_FORMAT;
 
@@ -131,10 +135,14 @@ public class PostController {
     public Object hotPosts(Model model) {
         long beginTime = System.currentTimeMillis();
 
+        Setting setting = settingService.getSetting();
+
         Page<Post> page = new PageImpl<Post>(statusService.hotPosts(0, HOT_POST_COUNT));
 
         model.addAttribute("posts", toModelPosts(page.getContent()));
         model.addAttribute("page", page);
+        model.addAttribute("hotDays", setting.getHotDays());
+        model.addAttribute("maxHotPostCountPerUser", setting.getMaxHotPostCountPerUser());
         model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime) / 1000.0);
         model.addAttribute("controllerMethod", "hotPosts");
 
