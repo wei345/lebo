@@ -97,7 +97,7 @@
     <div class="controls">
         最近<input type="text" id="hotDays" name="hotDays" value="${setting.hotDays}"
                  class="input-mini required"/>
-        天的帖子按 <code>红心数+评分</code> 排序，每用户最多上榜
+        天的帖子按 <code>红心数+人气+评分</code> 排序，每用户最多上榜
         <input type="text" id="maxHotPostCountPerUser" name="maxHotPostCountPerUser"
                value="${setting.maxHotPostCountPerUser}"
                class="input-mini required"/>

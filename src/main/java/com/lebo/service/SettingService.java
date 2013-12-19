@@ -119,6 +119,12 @@ public class SettingService extends AbstractMongoService {
                 Channel.class);
     }
 
+    public void updateChannelOrder(String id, int order) {
+        mongoTemplate.updateFirst(new Query(new Criteria(Channel.ID_KEY).is(id)),
+                new Update().set(Channel.ORDER_KEY, order),
+                Channel.class);
+    }
+
     //-- 推荐应用 begin --//
 
     public List<RecommendedApp> getAllRecommendedApp() {

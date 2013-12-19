@@ -12,7 +12,7 @@
             text-align: center;
         }
 
-        td.channel-preview, th.channel-preview{
+        td.channel-preview, th.channel-preview {
             width: 100px;
         }
 
@@ -31,7 +31,7 @@
             width: 100%;
         }
 
-        .channel-preview img{
+        .channel-preview img {
             width: 95px;
         }
 
@@ -68,6 +68,32 @@
             vertical-align: top;
             margin-right: 5px;
         }
+
+        .order-form {
+            background-color: #FFF;
+            padding: 10px;
+            width: 180px;
+            border: 1px solid;
+        }
+
+        .order-form input {
+            margin: 0 0 0 5px;
+            vertical-align: top;
+        }
+
+        .order-form .close {
+            margin: -10px 0 0 0;
+        }
+
+        .order-form .muted, .order-form .text-error {
+            padding: 5px 0 0 5px;
+        }
+
+        .order-wrapper {
+            width: 60px;
+            text-align: left;
+            padding-left: 30px;
+        }
     </style>
 </head>
 <body>
@@ -90,14 +116,17 @@
     <tbody>
     <c:forEach items="${channels}" var="channel" varStatus="varStatus">
         <tr class="${channel.enabled == true? "enabled" : ""}">
+
             <td class="reallyOrder">
             </td>
+
             <td class="channel-preview">
                 <div class="channel-button" style="background-color: ${channel.backgroundColor}">
                     <div class="channel-subject">${channel.title}</div>
                     <img src="${channel.imageUrl}"/>
                 </div>
             </td>
+
             <td class="channel-detail">
                 <div class="channel-name" title="频道名">${channel.name}</div>
                 <div class="channel-desc">描述: ${empty channel.description ? "<i>无</i>" : channel.description}</div>
@@ -112,7 +141,14 @@
                     </c:if>
                 </ul>
             </td>
-            <td class="channel-order">${channel.order}</td>
+
+            <td class="channel-order" onclick="showOrderInputForm($(this).find('.order-wrapper'), '${channel.id}')">
+                <div class="order-wrapper">
+                    <span class="order">${channel.order}</span>
+                    <span class="icon-pencil" style="display: none;"></span>
+                </div>
+            </td>
+
             <td class="actions">
                 <div class="btn-group">
                     <button class="btn"
@@ -176,8 +212,128 @@
             }
         });
     }
-    //onload
+
+    //---- 编辑顺序 begin ----//
+
+    //修改顺序按钮显示/隐藏
+    $('#contentTable tr')
+
+            .mouseenter(function () {
+
+                $(this).find('.icon-pencil').show();
+            })
+
+            .mouseleave(function () {
+
+                $(this).find('.icon-pencil').hide();
+            });
+
+    function showOrderInputForm(wrapper, channelId) {
+
+        var order = wrapper.find('.order').html();
+
+        if (isNaN(order)) {
+            order = 0;
+        }
+
+        //输入框
+        var inputForm = $('<div class="order-form">' +
+                '<input type="text" class="input-mini" value="' + order + '" placeholder="整数"/>' +
+                '<input type="button" value="确定" class="btn btn-primary" title="确定 - 快捷键\'回车\'"/>' +
+                '<button type="button" class="close" onclick="$(this).parent().remove()" title="关闭 - 快捷键\'ESC\'">&times;</button>' +
+                '<div class="text-error" style="display: none"></div>' +
+                '<div class="muted">输入正整数、负整数或0</div>' +
+                '</div>')
+
+                .appendTo(document.body)
+
+                .offset($(wrapper).find('.icon-pencil').offset());
+
+        //确定
+        $('.btn-primary', inputForm)
+
+                .click(function () {
+
+                    updateOrder(channelId, inputForm, wrapper);
+                });
+
+        //回车、ESC
+        $('input[type=text]', inputForm)
+
+                .focus()
+
+                .keydown(function (e) {
+
+                    if (e.keyCode == 13) {
+
+                        updateOrder(channelId, inputForm, wrapper);
+
+                    } else if (e.keyCode == 27) {
+
+                        inputForm.remove();
+                    }
+                });
+    }
+
+    function updateOrder(channelId, inputForm, wrapper) {
+
+        var newOrder = $('input[type=text]', inputForm).val();
+
+        if (newOrder.match(/^-?\d+$/)) {
+
+            newOrder = parseInt(newOrder);
+
+        } else {
+
+            $('.muted', inputForm).hide();
+
+            $('.text-error', inputForm).html('输入正整数、负整数或0').show();
+
+            $('input[type=text]', inputForm).focus();
+
+            return;
+        }
+
+        $('.muted', inputForm).html('正在保存..').show();
+
+        $('.text-error', inputForm).hide();
+
+        $.ajax({
+
+            url: '${ctx}/admin/channels/updateOrder',
+
+            type: 'POST',
+
+            data: {id: channelId, order: newOrder},
+
+            success: function (data) {
+
+                if (data == 'ok') {
+
+                    $('.order', wrapper).html(newOrder);
+
+                    $(inputForm).remove();
+
+                } else {
+
+                    $('.muted', inputForm).hide();
+
+                    $('.text-error', inputForm).html('保存失败').show();
+                }
+            },
+
+            error: function () {
+
+                $('.muted', inputForm).hide();
+
+                $('.text-error', inputForm).html('保存失败').show();
+            }
+        });
+    }
+    //---- 编辑顺序 end ----//
+
     updateReallyOrder();
+
 </script>
 </body>
 

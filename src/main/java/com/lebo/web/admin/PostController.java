@@ -1,8 +1,10 @@
 package com.lebo.web.admin;
 
 import com.lebo.entity.Post;
+import com.lebo.entity.Setting;
 import com.lebo.entity.User;
 import com.lebo.service.CommentService;
+import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.PageRequest;
@@ -40,6 +42,8 @@ public class PostController {
     private AccountService accountService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private SettingService settingService;
 
     private SimpleDateFormat sdf = ControllerSetup.ADMIN_QUERY_DATE_FORMAT;
 
@@ -61,6 +65,7 @@ public class PostController {
                        @RequestParam(value = "endDate", required = false) String endDateStr,
                        @Valid PageRequest pageRequest,
                        Model model) throws ParseException {
+
         long beginTime = System.currentTimeMillis();
 
         Date endDate = StringUtils.isNotBlank(endDateStr) ? DateUtils.addDays(sdf.parse(endDateStr), 1) : null;
@@ -130,10 +135,14 @@ public class PostController {
     public Object hotPosts(Model model) {
         long beginTime = System.currentTimeMillis();
 
+        Setting setting = settingService.getSetting();
+
         Page<Post> page = new PageImpl<Post>(statusService.hotPosts(0, HOT_POST_COUNT));
 
         model.addAttribute("posts", toModelPosts(page.getContent()));
         model.addAttribute("page", page);
+        model.addAttribute("hotDays", setting.getHotDays());
+        model.addAttribute("maxHotPostCountPerUser", setting.getMaxHotPostCountPerUser());
         model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime) / 1000.0);
         model.addAttribute("controllerMethod", "hotPosts");
 
@@ -144,14 +153,17 @@ public class PostController {
         List<Map<String, Object>> postInfos = new ArrayList<Map<String, Object>>(posts.size());
         for (Post post : posts) {
             Map<String, Object> postInfo = new HashMap<String, Object>();
+
             postInfo.put("id", post.getId());
             postInfo.put("videoUrl", post.getVideo().getContentUrl());
+            postInfo.put("duration", post.getVideo().getDuration());
             postInfo.put("videoFirstFrameUrl", post.getVideoFirstFrameUrl());
             postInfo.put("text", post.getText());
             postInfo.put("favoritesCount", post.getFavoritesCount());
             postInfo.put("viewCount", post.getViewCount());
             postInfo.put("rating", post.getRating());
-            postInfo.put("pvt", post.getAcl() != null && post.getAcl() == Post.ACL_PRIVATE);
+            postInfo.put("pvt", post.getPvt());
+            postInfo.put("popularity", post.getPopularity() == null ? 0 : post.getPopularity());
             postInfo.put("createdAt", ControllerSetup.DEFAULT_DATE_FORMAT.format(post.getCreatedAt()));
             postInfo.put("repostCount", statusService.countReposts(post.getId()));
             postInfo.put("commentCount", commentService.countPostComments(post.getId()));
@@ -159,6 +171,7 @@ public class PostController {
             postInfo.put("userId", user.getId());
             postInfo.put("screenName", user.getScreenName());
             postInfo.put("profileImageUrl", user.getProfileImageUrl());
+
             postInfos.add(postInfo);
         }
         return postInfos;
