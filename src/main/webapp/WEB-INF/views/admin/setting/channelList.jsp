@@ -287,7 +287,9 @@
 
             $('.muted', inputForm).hide();
 
-            $('.text-error', inputForm).html('输入内容不合法').show();
+            $('.text-error', inputForm).html('输入正整数、负整数或0').show();
+
+            $('input[type=text]', inputForm).focus();
 
             return;
         }
@@ -330,7 +332,6 @@
     }
     //---- 编辑顺序 end ----//
 
-    //onload
     updateReallyOrder();
 
 </script>
