@@ -77,7 +77,7 @@
             cursor: pointer;
         }
 
-        .rating-detail {
+        .rating-wrapper {
             width: 60px;
             text-align: left;
             padding-left: 30px;
@@ -85,6 +85,17 @@
 
         .result-status {
             padding: 0 0 6px 0;
+        }
+
+        .preview a {
+            position: relative;
+            display: block;
+        }
+
+        .preview .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
         }
     </style>
 </head>
@@ -150,6 +161,8 @@
 
 <c:if test="${controllerMethod == 'hotPosts'}">
     <h2>热门帖子</h2>
+
+    <p>最近 ${hotDays} 天的帖子按 <code>红心数+人气+评分</code> 排序，每用户最多上榜 ${maxHotPostCountPerUser} 条。</p>
 </c:if>
 
 <div class="muted result-status">第 ${page.size * page.number + 1} - ${page.size * page.number + page.numberOfElements}
@@ -179,9 +192,12 @@
 
             <td></td>
 
-            <td>
+            <td class="preview">
                 <a href="${item.videoUrl}" target="_blank">
                     <img src="${item.videoFirstFrameUrl}"/>
+                    <c:if test="${item.duration != null}">
+                        <span class="badge badge-important">${item.duration}''</span>
+                    </c:if>
                 </a>
             </td>
 
@@ -203,19 +219,21 @@
                 <p class="content">${item.text}</p>
 
                 <div class="info">
-                    <label title="喜欢"><span class="icon-heart"></span>${item.favoritesCount}</label>
+                    <label title="红心"><span class="icon-heart"></span>${item.favoritesCount}</label>
                     <label title="转发"><span class="icon-retweet"></span>${item.repostCount}</label>
                     <label title="播放"><span class="icon-play"></span>${item.viewCount}</label>
                     <label title="评论"><span class="icon-comment"></span>${item.commentCount}</label>
+                    <label title="人气"><span class="icon-gift"></span>${item.popularity}</label>
+                    <label title="红心+人气+评分"><span class="icon-star"></span><span
+                            class="starValue">${item.favoritesCount + item.popularity + item.rating}</span></label>
                 </div>
 
             </td>
 
-            <td title="评分">
-                <div class="rating-detail">
+            <td title="评分" onclick="showRateInputForm($(this).find('.rating-wrapper'), '${item.id}')">
+                <div class="rating-wrapper">
                     <span class="rating">${item.rating == null ? '<i>无</i>' : item.rating}</span>
-                        <span class="icon-pencil" style="display: none;"
-                              onclick="showRateInputForm(event, '${item.id}')"></span>
+                    <span class="icon-pencil" style="display: none;"></span>
                 </div>
             </td>
 
@@ -240,9 +258,11 @@
         });
 
         //评分编辑按钮显示/隐藏
-        $('#contentTable tr').mouseenter(function () {
-            $(this).find('.icon-pencil').show();
-        }).mouseleave(function () {
+        $('#contentTable tr')
+                .mouseenter(function () {
+                    $(this).find('.icon-pencil').show();
+                })
+                .mouseleave(function () {
                     $(this).find('.icon-pencil').hide();
                 });
 
@@ -289,15 +309,13 @@
         }
     }
 
-    function showRateInputForm(event, postId) {
+    //---- 修改评分 begin ----//
 
-        var ratingDetail = $(event.target).parent();
+    function showRateInputForm(wrapper, postId) {
 
-        var rating = ratingDetail.find('.rating').html();
+        var rating = wrapper.find('.rating').html();
 
-        if (isNaN(rating)) {
-            rating = 0;
-        }
+        if (isNaN(rating)) rating = 0;
 
         //创建输入框和按钮
         var inputForm = $('<div class="rate-form">' +
@@ -307,33 +325,50 @@
                 '<div class="text-error" style="display: none"></div>' +
                 '<div class="muted">输入正整数、负整数或0</div>' +
                 '</div>')
+
                 .appendTo(document.body)
-                .offset($(event.target).offset());
+
+                .offset($(wrapper).find('.icon-pencil').offset());
 
         $('.btn-primary', inputForm).click(function () {
-            updateRating(postId, inputForm, ratingDetail);
+
+            updateRating(postId, inputForm, wrapper);
         });
 
         //输入框获得焦点、键盘事件
         $('input[type=text]', inputForm)
+
                 .focus()
+
                 .keydown(function (e) {
+
                     if (e.keyCode == 13) {
-                        updateRating(postId, inputForm, ratingDetail);
+
+                        updateRating(postId, inputForm, wrapper);
+
                     } else if (e.keyCode == 27) {
+
                         inputForm.remove();
                     }
                 });
     }
 
-    function updateRating(postId, inputForm, ratingDetail) {
+    function updateRating(postId, inputForm, wrapper) {
+
         var newRating = $('input[type=text]', inputForm).val();
 
         if (newRating.match(/^-?\d+$/)) {
+
             newRating = parseInt(newRating);
+
         } else {
+
             $('.muted', inputForm).hide();
-            $('.text-error', inputForm).html('输入内容不合法').show();
+
+            $('.text-error', inputForm).html('输入正整数、负整数或0').show();
+
+            $('input[type=text]', inputForm).focus();
+
             return;
         }
 
@@ -342,24 +377,52 @@
         $('.text-error', inputForm).hide();
 
         $.ajax({
+
             url: '${ctx}/admin/post/updateRating',
+
             type: 'POST',
+
             data: {id: postId, rating: newRating},
+
             success: function (data) {
+
                 if (data == 'ok') {
-                    $('.rating', ratingDetail).html(newRating);
+
+                    $('.rating', wrapper).html(newRating);
+
                     $(inputForm).remove();
+
+                    updateStarValue(
+                            $(wrapper).parents('tr'),
+                            newRating);
                 } else {
+
                     $('.muted', inputForm).hide();
+
                     $('.text-error', inputForm).html('保存失败').show();
                 }
             },
+
             error: function () {
+
                 $('.muted', inputForm).hide();
+
                 $('.text-error', inputForm).html('保存失败').show();
             }
         });
     }
+
+    function updateStarValue(tr, rating) {
+
+        var favoritesCount = parseInt($(tr).find('label[title="红心"]').text());
+
+        var popularity = parseInt($(tr).find('label[title="人气"]').text());
+
+        $(tr).find('.starValue').html(favoritesCount + popularity + rating);
+    }
+
+    //---- 修改评分 end ----//
+
 </script>
 
 <c:if test="${controllerMethod == 'hotPosts'}">

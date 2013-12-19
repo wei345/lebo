@@ -108,6 +108,14 @@ public class ChannelController {
         return "ok";
     }
 
+    @RequestMapping(value = "updateOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateChannelOrder(@RequestParam(value = "id") String id,
+                                     @RequestParam(value = "order") int order) {
+        settingService.updateChannelOrder(id, order);
+        return "ok";
+    }
+
     @ModelAttribute
     public void getUser(@RequestParam(value = "id", required = false) String id, Model model) {
         if (id != null) {

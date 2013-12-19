@@ -456,21 +456,29 @@ public class StatusService extends AbstractMongoService {
         return posts;
     }
 
-    private Comparator hotPostComparator = new Comparator<Post>() {
-        @Override
-        public int compare(Post post1, Post post2) {
-            Integer v1 = post1.getFavoritesCount() + (post1.getRating() == null ? 0 : post1.getRating());
-            Integer v2 = post2.getFavoritesCount() + (post2.getRating() == null ? 0 : post2.getRating());
-            return v2.compareTo(v1);
-        }
-    };
-
     /**
      * 刷新热门帖子列表:最近2天的帖子按红心数降序排序
      * 为避免刷屏，每用户只可上榜2条
      */
     @ManagedOperation(description = "刷新热门帖子列表")
     public void refreshHotPosts() {
+
+        Comparator hotPostComparator = new Comparator<Post>() {
+            @Override
+            public int compare(Post post1, Post post2) {
+
+                Integer v1 = post1.getFavoritesCount()
+                        + (post1.getRating() == null ? 0 : post1.getRating())
+                        + (post1.getPopularity() == null ? 0 : post1.getPopularity());
+
+                Integer v2 = post2.getFavoritesCount()
+                        + (post2.getRating() == null ? 0 : post2.getRating())
+                        + (post2.getPopularity() == null ? 0 : post2.getPopularity());
+
+                return v2.compareTo(v1);
+            }
+        };
+
         logger.debug("更新热门帖子 : 开始");
 
         Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
