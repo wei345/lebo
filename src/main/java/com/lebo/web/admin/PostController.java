@@ -61,6 +61,7 @@ public class PostController {
                        @RequestParam(value = "endDate", required = false) String endDateStr,
                        @Valid PageRequest pageRequest,
                        Model model) throws ParseException {
+
         long beginTime = System.currentTimeMillis();
 
         Date endDate = StringUtils.isNotBlank(endDateStr) ? DateUtils.addDays(sdf.parse(endDateStr), 1) : null;
@@ -144,8 +145,10 @@ public class PostController {
         List<Map<String, Object>> postInfos = new ArrayList<Map<String, Object>>(posts.size());
         for (Post post : posts) {
             Map<String, Object> postInfo = new HashMap<String, Object>();
+
             postInfo.put("id", post.getId());
             postInfo.put("videoUrl", post.getVideo().getContentUrl());
+            postInfo.put("duration", post.getVideo().getDuration());
             postInfo.put("videoFirstFrameUrl", post.getVideoFirstFrameUrl());
             postInfo.put("text", post.getText());
             postInfo.put("favoritesCount", post.getFavoritesCount());
@@ -159,6 +162,7 @@ public class PostController {
             postInfo.put("userId", user.getId());
             postInfo.put("screenName", user.getScreenName());
             postInfo.put("profileImageUrl", user.getProfileImageUrl());
+
             postInfos.add(postInfo);
         }
         return postInfos;

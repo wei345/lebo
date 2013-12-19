@@ -86,6 +86,17 @@
         .result-status {
             padding: 0 0 6px 0;
         }
+
+        .preview a {
+            position: relative;
+            display: block;
+        }
+
+        .preview .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -179,9 +190,12 @@
 
             <td></td>
 
-            <td>
+            <td class="preview">
                 <a href="${item.videoUrl}" target="_blank">
                     <img src="${item.videoFirstFrameUrl}"/>
+                    <c:if test="${item.duration != null}">
+                        <span class="badge badge-important">${item.duration}''</span>
+                    </c:if>
                 </a>
             </td>
 
