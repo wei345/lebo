@@ -2,6 +2,7 @@ package com.lebo.filter;
 
 import com.lebo.entity.User;
 import com.lebo.redis.RedisKeys;
+import com.lebo.service.ActiveUserService;
 import com.lebo.service.account.ShiroUser;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class UserActiveDaysFilter extends OncePerRequestFilter {
 
     private MongoTemplate mongoTemplate;
 
+    private ActiveUserService activeUserService;
+
     private int timeToLiveSeconds = 60 * 60 * 24;
 
     private Logger logger = LoggerFactory.getLogger(UserActiveDaysFilter.class);
@@ -42,8 +45,9 @@ public class UserActiveDaysFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        getJedisTemplate(request);
-        getMongoTemplate(request);
+        getJedisTemplate();
+        getMongoTemplate();
+        getActiveUserService();
 
         incActiveDays(request);
 
@@ -63,38 +67,53 @@ public class UserActiveDaysFilter extends OncePerRequestFilter {
 
         final String key = RedisKeys.getActiveUserKey();
 
-        //增加活跃天数
-        if (signIn(key, user.id, request)) {
 
+        if (signIn(key, user.id, request)) { //签到
+
+            //增加活跃天数
             mongoTemplate.updateFirst(
                     new Query(new Criteria(User.ID_KEY).is(user.id)),
                     new Update().inc(User.ACTIVE_DAYS_KEY, 1),
                     User.class);
 
-            logger.debug("{} 活跃天数+1", user.screenName);
+            logger.debug("活跃天数+1 {}", user.screenName);
+
+            //活跃用户统计
+            activeUserService.incActiveUserCount(user.id);
+
+            logger.debug("日活跃用户+1 {}", user.screenName);
         }
 
         logger.debug("{} ms", System.currentTimeMillis() - beginTime);
     }
 
 
-    private JedisTemplate getJedisTemplate(HttpServletRequest request) {
+    private JedisTemplate getJedisTemplate() {
 
         if (jedisTemplate == null) {
-            jedisTemplate = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext()).getBean(JedisTemplate.class);
+            jedisTemplate = WebApplicationContextUtils.getWebApplicationContext(getFilterConfig().getServletContext()).getBean(JedisTemplate.class);
         }
 
         return jedisTemplate;
     }
 
 
-    private MongoTemplate getMongoTemplate(HttpServletRequest request) {
+    private MongoTemplate getMongoTemplate() {
 
         if (mongoTemplate == null) {
-            mongoTemplate = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext()).getBean(MongoTemplate.class);
+            mongoTemplate = WebApplicationContextUtils.getWebApplicationContext(getFilterConfig().getServletContext()).getBean(MongoTemplate.class);
         }
 
         return mongoTemplate;
+    }
+
+    private ActiveUserService getActiveUserService() {
+
+        if (activeUserService == null) {
+            activeUserService = WebApplicationContextUtils.getWebApplicationContext(getFilterConfig().getServletContext()).getBean(ActiveUserService.class);
+        }
+
+        return activeUserService;
     }
 
 
@@ -129,4 +148,6 @@ public class UserActiveDaysFilter extends OncePerRequestFilter {
             }
         });
     }
+
+
 }
