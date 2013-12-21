@@ -30,5 +30,6 @@
 <h2>统计</h2>
 
 <ul>
-    <li><a href="${ctx}/admin/statistics/charts">统计图表</a></li>
+    <li><a href="${ctx}/admin/statistics/im">私信统计</a></li>
+    <li><a href="${ctx}/admin/statistics/activeUser">日活跃用户统计</a></li>
 </ul>

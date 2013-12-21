@@ -144,6 +144,12 @@ public class User extends IdEntity {
     private Boolean notifyVibrator; //用户设备收到通知时是否震动
     public static final String NOTIFY_VIBRATOR_KEY = "notifyVibrator";
 
+    private Integer activeDays;
+    public static final String ACTIVE_DAYS_KEY = "activeDays";
+
+    private Date lastActiveDay; //最后活跃日的第一次访问时间
+    public static final String LAST_ACTIVE_DAY_KEY = "lastActiveDay";
+
     //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
     private String pikeId;
 
@@ -163,6 +169,7 @@ public class User extends IdEntity {
         beFavoritedCount = 0;
         statusesCount = 0;
         digestCount = 0;
+        activeDays = 0;
         notifyOnReplyPost = true;
         notifyOnFavorite = true;
         notifyOnFollow = true;
@@ -558,6 +565,22 @@ public class User extends IdEntity {
         this.repostsCount = repostsCount;
     }
 
+    public Integer getActiveDays() {
+        return activeDays;
+    }
+
+    public void setActiveDays(Integer activeDays) {
+        this.activeDays = activeDays;
+    }
+
+    public Date getLastActiveDay() {
+        return lastActiveDay;
+    }
+
+    public void setLastActiveDay(Date lastActiveDay) {
+        this.lastActiveDay = lastActiveDay;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -602,6 +625,8 @@ public class User extends IdEntity {
                 ", notifyOnFollow=" + notifyOnFollow +
                 ", notifySound=" + notifySound +
                 ", notifyVibrator=" + notifyVibrator +
+                ", activeDays=" + activeDays +
+                ", lastActiveDay=" + lastActiveDay +
                 ", pikeId='" + pikeId + '\'' +
                 "} " + super.toString();
     }
