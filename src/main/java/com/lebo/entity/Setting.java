@@ -25,6 +25,7 @@ public class Setting extends IdEntity {
     private String logoKey;
 
     private Integer digestDays = 2;
+    private String digestTopPostId;
     private Integer hotDays = 2;
     private Integer maxHotPostCountPerUser = 1; //一个用户最多上榜“热门”几个帖子
     private Integer fastestRisingMinutes = 60;
@@ -259,5 +260,13 @@ public class Setting extends IdEntity {
 
     public void setGuestAccountId(String guestAccountId) {
         this.guestAccountId = guestAccountId;
+    }
+
+    public String getDigestTopPostId() {
+        return digestTopPostId;
+    }
+
+    public void setDigestTopPostId(String digestTopPostId) {
+        this.digestTopPostId = digestTopPostId;
     }
 }
