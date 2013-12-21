@@ -137,15 +137,6 @@
 </div>
 
 
-<div class="control-group">
-    <label for="digestTopPostId" class="control-label">精华页 置顶帖子ID:</label>
-    <div class="controls">
-        <input type="text" id="digestTopPostId" name="digestTopPostId" value="${setting.digestTopPostId}"
-               class="input-large required"/>
-
-    </div>
-</div>
-
 <h2>下载地址</h2>
 
 <p>
@@ -172,6 +163,19 @@
         android乐播app下载地址/下载页面
     </div>
 </div>
+
+
+<h2>精华</h2>
+
+<div class="control-group">
+    <label for="digestTopPostId" class="control-label">精华页 置顶帖子ID:</label>
+    <div class="controls">
+        <input type="text" id="digestTopPostId" name="digestTopPostId" value="${setting.digestTopPostId}"
+               class="input-large required"/>
+
+    </div>
+</div>
+
 
 <h2>红人榜</h2>
 
