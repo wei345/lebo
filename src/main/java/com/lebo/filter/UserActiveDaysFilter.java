@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 记录用户活跃天数.
@@ -73,7 +74,9 @@ public class UserActiveDaysFilter extends OncePerRequestFilter {
             //增加活跃天数
             mongoTemplate.updateFirst(
                     new Query(new Criteria(User.ID_KEY).is(user.id)),
-                    new Update().inc(User.ACTIVE_DAYS_KEY, 1),
+                    new Update()
+                            .inc(User.ACTIVE_DAYS_KEY, 1)
+                            .set(User.LAST_ACTIVE_DAY_KEY, new Date()),
                     User.class);
 
             logger.debug("活跃天数+1 {}", user.screenName);
