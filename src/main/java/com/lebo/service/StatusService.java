@@ -935,9 +935,56 @@ public class StatusService extends AbstractMongoService {
         Setting setting = settingService.getSetting();
 
         Query query = new Query();
+
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
-        paginationById(query, paginationParam);
+
+        //id条件, 用于排除置顶帖子和分页
+        Criteria idCriteria = new Criteria(Post.ID_KEY);
+        boolean addIdCriteria = false;
+
+        //排除置顶帖子
+        if (StringUtils.isNotBlank(setting.getDigestTopPostId())) {
+            idCriteria.ne(new ObjectId(setting.getDigestTopPostId()));
+            addIdCriteria = true;
+        }
+
+        //分页 begin
+        if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
+            idCriteria.lt(new ObjectId(paginationParam.getMaxId()));
+            addIdCriteria = true;
+        }
+
+        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
+            idCriteria.gt(new ObjectId(paginationParam.getSinceId()));
+            addIdCriteria = true;
+        }
+
+        if (addIdCriteria) {
+            query.addCriteria(idCriteria);
+        }
+
+        query.with(paginationParam.getSort()).limit(paginationParam.getCount());
+        //分页 end
+
         addAclPublicCriteria(query);
+
+        //-- 添加置顶视频 begin --//
+        if (StringUtils.isNotBlank(setting.getDigestTopPostId())
+                && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
+
+            Post post = getPost(setting.getDigestTopPostId());
+            if (post != null) {
+                query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
+                List<Post> posts = mongoTemplate.find(query, Post.class);
+
+                if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
+                    posts.add(0, post);
+                }
+
+                return posts;
+            }
+        }
+        //-- 添加置顶视频 end --//
 
         return mongoTemplate.find(query, Post.class);
     }
