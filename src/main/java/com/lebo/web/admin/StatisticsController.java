@@ -31,7 +31,7 @@ public class StatisticsController {
 
     private SimpleDateFormat sdf = ControllerSetup.ADMIN_QUERY_DATE_FORMAT;
 
-    @RequestMapping(value = "charts", method = RequestMethod.GET)
+    @RequestMapping(value = "im", method = RequestMethod.GET)
     public String charts(@RequestParam(value = "startDate", required = false) String startDateStr,
                          @RequestParam(value = "endDate", required = false) String endDateStr,
                          Model model) throws ParseException {
@@ -46,7 +46,7 @@ public class StatisticsController {
         model.addAttribute("endDate", sdf.format(DateUtils.addDays(endDate, -1)));
         model.addAttribute("today", sdf.format(new Date()));
 
-        return "admin/statistics/charts";
+        return "admin/statistics/im";
     }
 
 }

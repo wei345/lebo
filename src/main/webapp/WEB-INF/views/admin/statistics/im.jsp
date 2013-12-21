@@ -5,7 +5,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-    <title>统计图表</title>
+    <title>私信统计</title>
     <script src="${ctx}/static/highcharts/3.0.7/highcharts.js"></script>
     <style>
         #searchForm{
@@ -20,8 +20,6 @@
     </style>
 </head>
 <body>
-
-<h2>即时通讯</h2>
 
 <form id="searchForm" action="">
     从
@@ -59,7 +57,7 @@
             marginBottom: 80
         },
         title: {
-            text: '每日即时通讯统计',
+            text: '每日私信数',
             x: -20 //center
         },
         subtitle: {
@@ -125,7 +123,7 @@
             marginBottom: 80
         },
         title: {
-            text: '每日即时通讯统计',
+            text: '每日私信用户数',
             x: -20 //center
         },
         subtitle: {
@@ -165,7 +163,7 @@
         },
         series: [
             {
-                name: '发消息的用户',
+                name: '发私信的用户',
                 data: [<c:forEach items="${dailyList}" var="item" varStatus="status">${item.imFromUserCount}<c:if test="${!status.last}">, </c:if></c:forEach>]
             }
         ]
