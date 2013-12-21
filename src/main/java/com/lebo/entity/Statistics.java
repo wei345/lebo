@@ -10,8 +10,8 @@ import java.util.Date;
  * Time: PM2:36
  */
 public class Statistics extends IdEntity{
-    public static final String COLLECTION_STATISTICS = "statistics";
-    public static final String COLLECTION_STATISTICS_DAILY = "statistics.daily";
+    public static final String COLLECTION_STATISTICS = "statistics"; //统计总数
+    public static final String COLLECTION_STATISTICS_DAILY = "statistics.daily"; //统计每天数据
 
     private Long userCount;
     private Long adminUserCount;
