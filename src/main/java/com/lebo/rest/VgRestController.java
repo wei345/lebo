@@ -20,9 +20,7 @@ import org.springside.modules.mapper.BeanMapper;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author: Wei Liu
@@ -53,7 +51,10 @@ public class VgRestController {
                           @RequestParam("alipayService") String alipayService,
                           @RequestParam("alipayPaymentType") String alipayPaymentType) {
 
-        if (GoldOrder.PaymentMethod.ALIPAY == paymentMethod) {
+        return ErrorDto.badRequest("现在暂时无法充值，预计下一个版本开通，谢谢!");
+
+
+        /*if (GoldOrder.PaymentMethod.ALIPAY == paymentMethod) {
 
             String params = vgService.getAlipayParams(
                     accountService.getCurrentUserId(),
@@ -67,7 +68,7 @@ public class VgRestController {
             return result;
         } else {
             return ErrorDto.badRequest("不支持该付款方式: [" + paymentMethod + "]");
-        }
+        }*/
 
     }
 
