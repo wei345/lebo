@@ -1,5 +1,6 @@
 package com.lebo.web.admin;
 
+import com.lebo.entity.ActiveUser;
 import com.lebo.entity.Statistics;
 import com.lebo.service.StatisticsService;
 import com.lebo.web.ControllerSetup;
@@ -32,9 +33,9 @@ public class StatisticsController {
     private SimpleDateFormat sdf = ControllerSetup.ADMIN_QUERY_DATE_FORMAT;
 
     @RequestMapping(value = "im", method = RequestMethod.GET)
-    public String charts(@RequestParam(value = "startDate", required = false) String startDateStr,
-                         @RequestParam(value = "endDate", required = false) String endDateStr,
-                         Model model) throws ParseException {
+    public String im(@RequestParam(value = "startDate", required = false) String startDateStr,
+                     @RequestParam(value = "endDate", required = false) String endDateStr,
+                     Model model) throws ParseException {
 
         Date endDate = StringUtils.isNotBlank(endDateStr) ? DateUtils.addDays(sdf.parse(endDateStr), 1) : new Date();
         Date startDate = StringUtils.isNotBlank(startDateStr) ? sdf.parse(startDateStr) : DateUtils.addDays(endDate, -7);
@@ -47,6 +48,29 @@ public class StatisticsController {
         model.addAttribute("today", sdf.format(new Date()));
 
         return "admin/statistics/im";
+    }
+
+    @RequestMapping(value = "activeUser", method = RequestMethod.GET)
+    public String activeUser(@RequestParam(value = "start", required = false) String start,
+                             @RequestParam(value = "end", required = false) String end,
+                             Model model) throws ParseException {
+
+        if (StringUtils.isBlank(end)) {
+            end = sdf.format(new Date());
+        }
+
+        if (StringUtils.isBlank(start)) {
+            start = sdf.format(DateUtils.addDays(sdf.parse(end), -7));
+        }
+
+        List<ActiveUser> list = statisticsService.getActiveUser(start, end);
+
+        model.addAttribute("list", list);
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
+        model.addAttribute("today", sdf.format(new Date()));
+
+        return "admin/statistics/activeUser";
     }
 
 }

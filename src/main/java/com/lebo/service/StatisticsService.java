@@ -206,6 +206,13 @@ public class StatisticsService extends AbstractMongoService {
         return mongoTemplate.find(query, Statistics.class, Statistics.COLLECTION_STATISTICS_DAILY);
     }
 
+    public List<ActiveUser> getActiveUser(String start, String end) {
+
+        return mongoTemplate.find(
+                new Query(new Criteria(ActiveUser.ID_KEY).gte(start).lte(end)),
+                ActiveUser.class);
+    }
+
     //-- JMX --
 
     @ManagedOperation(description = "重新计算每日的历史数据, 可用于修复没有每日历史，或每日历史不完整的情况")

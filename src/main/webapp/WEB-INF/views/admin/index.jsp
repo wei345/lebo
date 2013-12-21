@@ -31,4 +31,5 @@
 
 <ul>
     <li><a href="${ctx}/admin/statistics/im">私信统计</a></li>
+    <li><a href="${ctx}/admin/statistics/activeUser">日活跃用户统计</a></li>
 </ul>
