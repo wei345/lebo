@@ -117,6 +117,15 @@
         </div>
     </div>
 
+    <div class="control-group">
+        <label for="digestTopPostId" class="control-label">精华页 置顶帖子ID:</label>
+        <div class="controls">
+            <input type="text" id="digestTopPostId" name="digestTopPostId" value="${setting.digestTopPostId}"
+                   class="input-large required"/>
+
+        </div>
+    </div>
+
 
     <h2>下载地址</h2>
 
