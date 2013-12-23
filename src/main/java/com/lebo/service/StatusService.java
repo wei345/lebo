@@ -1180,4 +1180,64 @@ public class StatusService extends AbstractMongoService {
 
         logger.debug("{}完成 {} ms", prefix, System.currentTimeMillis() - beginTime);
     }
+
+    @ManagedOperation(description = "添加字段:Post.favoritesCountAddPopularity")
+    public void addPostFieldFavoritesCountAddPopularity() {
+
+        class Q {
+
+            String field = Post.FAVORITES_COUNT_ADD_POPULARITY_KEY;
+
+            List<Post> find(String maxId) {
+                Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+                query.addCriteria(new Criteria(field).is(null));
+                if (maxId != null) {
+                    query.addCriteria(new Criteria(Post.ID_KEY).lt(new ObjectId(maxId)));
+                }
+                query.with(new Sort(Sort.Direction.DESC, Post.ID_KEY));
+                query.limit(2000);
+                query.fields().include(Post.FAVOURITES_COUNT_KEY).include(Post.POPULARITY_KEY);
+                return mongoTemplate.find(query, Post.class);
+            }
+        }
+
+        long beginTime = System.currentTimeMillis();
+        String prefix = "添加字段 Post." + new Q().field + " : ";
+        int count = 0;
+
+        Q q = new Q();
+        List<Post> posts;
+        String maxId = null;
+
+        logger.debug("{}开始", prefix);
+
+        while ((posts = q.find(maxId)).size() > 0) {
+            for (Post post : posts) {
+
+                Integer popularity = post.getPopularity();
+
+                Update update = new Update();
+
+                if (popularity == null) {
+                    popularity = 0;
+                    update.set(Post.POPULARITY_KEY, 0);
+                }
+
+                update.set(Post.FAVORITES_COUNT_ADD_POPULARITY_KEY, post.getFavoritesCount() + popularity);
+
+                mongoTemplate.updateFirst(
+                        new Query(new Criteria(Post.ID_KEY).is(post.getId())),
+                        update,
+                        Post.class);
+            }
+
+            maxId = posts.get(posts.size() - 1).getId();
+
+            count += posts.size();
+
+            logger.debug("{}完成 {}", prefix, count);
+        }
+
+        logger.debug("{}完成 {} ms", prefix, System.currentTimeMillis() - beginTime);
+    }
 }
