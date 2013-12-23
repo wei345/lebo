@@ -122,6 +122,10 @@ public class Post extends IdEntity {
     private Integer popularity; //人气
     public static final String POPULARITY_KEY = "popularity";
 
+    @Indexed(direction = IndexDirection.DESCENDING)
+    private Integer favoritesCountAddPopularity; //favoritesCount + popularity
+    public static final String FAVORITES_COUNT_ADD_POPULARITY_KEY = "favoritesCountAddPopularity";
+
     public static class UserMention {
         private String userId;
         private String screenName;
@@ -174,6 +178,8 @@ public class Post extends IdEntity {
         repostsCount = 0;
         commentsCount = 0;
         shareCount = 0;
+        popularity = 0;
+        favoritesCountAddPopularity = 0;
         return this;
     }
 
@@ -414,5 +420,13 @@ public class Post extends IdEntity {
 
     public void setLastCommentCreatedAt(Date lastCommentCreatedAt) {
         this.lastCommentCreatedAt = lastCommentCreatedAt;
+    }
+
+    public Integer getFavoritesCountAddPopularity() {
+        return favoritesCountAddPopularity;
+    }
+
+    public void setFavoritesCountAddPopularity(Integer favoritesCountAddPopularity) {
+        this.favoritesCountAddPopularity = favoritesCountAddPopularity;
     }
 }

@@ -873,7 +873,9 @@ public class StatusService extends AbstractMongoService {
     public void addPopularity(String postId, int amount) {
         mongoTemplate.updateFirst(
                 new Query(new Criteria(Post.ID_KEY).is(postId)),
-                new Update().inc(Post.POPULARITY_KEY, amount),
+                new Update()
+                        .inc(Post.POPULARITY_KEY, amount)
+                        .inc(Post.FAVORITES_COUNT_ADD_POPULARITY_KEY, amount),
                 Post.class
         );
     }
