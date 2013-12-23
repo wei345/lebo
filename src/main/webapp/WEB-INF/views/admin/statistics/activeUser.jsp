@@ -75,7 +75,12 @@
                 type: 'pie',
                 name: '比例',
                 data: [
-                    ['1',   ${item.days1 + 0}]
+                    {
+                        name: '1',
+                        y: ${item.days1 + 0},
+                        sliced: true,
+                        selected: true
+                    }
                     <c:if test="${item.days2 != null}">,['2',   ${item.days2}]</c:if>
                     <c:if test="${item.days3 != null}">,['3',   ${item.days3}]</c:if>
                     <c:if test="${item.days4 != null}">,['4',   ${item.days4}]</c:if>
@@ -89,10 +94,10 @@
             }]
         });
     </script>
+
+    <hr style="margin: 1em 0"/>
 </c:forEach>
 
-
-<hr style="margin: 40px 0"/>
 
 <div id="line-chart" style="min-width: 400px; height: 300px; margin: 0 auto"></div>
 
