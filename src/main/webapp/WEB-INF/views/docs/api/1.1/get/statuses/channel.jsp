@@ -14,7 +14,7 @@
     <tags:field name="name" value="最新视频"/>
 
     <p>
-        排序字段：<code>${lastCommentCreatedAt}</code>, <code>${createdAt}</code>, <code>${favoritesCount}</code>
+        排序字段：<code>${lastCommentCreatedAt}</code>, <code>${createdAt}</code>, <code>hot</code><%--未用到, <code>${favoritesCount}</code>--%>
     </p>
     <tags:field name="orderBy"/>
 

@@ -457,17 +457,25 @@ public class StatusRestController {
             return ErrorDto.badRequest("name参数不能为空");
         }
 
-        if (!Post.LAST_COMMENT_CREATED_AT_KEY.equals(orderBy)
-                && !Post.CREATED_AT_KEY.equals(orderBy)
-                && !Post.FAVOURITES_COUNT_KEY.equals(orderBy)) {
+        Sort sort;
+
+        if (Post.CREATED_AT_KEY.equals(orderBy)) {
+
+            sort = new Sort(Sort.Direction.DESC, orderBy);
+
+        } else if (Post.LAST_COMMENT_CREATED_AT_KEY.equals(orderBy)
+                || Post.FAVOURITES_COUNT_KEY.equals(orderBy)) {
+
+            sort = new Sort(Sort.Direction.DESC, orderBy, Post.ID_KEY);
+
+        } else if ("hot".equals(orderBy)) {
+
+            sort = new Sort(Sort.Direction.DESC, Post.FAVORITES_COUNT_ADD_POPULARITY_KEY, Post.ID_KEY);
+
+        } else {
 
             return ErrorDto.badRequest("不支持的orderBy [" + orderBy + "]");
         }
-
-        Sort sort = Post.CREATED_AT_KEY.equals(orderBy) ?
-                new Sort(Sort.Direction.DESC, orderBy)
-                :
-                new Sort(Sort.Direction.DESC, orderBy, Post.ID_KEY);
 
         pageRequest.setSort(sort);
 

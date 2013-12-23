@@ -33,6 +33,7 @@ public class StatusDto {
     private Boolean digest;//是否已被加精
     private Boolean pvt;
     private Date lastCommentCreatedAt;
+    private Integer popularity;
 
     public static class UserMentionDto {
         private String userId;
@@ -242,5 +243,13 @@ public class StatusDto {
 
     public void setLastCommentCreatedAt(Date lastCommentCreatedAt) {
         this.lastCommentCreatedAt = lastCommentCreatedAt;
+    }
+
+    public Integer getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
     }
 }
