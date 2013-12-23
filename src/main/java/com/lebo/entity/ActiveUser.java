@@ -5,17 +5,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.Id;
 
 /**
- * 日活跃用户统计
+ * 日活跃用户统计.
+ *
+ * id: yyyy-MM-dd
  *
  * @author: Wei Liu
  * Date: 13-12-20
  * Time: PM10:25
  */
 @Document(collection = "statistics.activeuser")
-public class ActiveUser {
-    @Id
-    private String id; //yyyy-MM-dd
-    public static final String ID_KEY = "id";
+public class ActiveUser extends IdEntity{
 
     private Integer total;
     public static final String TOTAL_KEY = "total";

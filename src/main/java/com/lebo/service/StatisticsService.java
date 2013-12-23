@@ -209,7 +209,8 @@ public class StatisticsService extends AbstractMongoService {
     public List<ActiveUser> getActiveUser(String start, String end) {
 
         return mongoTemplate.find(
-                new Query(new Criteria(ActiveUser.ID_KEY).gte(start).lte(end)),
+                new Query(new Criteria(ActiveUser.ID_KEY).gte(start).lte(end))
+                        .with(new Sort(Sort.Direction.DESC, ActiveUser.ID_KEY)),
                 ActiveUser.class);
     }
 

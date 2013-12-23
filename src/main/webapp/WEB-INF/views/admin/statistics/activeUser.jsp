@@ -42,63 +42,6 @@
     <input type="submit" class="btn" value="查询" style="margin-left: 20px;"/>
 </form>
 
-<c:forEach items="${list}" var="item">
-
-    <div id="pie-chart-${item.id}" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
-
-    <script>
-        $('#pie-chart-${item.id}').highcharts({
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false
-            },
-            title: {
-                text: '日活跃用户活跃天数分布 ${item.id}'
-            },
-            tooltip: {
-                pointFormat: '用户数量: <b>{point.y}</b>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        color: '#000000',
-                        connectorColor: '#000000',
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                type: 'pie',
-                name: '比例',
-                data: [
-                    {
-                        name: '1',
-                        y: ${item.days1 + 0},
-                        sliced: true,
-                        selected: true
-                    }
-                    <c:if test="${item.days2 != null}">,['2',   ${item.days2}]</c:if>
-                    <c:if test="${item.days3 != null}">,['3',   ${item.days3}]</c:if>
-                    <c:if test="${item.days4 != null}">,['4',   ${item.days4}]</c:if>
-                    <c:if test="${item.days5 != null}">,['5',   ${item.days5}]</c:if>
-                    <c:if test="${item.days6To10 != null}">,['6-10',   ${item.days6To10}]</c:if>
-                    <c:if test="${item.days11To20 != null}">,['11-20',   ${item.days11To20}]</c:if>
-                    <c:if test="${item.days21To50 != null}">,['21-50',   ${item.days21To50}]</c:if>
-                    <c:if test="${item.days51To100 != null}">,['51-100',   ${item.days51To100}]</c:if>
-                    <c:if test="${item.days101To3000 != null}">,['101-3000',   ${item.days101To3000}]</c:if>
-                ]
-            }]
-        });
-    </script>
-
-    <hr style="margin: 1em 0"/>
-</c:forEach>
-
-
 <div id="line-chart" style="min-width: 400px; height: 300px; margin: 0 auto"></div>
 
 <script>
@@ -157,6 +100,64 @@
         ]
     });
 </script>
+
+<c:forEach items="${list}" var="item">
+
+    <hr style="margin: 1em 0"/>
+
+    <div id="pie-chart-${item.id}" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
+    <script>
+        $('#pie-chart-${item.id}').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: '日活跃用户活跃天数分布 ${item.id}'
+            },
+            tooltip: {
+                pointFormat: '用户数量: <b>{point.y}</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '比例',
+                data: [
+                    {
+                        name: '1',
+                        y: ${item.days1 + 0},
+                        sliced: true,
+                        selected: true
+                    }
+                    <c:if test="${item.days2 != null}">,['2',   ${item.days2}]</c:if>
+                    <c:if test="${item.days3 != null}">,['3',   ${item.days3}]</c:if>
+                    <c:if test="${item.days4 != null}">,['4',   ${item.days4}]</c:if>
+                    <c:if test="${item.days5 != null}">,['5',   ${item.days5}]</c:if>
+                    <c:if test="${item.days6To10 != null}">,['6-10',   ${item.days6To10}]</c:if>
+                    <c:if test="${item.days11To20 != null}">,['11-20',   ${item.days11To20}]</c:if>
+                    <c:if test="${item.days21To50 != null}">,['21-50',   ${item.days21To50}]</c:if>
+                    <c:if test="${item.days51To100 != null}">,['51-100',   ${item.days51To100}]</c:if>
+                    <c:if test="${item.days101To3000 != null}">,['101-3000',   ${item.days101To3000}]</c:if>
+                ]
+            }]
+        });
+    </script>
+
+</c:forEach>
+
 
 <script>
 
