@@ -62,7 +62,7 @@
             x: -20
         },
         xAxis: {
-            categories: [<c:forEach items="${list}" var="item" varStatus="status">'${fn:replace(fn:substringAfter(item.id, "-"), "-", ".")}'<c:if test="${!status.last}">, </c:if></c:forEach>]
+            categories: [<c:forEach items="${list}" var="item" varStatus="status">'${fn:replace(fn:substringAfter(item.id, "-"), "-", ".")}<c:if test="${item.id == today}"> (今天)</c:if>'<c:if test="${!status.last}">, </c:if></c:forEach>].reverse()
         },
         yAxis: {
             min: 0,
@@ -95,7 +95,7 @@
         series: [
             {
                 name: '日活跃用户',
-                data: [<c:forEach items="${list}" var="item" varStatus="status">${item.total}<c:if test="${!status.last}">, </c:if></c:forEach>]
+                data: [<c:forEach items="${list}" var="item" varStatus="status">${item.total}<c:if test="${!status.last}">, </c:if></c:forEach>].reverse()
             }
         ]
     });
@@ -115,7 +115,7 @@
                 plotShadow: false
             },
             title: {
-                text: '日活跃用户活跃天数分布 ${item.id}'
+                text: '日活跃用户活跃天数分布 ${item.id}<c:if test="${item.id == today}"> (今天)</c:if>'
             },
             tooltip: {
                 pointFormat: '用户数量: <b>{point.y}</b>'
