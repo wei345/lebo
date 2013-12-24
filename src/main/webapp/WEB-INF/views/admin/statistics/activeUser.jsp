@@ -117,6 +117,9 @@
             title: {
                 text: '日活跃用户活跃天数分布 ${item.id}<c:if test="${item.id == today}"> (今天)</c:if>'
             },
+            subtitle: {
+                text: '统计第 ${item.statisticsDays} 天'
+            },
             tooltip: {
                 pointFormat: '用户数量: <b>{point.y}</b>'
             },
