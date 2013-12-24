@@ -12,11 +12,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springside.modules.mapper.BeanMapper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: Wei Liu
@@ -30,7 +32,17 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
-    private SimpleDateFormat sdf = ControllerSetup.ADMIN_QUERY_DATE_FORMAT;
+    private static SimpleDateFormat sdf = ControllerSetup.ADMIN_QUERY_DATE_FORMAT;
+
+    private static Date startDate; //统计起始日期
+
+    static {
+        try {
+            startDate = sdf.parse("2013-12-21");
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @RequestMapping(value = "im", method = RequestMethod.GET)
     public String im(@RequestParam(value = "startDate", required = false) String startDateStr,
@@ -65,12 +77,34 @@ public class StatisticsController {
 
         List<ActiveUser> list = statisticsService.getActiveUser(start, end);
 
-        model.addAttribute("list", list);
+        List<Map> mapList = BeanMapper.mapList(list, Map.class);
+        for (Map map : mapList) {
+            map.put("statisticsDays", getStatisticsDays((String) map.get("id")));
+        }
+
+        model.addAttribute("list", mapList);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("today", sdf.format(new Date()));
 
         return "admin/statistics/activeUser";
+    }
+
+    private static int getStatisticsDays(Date date) {
+
+        long time = date.getTime() - startDate.getTime();
+
+        int days = (int) (time / DateUtils.MILLIS_PER_DAY);
+
+        return (time % DateUtils.MILLIS_PER_DAY == 0) ? days : days + 1;
+    }
+
+    private static int getStatisticsDays(String yyyyMMdd) {
+        try {
+            return getStatisticsDays(sdf.parse(yyyyMMdd)) + 1;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
