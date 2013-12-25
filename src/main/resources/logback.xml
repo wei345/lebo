@@ -28,11 +28,13 @@
         </encoder>
     </appender>
 
-    <appender name="Socket" class="ch.qos.logback.classic.net.SocketAppender">
-        <!--No layout specified for appender named [Socket] of class [org.apache.log4j.net.SocketAppender]-->
-        <RemoteHost>localhost</RemoteHost>
-        <ReconnectionDelay>10000</ReconnectionDelay>
-        <Port>4712</Port>
+    <appender name="Redis" class="com.cwbase.logback.RedisAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <host>localhost</host>
+        <port>6379</port>
+        <key>logstash</key>
     </appender>
 
     <logger name="com.lebo" level="DEBUG"/>
@@ -50,8 +52,8 @@
 
     <root level="WARN">
         <appender-ref ref="Console"/>
-        <appender-ref ref="Socket"/>
         <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Redis"/>
     </root>
 
 </configuration>
