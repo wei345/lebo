@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- 生产环境，节点app1 -->
 <portable-config>
+
     <!-- web.xml -->
     <config-file path="WEB-INF/web.xml">
         <replace xpath="//param-value[text()='development']">production</replace>
     </config-file>
 
-    <!-- log4j.properties -->
-    <config-file path="WEB-INF/classes/log4j.properties">
-        <replace key="log4j.rootLogger">WARN, RollingFile</replace>
+    <!-- logback.xml -->
+    <config-file path="WEB-INF/classes/logback.xml">
+        <replace xpath="//appender[@class='ch.qos.logback.core.ConsoleAppender']/filter[@class='ch.qos.logback.classic.filter.ThresholdFilter']/level">OFF</replace>
+        <replace xpath="//appender[@class='com.cwbase.logback.RedisAppender']/filter[@class='ch.qos.logback.classic.filter.ThresholdFilter']/level">OFF</replace>
     </config-file>
 
     <!-- application.properties -->
     <config-file path="WEB-INF/classes/application.properties">
+
         <!-- mongodb settings -->
         <replace key="mongo.host">10.160.8.62</replace>
 
@@ -49,6 +52,7 @@
 
         <!-- jmx -->
         <replace key="jmx.rmi_port">9099</replace>
+
     </config-file>
 
     <!-- quartz-cluster.properties -->

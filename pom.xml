@@ -21,7 +21,7 @@
         <hibernate-validator.version>4.3.0.Final</hibernate-validator.version>
         <jackson.version>2.1.2</jackson.version>
         <slf4j.version>1.7.2</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
+        <logback.version>1.0.13</logback.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <guava.version>14.0.1</guava.version>
         <joda-time.version>2.1</joda-time.version>
@@ -54,6 +54,7 @@
             <name>quartz-mongodb Repository</name>
             <url>http://clojars.org/repo</url>
         </repository>
+
     </repositories>
 
     <!-- 依赖项定义 -->
@@ -198,6 +199,12 @@
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
             <version>5.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- SPRINGSIDE end -->
 
@@ -330,9 +337,17 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!-- 代码直接调用log4j会被桥接到slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>log4j-over-slf4j</artifactId>
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
@@ -350,17 +365,20 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lazyluke</groupId>
-            <artifactId>log4jdbc-remix</artifactId>
-            <version>0.2.7</version>
+            <groupId>com.googlecode.log4jdbc</groupId>
+            <artifactId>log4jdbc</artifactId>
+            <version>1.2</version>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.cwbase</groupId>
+            <artifactId>logback-redis-appender</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!-- LOGGING end -->
 
         <!-- GENERAL UTILS begin -->
@@ -664,7 +682,7 @@
             <plugin>
                 <groupId>com.juvenxu.portable-config-maven-plugin</groupId>
                 <artifactId>portable-config-maven-plugin</artifactId>
-                <version>1.1.4</version>
+                <version>1.1.5</version>
                 <executions>
                     <execution>
                         <goals>
