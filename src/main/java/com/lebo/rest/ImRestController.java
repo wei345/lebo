@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.Constants;
 import com.lebo.entity.Im;
 import com.lebo.entity.User;
 import com.lebo.rest.dto.ErrorDto;
@@ -37,7 +38,7 @@ public class ImRestController {
     @RequestMapping(PREFIX_API_1_1_IM + "profiles.json")   //为确保不受客户端或服务器url长度限制，也允许post
     @ResponseBody
     public Object profiles(@RequestParam("userIds") String userIds) {
-        String[] ids = userIds.split("\\s*,\\s*");
+        String[] ids = userIds.split(Constants.COMMA_SEPARATOR);
         List<User> users = new ArrayList<User>(ids.length);
         for (int i = 0; i < ids.length; i++) {
             User user = accountService.getUser(ids[i]);
