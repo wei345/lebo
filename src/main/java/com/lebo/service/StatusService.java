@@ -222,6 +222,28 @@ public class StatusService extends AbstractMongoService {
         return postDao.findOne(id);
     }
 
+    public List<Post> getPostsWithOrder(List<ObjectId> idList) {
+
+        List<Post> postList1 = mongoTemplate.find(new Query(new Criteria(Post.ID_KEY).in(idList)), Post.class);
+
+        Map<String, Post> id2post = new HashMap<String, Post>(postList1.size());
+
+        for (Post post : postList1) {
+            id2post.put(post.getId(), post);
+        }
+
+        List<Post> postList2 = new ArrayList<Post>(postList1.size());
+
+        for (ObjectId id : idList) {
+            Post post = id2post.get(id.toString());
+            if (post != null) {
+                postList2.add(post);
+            }
+        }
+
+        return postList2;
+    }
+
     public int countPost(String userId) {
         return countPost(userId, null, null);
     }
@@ -944,8 +966,9 @@ public class StatusService extends AbstractMongoService {
         boolean addIdCriteria = false;
 
         //排除置顶帖子
-        if (StringUtils.isNotBlank(setting.getDigestTopPostId())) {
-            idCriteria.ne(new ObjectId(setting.getDigestTopPostId()));
+        List<ObjectId> topPostIdList = parseObjectIds(setting.getDigestTopPostId());
+        if (topPostIdList.size() > 0) {
+            idCriteria.nin(topPostIdList);
             addIdCriteria = true;
         }
 
@@ -970,17 +993,24 @@ public class StatusService extends AbstractMongoService {
         addAclPublicCriteria(query);
 
         //-- 添加置顶视频 begin --//
-        if (StringUtils.isNotBlank(setting.getDigestTopPostId())
+        if (topPostIdList.size() > 0
                 && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
 
-            Post post = getPost(setting.getDigestTopPostId());
-            if (post != null) {
-                query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
+            List<Post> topPostList = getPostsWithOrder(topPostIdList);
+
+            if (topPostList.size() > 0) {
+
+                int queryCount = Math.max(0, paginationParam.getCount() - topPostList.size());
+
+                if (queryCount == 0) {
+                    return topPostList.subList(0, paginationParam.getCount());
+                }
+
+                query.limit(queryCount);
+
                 List<Post> posts = mongoTemplate.find(query, Post.class);
 
-                if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
-                    posts.add(0, post);
-                }
+                posts.addAll(0, topPostList);
 
                 return posts;
             }
@@ -1034,6 +1064,23 @@ public class StatusService extends AbstractMongoService {
                 new Update().inc(Post.POPULARITY_KEY, amount),
                 Post.class
         );
+    }
+
+    private List<ObjectId> parseObjectIds(String str) {
+
+        if (StringUtils.isBlank(str)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        String[] ids = str.split(Constants.COMMA_SEPARATOR);
+
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>(ids.length);
+
+        for (String id : ids) {
+            objectIdList.add(new ObjectId(id));
+        }
+
+        return objectIdList;
     }
 
     //-- 帖子管理 --//
