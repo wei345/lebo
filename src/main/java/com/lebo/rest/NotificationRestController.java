@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.Constants;
 import com.lebo.entity.Notification;
 import com.lebo.rest.dto.NotificationGroupDto;
 import com.lebo.service.NotificationService;
@@ -88,7 +89,7 @@ public class NotificationRestController {
 
         List<String> activityTypes = null;
         if (types != null) {
-            activityTypes = Arrays.asList(types.split("\\s*,\\s*"));
+            activityTypes = Arrays.asList(types.split(Constants.COMMA_SEPARATOR));
         }
 
         List<Notification> notifications;

@@ -1,6 +1,7 @@
 package com.lebo.service;
 
 import com.google.common.collect.Lists;
+import com.lebo.Constants;
 import com.lebo.entity.*;
 import com.lebo.event.AfterPostCreateEvent;
 import com.lebo.event.AfterPostDestroyEvent;
@@ -351,14 +352,14 @@ public class StatusService extends AbstractMongoService {
 
         //follow
         if (StringUtils.isNotBlank(param.getFollow())) {
-            String[] userIds = param.getFollow().split("\\s*,\\s*");
+            String[] userIds = param.getFollow().split(Constants.COMMA_SEPARATOR);
             //用户ID之间or关系
             criteriaList.add(new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds)));
         }
 
         //track
         if (StringUtils.isNotBlank(param.getTrack())) {
-            String[] phrases = param.getTrack().split("\\s*,\\s*");
+            String[] phrases = param.getTrack().split(Constants.COMMA_SEPARATOR);
             List<Criteria> criterias = new ArrayList<Criteria>(phrases.length);
             for (String phrase : phrases) {
                 String[] keywords = phrase.split("\\s+");
@@ -836,7 +837,7 @@ public class StatusService extends AbstractMongoService {
         //解析follow条件
         Criteria followCriteria = null;
         if (StringUtils.isNotBlank(follow)) {
-            String[] userIds = follow.split("\\s*,\\s*");
+            String[] userIds = follow.split(Constants.COMMA_SEPARATOR);
             //用户ID之间or关系
             followCriteria = new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds));
         }
@@ -844,7 +845,7 @@ public class StatusService extends AbstractMongoService {
         //解析track条件
         Criteria trackCriteria = null;
         if (StringUtils.isNotBlank(track)) {
-            String[] phrases = track.split("\\s*,\\s*");
+            String[] phrases = track.split(Constants.COMMA_SEPARATOR);
             List<Criteria> criterias = new ArrayList<Criteria>(phrases.length);
             for (String phrase : phrases) {
                 String[] keywords = phrase.split("\\s+");
