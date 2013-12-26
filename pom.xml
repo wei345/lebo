@@ -37,25 +37,21 @@
         <jdk.version>1.6</jdk.version>
     </properties>
 
+
     <repositories>
+
         <repository>
             <id>javapns</id>
-            <name>javapns Repository</name>
             <url>http://maven.kungfuters.org/content/groups/public/</url>
         </repository>
 
         <repository>
-            <id>xuggle repo</id>
+            <id>xuggle</id>
             <url>http://xuggle.googlecode.com/svn/trunk/repo/share/java/</url>
         </repository>
 
-        <repository>
-            <id>clojars.org</id>
-            <name>quartz-mongodb Repository</name>
-            <url>http://clojars.org/repo</url>
-        </repository>
-
     </repositories>
+
 
     <!-- 依赖项定义 -->
     <dependencies>
@@ -378,7 +374,6 @@
             <artifactId>logback-redis-appender</artifactId>
             <version>1.0.0</version>
         </dependency>
-
         <!-- LOGGING end -->
 
         <!-- GENERAL UTILS begin -->
@@ -697,6 +692,7 @@
         </plugins>
     </build>
 
+
     <profiles>
 
         <!-- 忽略所有@Category(UnStable.class)的TestCase -->
@@ -715,7 +711,7 @@
             </build>
         </profile>
 
-        <!-- 在打包时，修改部分配置 -->
+        <!-- 打包时，特定环境配置 -->
         <profile>
             <id>app0</id>
             <properties>
@@ -738,4 +734,6 @@
         </profile>
 
     </profiles>
+
+
 </project>
