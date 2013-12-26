@@ -1,6 +1,7 @@
 package com.lebo.service;
 
 import com.google.common.collect.Maps;
+import com.lebo.Constants;
 import com.lebo.SpringContextTestCase;
 import com.lebo.entity.FileInfo;
 import com.lebo.entity.Post;
@@ -141,9 +142,10 @@ public class StatusServiceTest extends SpringContextTestCase {
 
     @Test
     public void split() {
-        assertTrue("aa,bb,".split("\\s*,\\s*").length == 2);
+        assertTrue("aa,bb,".split(Constants.COMMA_SEPARATOR).length == 2);
         assertTrue("aa,bb,".split(",").length == 2);
-        assertEquals("[aa, bb]", Arrays.asList("aa,bb,".split("\\s*,\\s*")).toString());
+        assertEquals("[aa, bb]", Arrays.asList("aa,bb,".split(Constants.COMMA_SEPARATOR)).toString());
+        assertNotNull("".split(","));
     }
 
     @Test

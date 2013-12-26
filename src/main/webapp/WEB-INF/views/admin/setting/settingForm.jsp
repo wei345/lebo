@@ -172,7 +172,7 @@
     <div class="controls">
         <input type="text" id="digestTopPostId" name="digestTopPostId" value="${setting.digestTopPostId}"
                class="input-large required"/>
-
+        可以填多个ID, 以<code>,</code>分隔
     </div>
 </div>
 

@@ -1,5 +1,6 @@
 package com.lebo.rest;
 
+import com.lebo.Constants;
 import com.lebo.entity.*;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.HotDto;
@@ -344,8 +345,8 @@ public class StatusRestController {
     @ResponseBody
     public Object increaseViewCount(@RequestParam(value = "postIds") String postIds,
                                     @RequestParam(value = "userIds") String userIds) {
-        statusService.increaseViewCount(Arrays.asList(postIds.split("\\s*,\\s*")));
-        accountService.increaseViewCount(Arrays.asList(userIds.split("\\s*,\\s*")));
+        statusService.increaseViewCount(Arrays.asList(postIds.split(Constants.COMMA_SEPARATOR)));
+        accountService.increaseViewCount(Arrays.asList(userIds.split(Constants.COMMA_SEPARATOR)));
         return ErrorDto.OK;
     }
 
