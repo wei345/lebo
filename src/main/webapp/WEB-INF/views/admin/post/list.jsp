@@ -83,10 +83,6 @@
             padding-left: 30px;
         }
 
-        .result-status {
-            padding: 0 0 6px 0;
-        }
-
         .preview a {
             position: relative;
             display: block;
@@ -165,9 +161,7 @@
     <p>最近 ${hotDays} 天的帖子按 <code>红心数+人气+评分</code> 排序，每用户最多上榜 ${maxHotPostCountPerUser} 条。</p>
 </c:if>
 
-<div class="muted result-status">第 ${page.size * page.number + 1} - ${page.size * page.number + page.numberOfElements}
-    条，共 ${page.totalElements} 条（用时 ${spentSeconds} 秒）
-</div>
+<tags:pageinfo page="${page}" spentSeconds="${spentSeconds}"/>
 
 <table id="contentTable" class="table table-hover">
     <tr>
