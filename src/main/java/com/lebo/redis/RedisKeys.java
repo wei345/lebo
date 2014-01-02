@@ -10,6 +10,12 @@ import java.util.Date;
  */
 public class RedisKeys {
 
+    //Spring Expression Language (SpEL)
+    //http://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
+    public static final String ROBOT_GROUP_SPEL = "'robot.group'";
+
+    public static final String CACHE_NAME_DEFAULT = "cache";
+
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String getLeboSessionKey(String userId, String sessionId) {
@@ -27,4 +33,5 @@ public class RedisKeys {
     public static String getActiveUserKey() {
         return "active.user:" + sdf.format(new Date());
     }
+
 }

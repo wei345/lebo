@@ -2,6 +2,7 @@ package com.lebo.web;
 
 import com.lebo.entity.Post;
 import com.lebo.rest.dto.StatusDto;
+import com.lebo.service.AppEnv;
 import com.lebo.service.FileContentUrlUtils;
 import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
@@ -28,7 +29,7 @@ public class PlayController {
     @Autowired
     private StatusService statusService;
     @Autowired
-    private Properties applicationProperties;
+    private AppEnv appEnv;
     @Autowired
     private SettingService settingService;
 
@@ -45,7 +46,7 @@ public class PlayController {
 
         StatusDto dto = statusService.toBasicStatusDto(post);
         model.addAttribute("post", dto.getOriginStatus() == null ? dto : dto.getOriginStatus());
-        model.addAttribute("baseurl", applicationProperties.get("app.baseurl"));
+        model.addAttribute("baseurl", appEnv.getBaseurl());
         model.addAttribute("image_dl_iphone_app_url", FileContentUrlUtils.getContentUrl("images/btn-dl-lebo-iphone.png"));
         model.addAttribute("image_dl_android_app_url", FileContentUrlUtils.getContentUrl("images/btn-dl-lebo-android.png"));
         model.addAttribute("appStoreLeboUrl", settingService.getSetting().getAppStoreLeboUrl());

@@ -39,3 +39,12 @@ h3 {
     color: #999999;
     clear: both;
 }
+
+.table td, .table th{
+    vertical-align: middle;
+    text-align: center;
+}
+
+input + .btn{
+    vertical-align: top;
+}

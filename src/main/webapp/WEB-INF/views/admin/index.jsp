@@ -33,3 +33,9 @@
     <li><a href="${ctx}/admin/statistics/im">私信统计</a></li>
     <li><a href="${ctx}/admin/statistics/activeUser">日活跃用户统计</a></li>
 </ul>
+
+<h2>机器人</h2>
+
+<ul>
+    <li><a href="${ctx}/admin/robot/group">机器人分组</a></li>
+</ul>

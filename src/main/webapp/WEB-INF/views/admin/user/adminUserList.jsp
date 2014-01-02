@@ -1,3 +1,7 @@
+<%@ page import="com.lebo.entity.User" %>
+<%@ page import="com.lebo.web.admin.UserAdminController" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -7,56 +11,9 @@
 <html>
 <head>
     <title>用户管理</title>
-    <style>
-        #contentTable td, #contentTable th{
-            vertical-align: middle;
-            text-align: center;
-        }
-    </style>
     <script>
-        $(document).ready(function () {
-            //聚焦第一个输入框
-            $("#q").focus();
-            //为inputForm注册validate函数
-            $("#searchForm").validate({
-                rules: {
-                    count: {
-                        number: true,
-                        min: 5,
-                        max: 1000,
-                        required: true
-                    }
-                }
-            });
-        });
-
-        function toggleRobot(userId, btn){
-            var action = $.trim($(btn).text());
-
-            if(action == '设为机器人'){
-                $.ajax({
-                    url : '${ctx}/admin/robot/set?userId=' + userId,
-                    type : 'POST',
-                    success: function(data){
-                        if(data == 'ok'){
-                            $(btn).text('取消机器人');
-                        }
-                    }
-                });
-            }
-
-            if(action == '取消机器人'){
-                $.ajax({
-                    url : '${ctx}/admin/robot/unset?userId=' + userId,
-                    type : 'POST',
-                    success: function(data){
-                        if(data == 'ok'){
-                            $(btn).text('设为机器人');
-                        }
-                    }
-                });
-            }
-        }
+        var userId2Groups = {};
+        var allGroups = ${allGroupsJson};
     </script>
 </head>
 
@@ -74,9 +31,27 @@
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
           onclick="$('input[name=userId]').val('')"></span>
 
+    <label>
+        <input type="checkbox" name="robot" value="true"
+               <c:if test="${param.robot}">checked</c:if>
+               onclick="$('select[name=robotGroup]').attr('disabled', !this.checked)"/>
+        机器人
+    </label>
+
+    <select name="robotGroup" class="input-small" <c:if test="${!param.robot}">disabled</c:if>>
+        <option value="">机器人组</option>
+        <c:forEach items="${allGroups}" var="groupName">
+            <option value="${groupName}">${groupName}</option>
+        </c:forEach>
+    </select>
+
     <div style="padding-top: 10px;">
-        按 <input type="text" class="input-mini" name="orderBy" value="${orderBy}"
-                 placeholder="followersCount/beFavoritedCount/viewCount">
+        <select name="orderBy" class="input-medium">
+            <option value="_id">注册时间</option>
+            <option value="followersCount">粉丝数</option>
+            <option value="beFavoritedCount">红心数</option>
+            <option value="viewCount">被浏览数</option>
+        </select>
 
         <select class="input-small" name="order">
             <option ${order == "DESC" ? "selected='selected'" : ""} value="DESC">降序</option>
@@ -90,6 +65,8 @@
 
 <a href="${ctx}/register" class="pull-right">+ 添加新用户</a>
 
+<tags:pageinfo page="${page}" spentSeconds="${spentSeconds}"/>
+
 <table id="contentTable" class="table table-striped table-bordered table-condensed table">
     <thead>
     <tr>
@@ -102,37 +79,241 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${users}" var="user">
-        <tr>
-            <td><a href="${ctx}/admin/user/update/${user.id}">${user.id}</a></td>
-            <td>${user.screenName}</td>
-            <td>${user.email}</td>
-            <td>${user.name}</td>
-            <td>
-                <fmt:formatDate value="${user.createdAt}" pattern="yyyy年MM月dd日"/>
-                <br/>
-                <fmt:formatDate value="${user.createdAt}" pattern="HH时mm分ss秒"/>
-            </td>
-            <td>
-                <a href="${ctx}/admin/post/list?userId=${user.id}" target="_blank">查看帖子</a><br/>
-                <a href="${ctx}/admin/comment/list?userId=${user.id}" target="_blank">查看评论</a>
-                <button class="btn" onclick="toggleRobot('${user.id}', this)">
-                    <c:if test="${user.robot == null}">
-                        设为机器人
-                    </c:if>
-                    <c:if test="${user.robot != null}">
-                        取消机器人
-                    </c:if>
+    <%
+        for (User user : (List<User>) request.getAttribute("users")) {
+            request.setAttribute("user", user);
+            boolean hasGroup = (user.getRobot() != null && user.getRobot().getGroups() != null);
+            String robotGroupJson = hasGroup
+                    ?
+                    UserAdminController.jsonMapper.toJson(user.getRobot().getGroups())
+                    :
+                    "[]";
+    %>
+    <tr>
+        <td><a href="${ctx}/admin/user/update/${user.id}">${user.id}</a></td>
+        <td>${user.screenName}</td>
+        <td>${user.email}</td>
+        <td>${user.name}</td>
+        <td>
+            <fmt:formatDate value="${user.createdAt}" pattern="yyyy年MM月dd日"/>
+            <br/>
+            <fmt:formatDate value="${user.createdAt}" pattern="HH时mm分ss秒"/>
+        </td>
+        <td>
+            <a href="${ctx}/admin/post/list?userId=${user.id}" target="_blank">查看帖子</a><br/>
+            <a href="${ctx}/admin/comment/list?userId=${user.id}" target="_blank">查看评论</a>
+
+            <div>
+                <label title="切换是否机器人">
+                    <input type="checkbox" onclick="toggleRobot('${user.id}', this)"
+                            <c:if test="${user.robot != null}"> checked</c:if>/>
+                    机器人
+                </label>
+                <button id="btn-robot-group-${user.id}" class="btn"
+                        onclick="editRobotGroup('${user.id}', '${user.screenName}')"
+                        title="机器人分组"
+                        <c:if test="${user.robot == null}"> disabled</c:if>>
+                    <%=hasGroup ? StringUtils.join(user.getRobot().getGroups(), ",") : "分组"%>
                 </button>
-            </td>
-        </tr>
-    </c:forEach>
+                <script>
+                    userId2Groups['${user.id}'] = <%=robotGroupJson%>;
+                </script>
+            </div>
+
+        </td>
+    </tr>
+    <%
+        }
+    %>
     </tbody>
 </table>
+
 <c:if test="${empty users}">
     <div style="font-style: italic; text-align: center">没有了</div>
 </c:if>
 
-<tags:pagination page="${page}" size="${size}" currentSize="${currentSize}"/>
+<tags:pagination-normal page="${page}" paginationSize="5"/>
+
+<div id="robot-group-modal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>机器人分组 / <span class="screen-name"></span></h3>
+    </div>
+    <div class="modal-body">
+        <input id="robot-group-input" type="text"/>
+        <input type="button" value="添加" class="btn" onclick="addGroup()"/>
+
+        <form id="robot-groups-form">
+            <input type="hidden" name="userId" value=""/>
+
+            <div id="robot-groups-container">
+
+            </div>
+        </form>
+
+        <div class="alert-error"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" onclick="updateGroup()">保存</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        //回填排序字段下拉列表
+        $("#searchForm select[name=orderBy] option[value='${orderBy}']").attr("selected", true);
+
+        //回填机器人组
+        $("#searchForm select[name=robotGroup] option[value='${param.robotGroup}']").attr("selected", true);
+
+        //聚焦第一个输入框
+        $("#q").focus();
+        //为inputForm注册validate函数
+        $("#searchForm").validate({
+            rules: {
+                count: {
+                    number: true,
+                    min: 5,
+                    max: 1000,
+                    required: true
+                }
+            }
+        });
+
+        $('#robot-group-input').keyup(function (e) {
+            if (e.keyCode == 13) {
+                addGroup();
+            }
+        });
+
+        $('#robot-group-modal').on('shown', function () {
+            $('#robot-group-input').focus();
+        });
+    });
+
+
+    function updateGroup() {
+
+        var form = $('#robot-groups-form');
+
+        $.ajax({
+            url: '${ctx}/admin/robot/updateGroup',
+            type: 'POST',
+            data: form.serialize(),
+            success: function (data) {
+                if (data == 'ok') {
+
+                    var modal = $('#robot-group-modal');
+                    var userId = form[0].userId.value;
+
+                    var groups = $.map(form.find('input[type=checkbox][name=groups]:checked'), function (item) {
+                        return item.value;
+                    });
+                    userId2Groups[userId] = groups;
+
+                    updateGroupButtonText(userId);
+
+                    modal.modal('hide');
+
+                } else {
+                    $('#robot-group-modal .alter-error').html(data).show();
+                }
+            },
+            error: function (jqXHR) {
+                $('#robot-group-modal .alert-error').html(jqXHR.responseText).show();
+            }
+        });
+    }
+
+
+    function toggleRobot(userId, checkbox) {
+
+        if (checkbox.checked) {
+            $.ajax({
+                url: '${ctx}/admin/robot/set?userId=' + userId,
+                type: 'POST',
+                success: function (data) {
+                    if (data == 'ok') {
+                        $('#btn-robot-group-' + userId).removeAttr('disabled');
+                        updateGroupButtonText(userId);
+                    }
+                }
+            });
+        } else {
+            $.ajax({
+                url: '${ctx}/admin/robot/unset?userId=' + userId,
+                type: 'POST',
+                success: function (data) {
+                    if (data == 'ok') {
+                        $('#btn-robot-group-' + userId).attr('disabled', 'disabled');
+                        userId2Groups[userId] = null;
+                        updateGroupButtonText(userId);
+                    }
+                }
+            });
+        }
+    }
+
+
+    function editRobotGroup(userId, screenName) {
+
+        var groups = userId2Groups[userId];
+        var modal = $('#robot-group-modal');
+        var modalBody = modal.find('.modal-body');
+        var groupContainer = modalBody.find('#robot-groups-container');
+
+        groupContainer.empty();
+        modal.find('.alert-error').hide();
+        $('#robot-group-input').val('');
+
+        //用户ID
+        $('#robot-groups-form input[name=userId]').val(userId);
+
+        //选中的组名
+        if (groups) {
+            $.each(groups, function (index, item) {
+                groupContainer.append(newGroupLabel(item, true));
+            });
+        }
+
+        //未选中的组名
+        $.each(allGroups, function (index, item) {
+            if (!groups || groups.indexOf(item) == -1) {
+                groupContainer.append(newGroupLabel(item, false));
+            }
+        });
+
+        modal.find('.screen-name').html(screenName);
+
+        modal.modal();
+    }
+
+
+    function addGroup() {
+        var name = $.trim($('#robot-group-modal input').val());
+        if (name == "") return;
+
+        var checkboxContainer = $('#robot-groups-container');
+
+        if (allGroups.indexOf(name) == -1) {
+            checkboxContainer.prepend(newGroupLabel(name, true));
+            allGroups.push(name);
+        } else {
+            checkboxContainer.find('input[type=checkbox][value=' + name + ']').attr('checked', 'checked');
+        }
+    }
+
+
+    function newGroupLabel(name, checked) {
+        return '<label><input name="groups" type="checkbox" value="' + name + '"' + (checked ? ' checked="checked"' : '') + '/>' + name + '</label>';
+    }
+
+    function updateGroupButtonText(userId) {
+        var groups = userId2Groups[userId] || [];
+        $('#btn-robot-group-' + userId).html(groups.length == 0 ? '分组' : groups.join(','));
+    }
+</script>
+
 </body>
 </html>

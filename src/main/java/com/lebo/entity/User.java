@@ -153,6 +153,7 @@ public class User extends IdEntity {
     @Indexed
     private Robot robot;
     public static final String ROBOT_KEY = "robot";
+    public static final String ROBOT_GROUPS_KEY = "robot.groups";
 
     //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
     private String pikeId;
