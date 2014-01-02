@@ -150,6 +150,10 @@ public class User extends IdEntity {
     private Date lastActiveDay; //最后活跃日的第一次访问时间
     public static final String LAST_ACTIVE_DAY_KEY = "lastActiveDay";
 
+    @Indexed
+    private Robot robot;
+    public static final String ROBOT_KEY = "robot";
+
     //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
     private String pikeId;
 
@@ -579,6 +583,14 @@ public class User extends IdEntity {
 
     public void setLastActiveDay(Date lastActiveDay) {
         this.lastActiveDay = lastActiveDay;
+    }
+
+    public Robot getRobot() {
+        return robot;
+    }
+
+    public void setRobot(Robot robot) {
+        this.robot = robot;
     }
 
     @Override
