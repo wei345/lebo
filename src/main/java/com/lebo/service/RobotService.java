@@ -1,10 +1,15 @@
 package com.lebo.service;
 
 import com.lebo.entity.Robot;
+import com.lebo.entity.RobotSaying;
 import com.lebo.entity.User;
 import com.lebo.redis.RedisKeys;
+import org.bson.types.ObjectId;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -36,6 +41,8 @@ public class RobotService extends AbstractMongoService {
                 new Update().unset(User.ROBOT_KEY),
                 User.class);
     }
+
+    //-- 机器人分组 --//
 
 
     @Cacheable(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.ROBOT_GROUP_SPEL)
@@ -130,12 +137,42 @@ public class RobotService extends AbstractMongoService {
                 User.class);
     }
 
+    //-- 机器人语库 --//
 
-    public List<User> getAllRobots() {
-        return mongoTemplate.find(
-                new Query(new Criteria(User.ROBOT_KEY).ne(null)),
-                User.class);
+    public Page<RobotSaying> getSayings(Pageable pageable) {
+
+        Query query = new Query().with(pageable);
+
+        return new PageImpl<RobotSaying>(
+                mongoTemplate.find(query, RobotSaying.class),
+                pageable,
+                mongoTemplate.count(query, RobotSaying.class));
     }
 
+    public void addSaying(RobotSaying robotSaying) {
+        mongoTemplate.insert(robotSaying);
+    }
+
+    public RobotSaying getSayingByText(String text) {
+        return mongoTemplate.findOne(
+                new Query(new Criteria(RobotSaying.TEXT_KEY).is(text)),
+                RobotSaying.class);
+    }
+
+    public RobotSaying getSaying(String id) {
+        return mongoTemplate.findOne(
+                new Query(new Criteria(RobotSaying.ID_KEY).is(new ObjectId(id))),
+                RobotSaying.class);
+    }
+
+    public void deleteSaying(String id) {
+        mongoTemplate.remove(
+                new Query(new Criteria(RobotSaying.ID_KEY).is(new ObjectId(id))),
+                RobotSaying.class);
+    }
+
+    public void updateSaying(RobotSaying robotSaying) {
+        mongoTemplate.save(robotSaying);
+    }
 
 }

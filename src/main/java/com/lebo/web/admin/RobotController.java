@@ -1,17 +1,20 @@
 package com.lebo.web.admin;
 
+import com.lebo.entity.RobotSaying;
 import com.lebo.service.RobotService;
+import com.lebo.service.param.PageRequest;
 import com.lebo.web.ControllerUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.mapper.JsonMapper;
 import org.springside.modules.utils.Collections3;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -26,7 +29,9 @@ public class RobotController {
     @Autowired
     private RobotService robotService;
 
-    private JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
+    public static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
+
+    //-- 机器人 --//
 
     @RequestMapping(value = "set", method = RequestMethod.POST)
     @ResponseBody
@@ -41,6 +46,8 @@ public class RobotController {
         robotService.unsetRobot(userId);
         return ControllerUtils.AJAX_OK;
     }
+
+    //-- 机器人分组 --//
 
     @RequestMapping(value = "group", method = RequestMethod.GET)
     public String group(Model model) {
@@ -82,6 +89,71 @@ public class RobotController {
         return ControllerUtils.AJAX_OK;
     }
 
+    //-- 机器人语库 --//
+    @RequestMapping(value = "saying", method = RequestMethod.GET)
+    public String sayingList(@Valid PageRequest pageRequest, Model model) {
+
+        pageRequest.setSort(new Sort(Sort.Direction.ASC, RobotSaying.TEXT_KEY));
+
+        model.addAttribute("page", robotService.getSayings(pageRequest));
+
+        return "admin/robot/saying";
+    }
+
+    @RequestMapping(value = "saying/add", method = RequestMethod.GET)
+    public String sayingAddForm() {
+        return "admin/robot/sayingForm";
+    }
+
+    @RequestMapping(value = "saying/add", method = RequestMethod.POST)
+    public String sayingAdd(RobotSaying robotSaying,
+                            @RequestParam(value = "goToList", defaultValue = "true") boolean goToList,
+                            RedirectAttributes redirectAttributes,
+                            Model model) {
+
+        if (robotService.getSayingByText(robotSaying.getText()) != null) {
+            model.addAttribute("saying", robotSaying);
+            model.addAttribute("tags", StringUtils.join(robotSaying.getTags(), ","));
+            model.addAttribute("error", "该项已存在");
+            return "admin/robot/sayingForm";
+        }
+
+        robotService.addSaying(robotSaying);
+        redirectAttributes.addFlashAttribute("success", "添加成功");
+
+        return goToList
+                ?
+                "redirect:/admin/robot/saying"
+                :
+                "redirect:/admin/robot/saying/add";
+    }
+
+    @RequestMapping(value = "saying/update/{id}", method = RequestMethod.GET)
+    public String sayingUpdateForm(@PathVariable("id") String id,
+                                   Model model) {
+
+        RobotSaying robotSaying = robotService.getSaying(id);
+
+        model.addAttribute("saying", robotSaying);
+        model.addAttribute("tags", StringUtils.join(robotSaying.getTags(), ","));
+
+        return "admin/robot/sayingForm";
+    }
+
+    @RequestMapping(value = "saying/update/{id}", method = RequestMethod.POST)
+    public Object sayingUpdate(RobotSaying robotSaying) {
+        robotService.updateSaying(robotSaying);
+        return "redirect:/admin/robot/saying";
+    }
+
+    @RequestMapping(value = "saying/delete/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public Object sayingDelete(@PathVariable("id") String id) {
+        robotService.deleteSaying(id);
+        return ControllerUtils.AJAX_OK;
+    }
+
+    //-- 机器人评论 --//
 
     @RequestMapping(value = "comment", method = RequestMethod.GET)
     public String comment() {
