@@ -74,10 +74,10 @@ public class TaskService extends AbstractMongoService {
     /**
      * 查询待执行的到期任务
      */
-    public List<Task> getDueTask(Date time, String type) {
+    public List<Task> getDueTask(Date time, Task.Type type) {
         Query query = new Query();
         query.addCriteria(new Criteria(Task.SCHEDULED_AT_KEY).lte(time));
-        query.addCriteria(new Criteria(Task.STATUS_KEY).is(Task.STATUS_VALUE_TODO));
+        query.addCriteria(new Criteria(Task.STATUS_KEY).is(Task.Status.TODO));
         query.addCriteria(new Criteria(Task.TYPE_KEY).is(type));
         return mongoTemplate.find(query, Task.class);
     }
@@ -89,8 +89,8 @@ public class TaskService extends AbstractMongoService {
         task.setId(newMongoId(task.getCreatedAt()));
         task.setUserId(accountService.getCurrentUserId());
         task.setTitle("定时发布视频");
-        task.setType(Task.TYPE_VALUE_PUBLISH_VIDEO);
-        task.setStatus(Task.STATUS_VALUE_TODO);
+        task.setType(Task.Type.PUBLISH_VIDEO);
+        task.setStatus(Task.Status.TODO);
         task.setScheduledAt(scheduledAt);
 
         //保存视频文件
@@ -111,17 +111,17 @@ public class TaskService extends AbstractMongoService {
 
     public List<Task> getPublishVideoTodoTask() {
         Query query = new Query();
-        query.addCriteria(new Criteria(Task.STATUS_KEY).is(Task.STATUS_VALUE_TODO));
-        query.addCriteria(new Criteria(Task.TYPE_KEY).is(Task.TYPE_VALUE_PUBLISH_VIDEO));
+        query.addCriteria(new Criteria(Task.STATUS_KEY).is(Task.Status.TODO));
+        query.addCriteria(new Criteria(Task.TYPE_KEY).is(Task.Type.PUBLISH_VIDEO));
         query.with(new Sort(Sort.Direction.ASC, Task.SCHEDULED_AT_KEY));
         return mongoTemplate.find(query, Task.class);
     }
 
     public void deleteTaskPublishVideo(String id) {
         Task task = taskDao.findOne(id);
-        if (task.getType().equals(Task.TYPE_VALUE_PUBLISH_VIDEO)) {
+        if (task.getType() == Task.Type.PUBLISH_VIDEO) {
             //注意: 已完成的任务视频key已指向帖子视频，不可删除视频文件
-            if (task.getStatus().equals(Task.STATUS_VALUE_TODO)) {
+            if (task.getStatus() == Task.Status.TODO) {
                 fileStorageService.delete(task.getVideo().getKey());
                 fileStorageService.delete(task.getVideoFirstFrame().getKey());
             }
@@ -146,10 +146,10 @@ public class TaskService extends AbstractMongoService {
             imageKey = image.getKey();
         }
 
-        Task task = new Task(Task.TYPE_VALUE_APNS_ALL_USER,
+        Task task = new Task(Task.Type.APNS_ALL_USER,
                 accountService.getCurrentUserId(),
                 new Date(),
-                "发布通知");
+                "推送通知");
 
         //获取用户
         Query query = new Query();
@@ -196,7 +196,7 @@ public class TaskService extends AbstractMongoService {
         return task;
     }
 
-    public List<Task> getTasksByType(String type) {
+    public List<Task> getTasksByType(Task.Type type) {
         Query query = new Query();
         query.addCriteria(new Criteria(Task.TYPE_KEY).is(type))
                 .with(new Sort(Sort.Direction.DESC, Task.ID_KEY));

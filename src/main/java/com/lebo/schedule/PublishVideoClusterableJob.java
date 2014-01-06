@@ -43,14 +43,14 @@ public class PublishVideoClusterableJob extends QuartzJobBean {
         TaskService taskService = applicationContext.getBean(TaskService.class);
 
         logger.debug("定时发布视频 : 正在获取任务列表..");
-        List<Task> tasks = taskService.getDueTask(new Date(), Task.TYPE_VALUE_PUBLISH_VIDEO);
+        List<Task> tasks = taskService.getDueTask(new Date(), Task.Type.PUBLISH_VIDEO);
         logger.debug("定时发布视频 : 获得 {} 项", tasks.size());
 
         for (int i = 0; i < tasks.size(); i++) {
             Task task = tasks.get(i);
             logger.debug("定时发布视频 : 正在发布视频 {}/{}", i + 1, tasks.size());
             publishVideo(task);
-            task.setStatus(Task.STATUS_VALUE_DONE);
+            task.setStatus(Task.Status.DONE);
             //保存，状态为已完成，同时视频key已变为已发布帖子里的视频key
             taskService.saveTask(task);
         }

@@ -58,12 +58,12 @@
     <div style="padding-top: 10px">
         <select id="timeOption" name="timeOption">
             <option value="now">现在发布</option>
-            <option value="schedule">定时发布</option>
+            <option value="schedule"<c:if test="${publishDate != null}"> selected="selected"</c:if>>定时发布</option>
         </select>
 
         <div id="publishDateTimeInputGroup" style="display: none;">
-            <input type="text" id="publishDate" name="publishDate" placeholder="年/月/日" style="width: 10em;"/>
-            <input type="text" id="publishTime" name="publishTime" placeholder="时:分" style="width: 5em;"/>
+            <input type="text" id="publishDate" name="publishDate" value="${publishDate}" placeholder="年/月/日" style="width: 10em;"/>
+            <input type="text" id="publishTime" name="publishTime" value="${publishTime}" placeholder="时:分" style="width: 5em;"/>
         </div>
     </div>
 
@@ -161,17 +161,31 @@
         });
 
         $('#timeOption').change(function () {
-            if (this.value == 'schedule') {
-                $('#publishDateTimeInputGroup').show().find('input[name=publishDate]').focus();
-            } else {
-                $('#publishDateTimeInputGroup').hide();
-            }
+            timeOptionOnChange();
+            $('#publishDateTimeInputGroup input:first').focus();
         });
 
         $('#todoTable tr:gt(0)').each(function (index) {
             $('td:first', this).html(index + 1);
         });
+
+        //回填时间
+        timeOptionOnChange();
     });
+
+    function timeOptionOnChange(){
+        if ($('#timeOption').val() == 'schedule') {
+            $('#publishDateTimeInputGroup')
+                    .show()
+                    .find('input')
+                    .removeAttr('disabled');
+        } else {
+            $('#publishDateTimeInputGroup')
+                    .hide()
+                    .find('input')
+                    .attr('disabled', 'disabled');
+        }
+    }
 
     function deleteTask(id, btn) {
         if (confirm('确定删除吗?')) {
