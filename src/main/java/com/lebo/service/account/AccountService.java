@@ -22,9 +22,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -38,6 +36,7 @@ import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
 import redis.clients.jedis.Jedis;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -85,6 +84,15 @@ public class AccountService extends AbstractMongoService {
     private JedisTemplate jedisTemplate;
     @Autowired
     private SettingService settingService;
+
+    @PostConstruct
+    public void ensureIndex() {
+        DBObject keys = new BasicDBObject(User.ROBOT_GROUPS_KEY, 1);
+        DBObject options = new BasicDBObject("name", User.ROBOT_GROUPS_KEY);
+
+        mongoTemplate.getCollection(mongoTemplate.getCollectionName(User.class))
+                .ensureIndex(keys, options);
+    }
 
     public List<User> searchUser(SearchParam param) {
         Query query = new Query();
@@ -753,7 +761,7 @@ public class AccountService extends AbstractMongoService {
     }
 
     //---- 后台管理 ----
-    public List<User> adminSearchUser(String q, String userId, Pageable pageable) {
+    public Page<User> adminSearchUser(String q, String userId, Boolean robot, String robotGroup, Pageable pageable) {
         Query query = new Query();
 
         if (StringUtils.isNotBlank(q)) {
@@ -764,8 +772,24 @@ public class AccountService extends AbstractMongoService {
             query.addCriteria(new Criteria(User.ID_KEY).is(userId));
         }
 
+        if (robot != null) {
+            if (robot) {
+                if (StringUtils.isNotBlank(robotGroup)) {
+                    query.addCriteria(new Criteria(User.ROBOT_GROUPS_KEY).is(robotGroup));
+                } else {
+                    query.addCriteria(new Criteria(User.ROBOT_KEY).ne(null));
+                }
+            } else {
+                query.addCriteria(new Criteria(User.ROBOT_KEY).is(null));
+            }
+        }
+
         query.with(pageable);
-        return mongoTemplate.find(query, User.class);
+
+        return new PageImpl<User>(
+                mongoTemplate.find(query, User.class),
+                pageable,
+                mongoTemplate.count(query, User.class));
     }
 
 }

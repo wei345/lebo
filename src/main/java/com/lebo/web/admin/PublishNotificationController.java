@@ -37,7 +37,7 @@ public class PublishNotificationController {
 
     @RequestMapping(value = "apns-all-user", method = RequestMethod.GET)
     public String apnsAllUserForm(Model model) {
-        List<Task> tasks = taskService.getTasksByType(Task.TYPE_VALUE_APNS_ALL_USER);
+        List<Task> tasks = taskService.getTasksByType(Task.Type.APNS_ALL_USER);
 
         List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(tasks.size());
         for (Task task : tasks) {

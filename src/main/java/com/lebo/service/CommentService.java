@@ -46,7 +46,9 @@ public class CommentService extends AbstractMongoService {
      * @throws DuplicateException         当文件重复时
      */
     public Comment create(Comment comment, FileInfo video, FileInfo videoFirstFrame, FileInfo audio) {
-        comment.setCreatedAt(new Date());
+        if (comment.getCreatedAt() == null) {
+            comment.setCreatedAt(new Date());
+        }
         comment.setId(newMongoId(comment.getCreatedAt()));
         comment.setUserMentions(statusService.findUserMentions(comment.getText()));
         comment.setMentionUserIds(statusService.mentionUserIds(comment.getUserMentions()));

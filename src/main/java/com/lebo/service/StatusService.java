@@ -222,6 +222,10 @@ public class StatusService extends AbstractMongoService {
         return postDao.findOne(id);
     }
 
+    public boolean postExists(String id){
+        return postDao.exists(id);
+    }
+
     public List<Post> getPostsWithOrder(List<ObjectId> idList) {
 
         List<Post> postList1 = mongoTemplate.find(new Query(new Criteria(Post.ID_KEY).in(idList)), Post.class);

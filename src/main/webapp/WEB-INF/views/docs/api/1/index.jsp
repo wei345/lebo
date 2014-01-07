@@ -4,6 +4,9 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <style>
+    .table th, .table td{
+        text-align: left;
+    }
     .td1 {
         width: 25em;
     }

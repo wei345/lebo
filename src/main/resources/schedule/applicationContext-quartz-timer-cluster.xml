@@ -14,7 +14,7 @@
             <list>
                 <ref bean="hotUserTrigger"/>
                 <ref bean="hotPostTrigger"/>
-                <ref bean="publishVideoTrigger"/>
+                <ref bean="adminTaskTrigger"/>
                 <ref bean="fastestRisingUserTrigger"/>
                 <ref bean="top50UserTrigger"/>
                 <ref bean="statisticsTrigger"/>
@@ -65,15 +65,15 @@
     <!-- 更新热门帖子列表 end -->
 
     <!-- 定时发布视频 begin -->
-    <bean id="publishVideoTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-        <property name="jobDetail" ref="publishVideoJobDetail"/>
+    <bean id="adminTaskTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="adminTaskJobDetail"/>
         <!-- 每次执行间隔1分钟 -->
         <property name="repeatInterval" value="60000"/>
     </bean>
 
-    <bean id="publishVideoJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+    <bean id="adminTaskJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
         <property name="durability" value="true"/>
-        <property name="jobClass" value="com.lebo.schedule.PublishVideoClusterableJob"/>
+        <property name="jobClass" value="com.lebo.schedule.AdminTaskClusterableJob"/>
     </bean>
     <!-- 定时发布视频 end -->
 

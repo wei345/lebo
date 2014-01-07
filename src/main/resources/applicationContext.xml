@@ -1,93 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		http://www.springframework.org/schema/data/mongo
         http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
         http://www.springframework.org/schema/aop
-	    http://www.springframework.org/schema/aop/spring-aop-3.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	    http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+	    http://www.springframework.org/schema/tx
+	    http://www.springframework.org/schema/tx/spring-tx.xsd
+	    http://www.springframework.org/schema/cache
+	    http://www.springframework.org/schema/cache/spring-cache.xsd"
        default-lazy-init="true">
 
     <description>Spring公共配置</description>
+
 
     <!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
     <context:component-scan base-package="com.lebo">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
+
     <!-- JSR303 Validator定义 -->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-    <!-- MongoDB -->
-    <mongo:repositories base-package="com.lebo.repository"/>
 
+    <!-- MongoDB配置 -->
+    <mongo:repositories base-package="com.lebo.repository"/>
+    <!-- mongo连接 -->
+    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.dbname}" mongo-ref="mongo"/>
     <mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}">
         <mongo:options connections-per-host="1000" threads-allowed-to-block-for-connection-multiplier="500"/>
     </mongo:mongo>
-
-    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.dbname}" mongo-ref="mongo"/>
-
-    <mongo:mapping-converter id="mongoConverter"/>
-
+    <!-- converter, 去掉_class字段 -->
     <bean id="noClassFieldMongoConverter" class="com.lebo.repository.NoClassFieldMappingMongoConverterFactoryBean">
         <property name="converter" ref="mongoConverter"/>
     </bean>
-
+    <mongo:mapping-converter id="mongoConverter"/>
+    <!-- mongoTemplate -->
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
         <constructor-arg name="mongoConverter" ref="noClassFieldMongoConverter"/>
     </bean>
-
+    <!-- gridFsTemplate -->
     <bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
         <constructor-arg ref="mongoDbFactory"/>
         <constructor-arg ref="mongoConverter"/>
     </bean>
 
+
     <!-- MyBatis配置 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
         <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
-        <property name="typeAliasesPackage" value="com.lebo.entity" />
+        <property name="typeAliasesPackage" value="com.lebo.entity"/>
         <!-- 显式指定Mapper文件位置 -->
-        <property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />
+        <property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml"/>
     </bean>
     <!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.lebo" />
+        <property name="basePackage" value="com.lebo"/>
         <property name="annotationClass" value="com.lebo.repository.MyBatisRepository"/>
     </bean>
-
     <!-- Tomcat JDBC连接池 -->
     <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-        <property name="driverClassName" value="${jdbc.driver}" />
-        <property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
-        <property name="defaultAutoCommit" value="false" />
-        <property name="testWhileIdle" value="true" />
-        <property name="validationQuery" value="select 1" />
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="defaultAutoCommit" value="false"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="validationQuery" value="select 1"/>
     </bean>
-
     <!-- Spring Simple连接池 for quartz -->
     <bean id="quartzDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="${jdbc.driver}" />
-        <property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
     </bean>
-
     <!-- Jdbc单数据源事务 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
     </bean>
-
     <!-- 使用annotation定义事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false" />
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false"/>
 
-    <!-- Redis -->
+
+    <!-- Redis配置 -->
+    <bean id="jedisTemplate" class="org.springside.modules.nosql.redis.JedisTemplate">
+        <constructor-arg ref="jedisPool"/>
+    </bean>
+    <!-- jedis连接池 -->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="${redis.host}"/>
+        <constructor-arg index="2" value="${redis.port}"/>
+        <constructor-arg index="3" value="${redis.timeout}"/>
+    </bean>
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxIdle" value="${redis.maxIdle}"/>
         <property name="maxActive" value="${redis.maxActive}"/>
@@ -95,39 +113,41 @@
         <property name="minEvictableIdleTimeMillis" value="${redis.minEvictableIdleTimeMillis}"/>
     </bean>
 
-    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
-        <constructor-arg index="0" ref="jedisPoolConfig"/>
-        <constructor-arg index="1" value="${redis.host}"/>
-        <constructor-arg index="2" value="${redis.port}"/>
-        <constructor-arg index="3" value="${redis.timeout}"/>
+
+    <!-- Cache配置 -->
+    <cache:annotation-driven cache-manager="redisCacheManager"/>
+    <bean id="redisCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+        <constructor-arg index="0" ref="redisTemplate"/>
+        <property name="defaultExpiration" value="120"/>
+    </bean>
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>
+        <property name="keySerializer" ref="stringRedisSerializer"/>
+        <property name="valueSerializer" ref="jackson2JsonRedisSerializer"/>
+    </bean>
+    <bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+    <bean id="jackson2JsonRedisSerializer" class="com.lebo.redis.Jackson2JsonRedisSerializer"/>
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis.host}"/>
+        <property name="port" value="${redis.port}"/>
     </bean>
 
-    <bean id="jedisTemplate" class="org.springside.modules.nosql.redis.JedisTemplate">
-        <constructor-arg ref="jedisPool"/>
-    </bean>
 
     <!-- FileStorageService -->
     <bean id="fileStorageService" class="${file_storage_service}"/>
 
+
     <!-- utils -->
     <bean class="com.lebo.service.FileContentUrlUtils" lazy-init="false"/>
+
 
     <!-- aop -->
     <aop:aspectj-autoproxy/>
 
-    <!-- expose specific properties to application  -->
-    <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="singleton" value="true"/>
-        <property name="properties">
-            <props>
-                <prop key="app.baseurl">${app.baseurl}</prop>
-                <prop key="server.node_name">${server.node_name}</prop>
-            </props>
-        </property>
-    </bean>
 
     <!-- properties -->
     <context:property-placeholder location="classpath*:/application.properties"/>
+
 
     <!-- Components -->
     <import resource="security/applicationContext-shiro.xml"/>

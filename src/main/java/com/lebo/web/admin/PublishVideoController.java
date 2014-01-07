@@ -115,11 +115,11 @@ public class PublishVideoController {
 
         try {
             // 接收文件，获得视频第一帧截图
-            File tempVideoFile = File.createTempFile(Task.TYPE_VALUE_PUBLISH_VIDEO, "." + TaskService.UPLOAD_VIDEO_EXT);
+            File tempVideoFile = File.createTempFile(Task.Type.PUBLISH_VIDEO.toString(), "." + TaskService.UPLOAD_VIDEO_EXT);
             video.transferTo(tempVideoFile);
 
             //截图，视频第一帧
-            File tempPhotoFile = File.createTempFile(Task.TYPE_VALUE_PUBLISH_VIDEO, "." + TaskService.UPLOAD_PHOTO_EXT);
+            File tempPhotoFile = File.createTempFile(Task.Type.PUBLISH_VIDEO.toString(), "." + TaskService.UPLOAD_PHOTO_EXT);
             VideoUtils.writeVideoFirstFrame(tempVideoFile, tempPhotoFile);
 
             FileInfo videoFileInfo = new FileInfo(new FileInputStream(tempVideoFile), video.getContentType(), tempVideoFile.length(), tempVideoFile.getName());
@@ -164,7 +164,7 @@ public class PublishVideoController {
             tempVideoFile.delete();
             tempPhotoFile.delete();
 
-            redirectAttributes.asMap().clear(); //发布成功，不回填表单数据
+            redirectAttributes.getFlashAttributes().remove("text"); //发布成功，不回填text字段
             redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_SUCCESS_KEY, (isSchedule ? "发布视频成功(定时发布)" : "发布视频成功"));
 
             logger.debug("后台发布视频成功");
