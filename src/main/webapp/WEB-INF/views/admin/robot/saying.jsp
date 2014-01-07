@@ -34,8 +34,8 @@
         <td><%=StringUtils.join(item.getTags(), ",")%>
         </td>
         <td>
-            <button class="btn" onclick="location.href='${ctx}/admin/robot/saying/update/${item.id}'">修改</button>
-            <button class="btn" onclick="deleteSaying('${item.id}', this)">删除</button>
+            <a href="${ctx}/admin/robot/saying/update/${item.id}" target="_blank">修改</a>
+            <button class="btn btn-link" onclick="deleteSaying('${item.id}', this)">删除</button>
         </td>
     </tr>
     <%

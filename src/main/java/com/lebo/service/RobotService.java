@@ -156,6 +156,7 @@ public class RobotService extends AbstractMongoService {
                 mongoTemplate.count(query, RobotSaying.class));
     }
 
+    @CacheEvict(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.ROBOT_SAYING_TAG_SPEL)
     public void addSaying(RobotSaying robotSaying) {
         mongoTemplate.insert(robotSaying);
     }
@@ -172,18 +173,48 @@ public class RobotService extends AbstractMongoService {
                 RobotSaying.class);
     }
 
+    @CacheEvict(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.ROBOT_SAYING_TAG_SPEL)
     public void deleteSaying(String id) {
         mongoTemplate.remove(
                 new Query(new Criteria(RobotSaying.ID_KEY).is(new ObjectId(id))),
                 RobotSaying.class);
     }
 
+    @CacheEvict(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.ROBOT_SAYING_TAG_SPEL)
     public void updateSaying(RobotSaying robotSaying) {
         mongoTemplate.save(robotSaying);
     }
 
     public List<RobotSaying> getAllSayings() {
         return mongoTemplate.find(new Query(), RobotSaying.class);
+    }
+
+    @Cacheable(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.ROBOT_SAYING_TAG_SPEL)
+    public List<RobotGroup> getAllSayingTags() {
+
+        Query query = new Query();
+        query.fields().include(RobotSaying.TAGS_KEY);
+
+        List<RobotSaying> sayings = mongoTemplate.find(query, RobotSaying.class);
+
+        Map<String, RobotGroup> name2group = new TreeMap<String, RobotGroup>();
+
+        for (RobotSaying robotSaying : sayings) {
+            if (robotSaying.getTags() != null) {
+                for (String group : robotSaying.getTags()) {
+
+                    RobotGroup robotGroup = name2group.get(group);
+                    if (robotGroup == null) {
+                        name2group.put(group, new RobotGroup(group, 1));
+                    } else {
+                        robotGroup.setMemberCount(robotGroup.getMemberCount() + 1);
+                    }
+
+                }
+            }
+        }
+
+        return new ArrayList<RobotGroup>(name2group.values());
     }
 
 }

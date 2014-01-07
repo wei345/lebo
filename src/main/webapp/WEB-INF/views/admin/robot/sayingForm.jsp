@@ -28,7 +28,7 @@
 
     <fieldset>
         <legend>
-            <small>添加</small>
+            <small>${saying.id == null ? "添加" : "修改"}</small>
         </legend>
 
         <div class="control-group">

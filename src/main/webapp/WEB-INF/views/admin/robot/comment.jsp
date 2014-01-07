@@ -60,8 +60,13 @@
                 updateSayingsCount();
             });
 
-            //
-            addRandomButton('#btn-robot-random', ${fn:length(robots)});
+            //创建随机选择按钮
+            addRandomButton('#btn-robot-random', ${fn:length(robots)}, function(num){
+                return '<li><a href="javascript:addRandomRobot('+ num +');void(0)">' + num + '</a></li>';
+            });
+            addRandomButton('#btn-sayings-random', ${fn:length(sayings)}, function(num){
+                return '<li><a href="javascript:addRandomSayings('+ num +');void(0)">' + num + '</a></li>';
+            });
         });
     </script>
 </head>
@@ -134,9 +139,9 @@
 
 <div class="multi-select-left">
     <span class="title">候选(<span id="sayings-unchosen-count">${fn:length(sayings)}</span>):</span>
-    <select id="sayings-unchosen" size="10" multiple="multiple">
+    <select id="sayings-unchosen" size="14" multiple="multiple">
         <c:forEach items="${sayings}" var="item">
-            <option value="${item.id}">${item.text}</option>
+            <option value="${item.id}" tag="<c:forEach items="${item.tags}" var="tag">${tag},</c:forEach>">${item.text}</option>
         </c:forEach>
     </select>
 </div>
@@ -144,6 +149,29 @@
 <div class="multi-select-btn">
     <input type="button" value="&gt;" class="btn"
            onclick="multiSelectAdd($('#sayings-unchosen'),$('#sayings-chosen')); updateSayingsCount();"/>
+
+    <div id="btn-sayings-random" class="btn-group">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+            随机
+            <span class="caret"></span>
+            &gt;
+        </button>
+        <ul class="dropdown-menu">
+        </ul>
+    </div>
+
+    <div id="btn-sayings-group" class="btn-group">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+            标签
+            <span class="caret"></span>
+            &gt;
+        </button>
+        <ul class="dropdown-menu">
+            <c:forEach items="${sayingTags}" var="group">
+                <li><a href="javascript:addTagSayings('${group.name}'); void(0)">${group.name}</a></li>
+            </c:forEach>
+        </ul>
+    </div>
 
     <input type="button" value="&gt;&gt;" class="btn"
            onclick="multiSelectAddAll($('#sayings-unchosen'),$('#sayings-chosen')); updateSayingsCount();"/>
@@ -157,7 +185,7 @@
 
 <div class="multi-select-right">
     <span class="title">已选(<span id="sayings-chosen-count">0</span>):</span>
-    <select id="sayings-chosen" name="sayings-chosen" size="10" multiple="multiple">
+    <select id="sayings-chosen" name="sayings-chosen" size="14" multiple="multiple">
     </select>
 </div>
 
@@ -289,13 +317,16 @@
         form.submit();
     }
 
-    function addRandomButton(buttonGroup, total) {
+    function addRandomButton(buttonGroup, total, createBtn) {
+        var added = {};
+
         jQuery.each([0.3, 0.5, 0.8], function (index, item) {
             var num = Math.floor(total * item);
-            if (num > 0) {
+            if (num > 0 && !added[num]) {
                 $(buttonGroup)
                         .find('.dropdown-menu')
-                        .append('<li><a href="javascript:addRandomRobot('+ num +');void(0)">' + num + '</a></li>');
+                        .append(createBtn(num));
+                added[num] = true;
             }
         });
     }
@@ -312,9 +343,26 @@
         updateRobotCount();
     }
 
+    function addRandomSayings(num) {
+        var chosen = [];
+        var unchosen = $('#sayings-unchosen option');
+
+        while (unchosen.length > 0 && chosen.length < num) {
+            chosen.push(unchosen.splice(Math.floor(Math.random() * unchosen.length), 1));
+        }
+
+        $('#sayings-chosen').append(chosen);
+        updateSayingsCount();
+    }
+
     function addGroupRobot(group){
         $('#robots-unchosen option[group*="'+ group +',"]').appendTo('#robots-chosen');
         updateRobotCount();
+    }
+
+    function addTagSayings(tag){
+        $('#sayings-unchosen option[tag*="'+ tag +',"]').appendTo('#sayings-chosen');
+        updateSayingsCount();
     }
 
     function updateRobotCount(){

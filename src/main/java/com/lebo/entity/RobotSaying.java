@@ -17,6 +17,7 @@ public class RobotSaying extends IdEntity{
     public static final String TEXT_KEY = "text";
     @Indexed
     private LinkedHashSet<String> tags;
+    public static final String TAGS_KEY = "tags";
 
     public String getText() {
         return text;

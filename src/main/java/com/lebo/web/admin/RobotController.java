@@ -175,6 +175,7 @@ public class RobotController {
         model.addAttribute("robots", robotService.getAllRobots());
         model.addAttribute("sayings", robotService.getAllSayings());
         model.addAttribute("robotGroups", robotService.getGroups());
+        model.addAttribute("sayingTags", robotService.getAllSayingTags());
 
         return "admin/robot/comment";
     }
