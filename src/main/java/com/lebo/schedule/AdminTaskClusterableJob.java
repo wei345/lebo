@@ -25,8 +25,8 @@ import java.util.List;
  * Date: 13-9-28
  * Time: PM4:30
  */
-public class PublishVideoClusterableJob extends QuartzJobBean {
-    private static Logger logger = LoggerFactory.getLogger(PublishVideoClusterableJob.class);
+public class AdminTaskClusterableJob extends QuartzJobBean {
+    private static Logger logger = LoggerFactory.getLogger(AdminTaskClusterableJob.class);
 
     private ApplicationContext applicationContext;
 
