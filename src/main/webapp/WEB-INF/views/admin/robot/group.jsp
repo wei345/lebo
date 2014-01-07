@@ -6,7 +6,7 @@
 
 <html>
 <head>
-    <title>机器人分组</title>
+    <title>机器人组</title>
 </head>
 <body>
 

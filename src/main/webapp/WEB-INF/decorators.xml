@@ -11,6 +11,10 @@
         <pattern>/docs/api/*</pattern>
     </decorator>
 
+    <decorator name="admin" page="admin.jsp">
+        <pattern>/admin/*</pattern>
+    </decorator>
+
     <decorator name="default" page="default.jsp">
         <pattern>/*</pattern>
     </decorator>
