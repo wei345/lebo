@@ -11,21 +11,18 @@ import java.util.Date;
  */
 @Document(collection = "admin.tasks")
 public class Task extends IdEntity {
-    public static final String STATUS_VALUE_DONE = "done";
-    public static final String STATUS_VALUE_TODO = "todo";
-    public static final String TYPE_VALUE_PUBLISH_VIDEO = "publish-video";
-    public static final String TYPE_VALUE_APNS_ALL_USER = "publish-notification:apns-all-user";
 
     private String title;
     private String description;
-    private String userId;//该任务创建者
-    private String type;
+    private String userId;//任务创建者
+    private Type type;
     public static final String TYPE_KEY = "type";
     private Date scheduledAt;
     public static final String SCHEDULED_AT_KEY = "scheduledAt";
     private Date createdAt;
-    private String status;
+    private Status status;
     public static final String STATUS_KEY = "status";
+    private String taskData; //任务数据json
     //-- 定时发布视频 --//
     private FileInfo video;
     private FileInfo videoFirstFrame;
@@ -40,13 +37,63 @@ public class Task extends IdEntity {
     private Integer notificationSentCount;
     private Integer notificationApnsCount;
 
-    public Task(){}
+    public Task() {
+    }
 
-    public Task(String type, String userId, Date createdAt, String title){
+    public Task(Type type, String userId, Date createdAt, String title) {
         this.type = type;
         this.userId = userId;
         this.createdAt = createdAt;
         this.title = title;
+    }
+
+    public static enum Type {
+        PUBLISH_VIDEO,
+        APNS_ALL_USER,
+        ROBOT_COMMENT
+    }
+
+    public static enum Status {
+        TODO, DONE
+    }
+
+    public static class RobotComment {
+        private String postId;
+        private String userId;
+        private String text;
+
+        public RobotComment() {
+        }
+
+        public RobotComment(String postId, String userId, String text) {
+            this.postId = postId;
+            this.userId = userId;
+            this.text = text;
+        }
+
+        public String getPostId() {
+            return postId;
+        }
+
+        public void setPostId(String postId) {
+            this.postId = postId;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
     }
 
     // JSR303 BeanValidator的校验规则
@@ -67,11 +114,11 @@ public class Task extends IdEntity {
         this.description = description;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
@@ -99,11 +146,11 @@ public class Task extends IdEntity {
         this.createdAt = createdAt;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -199,8 +246,15 @@ public class Task extends IdEntity {
         this.notificationSenderImageKey = notificationSenderImageKey;
     }
 
-    public String getNotificationSenderImageUrl(){
+    public String getNotificationSenderImageUrl() {
         return FileContentUrlUtils.getContentUrl(notificationSenderImageKey);
     }
 
+    public String getTaskData() {
+        return taskData;
+    }
+
+    public void setTaskData(String taskData) {
+        this.taskData = taskData;
+    }
 }
