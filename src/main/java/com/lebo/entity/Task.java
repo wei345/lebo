@@ -49,11 +49,51 @@ public class Task extends IdEntity {
 
     public static enum Type {
         PUBLISH_VIDEO,
-        APNS_ALL_USER
+        APNS_ALL_USER,
+        ROBOT_COMMENT
     }
 
     public static enum Status {
         TODO, DONE
+    }
+
+    public static class RobotComment {
+        private String postId;
+        private String userId;
+        private String text;
+
+        public RobotComment() {
+        }
+
+        public RobotComment(String postId, String userId, String text) {
+            this.postId = postId;
+            this.userId = userId;
+            this.text = text;
+        }
+
+        public String getPostId() {
+            return postId;
+        }
+
+        public void setPostId(String postId) {
+            this.postId = postId;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
     }
 
     // JSR303 BeanValidator的校验规则

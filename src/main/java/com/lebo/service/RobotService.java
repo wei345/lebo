@@ -42,6 +42,13 @@ public class RobotService extends AbstractMongoService {
                 User.class);
     }
 
+    public List<User> getAllRobots() {
+        Query query = new Query(new Criteria(User.ROBOT_KEY).ne(null));
+        query.fields().include(User.ROBOT_KEY).include(User.SCREEN_NAME_KEY);
+
+        return mongoTemplate.find(query, User.class);
+    }
+
     //-- 机器人分组 --//
 
 
@@ -173,6 +180,10 @@ public class RobotService extends AbstractMongoService {
 
     public void updateSaying(RobotSaying robotSaying) {
         mongoTemplate.save(robotSaying);
+    }
+
+    public List<RobotSaying> getAllSayings() {
+        return mongoTemplate.find(new Query(), RobotSaying.class);
     }
 
 }

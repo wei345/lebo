@@ -177,7 +177,7 @@
         <th class="input-small">
             评分
         </th>
-        <th class="input-mini">
+        <th style="width:6em;">
             操作
         </th>
     </tr>
@@ -232,7 +232,8 @@
             </td>
 
             <td>
-                <a href="${ctx}/admin/comment/list?postId=${item.id}" target="_blank">查看评论</a>
+                <a href="${ctx}/admin/comment/list?postId=${item.id}" target="_blank">查看评论</a><br/>
+                <a href="${ctx}/admin/robot/comment?postId=${item.id}" target="_blank">机器人评论</a>
                 <input type="button" value="删除" class="btn btn-link" onclick="deletePost('${item.id}', this)"/>
             </td>
 

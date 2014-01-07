@@ -25,7 +25,7 @@
 <ul>
     <li><a href="${ctx}/admin/task/publish-video">发布视频</a></li>
     <li><a href="${ctx}/admin/task/apns-all-user">推送通知</a></li>
-    <li>机器人任务</li>
+    <li><a href="${ctx}/admin/robot/comment">机器人评论</a></li>
 </ul>
 
 <h2>统计</h2>

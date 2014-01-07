@@ -74,11 +74,10 @@ public class TaskService extends AbstractMongoService {
     /**
      * 查询待执行的到期任务
      */
-    public List<Task> getDueTask(Date time, Task.Type type) {
+    public List<Task> getDueTask(Date time) {
         Query query = new Query();
         query.addCriteria(new Criteria(Task.SCHEDULED_AT_KEY).lte(time));
         query.addCriteria(new Criteria(Task.STATUS_KEY).is(Task.Status.TODO));
-        query.addCriteria(new Criteria(Task.TYPE_KEY).is(type));
         return mongoTemplate.find(query, Task.class);
     }
 
@@ -105,6 +104,21 @@ public class TaskService extends AbstractMongoService {
         task.setVideoFirstFrame(videoFirstFrame);
         task.setVideoText(text);
         task.setVideoSource(source);
+
+        taskDao.save(task);
+    }
+
+    public void createTask(String title, Task.Type type, Date scheduledAt, String taskData){
+        Task task = new Task();
+        task.setCreatedAt(new Date());
+        task.setId(newMongoId(task.getCreatedAt()));
+        task.setUserId(accountService.getCurrentUserId());
+        task.setStatus(Task.Status.TODO);
+
+        task.setTitle(title);
+        task.setType(type);
+        task.setScheduledAt(scheduledAt);
+        task.setTaskData(taskData);
 
         taskDao.save(task);
     }

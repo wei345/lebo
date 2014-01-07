@@ -1,8 +1,12 @@
 package com.lebo.web.admin;
 
 import com.lebo.entity.RobotSaying;
+import com.lebo.entity.Task;
 import com.lebo.service.RobotService;
+import com.lebo.service.StatusService;
+import com.lebo.service.TaskService;
 import com.lebo.service.param.PageRequest;
+import com.lebo.web.ControllerSetup;
 import com.lebo.web.ControllerUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,9 @@ import org.springside.modules.mapper.JsonMapper;
 import org.springside.modules.utils.Collections3;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: Wei Liu
@@ -28,6 +34,12 @@ public class RobotController {
 
     @Autowired
     private RobotService robotService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private StatusService statusService;
 
     public static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
 
@@ -153,10 +165,47 @@ public class RobotController {
         return ControllerUtils.AJAX_OK;
     }
 
-    //-- 机器人评论 --//
-
+    //-- 机器人任务 --//
     @RequestMapping(value = "comment", method = RequestMethod.GET)
-    public String comment() {
+    public String comment(
+            @RequestParam(value = "postId", required = false) String postId,
+            Model model) {
+        model.addAttribute("postId", postId);
+        model.addAttribute("robots", robotService.getAllRobots());
+        model.addAttribute("sayings", robotService.getAllSayings());
+
         return "admin/robot/comment";
+    }
+
+    @RequestMapping(value = "comment", method = RequestMethod.POST)
+    public String comment(@RequestParam("comments") String commentsJson,
+                          @RequestParam("postId") String postId,
+                          RedirectAttributes redirectAttributes) throws ParseException {
+
+        if (!statusService.postExists(postId)) {
+            redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, "该帖子不存在");
+            return "redirect:/admin/robot/comment?postId=" + postId;
+        }
+
+        List<Map<String, String>> comments = jsonMapper.fromJson(commentsJson, jsonMapper.contructCollectionType(List.class, Map.class));
+
+        for (Map<String, String> item : comments) {
+
+            String taskData = jsonMapper.toJson(
+                    new Task.RobotComment(
+                            postId,
+                            item.get("userId"),
+                            item.get("text")));
+
+            taskService.createTask(
+                    "机器人评论",
+                    Task.Type.ROBOT_COMMENT,
+                    ControllerSetup.DEFAULT_DATE_FORMAT.parse(item.get("time")),
+                    taskData);
+        }
+
+        redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_SUCCESS_KEY, "机器人评论提交成功");
+
+        return "redirect:/admin/robot/comment";
     }
 }
