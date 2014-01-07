@@ -12,10 +12,11 @@
         request.setAttribute("profileImageUrl", profileImageUrl);
     }
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>乐播API文档</title>
+    <title>乐播</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <meta http-equiv="Cache-Control" content="no-store"/>
     <meta http-equiv="Pragma" content="no-cache"/>
@@ -24,23 +25,14 @@
     <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
     <link href="${ctx}/static/bootstrap/2.2.2/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
     <link href="${ctx}/static/jquery-validation/1.11.0/validate.css" type="text/css" rel="stylesheet"/>
+    <link href="${ctx}/static/jquery-ui/jquery-ui-1.10.3.custom.css" type="text/css" rel="stylesheet"/>
     <link href="${ctx}/static/styles/default.css" type="text/css" rel="stylesheet"/>
-    <link href="${ctx}/static/hightlight/github.min.css" type="text/css" rel="stylesheet"/>
     <script src="${ctx}/static/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-validation/1.11.0/jquery.validate.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/jquery-validation/1.11.0/messages_bs_zh.js" type="text/javascript"></script>
-    <script src="${ctx}/static/hightlight/highlight.min.js" type="text/javascript"></script>
-
-    <style>
-        pre code {
-            background-color: transparent;
-        }
-
-        #header #title small a {
-            margin-left: 1em;
-            color: #658A16
-        }
-    </style>
+    <script src="${ctx}/static/jquery-ui/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
+    <script src="${ctx}/static/jquery-ui/jquery.ui.datepicker-zh-CN.min.js" type="text/javascript"></script>
+    <script src="${ctx}/static/application.js" type="text/javascript"></script>
 
     <sitemesh:head/>
 </head>
@@ -50,12 +42,8 @@
 
     <div id="header">
         <div id="title">
-            <h1><a href="${ctx}/docs/api/1">乐播<small> REST API v1</small></a>
-                <small>
-                    <a href='${ctx}/docs/api/1/dataStructures'>返回对象数据结构</a>
-                    <a href='${ctx}/docs/api/1/pagination'>分页</a>
-                    <a href='${ctx}/docs/api/1/environments'>环境</a>
-                </small>
+            <h1><a href="${ctx}/admin">乐播</a>
+                <small><sitemesh:title/></small>
                 <shiro:user>
                     <div class="btn-group pull-right">
                         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -93,23 +81,5 @@
     <%@ include file="/WEB-INF/layouts/footer.jsp" %>
 </div>
 <script src="${ctx}/static/bootstrap/2.2.2/js/bootstrap.min.js" type="text/javascript"></script>
-<script>
-    $(document).ready(function () {
-        $('pre code').each(function (i, e) {
-            //去掉各行开头的4个空格
-            if (e.innerHTML.match(/(    .*)+/)) {
-                e.innerHTML = e.innerHTML.replace(/    (.*)/g, "$1");
-            }
-            //去掉首尾空行
-            e.innerHTML = e.innerHTML.replace(/^\n+|\n+$/g, '');
-
-            hljs.highlightBlock(e);
-        });
-    });
-    //去掉textarea首尾空格 -- 如果textarea.tag被格式化，那么页面上textarea内容有空格。
-    $('textarea').each(function () {
-        this.innerHTML = $.trim(this.innerHTML);
-    });
-</script>
 </body>
 </html>
