@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <html>
@@ -16,13 +17,14 @@
         }
 
         .multi-select-btn {
-            width: 3em;
+            width: 5em;
             padding: 2em;
             float: left;
         }
 
-        .multi-select-btn input[type=button] {
+        .multi-select-btn input[type=button], .multi-select-btn button {
             margin-top: 0.5em;
+            display: block;
         }
     </style>
     <script>
@@ -40,19 +42,26 @@
             //双向选择列表双击事件
             $('#robots-unchosen').dblclick(function () {
                 multiSelectAdd(this, '#robots-chosen');
+                updateRobotCount();
             });
 
             $('#robots-chosen').dblclick(function () {
                 multiSelectAdd(this, '#robots-unchosen');
+                updateRobotCount();
             });
 
             $('#sayings-unchosen').dblclick(function () {
                 multiSelectAdd(this, '#sayings-chosen');
+                updateSayingsCount();
             });
 
             $('#sayings-chosen').dblclick(function () {
                 multiSelectAdd(this, '#sayings-unchosen');
+                updateSayingsCount();
             });
+
+            //
+            addRandomButton('#btn-robot-random', ${fn:length(robots)});
         });
     </script>
 </head>
@@ -69,31 +78,54 @@
 <h3>机器人</h3>
 
 <div class="multi-select-left">
-    <span class="title">候选:</span>
-    <select id="robots-unchosen" size="10" multiple="multiple">
+    <span class="title">候选(<span id="robots-unchosen-count">${fn:length(robots)}</span>):</span>
+    <select id="robots-unchosen" size="14" multiple="multiple">
         <c:forEach items="${robots}" var="item">
-            <option value="${item.id}">${item.screenName}</option>
+            <option value="${item.id}" group="<c:forEach items="${item.robot.groups}" var="group">${group},</c:forEach>">${item.screenName}</option>
         </c:forEach>
     </select>
 </div>
 
 <div class="multi-select-btn">
     <input type="button" value="&gt;" class="btn"
-           onclick="multiSelectAdd($('#robots-unchosen'),$('#robots-chosen'))"/>
+           onclick="multiSelectAdd($('#robots-unchosen'),$('#robots-chosen')); updateRobotCount();"/>
+
+    <div id="btn-robot-random" class="btn-group">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+            随机
+            <span class="caret"></span>
+            &gt;
+        </button>
+        <ul class="dropdown-menu">
+        </ul>
+    </div>
+
+    <div id="btn-robot-group" class="btn-group">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+            组
+            <span class="caret"></span>
+            &gt;
+        </button>
+        <ul class="dropdown-menu">
+            <c:forEach items="${robotGroups}" var="group">
+                <li><a href="javascript:addGroupRobot('${group.name}'); void(0)">${group.name}</a></li>
+            </c:forEach>
+        </ul>
+    </div>
 
     <input type="button" value="&gt;&gt;" class="btn"
-           onclick="multiSelectAddAll($('#robots-unchosen'),$('#robots-chosen'))"/>
+           onclick="multiSelectAddAll($('#robots-unchosen'),$('#robots-chosen')); updateRobotCount();"/>
 
     <input type="button" value="&lt;" class="btn"
-           onclick="multiSelectAdd($('#robots-chosen'),$('#robots-unchosen'))"/>
+           onclick="multiSelectAdd($('#robots-chosen'),$('#robots-unchosen')); updateRobotCount();"/>
 
     <input type="button" value="&lt;&lt;" class="btn"
-           onclick="multiSelectAddAll($('#robots-chosen'),$('#robots-unchosen'))"/>
+           onclick="multiSelectAddAll($('#robots-chosen'),$('#robots-unchosen')); updateRobotCount();"/>
 </div>
 
 <div class="multi-select-right">
-    <span class="title">已选:</span>
-    <select id="robots-chosen" name="robots-chosen" size="10" multiple="multiple">
+    <span class="title">已选(<span id="robots-chosen-count">0</span>):</span>
+    <select id="robots-chosen" name="robots-chosen" size="14" multiple="multiple">
     </select>
 </div>
 
@@ -101,7 +133,7 @@
 <h3>语句</h3>
 
 <div class="multi-select-left">
-    <span class="title">候选:</span>
+    <span class="title">候选(<span id="sayings-unchosen-count">${fn:length(sayings)}</span>):</span>
     <select id="sayings-unchosen" size="10" multiple="multiple">
         <c:forEach items="${sayings}" var="item">
             <option value="${item.id}">${item.text}</option>
@@ -111,20 +143,20 @@
 
 <div class="multi-select-btn">
     <input type="button" value="&gt;" class="btn"
-           onclick="multiSelectAdd($('#sayings-unchosen'),$('#sayings-chosen'))"/>
+           onclick="multiSelectAdd($('#sayings-unchosen'),$('#sayings-chosen')); updateSayingsCount();"/>
 
     <input type="button" value="&gt;&gt;" class="btn"
-           onclick="multiSelectAddAll($('#sayings-unchosen'),$('#sayings-chosen'))"/>
+           onclick="multiSelectAddAll($('#sayings-unchosen'),$('#sayings-chosen')); updateSayingsCount();"/>
 
     <input type="button" value="&lt;" class="btn"
-           onclick="multiSelectAdd($('#sayings-chosen'),$('#sayings-unchosen'))"/>
+           onclick="multiSelectAdd($('#sayings-chosen'),$('#sayings-unchosen')); updateSayingsCount();"/>
 
     <input type="button" value="&lt;&lt;" class="btn"
-           onclick="multiSelectAddAll($('#sayings-chosen'),$('#sayings-unchosen'))"/>
+           onclick="multiSelectAddAll($('#sayings-chosen'),$('#sayings-unchosen')); updateSayingsCount();"/>
 </div>
 
 <div class="multi-select-right">
-    <span class="title">已选:</span>
+    <span class="title">已选(<span id="sayings-chosen-count">0</span>):</span>
     <select id="sayings-chosen" name="sayings-chosen" size="10" multiple="multiple">
     </select>
 </div>
@@ -255,6 +287,44 @@
 
         form[0].comments.value = JSON.stringify(comments);
         form.submit();
+    }
+
+    function addRandomButton(buttonGroup, total) {
+        jQuery.each([0.3, 0.5, 0.8], function (index, item) {
+            var num = Math.floor(total * item);
+            if (num > 0) {
+                $(buttonGroup)
+                        .find('.dropdown-menu')
+                        .append('<li><a href="javascript:addRandomRobot('+ num +');void(0)">' + num + '</a></li>');
+            }
+        });
+    }
+
+    function addRandomRobot(num) {
+        var chosen = [];
+        var unchosen = $('#robots-unchosen option');
+
+        while (unchosen.length > 0 && chosen.length < num) {
+            chosen.push(unchosen.splice(Math.floor(Math.random() * unchosen.length), 1));
+        }
+
+        $('#robots-chosen').append(chosen);
+        updateRobotCount();
+    }
+
+    function addGroupRobot(group){
+        $('#robots-unchosen option[group*="'+ group +',"]').appendTo('#robots-chosen');
+        updateRobotCount();
+    }
+
+    function updateRobotCount(){
+        $('#robots-unchosen-count').html($('#robots-unchosen option').length);
+        $('#robots-chosen-count').html($('#robots-chosen option').length);
+    }
+
+    function updateSayingsCount(){
+        $('#sayings-unchosen-count').html($('#sayings-unchosen option').length);
+        $('#sayings-chosen-count').html($('#sayings-chosen option').length);
     }
 </script>
 

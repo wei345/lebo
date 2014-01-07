@@ -170,9 +170,11 @@ public class RobotController {
     public String comment(
             @RequestParam(value = "postId", required = false) String postId,
             Model model) {
+
         model.addAttribute("postId", postId);
         model.addAttribute("robots", robotService.getAllRobots());
         model.addAttribute("sayings", robotService.getAllSayings());
+        model.addAttribute("robotGroups", robotService.getGroups());
 
         return "admin/robot/comment";
     }
