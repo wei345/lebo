@@ -49,11 +49,6 @@ public class PostController {
 
     private static int HOT_POST_COUNT = 60;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index() {
-        return "admin/post/index";
-    }
-
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public String list(@RequestParam(value = "userId", required = false) String userId,
                        @RequestParam(value = "screenName", required = false) String screenName,
