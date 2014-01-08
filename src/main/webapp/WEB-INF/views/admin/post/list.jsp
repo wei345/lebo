@@ -93,6 +93,15 @@
             top: 5px;
             right: 5px;
         }
+
+        ul.moreinfo {
+            list-style: none;
+            margin: 10px 0 0 0;
+        }
+
+        .moreinfo-title {
+            margin-left: 1em;
+        }
     </style>
 </head>
 <body>
@@ -220,8 +229,13 @@
                     <label title="人气"><span class="icon-gift"></span>${item.popularity}</label>
                     <label title="红心+人气+评分"><span class="icon-star"></span><span
                             class="starValue">${item.favoritesCount + item.popularity + item.rating}</span></label>
+                    <a href="javascript:void(0)" class="moreinfo-title" onclick="$('#moreinfo-${item.id}').toggle();">更多>></a>
                 </div>
 
+                <ul id="moreinfo-${item.id}" class="moreinfo" style="display:none">
+                    <li>帖子ID: ${item.id}</li>
+                    <li>用户ID: ${item.userId}</li>
+                </ul>
             </td>
 
             <td title="评分" onclick="showRateInputForm($(this).find('.rating-wrapper'), '${item.id}')">

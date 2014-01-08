@@ -277,6 +277,18 @@
         </div>
     </div>
 
+    <h2>小应用:每天笑十次</h2>
+
+    <div class="control-group">
+        <label class="control-label">帖子来源用户:</label>
+        <div class="controls">
+            <input type="text" id="everyday10AccountId" name="everyday10AccountId"
+                   value="${setting.everyday10AccountId}"
+                   placeholder="用户ID"
+                   class="input-large required"/>
+        </div>
+    </div>
+
     <div class="form-actions">
         <input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
         <input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;
