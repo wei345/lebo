@@ -54,6 +54,9 @@ public class Setting extends IdEntity {
 
     private Integer imPollingIntervalSeconds = 180;
 
+    //小应用:每天笑十次
+    private String everyday10AccountId;
+
     public String getOfficialAccountId() {
         return officialAccountId;
     }
@@ -268,5 +271,13 @@ public class Setting extends IdEntity {
 
     public void setDigestTopPostId(String digestTopPostId) {
         this.digestTopPostId = digestTopPostId;
+    }
+
+    public String getEveryday10AccountId() {
+        return everyday10AccountId;
+    }
+
+    public void setEveryday10AccountId(String everyday10AccountId) {
+        this.everyday10AccountId = everyday10AccountId;
     }
 }

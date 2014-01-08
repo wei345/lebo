@@ -145,7 +145,7 @@ public class AccountService extends AbstractMongoService {
      */
     public String getUserId(String userId, String screenName) {
         if (StringUtils.isBlank(userId) && StringUtils.isBlank(screenName)) {
-            throw new ServiceException("Providing either screenName or userId is required.");
+            throw new ServiceException("必须提供 screenName 或 userId");
         }
 
         if (StringUtils.isNotBlank(userId)) {
@@ -153,7 +153,7 @@ public class AccountService extends AbstractMongoService {
         } else {
             User user = findUserByScreenName(screenName);
             if (user == null) {
-                throw new ServiceException("Not Found " + screenName);
+                throw new ServiceException("用户不存在 " + screenName);
             }
             return user.getId();
         }

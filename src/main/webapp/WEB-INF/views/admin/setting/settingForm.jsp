@@ -169,6 +169,7 @@
 
 <div class="control-group">
     <label for="digestTopPostId" class="control-label">精华页 置顶帖子ID:</label>
+
     <div class="controls">
         <input type="text" id="digestTopPostId" name="digestTopPostId" value="${setting.digestTopPostId}"
                class="input-large required"/>
@@ -307,6 +308,19 @@
     <div class="controls">
         <input type="text" id="imPollingIntervalSeconds" name="imPollingIntervalSeconds"
                value="${setting.imPollingIntervalSeconds}"
+               class="input-large required"/>
+    </div>
+</div>
+
+<h2>小应用:每天笑十次</h2>
+
+<div class="control-group">
+    <label class="control-label">帖子来源用户:</label>
+
+    <div class="controls">
+        <input type="text" id="everyday10AccountId" name="everyday10AccountId"
+               value="${setting.everyday10AccountId}"
+               placeholder="用户ID"
                class="input-large required"/>
     </div>
 </div>
