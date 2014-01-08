@@ -1,9 +1,10 @@
 package com.lebo.rest.everyday10;
 
 import com.lebo.entity.Post;
+import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
-import com.lebo.service.account.AccountService;
 import com.lebo.service.param.TimelineParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,16 +29,21 @@ public class EveryDay10RestConroller {
     @Autowired
     private StatusService statusService;
     @Autowired
-    private AccountService accountService;
+    private SettingService settingService;
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
     public Object list(@Valid TimelineParam param,
-                       @RequestParam(value = "count", defaultValue = "10") int count,
-                       @RequestParam(value = "screenName", defaultValue = "每天笑十次") String screenName) {
+                       @RequestParam(value = "count", defaultValue = "10") int count) {
+
+        String userId = settingService.getSetting().getEveryday10AccountId();
+
+        if (StringUtils.isBlank(userId)) {
+            return Collections.EMPTY_LIST;
+        }
+
         param.setCount(count);
-        param.setScreenName(screenName);
-        param.setUserId(accountService.getUserId(param.getUserId(), screenName));
+        param.setUserId(userId);
 
         List<Post> posts = statusService.userTimeline(param);
         return statusService.toBasicStatusDtos(posts);
