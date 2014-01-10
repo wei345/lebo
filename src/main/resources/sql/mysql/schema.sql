@@ -20,19 +20,19 @@ CREATE TABLE vg_gold_product (
   ENGINE =InnoDB;
 
 CREATE TABLE vg_gold_order (
-  id               BIGINT        NOT NULL PRIMARY KEY,
-  user_id          VARCHAR(24)   NOT NULL,
-  gold_product_id  BIGINT        NOT NULL,
-  quantity         INT           NOT NULL,
-  discount         DECIMAL(5, 2) NOT NULL,
-  subject          VARCHAR(1024) NOT NULL,
-  total_cost       DECIMAL(5, 2) NOT NULL,
-  gold             INT           NOT NULL,
-  order_date       DATETIME      NOT NULL,
-  status           VARCHAR(32),
-  payment_method   VARCHAR(32),
-  alipay_status    VARCHAR(32),
-  alipay_notify_id VARCHAR(255),
+  id              BIGINT        NOT NULL PRIMARY KEY,
+  user_id         VARCHAR(24)   NOT NULL,
+  gold_product_id BIGINT        NOT NULL,
+  quantity        INT           NOT NULL,
+  discount        DECIMAL(5, 2) NOT NULL,
+  subject         VARCHAR(1024) NOT NULL,
+  total_cost      DECIMAL(5, 2) NOT NULL,
+  gold            INT           NOT NULL,
+  order_date      DATETIME      NOT NULL,
+  status          VARCHAR(32),
+  payment_method  VARCHAR(32)   NOT NULL,
+  payment_status  VARCHAR(32),
+  extra_json      VARCHAR(10240),
   FOREIGN KEY (gold_product_id) REFERENCES vg_gold_product (id)
 )
   ENGINE =InnoDB;

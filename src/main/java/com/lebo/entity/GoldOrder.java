@@ -25,7 +25,7 @@ public class GoldOrder {
     private Date orderDate;
     private Status status;
     private PaymentMethod paymentMethod;
-    private AlipayService.AlipayStatus alipayStatus;
+    private String paymentStatus;
     private String alipayNotifyId;
 
     public static enum Status {
@@ -38,13 +38,8 @@ public class GoldOrder {
     }
 
     public static enum PaymentMethod {
-        ALIPAY("支付宝");
-
-        private String name;
-
-        PaymentMethod(String name) {
-            this.name = name;
-        }
+        ALIPAY,
+        IN_APP_PURCHASE
     }
 
     public GoldOrder() {
@@ -133,12 +128,12 @@ public class GoldOrder {
         return StringUtils.substring(subject, 0, 128);
     }
 
-    public AlipayService.AlipayStatus getAlipayStatus() {
-        return alipayStatus;
+    public String getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setAlipayStatus(AlipayService.AlipayStatus alipayStatus) {
-        this.alipayStatus = alipayStatus;
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public String getAlipayNotifyId() {

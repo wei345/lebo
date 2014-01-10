@@ -15,7 +15,7 @@
         <result property="gold" column="gold"/>
         <result property="status" column="status"/>
         <result property="paymentMethod" column="payment_method"/>
-        <result property="alipayStatus" column="alipay_status"/>
+        <result property="paymentStatus" column="payment_status"/>
         <result property="alipayNotifyId" column="alipay_notify_id"/>
         <result property="goldProduct.id" column="gold_product_id"/>
     </resultMap>
@@ -59,7 +59,7 @@
         order_date,
         status,
         payment_method,
-        alipay_status,
+        payment_status,
         alipay_notify_id
         from vg_gold_order
         where id = #{id}
@@ -71,8 +71,8 @@
             <if test="status != null">
                 status = #{status},
             </if>
-            <if test="alipayStatus != null">
-                alipay_status = #{alipayStatus},
+            <if test="paymentStatus != null">
+                payment_status = #{paymentStatus},
             </if>
             <if test="alipayNotifyId != null">
                 alipay_notify_id = #{alipayNotifyId}

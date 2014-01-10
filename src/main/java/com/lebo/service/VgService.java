@@ -177,7 +177,7 @@ public class VgService {
 
         GoldOrder goldOrder = goldOrderDao.get(outTradeNo);
 
-        AlipayStatus currentAlipayStatus = goldOrder.getAlipayStatus();
+        AlipayStatus currentAlipayStatus = AlipayStatus.valueOf(goldOrder.getPaymentStatus());
 
         if (currentAlipayStatus == null || currentAlipayStatus.canChangeTo(alipayStatus)) {
 
@@ -258,7 +258,7 @@ public class VgService {
     public void updateTradeStatus(Long orderId, GoldOrder.Status status, AlipayStatus alipayStatus, String alipayNotifyId) {
         GoldOrder goldOrder = new GoldOrder(orderId);
         goldOrder.setStatus(status);
-        goldOrder.setAlipayStatus(alipayStatus);
+        goldOrder.setPaymentStatus(alipayStatus.name());
         goldOrder.setAlipayNotifyId(alipayNotifyId);
         goldOrderDao.updateStatus(goldOrder);
     }
