@@ -259,7 +259,6 @@ public class VgService {
         GoldOrder goldOrder = new GoldOrder(orderId);
         goldOrder.setStatus(status);
         goldOrder.setPaymentStatus(alipayStatus.name());
-        goldOrder.setAlipayNotifyId(alipayNotifyId);
         goldOrderDao.updateStatus(goldOrder);
     }
 
