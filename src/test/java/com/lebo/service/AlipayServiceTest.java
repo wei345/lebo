@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.lebo.service.AlipayService.AlipayStatus.TRADE_FINISHED;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -77,6 +78,12 @@ public class AlipayServiceTest extends SpringContextTestCase {
     }
 
     @Test
+    public void getAlipayParams(){
+        String signedParams = alipayService.getAlipayParams("5216d0dc1a8829c4ae1bbec3", 1L, "mobile.securitypay.pay", "1");
+        System.out.println(signedParams);
+    }
+
+    @Test
     public void alipayStatus(){
         assertTrue(AlipayService.AlipayStatus.TRADE_SUCCESS == AlipayService.AlipayStatus.valueOf("TRADE_SUCCESS"));
     }
@@ -89,4 +96,13 @@ public class AlipayServiceTest extends SpringContextTestCase {
         assertFalse(alipayService.checkNotifyId(key));
     }
 
+    @Test
+    public void handleAlipayNotify(){
+        alipayService.handleNotify(2013121312071706588L, TRADE_FINISHED, "test-12345678");
+    }
+
+    @Test
+    public void tradeSuccess(){
+        alipayService.tradeSuccess(1L, AlipayService.AlipayStatus.TRADE_SUCCESS, "test-123456");
+    }
 }

@@ -5,6 +5,8 @@ import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.GiverRankingDto;
 import com.lebo.rest.dto.UserGoodsDto;
 import com.lebo.rest.dto.UserVgDto;
+import com.lebo.service.AlipayService;
+import com.lebo.service.InAppPurchaseService;
 import com.lebo.service.StatusService;
 import com.lebo.service.VgService;
 import com.lebo.service.account.AccountService;
@@ -35,6 +37,10 @@ public class VgRestController {
     private AccountService accountService;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private InAppPurchaseService inAppPurchaseService;
+    @Autowired
+    private AlipayService alipayService;
 
     private static final String API_1_1_VG = "/api/1.1/vg/";
 
@@ -56,7 +62,7 @@ public class VgRestController {
 
         /*if (GoldOrder.PaymentMethod.ALIPAY == paymentMethod) {
 
-            String params = vgService.getAlipayParams(
+            String params = alipayService.getAlipayParams(
                     accountService.getCurrentUserId(),
                     productId,
                     alipayService,
@@ -70,6 +76,13 @@ public class VgRestController {
             return ErrorDto.badRequest("不支持该付款方式: [" + paymentMethod + "]");
         }*/
 
+    }
+
+    @RequestMapping(value = API_1_1_VG + "inAppPurchase.json", method = RequestMethod.POST)
+    @ResponseBody
+    public Object inAppPurchase(@RequestParam("receiptData") String receiptData){
+        InAppPurchaseService.Receipt receipt = inAppPurchaseService.verifyReceipt(receiptData);
+        return null;
     }
 
     @RequestMapping(value = API_1_1_VG + "goldOrders/detail.json", method = RequestMethod.GET)

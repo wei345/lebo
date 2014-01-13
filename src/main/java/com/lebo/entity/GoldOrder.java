@@ -25,7 +25,7 @@ public class GoldOrder {
     private Status status;
     private PaymentMethod paymentMethod;
     private String paymentStatus;
-    private String extraJson;
+    private String paymentDetail;
 
     public static enum Status {
         PAID,        //已支付
@@ -164,11 +164,11 @@ public class GoldOrder {
         return gold;
     }
 
-    public String getExtraJson() {
-        return extraJson;
+    public String getPaymentDetail() {
+        return paymentDetail;
     }
 
-    public void setExtraJson(String extraJson) {
-        this.extraJson = extraJson;
+    public void setPaymentDetail(String paymentDetail) {
+        this.paymentDetail = paymentDetail;
     }
 }

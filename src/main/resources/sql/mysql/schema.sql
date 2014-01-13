@@ -32,7 +32,7 @@ CREATE TABLE vg_gold_order (
   status          VARCHAR(32),
   payment_method  VARCHAR(32)   NOT NULL,
   payment_status  VARCHAR(32),
-  extra_json      VARCHAR(10240),
+  payment_detail  VARCHAR(10240),
   FOREIGN KEY (gold_product_id) REFERENCES vg_gold_product (id)
 )
   ENGINE =InnoDB;
