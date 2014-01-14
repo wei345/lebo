@@ -41,6 +41,7 @@
         gold,
         active
         from vg_gold_product
+        order by gold asc
     </select>
 
     <select id="getActive" resultMap="goldProductMap">
@@ -55,6 +56,7 @@
         active
         from vg_gold_product
         where active = 1
+        order by gold asc
     </select>
 
 </mapper>

@@ -101,8 +101,8 @@ INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount,
 INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (3, '200个金币', '黄金作为货币有很多理由。它的买卖价差低。', 20, 'CNY', -2, 'images/gold/gold-200.png', 200, 1);
 INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (4, '500个金币', '黄金可以分割成小单位，而不损害其价值；它也可以熔成锭，并且重铸成硬币。', 50, 'CNY', -10, 'images/gold/gold-500.png', 500, 1);
 INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (5, '1000个金币', '黄金的密度比大多数金属高，使假币很难流通。', 100, 'CNY', -30, 'images/gold/gold-1000.png', 1000, 0);
-INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (6, '60个金币', '金币是一种全部或大部份由黄金制造的硬币。', 6, 'CNY', 0, 'images/gold/gold-10.png', 10, 1);
-INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (7, '120个金币', '黄金差不多在硬币发明之初，就因其价值被用来当作硬币。', 12, 'CNY', 0, 'images/gold/gold-50.png', 50, 1);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (6, '60个金币', '金币是一种全部或大部份由黄金制造的硬币。', 6, 'CNY', 0, 'images/gold/gold-10.png', 60, 1);
+INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (7, '120个金币', '黄金差不多在硬币发明之初，就因其价值被用来当作硬币。', 12, 'CNY', 0, 'images/gold/gold-50.png', 120, 1);
 INSERT INTO vg_gold_product (id, name, description, price, price_unit, discount, image, gold, active) VALUES (8, '1000个金币', '黄金的密度比大多数金属高，使假币很难流通。', 100, 'CNY', -27, 'images/gold/gold-1000.png', 1000, 1);
 
 INSERT INTO vg_goods (id, name, description, price, image_normal, image_bigger, quantity_unit) VALUES (1, '贝壳', '点缀海滩的可爱动物，据说每得到一个贝壳可以增加3点人气哦！', 3, 'images/vg/shell-118x118.png', 'images/vg/shell-220x222.png', '个');
