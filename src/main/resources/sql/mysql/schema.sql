@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS vg_goods;
 
 CREATE TABLE vg_gold_product (
   id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name        VARCHAR(255)  NOT NULL UNIQUE,
+  name        VARCHAR(255)  NOT NULL,
   description VARCHAR(1024),
   price       DECIMAL(5, 2) NOT NULL,
   price_unit  VARCHAR(100)  NOT NULL,

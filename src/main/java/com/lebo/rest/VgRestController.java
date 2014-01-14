@@ -36,8 +36,6 @@ public class VgRestController {
     private StatusService statusService;
     @Autowired
     private InAppPurchaseService inAppPurchaseService;
-    @Autowired
-    private AlipayService alipayService;
 
     private static final String API_1_1_VG = "/api/1.1/vg/";
 

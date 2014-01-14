@@ -75,7 +75,7 @@ public class VgService {
     //-- 金币产品 --//
 
     public List<GoldProduct> findAllGoldProducts() {
-        return goldProductDao.getAll();
+        return goldProductDao.getActive();
     }
 
     public GoldProduct getGoldProduct(long id){
