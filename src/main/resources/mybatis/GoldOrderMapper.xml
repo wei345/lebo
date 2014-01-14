@@ -72,6 +72,9 @@
             <if test="paymentStatus != null">
                 payment_status = #{paymentStatus},
             </if>
+            <if test="paymentDetail != null">
+                payment_detail = #{paymentDetail},
+            </if>
         </set>
         where id = #{id}
     </update>

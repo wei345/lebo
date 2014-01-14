@@ -1,7 +1,12 @@
 package com.lebo.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lebo.entity.GoldOrder;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springside.modules.mapper.JsonMapper;
 import org.springside.modules.utils.Encodes;
@@ -17,8 +22,10 @@ import java.util.Map;
  * Time: PM7:03
  */
 @Service
+@Transactional
 public class InAppPurchaseService {
-
+    @Autowired
+    private VgService vgService;
     private RestTemplate restTemplate = new RestTemplate();
     private JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
 
@@ -68,6 +75,63 @@ public class InAppPurchaseService {
         "receipt":{"original_purchase_date_pst":"2014-01-02 00:30:11 America/Los_Angeles", "purchase_date_ms":"1388651411975", "unique_identifier":"ff7c3b2dd915ff5ea6c544eb2900b75ca882ead9", "original_transaction_id":"1000000097629358", "bvrs":"1.0", "transaction_id":"1000000097629358", "quantity":"1", "unique_vendor_identifier":"A0EDE802-C3C8-4BB7-8623-48F9C9B414DF", "item_id":"790209201", "product_id":"com.kuwangke.production1001", "purchase_date":"2014-01-02 08:30:11 Etc/GMT", "original_purchase_date":"2014-01-02 08:30:11 Etc/GMT", "purchase_date_pst":"2014-01-02 00:30:11 America/Los_Angeles", "bid":"com.kuwangke.superman", "original_purchase_date_ms":"1388651411975"}, "status":0}
 
     */
+
+    public void delivery(Receipt receipt, String receiptData, String userId) {
+
+        GoldOrder goldOrder = vgService.createOrder(
+                receipt.getOrderId(),
+                receipt.getGoldProductId(),
+                receipt.getQuantity(),
+                userId,
+                GoldOrder.PaymentMethod.IN_APP_PURCHASE);
+
+        vgService.delivery(goldOrder);
+
+        vgService.updateOrderStatus(
+                goldOrder.getId(),
+                GoldOrder.Status.PAID,
+                Status.DELIVERED.name(),
+                new InAppPurchaseDetail(receiptData, receipt));
+    }
+
+    public boolean isDelivered(Receipt receipt) {
+        return vgService.getOrder(receipt.getOrderId()) != null;
+    }
+
+    public static enum Status {
+        DELIVERED
+    }
+
+    public static class InAppPurchaseDetail implements VgService.PaymentDetail {
+
+        private String receiptData;
+        private Receipt receipt;
+
+        public InAppPurchaseDetail() {
+        }
+
+        public InAppPurchaseDetail(String receiptData, Receipt receipt) {
+            this.receiptData = receiptData;
+            this.receipt = receipt;
+        }
+
+
+        public String getReceiptData() {
+            return receiptData;
+        }
+
+        public void setReceiptData(String receiptData) {
+            this.receiptData = receiptData;
+        }
+
+        public Receipt getReceipt() {
+            return receipt;
+        }
+
+        public void setReceipt(Receipt receipt) {
+            this.receipt = receipt;
+        }
+    }
 
     public static class VerifyReceiptResult {
         private int status;
@@ -225,6 +289,16 @@ public class InAppPurchaseService {
 
         public void setUnique_vendor_identifier(String unique_vendor_identifier) {
             this.unique_vendor_identifier = unique_vendor_identifier;
+        }
+
+        @JsonIgnore
+        public long getGoldProductId() {
+            return Long.parseLong(StringUtils.substringAfterLast(product_id, "_"));
+        }
+
+        @JsonIgnore
+        public long getOrderId() {
+            return Long.parseLong(transaction_id);
         }
     }
 }

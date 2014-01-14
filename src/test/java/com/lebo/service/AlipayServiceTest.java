@@ -21,6 +21,8 @@ public class AlipayServiceTest extends SpringContextTestCase {
 
     @Autowired
     private AlipayService alipayService;
+    @Autowired
+    private VgService vgService;
 
     @Test
     public void rsaCheckContent() throws Exception {
@@ -78,18 +80,18 @@ public class AlipayServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void getAlipayParams(){
+    public void getAlipayParams() {
         String signedParams = alipayService.getAlipayParams("5216d0dc1a8829c4ae1bbec3", 1L, "mobile.securitypay.pay", "1");
         System.out.println(signedParams);
     }
 
     @Test
-    public void alipayStatus(){
+    public void alipayStatus() {
         assertTrue(AlipayService.AlipayStatus.TRADE_SUCCESS == AlipayService.AlipayStatus.valueOf("TRADE_SUCCESS"));
     }
 
     @Test
-    public void checkNotifyId(){
+    public void checkNotifyId() {
         String key = "123";
         assertTrue(alipayService.checkNotifyId(key));
         alipayService.doneNotifyId(key);
@@ -97,12 +99,12 @@ public class AlipayServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void handleAlipayNotify(){
+    public void handleAlipayNotify() {
         alipayService.handleNotify(2013121312071706588L, TRADE_FINISHED, "test-12345678");
     }
 
     @Test
-    public void tradeSuccess(){
-        alipayService.tradeSuccess(1L, AlipayService.AlipayStatus.TRADE_SUCCESS, "test-123456");
+    public void tradeSuccess() {
+        alipayService.tradeSuccess(vgService.getOrder(1L), AlipayService.AlipayStatus.TRADE_SUCCESS, "test-123456");
     }
 }

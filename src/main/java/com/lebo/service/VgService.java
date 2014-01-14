@@ -78,6 +78,10 @@ public class VgService {
         return goldProductDao.getAll();
     }
 
+    public GoldProduct getGoldProduct(long id){
+        return goldProductDao.get(id);
+    }
+
     public GoldProductDto toProductDto(GoldProduct goldProduct) {
         return BeanMapper.map(goldProduct, GoldProductDto.class);
     }
@@ -91,13 +95,19 @@ public class VgService {
     }
 
     //-- 订单 --//
-
     public GoldOrder createOrder(Long goldProductId, String userId, GoldOrder.PaymentMethod paymentMethod) {
+        return createOrder(nextOrderId(), goldProductId, 1, userId, paymentMethod);
+    }
+
+    public GoldOrder createOrder(long orderId,
+                                 Long goldProductId,
+                                 int quantity,
+                                 String userId,
+                                 GoldOrder.PaymentMethod paymentMethod) {
 
         BigDecimal discount = BigDecimal.ZERO;
-        int quantity = 1;
 
-        GoldOrder goldOrder = new GoldOrder(nextOrderId(), userId, discount, GoldOrder.Status.UNPAID, paymentMethod);
+        GoldOrder goldOrder = new GoldOrder(orderId, userId, discount, GoldOrder.Status.UNPAID, paymentMethod);
 
         GoldProduct goldProduct = goldProductDao.get(goldProductId);
         Assert.notNull(goldProduct);
@@ -162,7 +172,7 @@ public class VgService {
         goldOrderDao.updateStatus(goldOrder);
     }
 
-    void delivery(GoldOrder goldOrder) {
+    public void delivery(GoldOrder goldOrder) {
         addUserGold(goldOrder.getUserId(), goldOrder.getGold(), goldOrder.getTotalCost());
     }
 

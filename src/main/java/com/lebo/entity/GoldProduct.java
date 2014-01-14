@@ -88,8 +88,8 @@ public class GoldProduct {
         this.gold = gold;
     }
 
-    public String  getImageUrl(){
-        if(image == null){
+    public String getImageUrl() {
+        if (image == null) {
             return null;
         }
 
@@ -107,5 +107,9 @@ public class GoldProduct {
             return price.add(discount);
         }
         return price;
+    }
+
+    public String getInAppPurchaseId() {
+        return "gold_product_" + id;
     }
 }
