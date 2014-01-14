@@ -222,7 +222,7 @@ public class StatusService extends AbstractMongoService {
         return postDao.findOne(id);
     }
 
-    public boolean postExists(String id){
+    public boolean postExists(String id) {
         return postDao.exists(id);
     }
 
@@ -807,37 +807,19 @@ public class StatusService extends AbstractMongoService {
 
         Query query = new Query();
 
+        //精华贴
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
-
-        //id条件, 用于排除置顶帖子和分页
-        Criteria idCriteria = new Criteria(Post.ID_KEY);
-        boolean addIdCriteria = false;
 
         //排除置顶帖子
         List<ObjectId> topPostIdList = parseObjectIds(setting.getDigestTopPostId());
         if (topPostIdList.size() > 0) {
-            idCriteria.nin(topPostIdList);
-            addIdCriteria = true;
+            query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).nin(topPostIdList));
         }
 
-        //分页 begin
-        if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
-            idCriteria.lt(new ObjectId(paginationParam.getMaxId()));
-            addIdCriteria = true;
-        }
+        //分页
+        paginationById(query, paginationParam);
 
-        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
-            idCriteria.gt(new ObjectId(paginationParam.getSinceId()));
-            addIdCriteria = true;
-        }
-
-        if (addIdCriteria) {
-            query.addCriteria(idCriteria);
-        }
-
-        query.with(paginationParam.getSort()).limit(paginationParam.getCount());
-        //分页 end
-
+        //权限条件
         addAclPublicCriteria(query);
 
         //-- 添加置顶视频 begin --//
