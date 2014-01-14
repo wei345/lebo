@@ -36,6 +36,7 @@ public class ErrorDto {
     public static final ErrorDto FIND_WEIBO_FRIEND_NO_TOKEN = new ErrorDto("没有微博token", 10431, HttpStatus.BAD_REQUEST);
     public static final ErrorDto FIND_WEIBO_FRIEND_ERROR_TOKEN = new ErrorDto("token不正确或已过期", 10432, HttpStatus.BAD_REQUEST);
     public static final ErrorDto INSUFFICIENT_GOLD = new ErrorDto("金币不足", 10434, HttpStatus.BAD_REQUEST);
+    public static final ErrorDto IN_APP_PURCHASE_ALREADY_DELIVERED = new ErrorDto("已交付", 10435, HttpStatus.BAD_REQUEST);
     public static final SuccessDto OK = new SuccessDto();
 
     private static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
@@ -107,6 +108,10 @@ public class ErrorDto {
 
     public static ResponseEntity<ErrorDto> duplicate() {
         return new ResponseEntity<ErrorDto>(ErrorDto.DUPLICATE, HttpStatus.BAD_REQUEST);
+    }
+
+    public static ResponseEntity<ErrorDto> toResponseEntity(ErrorDto errorDto){
+        return new ResponseEntity<ErrorDto>(errorDto, errorDto.getHttpStatus());
     }
 
     public Error getError() {

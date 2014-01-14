@@ -639,6 +639,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/vg/inAppPurchase" text="POST vg/inAppPurchase"/>
+        </td>
+        <td>
+            In-App Purchase交付金币，返回购买的商品和数量。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1.1/post/vg/buyGold" text="POST vg/buyGold"/>
         </td>
         <td>

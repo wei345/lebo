@@ -37,17 +37,20 @@
     </appender>
 
     <logger name="com.lebo" level="DEBUG"/>
-    <logger name="com.lebo.rest.StatusRestController" level="DEBUG"/>
+    <logger name="com.lebo.aop.RequestTimeLogger" level="INFO"/>
     <logger name="com.lebo.filter.RequestResponseLoggingFilter" level="DEBUG"/>
 
     <logger name="org.springframework.data" level="INFO"/>
     <logger name="com.mongodb" level="INFO"/>
 
-    <logger name="java.sql" level="DEBUG"/>
-    <logger name="java.sql.Connection" level="DEBUG"/>
-    <logger name="java.sql.PreparedStatement" level="DEBUG"/>
-    <logger name="org.apache.ibatis" level="DEBUG"/>
-    <logger name="org.mybatis" level="DEBUG"/>
+    <logger name="java.sql" level="INFO"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+    <logger name="org.apache.ibatis" level="INFO"/>
+    <logger name="org.mybatis" level="INFO"/>
+
+    <logger name="org.springframework.web.client" level="INFO"/>
+    <logger name="org.springframework.http" level="INFO"/>
 
     <root level="WARN">
         <appender-ref ref="Console"/>

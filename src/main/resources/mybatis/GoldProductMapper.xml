@@ -13,6 +13,7 @@
         <result property="discount" column="discount" />
         <result property="image" column="image" />
         <result property="gold" column="gold" />
+        <result property="active" column="active" />
     </resultMap>
 
     <select id="get" parameterType="long" resultMap="goldProductMap">
@@ -23,7 +24,8 @@
         price_unit,
         discount,
         image,
-        gold
+        gold,
+        active
         from vg_gold_product
         where id = #{id}
     </select>
@@ -36,8 +38,23 @@
         price_unit,
         discount,
         image,
-        gold
+        gold,
+        active
         from vg_gold_product
+    </select>
+
+    <select id="getActive" resultMap="goldProductMap">
+        select id,
+        name,
+        description,
+        price,
+        price_unit,
+        discount,
+        image,
+        gold,
+        active
+        from vg_gold_product
+        where active = 1
     </select>
 
 </mapper>
