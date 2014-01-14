@@ -967,7 +967,12 @@ public class StatusService extends AbstractMongoService {
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
 
         //排除置顶帖子
-        List<ObjectId> topPostIdList = parseObjectIds(setting.getDigestTopPostId());
+        @SuppressWarnings("unchecked") List<String> topPostIdList = setting.getDigestTopPostId() == null
+                ?
+                Collections.EMPTY_LIST
+                :
+                Arrays.asList(setting.getDigestTopPostId().split(Constants.COMMA_SEPARATOR));
+
         if (topPostIdList.size() > 0) {
             query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).nin(topPostIdList));
         }
@@ -982,7 +987,7 @@ public class StatusService extends AbstractMongoService {
         if (topPostIdList.size() > 0
                 && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
 
-            List<Post> topPostList = getPostsWithOrder(topPostIdList);
+            List<Post> topPostList = getPostsWithOrder(toObjectIds(topPostIdList));
 
             if (topPostList.size() > 0) {
 
@@ -1052,15 +1057,9 @@ public class StatusService extends AbstractMongoService {
         );
     }
 
-    private List<ObjectId> parseObjectIds(String str) {
+    private List<ObjectId> toObjectIds(List<String> ids) {
 
-        if (StringUtils.isBlank(str)) {
-            return Collections.EMPTY_LIST;
-        }
-
-        String[] ids = str.split(Constants.COMMA_SEPARATOR);
-
-        List<ObjectId> objectIdList = new ArrayList<ObjectId>(ids.length);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>(ids.size());
 
         for (String id : ids) {
             objectIdList.add(new ObjectId(id));
