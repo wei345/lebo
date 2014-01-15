@@ -811,11 +811,13 @@ public class StatusService extends AbstractMongoService {
         query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
 
         //排除置顶帖子
-        @SuppressWarnings("unchecked") List<String> topPostIdList = setting.getDigestTopPostId() == null
+        @SuppressWarnings("unchecked") List<String> topPostIdList = StringUtils.isBlank(setting.getDigestTopPostId())
                 ?
                 Collections.EMPTY_LIST
                 :
                 Arrays.asList(setting.getDigestTopPostId().split(Constants.COMMA_SEPARATOR));
+
+        topPostIdList.removeAll(Arrays.asList(""));
 
         if (topPostIdList.size() > 0) {
             query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).nin(topPostIdList));

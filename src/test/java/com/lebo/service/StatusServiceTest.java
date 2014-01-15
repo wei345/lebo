@@ -142,10 +142,46 @@ public class StatusServiceTest extends SpringContextTestCase {
 
     @Test
     public void split() {
-        assertTrue("aa,bb,".split(Constants.COMMA_SEPARATOR).length == 2);
-        assertTrue("aa,bb,".split(",").length == 2);
-        assertEquals("[aa, bb]", Arrays.asList("aa,bb,".split(Constants.COMMA_SEPARATOR)).toString());
-        assertNotNull("".split(","));
+
+        //末尾分隔符会被忽略，开头分隔符不被忽略
+        String[] arr = "aa,bb,".split(Constants.COMMA_SEPARATOR);
+        assertEquals(2, arr.length);
+        assertEquals("aa", arr[0]);
+        assertEquals("bb", arr[1]);
+
+        arr = ",aa,bb".split(Constants.COMMA_SEPARATOR);
+        assertEquals(3, arr.length);
+        assertEquals("", arr[0]);
+        assertEquals("aa", arr[1]);
+        assertEquals("bb", arr[2]);
+
+        arr = ",aa,bb,".split(Constants.COMMA_SEPARATOR);
+        assertEquals(3, arr.length);
+        assertEquals("", arr[0]);
+        assertEquals("aa", arr[1]);
+        assertEquals("bb", arr[2]);
+
+        //空字符串分隔结果为1个空字符串
+        arr = "".split(Constants.COMMA_SEPARATOR);
+        assertEquals(1, arr.length);
+        assertEquals("", arr[0]);
+
+        arr = ",".split(Constants.COMMA_SEPARATOR);
+        assertEquals(0, arr.length);
+    }
+
+    /**
+     * List删除全部空字符串
+     */
+    @Test
+    public void removeAll(){
+        List<String> list = new ArrayList<String>(Arrays.asList("", "", "Hi", null, "How"));
+
+        list.removeAll(Arrays.asList("", null));
+
+        assertEquals(2, list.size());
+        assertFalse(list.contains(""));
+        assertFalse(list.contains(null));
     }
 
     @Test
@@ -162,7 +198,7 @@ public class StatusServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void addPopularity(){
+    public void addPopularity() {
         statusService.addPopularity("525540df1a880aa92b6f6e17", 1);
     }
 
