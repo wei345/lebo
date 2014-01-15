@@ -687,6 +687,18 @@
     </tr>
 </table>
 
+<strong>举报</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/reportSpam" text="POST reportSpam"/>
+        </td>
+        <td>
+            举报，返回ReportSpam对象。
+        </td>
+    </tr>
+</table>
+
 <strong>反馈</strong>
 <table class="table table-hover">
     <tr>
