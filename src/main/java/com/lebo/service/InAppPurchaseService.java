@@ -298,7 +298,7 @@ public class InAppPurchaseService {
 
         @JsonIgnore
         public long getOrderId() {
-            return Long.parseLong(transaction_id);
+            return Long.parseLong(original_transaction_id);
         }
     }
 }
