@@ -2,7 +2,6 @@ package com.lebo.rest;
 
 import com.lebo.entity.*;
 import com.lebo.rest.dto.*;
-import com.lebo.service.AlipayService;
 import com.lebo.service.InAppPurchaseService;
 import com.lebo.service.StatusService;
 import com.lebo.service.VgService;
@@ -78,16 +77,18 @@ public class VgRestController {
     public Object inAppPurchase(@RequestParam("receiptData") String receiptData,
                                 @RequestParam("userId") String userId) {
 
-        InAppPurchaseService.Receipt receipt = inAppPurchaseService.verifyReceipt(receiptData);
+        InAppPurchaseService.VerifyReceiptResult verifyReceiptResult = inAppPurchaseService.verifyReceipt(receiptData);
 
-        if (inAppPurchaseService.isDelivered(receipt)) {
-            return ErrorDto.toResponseEntity(ErrorDto.IN_APP_PURCHASE_ALREADY_DELIVERED);
+        if (verifyReceiptResult.getStatus() != 0) {
+            return ErrorDto.badRequest("收据验证失败, status " + verifyReceiptResult.getStatus());
         }
 
         //创建订单, 交付金币, 记录receiptData
-        inAppPurchaseService.delivery(receipt, receiptData, userId);
+        inAppPurchaseService.delivery(verifyReceiptResult, receiptData, userId);
 
         //返回购买的商品和数量
+        InAppPurchaseService.Receipt receipt = verifyReceiptResult.getReceipt();
+
         GoldProductWithQuantityDto dto = BeanMapper.map(
                 vgService.getGoldProduct(receipt.getGoldProductId()),
                 GoldProductWithQuantityDto.class);
