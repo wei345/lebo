@@ -41,4 +41,15 @@ public class ReportSpamService extends AbstractMongoService {
     public Page<ReportSpam> list(Pageable pageable) {
         return reportSpamDao.findAll(pageable);
     }
+
+    public ReportSpam findOne(String informerUserId,
+                              ReportSpam.ObjectType reportObjectType,
+                              String reportObjectId) {
+
+        return mongoTemplate.findOne(new Query(
+                new Criteria(ReportSpam.INFORMER_USER_ID_KEY).is(informerUserId)
+                        .and(ReportSpam.REPORT_OBJECT_TYPE_KEY).is(reportObjectType)
+                        .and(ReportSpam.REPORT_OBJECT_ID_KEY).is(reportObjectId)),
+                ReportSpam.class);
+    }
 }

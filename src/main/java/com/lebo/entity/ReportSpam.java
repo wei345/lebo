@@ -1,5 +1,6 @@
 package com.lebo.entity;
 
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -10,15 +11,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Time: PM2:13
  */
 @Document(collection = "reportspams")
+@CompoundIndex(name = "iuid_1_rot_1_roid_1", def = "{'informerUserId': 1, 'reportObjectType': 1, 'reportObjectId': 1}")
 public class ReportSpam extends IdEntity {
 
     private String reportUserId; //被举报人
     private ReportType reportType;
     private ObjectType reportObjectType;
+    public static final String REPORT_OBJECT_TYPE_KEY = "reportObjectType";
     private String reportObjectId;
+    public static final String REPORT_OBJECT_ID_KEY = "reportObjectId";
     private String reportNotes;
 
     private String informerUserId; //举报人
+    public static final String INFORMER_USER_ID_KEY = "informerUserId";
 
     private Boolean processed;  //已处理
     public static final String PROCESSED_KEY = "processed";

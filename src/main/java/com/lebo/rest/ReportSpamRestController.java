@@ -32,13 +32,23 @@ public class ReportSpamRestController {
                              @RequestParam("reportObjectId") String reportObjectId,
                              @RequestParam(value = "reportNotes", required = false) String reportNotes) {
 
-        ReportSpam reportSpam = new ReportSpam(
+        String currentUserId = accountService.getCurrentUserId();
+
+        //不重复记录同一个用户举报同一内容
+        ReportSpam reportSpam = reportSpamService.findOne(currentUserId, reportObjectType, reportObjectId);
+
+        if (reportSpam != null) {
+            return reportSpam;
+        }
+
+        //记录新举报
+        reportSpam = new ReportSpam(
                 reportUserId,
                 reportType,
                 reportObjectType,
                 reportObjectId,
                 reportNotes,
-                accountService.getCurrentUserId());
+                currentUserId);
 
         reportSpamService.create(reportSpam);
 
