@@ -13,7 +13,7 @@ import java.util.Date;
  * Time: PM3:03
  */
 public class GoldOrder {
-    private Long id;
+    private String id;
     private String userId;
     private GoldProduct goldProduct;
     private Integer quantity;
@@ -41,11 +41,11 @@ public class GoldOrder {
     public GoldOrder() {
     }
 
-    public GoldOrder(long id) {
+    public GoldOrder(String id) {
         this.id = id;
     }
 
-    public GoldOrder(long id, String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
+    public GoldOrder(String id, String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
         this.id = id;
         this.userId = userId;
         this.discount = discount;
@@ -54,11 +54,11 @@ public class GoldOrder {
         this.paymentMethod = paymentMethod;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

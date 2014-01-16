@@ -99,7 +99,7 @@ public class VgService {
         return createOrder(nextOrderId(), goldProductId, 1, userId, paymentMethod);
     }
 
-    public GoldOrder createOrder(long orderId,
+    public GoldOrder createOrder(String orderId,
                                  Long goldProductId,
                                  int quantity,
                                  String userId,
@@ -125,7 +125,7 @@ public class VgService {
         return goldOrder;
     }
 
-    long nextOrderId() {
+    String nextOrderId() {
         return IdWorker.nextId();
     }
 
@@ -133,23 +133,22 @@ public class VgService {
 
         private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //17位
 
-        public static synchronized long nextId() {
+        public static synchronized String nextId() {
 
             int n = (int) Thread.currentThread().getId() % 100;
 
-            return Long.parseLong(
-                    sdf.format(new Date())
-                            + (n < 10 ? "0" + n : n));
+            return sdf.format(new Date())
+                            + (n < 10 ? "0" + n : n);
         }
     }
 
-    public GoldOrder getOrderWithDetail(Long orderId) {
+    public GoldOrder getOrderWithDetail(String orderId) {
         GoldOrder goldOrder = goldOrderDao.get(orderId);
         goldOrder.setGoldProduct(goldProductDao.get(goldOrder.getGoldProduct().getId()));
         return goldOrder;
     }
 
-    public GoldOrder getOrder(long orderId) {
+    public GoldOrder getOrder(String orderId) {
         return goldOrderDao.get(orderId);
     }
 
@@ -162,7 +161,7 @@ public class VgService {
 
     }
 
-    public void updateOrderStatus(Long orderId, GoldOrder.Status status, String paymentStatus, PaymentDetail paymentDetail) {
+    public void updateOrderStatus(String orderId, GoldOrder.Status status, String paymentStatus, PaymentDetail paymentDetail) {
         GoldOrder goldOrder = new GoldOrder(orderId);
 
         goldOrder.setStatus(status);

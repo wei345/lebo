@@ -81,7 +81,7 @@ public class InAppPurchaseService {
         if (verifyReceiptResult.getStatus() == 0 && !isDelivered(receipt)) {
 
             GoldOrder goldOrder = vgService.createOrder(
-                    receipt.getOrderId(),
+                    getOrderId(receipt),
                     receipt.getGoldProductId(),
                     receipt.getQuantity(),
                     userId,
@@ -98,7 +98,11 @@ public class InAppPurchaseService {
     }
 
     public boolean isDelivered(Receipt receipt) {
-        return vgService.getOrder(receipt.getOrderId()) != null;
+        return vgService.getOrder(getOrderId(receipt)) != null;
+    }
+
+    private String getOrderId(Receipt receipt) {
+        return receipt.getOriginal_transaction_id();
     }
 
     public static enum Status {
@@ -306,11 +310,6 @@ public class InAppPurchaseService {
         @JsonIgnore
         public long getGoldProductId() {
             return Long.parseLong(StringUtils.substringAfterLast(product_id, "_"));
-        }
-
-        @JsonIgnore
-        public long getOrderId() {
-            return Long.parseLong(original_transaction_id);
         }
     }
 }

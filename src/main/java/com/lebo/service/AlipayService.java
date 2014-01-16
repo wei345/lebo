@@ -181,7 +181,7 @@ public class AlipayService {
         }
     }
 
-    public void handleNotify(long outTradeNo, AlipayStatus alipayStatus, String alipayNotifyId) {
+    public void handleNotify(String outTradeNo, AlipayStatus alipayStatus, String alipayNotifyId) {
 
         if (!checkNotifyId(alipayNotifyId)) {
             logger.debug("alipayNotifyId '{}' 已处理过", alipayNotifyId);
@@ -193,7 +193,7 @@ public class AlipayService {
         doneNotifyId(alipayNotifyId);
     }
 
-    public void updateOrderStatus(long orderId, AlipayStatus alipayStatus, String alipayNotifyId) {
+    public void updateOrderStatus(String orderId, AlipayStatus alipayStatus, String alipayNotifyId) {
 
         GoldOrder goldOrder = vgService.getOrder(orderId);
 

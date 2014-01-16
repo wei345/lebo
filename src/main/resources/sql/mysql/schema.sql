@@ -21,7 +21,7 @@ CREATE TABLE vg_gold_product (
   ENGINE =InnoDB;
 
 CREATE TABLE vg_gold_order (
-  id              BIGINT        NOT NULL PRIMARY KEY,
+  id              VARCHAR(24)   NOT NULL PRIMARY KEY,
   user_id         VARCHAR(24)   NOT NULL,
   gold_product_id BIGINT        NOT NULL,
   quantity        INT           NOT NULL,

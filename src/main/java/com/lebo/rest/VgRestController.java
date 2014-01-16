@@ -100,7 +100,7 @@ public class VgRestController {
 
     @RequestMapping(value = API_1_1_VG + "goldOrders/detail.json", method = RequestMethod.GET)
     @ResponseBody
-    public Object goldOrdersDetail(@RequestParam("orderId") Long orderId) {
+    public Object goldOrdersDetail(@RequestParam("orderId") String orderId) {
 
         return vgService.toGoldOrderDto(vgService.getOrderWithDetail(orderId));
     }

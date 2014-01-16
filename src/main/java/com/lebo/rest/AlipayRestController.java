@@ -41,7 +41,7 @@ public class AlipayRestController {
                                @RequestParam("notify_id") String notifyId,
                                @RequestParam("sign_type") String signType,
                                @RequestParam("sign") String sign,
-                               @RequestParam(value = "out_trade_no", required = false) Long outTradeNo,
+                               @RequestParam(value = "out_trade_no", required = false) String outTradeNo,
                                @RequestParam(value = "subject", required = false) String subject,
                                @RequestParam(value = "payment_type", required = false) String paymentType,
                                @RequestParam(value = "trade_no", required = false) String tradeNo,

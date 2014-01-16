@@ -100,11 +100,11 @@ public class AlipayServiceTest extends SpringContextTestCase {
 
     @Test
     public void handleAlipayNotify() {
-        alipayService.handleNotify(2013121312071706588L, TRADE_FINISHED, "test-12345678");
+        alipayService.handleNotify("2013121312071706588", TRADE_FINISHED, "test-12345678");
     }
 
     @Test
     public void tradeSuccess() {
-        alipayService.tradeSuccess(vgService.getOrder(1L), AlipayService.AlipayStatus.TRADE_SUCCESS, "test-123456");
+        alipayService.tradeSuccess(vgService.getOrder("1"), AlipayService.AlipayStatus.TRADE_SUCCESS, "test-123456");
     }
 }
