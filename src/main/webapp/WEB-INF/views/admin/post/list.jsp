@@ -102,6 +102,12 @@
         .moreinfo-title {
             margin-left: 1em;
         }
+
+        .icon-remove{
+            cursor: pointer;
+            margin-left:-2em;
+            margin-right: 2em;
+        }
     </style>
 </head>
 <body>
@@ -112,35 +118,29 @@
         <input type="search" class="input-medium search-query" id="screenName" name="screenName"
                value="${param.screenName}"
                placeholder="用户名字">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=screenName]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=screenName]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="userId" name="userId" value="${param.userId}"
                placeholder="用户ID">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=userId]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=userId]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="track" name="track" value="${param.track}"
                placeholder="关键词">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=track]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=track]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="postId" name="postId" value="${param.postId}"
                placeholder="帖子ID">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=postId]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=postId]').val('')" title="清除输入内容"></span>
 
         <div style="padding-top: 15px;">
             从
             <input type="text" id="startDate" name="startDate" class="input-medium search-query" value="${startDate}"
                    class="form-inline" placeholder="起始日期"/>
-            <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-                  onclick="$('input[name=startDate]').val('')" title="清除输入内容"></span>
+            <span class="icon-remove" onclick="$('input[name=startDate]').val('')" title="清除输入内容"></span>
             到
             <input type="text" id="endDate" name="endDate" class="input-medium search-query" value="${endDate}"
                    placeholder="结束日期"/>
-            <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-                  onclick="$('input[name=endDate]').val('')" title="清除输入内容"></span>
+            <span class="icon-remove" onclick="$('input[name=endDate]').val('')" title="清除输入内容"></span>
         </div>
 
         <div style="padding-top: 15px;">
