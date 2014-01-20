@@ -3,6 +3,8 @@ package com.lebo.entity;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 /**
  * 举报。
  *
@@ -15,6 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ReportSpam extends IdEntity {
 
     private String reportUserId; //被举报人
+    public static final String REPORT_USER_ID_KEY = "reportUserId";
     private ReportType reportType;
     private ObjectType reportObjectType;
     public static final String REPORT_OBJECT_TYPE_KEY = "reportObjectType";
@@ -29,6 +32,7 @@ public class ReportSpam extends IdEntity {
     public static final String PROCESSED_KEY = "processed";
     private String processUserId;
     public static final String PROCESS_USER_ID_KEY = "processUserId";
+    private Date createdAt;
 
     public ReportSpam() {
     }
@@ -47,10 +51,12 @@ public class ReportSpam extends IdEntity {
         this.reportObjectId = reportObjectId;
         this.reportNotes = reportNotes;
         this.informerUserId = informerUserId;
+        this.createdAt = new Date();
+        this.processed = false;
     }
 
     public static enum ObjectType {
-        POST("帖子"), COMMENT("评论"), IM("私信");
+        POST("帖子"), COMMENT("评论");
 
         private String name;
 
@@ -151,4 +157,11 @@ public class ReportSpam extends IdEntity {
         this.processUserId = processUserId;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 }

@@ -147,6 +147,7 @@
 
     <!-- properties -->
     <context:property-placeholder location="classpath*:/application.properties"/>
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver"/>
 
 
     <!-- Components -->

@@ -20,7 +20,7 @@ public class PageRequest implements Pageable, Serializable {
 
     protected int page;
     protected int size = PaginationParam.DEFAULT_COUNT;
-    protected Sort sort;
+    protected Sort sort = PaginationParam.ID_DESC_SORT;
 
     public PageRequest() {
 
