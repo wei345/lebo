@@ -34,11 +34,6 @@
 %>
 
 <tags:form name="举报" method="POST" action="${ctx}/api/1.1/reportSpam.json">
-    <p>
-        被举报的用户ID
-    </p>
-    <tags:field name="reportUserId"/>
-
     <%--预留参数
     <p>
         举报类型：
@@ -48,6 +43,7 @@
     </p>
     <tags:field name="reportType" optional="true"/>
     --%>
+
     <p>
         举报对象类型：
     <ul>
@@ -57,9 +53,10 @@
     <tags:field name="reportObjectType"/>
 
     <p>
-        举报对象ID
+        举报对象ID:
     </p>
     <tags:field name="reportObjectId"/>
+
     <%--预留参数
     <p>
         举报补充说明
@@ -68,7 +65,7 @@
     --%>
 </tags:form>
 
-<tags:example method="POST" url="http://localhost:8080/api/1.1/reportSpam.json?reportUserId=528b27921a888afc0a256db3&reportObjectType=POST&reportObjectId=528b2b111a888afc0a256dbb">
+<tags:example method="POST" url="http://localhost:8080/api/1.1/reportSpam.json?reportObjectType=POST&reportObjectId=528b2b111a888afc0a256dbb">
     {
         id: "52d6440d1a88407ecc8e51e2",
         reportUserId: "528b27921a888afc0a256db3",
