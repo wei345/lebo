@@ -72,4 +72,9 @@ public class AccountServiceTest extends SpringContextTestCase {
         assertEquals("myNameName", accountService.generateScreenName("myNameName"));
         assertEquals("myNameName", accountService.generateScreenName("myName Name "));
     }
+
+    @Test
+    public void isBanned(){
+        assertFalse(accountService.isBanned("52b10ad91a88ea5501d6b113"));
+    }
 }

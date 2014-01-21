@@ -31,6 +31,11 @@ public abstract class AbstractOAuthRealm extends AbstractRealm {
 
             User user = getUser(abstractOAuthToken);
 
+            if (user.getBanned()) {
+                logger.info("用户[" + user.getScreenName() + "]已被禁用");
+                return null;
+            }
+
             SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(
                     new ShiroUser(user.getId(),
                             user.getScreenName(),

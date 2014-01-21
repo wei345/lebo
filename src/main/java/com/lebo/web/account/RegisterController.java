@@ -33,7 +33,7 @@ public class RegisterController {
     public String register(@Valid User user, RedirectAttributes redirectAttributes) {
         accountService.createUser(user);
         redirectAttributes.addFlashAttribute("username", user.getEmail());
-        return "redirect:/login";
+        return "redirect:/admin/user";
     }
 
     /**

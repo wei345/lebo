@@ -3,16 +3,14 @@ package com.lebo.web.account;
 import com.lebo.entity.User;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.account.ShiroUser;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.validation.Valid;
 
 /**
  * 用户修改自己资料的Controller.
@@ -34,21 +32,31 @@ public class ProfileController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String update(@Valid @ModelAttribute("user") User user) {
-        accountService.saveUser(user);
-        updateCurrentUserName(user.getName());
-        return "redirect:/";
-    }
+    public String update(@RequestParam(value = "name", required = false) String name,
+                         @RequestParam(value = "email", required = false) String email,
+                         @RequestParam(value = "screenName", required = false) String screenName,
+                         @RequestParam(value = "plainPassword", required = false) String plainPassword) {
 
-    /**
-     * 所有RequestMapping方法调用前的Model准备方法, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出User对象,再把Form提交的内容绑定到该对象上。
-     * 因为仅update()方法的form中有id属性，因此仅在update时实际执行.
-     */
-    @ModelAttribute
-    public void getUser(@RequestParam(value = "id", required = false) String id, Model model) {
-        if (id != null) {
-            model.addAttribute("user", accountService.getUser(id));
+        User user = accountService.getUser(accountService.getCurrentUserId());
+
+        if (StringUtils.isNotBlank(name) && !name.equals(user.getName())) {
+            accountService.updateName(user.getId(), name);
+            updateCurrentUserName(name);
         }
+
+        if (StringUtils.isNotBlank(email) && !email.equals(user.getEmail())) {
+            accountService.updateEmail(user.getId(), email);
+        }
+
+        if (StringUtils.isNotBlank(screenName) && !screenName.equals(user.getScreenName())) {
+            accountService.updateScreenName(user.getId(), screenName);
+        }
+
+        if (StringUtils.isNotBlank(plainPassword)) {
+            accountService.updatePassword(user.getId(), plainPassword);
+        }
+
+        return "redirect:/";
     }
 
     /**

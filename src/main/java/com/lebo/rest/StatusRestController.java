@@ -303,7 +303,7 @@ public class StatusRestController {
         Post post = statusService.getPost(id);
 
         if (!post.getUserId().equals(accountService.getCurrentUserId())) {
-            return ErrorDto.unauthorized("你不是作者，没有权限删除");
+            return ErrorDto.forbidden("你不是作者，没有权限删除");
         }
 
         StatusDto dto = statusService.toStatusDto(post);

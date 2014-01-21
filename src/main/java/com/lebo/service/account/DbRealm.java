@@ -5,6 +5,8 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.util.ByteSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springside.modules.utils.Encodes;
 
@@ -18,6 +20,8 @@ public class DbRealm extends AbstractRealm {
 
     public static final String PROVIDER = "local";
 
+    private Logger logger = LoggerFactory.getLogger(DbRealm.class);
+
     @Override
     public boolean supports(AuthenticationToken token) {
         return (token instanceof UsernamePasswordToken);
@@ -30,25 +34,24 @@ public class DbRealm extends AbstractRealm {
 
         User user = getAccountService().findUserByEmail(t.getUsername());
 
-        if (user != null) {
-            byte[] salt = Encodes.decodeHex(user.getSalt());
-
-            return new SimpleAuthenticationInfo(
-
-                    new ShiroUser(user.getId(),
-                            user.getScreenName(),
-                            user.getName(),
-                            user.getProfileImageUrl(),
-                            PROVIDER),
-
-                    user.getPassword(),
-
-                    ByteSource.Util.bytes(salt),
-
-                    getName());
-        } else {
+        if (user == null) {
             return null;
         }
+
+        if (user.getBanned() != null && user.getBanned()) {
+            logger.info("用户[" + user.getScreenName() + "]已被禁用");
+            return null;
+        }
+
+        return new SimpleAuthenticationInfo(
+                new ShiroUser(user.getId(),
+                        user.getScreenName(),
+                        user.getName(),
+                        user.getProfileImageUrl(),
+                        PROVIDER),
+                user.getPassword(),
+                ByteSource.Util.bytes(Encodes.decodeHex(user.getSalt())),
+                getName());
     }
 
     @Override

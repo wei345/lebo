@@ -81,6 +81,7 @@
 
         <div class="control-group">
             <label class="control-label">签名:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.description}</span>
             </div>
@@ -88,6 +89,7 @@
 
         <div class="control-group">
             <label class="control-label">新浪加V用户:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.weiboVerified ? "是" : "否"}</span>
             </div>
@@ -95,6 +97,7 @@
 
         <div class="control-group">
             <label class="control-label">性别:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.gender == 'm' ? '男' : (user.gender == 'f' ? '女' : '未知')}</span>
             </div>
@@ -102,6 +105,7 @@
 
         <div class="control-group">
             <label class="control-label">粉丝数:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.followersCount}</span>
             </div>
@@ -109,6 +113,7 @@
 
         <div class="control-group">
             <label class="control-label">收到红心数:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.beFavoritedCount}</span>
             </div>
@@ -116,6 +121,7 @@
 
         <div class="control-group">
             <label class="control-label">所有帖子被浏览数:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.viewCount}</span>
             </div>
@@ -123,6 +129,7 @@
 
         <div class="control-group">
             <label class="control-label">精品数:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.digestCount}</span>
             </div>
@@ -130,6 +137,7 @@
 
         <div class="control-group">
             <label class="control-label">帖子数:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.statusesCount}</span>
             </div>
@@ -137,15 +145,63 @@
 
         <div class="control-group">
             <label class="control-label">关注数:</label>
+
             <div class="controls">
                 <span class="help-inline">${user.friendsCount}</span>
             </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label">weiboToken:</label>
+            <label class="control-label">oAuthIds:</label>
+
             <div class="controls">
-                <span class="help-inline">${user.weiboToken}</span>
+                <span class="help-inline"><c:forEach items="${user.oAuthIds}" var="item" varStatus="varStatus"><c:if test="${!varStatus.first}">,</c:if>${item}</c:forEach> </span>
+            </div>
+        </div>
+
+        <c:if test="${not empty user.weiboToken}">
+            <div class="control-group">
+                <label class="control-label">weiboToken:</label>
+
+                <div class="controls">
+                    <span class="help-inline">${user.weiboToken}</span>
+                </div>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty user.renrenToken}">
+            <div class="control-group">
+                <label class="control-label">renrenToken:</label>
+
+                <div class="controls">
+                    <span class="help-inline">${user.renrenToken}</span>
+                </div>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty user.qqToken}">
+            <div class="control-group">
+                <label class="control-label">qqToken:</label>
+
+                <div class="controls">
+                    <span class="help-inline">${user.qqToken}</span>
+                </div>
+            </div>
+        </c:if>
+
+        <div class="control-group">
+            <label class="control-label">禁用:</label>
+
+            <div class="controls">
+                <label>
+                    <input type="radio" name="banned" value="true" <c:if test="${user.banned}">checked</c:if>>
+                    是
+                </label>
+                <label>
+                    <input type="radio" name="banned" value="false" <c:if test="${user.banned !=null && !user.banned}">checked</c:if>>
+                    否
+                </label>
+                禁用后，系统拒绝用户所有操作，如登录、看帖子、发帖子、看评论、发评论
             </div>
         </div>
 

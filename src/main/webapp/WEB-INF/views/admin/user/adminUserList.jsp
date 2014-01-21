@@ -89,8 +89,14 @@
                     :
                     "[]";
     %>
-    <tr>
-        <td><a href="${ctx}/admin/user/update/${user.id}">${user.id}</a></td>
+    <tr id="tr-${user.id}">
+        <td>
+            <c:if test="${user.banned}">
+                <span class="icon-ban-circle" title="已禁用"></span>
+            </c:if>
+            <span class="icon-user" title="机器人" ${user.robot != null ? '' : 'style="display:none"'}></span>
+            <a href="${ctx}/admin/user/update/${user.id}">${user.id}</a>
+        </td>
         <td>${user.screenName}</td>
         <td>${user.email}</td>
         <td>${user.name}</td>
@@ -237,6 +243,7 @@
                     if (data == 'ok') {
                         $('#btn-robot-group-' + userId).removeAttr('disabled');
                         updateGroupButtonText(userId);
+                        $('#tr-' + userId).find('.icon-user').show();
                     }
                 }
             });
@@ -249,6 +256,7 @@
                         $('#btn-robot-group-' + userId).attr('disabled', 'disabled');
                         userId2Groups[userId] = null;
                         updateGroupButtonText(userId);
+                        $('#tr-' + userId).find('.icon-user').hide();
                     }
                 }
             });

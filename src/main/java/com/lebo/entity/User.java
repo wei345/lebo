@@ -32,6 +32,7 @@ public class User extends IdEntity {
     public static final String SCREEN_NAME_KEY = "screenName";
     @Indexed
     private String name;
+    public static final String NAME_KEY = "name";
     // The user-defined describing their account.
     private String description;
     public static final String DESCRIPTION_KEY = "description";
@@ -70,6 +71,7 @@ public class User extends IdEntity {
     //TODO 在设置email时，保证唯一
     @Indexed
     private String email;
+    public static final String EMAIL_KEY = "email";
     private Date lastSignInAt;
     public static final String USER_LAST_SIGN_IN_AT_KEY = "lastSignInAt";
 
@@ -77,7 +79,9 @@ public class User extends IdEntity {
     @Transient
     private String plainPassword;
     private String password;
+    public static final String PASSWORD_KEY = "password";
     private String salt;
+    public static final String SALT_KEY = "salt";
     @Indexed
     private List<String> roles = new ArrayList<String>(1);
     public static final String ROLES_KEY = "roles";
@@ -130,8 +134,9 @@ public class User extends IdEntity {
 
     //查找好友功能用到的token
     private String findFriendWeiboToken;
+    public static final String FIND_FRIEND_WEIBO_TOKEN_KEY = "findFriendWeiboToken";
     private String findFriendWeiboUid;
-    private String findFriendRenrenToken;
+    public static final String FIND_FRIEND_WEIBO_UID_KEY = "findFriendWeiboUid";
 
     private Boolean notifyOnReplyPost;//用户帖子被回复时发送通知
     public static final String NOTIFY_ON_REPLY_POST_KEY = "notifyOnReplyPost";
@@ -154,6 +159,9 @@ public class User extends IdEntity {
     private Robot robot;
     public static final String ROBOT_KEY = "robot";
     public static final String ROBOT_GROUPS_KEY = "robot.groups";
+
+    private Boolean banned;
+    public static final String BANNED_KEY = "banned";
 
     //TODO 临时添加pikeId为了能够正常登录，待上线新服务端稳定后去掉
     private String pikeId;
@@ -470,14 +478,6 @@ public class User extends IdEntity {
         this.findFriendWeiboUid = findFriendWeiboUid;
     }
 
-    public String getFindFriendRenrenToken() {
-        return findFriendRenrenToken;
-    }
-
-    public void setFindFriendRenrenToken(String findFriendRenrenToken) {
-        this.findFriendRenrenToken = findFriendRenrenToken;
-    }
-
     public Boolean getNotifyOnReplyPost() {
         return notifyOnReplyPost;
     }
@@ -594,6 +594,14 @@ public class User extends IdEntity {
         this.robot = robot;
     }
 
+    public Boolean getBanned() {
+        return banned;
+    }
+
+    public void setBanned(Boolean banned) {
+        this.banned = banned;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -632,7 +640,6 @@ public class User extends IdEntity {
                 ", qqToken='" + qqToken + '\'' +
                 ", findFriendWeiboToken='" + findFriendWeiboToken + '\'' +
                 ", findFriendWeiboUid='" + findFriendWeiboUid + '\'' +
-                ", findFriendRenrenToken='" + findFriendRenrenToken + '\'' +
                 ", notifyOnReplyPost=" + notifyOnReplyPost +
                 ", notifyOnFavorite=" + notifyOnFavorite +
                 ", notifyOnFollow=" + notifyOnFollow +

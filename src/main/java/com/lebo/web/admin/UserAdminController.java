@@ -3,8 +3,12 @@ package com.lebo.web.admin;
 import com.lebo.entity.User;
 import com.lebo.service.RobotService;
 import com.lebo.service.account.AccountService;
+import com.lebo.service.account.ShiroUser;
 import com.lebo.service.param.PageRequest;
 import com.lebo.service.param.PaginationParam;
+import com.lebo.web.ControllerUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -55,7 +59,7 @@ public class UserAdminController {
                 new PageRequest(pageNo, size, new Sort(order, orderBy)));
 
         List<RobotService.RobotGroup> groups = robotService.getGroups();
-        List<String> allGroups =  Collections3.extractToList(groups, RobotService.RobotGroup.NAME_KEY);
+        List<String> allGroups = Collections3.extractToList(groups, RobotService.RobotGroup.NAME_KEY);
 
         model.addAttribute("q", q);
         model.addAttribute("size", size);
@@ -78,9 +82,30 @@ public class UserAdminController {
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-        accountService.saveUser(user);
-        redirectAttributes.addFlashAttribute("success", "更新用户" + user.getScreenName() + "成功");
+    public String update(@RequestParam(value = "id", required = false) String id,
+                         @RequestParam(value = "name", required = false) String name,
+                         @RequestParam(value = "plainPassword", required = false) String plainPassword,
+                         @RequestParam(value = "banned", required = false) Boolean banned,
+                         RedirectAttributes redirectAttributes) {
+
+        User user = accountService.getUser(id);
+
+        if (StringUtils.isNotBlank(name) && !name.equals(user.getName())) {
+            accountService.updateName(user.getId(), name);
+            if(id.equals(accountService.getCurrentUserId())){
+                updateCurrentUserName(name);
+            }
+        }
+
+        if (StringUtils.isNotBlank(plainPassword)) {
+            accountService.updatePassword(user.getId(), plainPassword);
+        }
+
+        if(banned != null && banned != user.getBanned()){
+            accountService.updateBanned(user.getId(), banned);
+        }
+
+        redirectAttributes.addFlashAttribute("success", "更新 " + user.getScreenName() + " 成功");
         return "redirect:/admin/user";
     }
 
@@ -94,4 +119,13 @@ public class UserAdminController {
             model.addAttribute("user", accountService.getUser(id));
         }
     }
+
+    /**
+     * 更新Shiro中当前用户的用户名.
+     */
+    private void updateCurrentUserName(String userName) {
+        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+        user.name = userName;
+    }
+
 }

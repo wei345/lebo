@@ -27,6 +27,8 @@
 
     <bean id="guestFilter" class="com.lebo.service.account.GuestFilter"/>
 
+    <bean id="bannedFilter" class="com.lebo.service.account.BannedFilter"/>
+
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login"/>
@@ -36,6 +38,7 @@
                 <entry key="authc" value-ref="authcFilter"/>
                 <entry key="apiUser" value-ref="apiUserFilter"/>
                 <entry key="guest" value-ref="guestFilter"/>
+                <entry key="banned" value-ref="bannedFilter"/>
             </util:map>
         </property>
         <property name="filterChainDefinitions">
@@ -53,10 +56,10 @@
                 /api/*/guestLogin.json = anon
                 /api/*/logout.json = apiUser
                 /api/*/alipay/notify = anon
-                /api/** = apiUser, guest
-                /admin/** = roles[admin]
-                /register/** = roles[admin]
-                /** = user
+                /api/** = apiUser, guest, banned
+                /admin/** = roles[admin], banned
+                /register/** = roles[admin], banned
+                /** = user, banned
             </value>
         </property>
     </bean>

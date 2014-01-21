@@ -194,9 +194,7 @@ public class FriendRestController {
 
         //更新用户的findFriendWeiboToken
         if (!token.equals(currentUser.getFindFriendWeiboToken())) {
-            currentUser.setFindFriendWeiboToken(token);
-            currentUser.setFindFriendWeiboUid(weiboUid);
-            accountService.saveUser(currentUser);
+            accountService.updateFindFriendWeiboToken(currentUser.getId(), token, weiboUid);
         }
 
         return dtos;
