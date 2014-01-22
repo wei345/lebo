@@ -83,6 +83,15 @@
             padding-left: 30px;
         }
 
+        td.preview {
+            width: 100px;
+        }
+
+        td.preview img {
+            width: 100px;
+            display: block;
+        }
+
         .preview a {
             position: relative;
             display: block;
@@ -103,9 +112,9 @@
             margin-left: 1em;
         }
 
-        .icon-remove{
+        .icon-remove {
             cursor: pointer;
-            margin-left:-2em;
+            margin-left: -2em;
             margin-right: 2em;
         }
     </style>
@@ -177,7 +186,7 @@
         <th style="width:20px;">
             #
         </th>
-        <th style="width: 100px;">
+        <th>
             视频
         </th>
         <th>
@@ -196,7 +205,7 @@
             <td></td>
 
             <td class="preview">
-                <a href="${item.videoUrl}" target="_blank">
+                <a href="${item.videoUrl}">
                     <img src="${item.videoFirstFrameUrl}"/>
                     <c:if test="${item.duration != null}">
                         <span class="badge badge-important">${item.duration}''</span>
@@ -207,7 +216,7 @@
             <td class="detail">
 
                 <div class="authorDisplayName">
-                    <a href="${ctx}/admin/user/update/${item.userId}">
+                    <a href="${ctx}/admin/user?userId=${item.userId}">
                         <img class="authorPhoto" src="${item.profileImageUrl}" title="作者头像"/>
                         <span>${item.screenName}</span>
                     </a>
@@ -247,7 +256,9 @@
 
             <td>
                 <a href="${ctx}/admin/comment/list?postId=${item.id}" target="_blank">查看评论</a><br/>
-                <a href="${ctx}/admin/robot/comment?postId=${item.id}" target="_blank">机器人评论</a>
+                <c:if test="${!item.pvt}">
+                    <a href="${ctx}/admin/robot/comment?postId=${item.id}" target="_blank">机器人评论</a>
+                </c:if>
                 <input type="button" value="删除" class="btn btn-link" onclick="deletePost('${item.id}', this)"/>
             </td>
 
