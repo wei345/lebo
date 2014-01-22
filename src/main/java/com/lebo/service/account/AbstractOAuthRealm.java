@@ -31,7 +31,7 @@ public abstract class AbstractOAuthRealm extends AbstractRealm {
 
             User user = getUser(abstractOAuthToken);
 
-            if (user.getBanned()) {
+            if (user.getBanned() != null && user.getBanned()) {
                 logger.info("用户[" + user.getScreenName() + "]已被禁用");
                 return null;
             }
