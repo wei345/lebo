@@ -68,37 +68,37 @@
             display: block;
         }
 
-        tr.processed td.processed-icon .icon-ok{
+        tr.processed td.processed-icon .icon-ok {
             display: inline-block;
         }
 
-        td.processed-icon .icon-ok{
+        td.processed-icon .icon-ok {
             display: none;
         }
 
-        .moreinfo-toggle{
+        .moreinfo-toggle {
             float: right;
             margin-top: -1.4em;
         }
 
-        .moreinfo{
+        .moreinfo {
             margin-top: 1em;
         }
 
-        .moreinfo label{
+        .moreinfo label {
             width: 6em;
             display: inline-block;
             text-align: right;
             padding-right: 1em;
         }
 
-        .icon-remove{
+        .icon-remove {
             cursor: pointer;
-            margin-left:-2em;
+            margin-left: -2em;
             margin-right: 2em;
         }
 
-        #searchForm select{
+        #searchForm select {
             margin-right: 1em;
         }
     </style>
@@ -124,10 +124,12 @@
         <%}%>
     </select>
 
-    <input type="text" name="reportUserId" value="${param.reportUserId}" class="search-query" placeholder="被举报人ID" title="被举报人ID"/>
+    <input type="text" name="reportUserId" value="${param.reportUserId}" class="search-query" placeholder="被举报人ID"
+           title="被举报人ID"/>
     <span class="icon-remove" onclick="$('input[name=reportUserId]').val('')" title="清除输入内容"></span>
 
-    <input type="text" name="informerUserId" value="${param.informerUserId}" class="search-query" placeholder="举报人ID" title="举报人ID"/>
+    <input type="text" name="informerUserId" value="${param.informerUserId}" class="search-query" placeholder="举报人ID"
+           title="举报人ID"/>
     <span class="icon-remove" onclick="$('input[name=informerUserId]').val('')" title="清除输入内容"></span>
 
     <button type="submit" class="btn">查询</button>
@@ -225,7 +227,8 @@
                     </c:if>
                 </c:if>
 
-                <a href="javascript:void(0)" class="moreinfo-toggle" onclick="$('#moreinfo-${item.id}').toggle();">更多>></a>
+                <a href="javascript:void(0)" class="moreinfo-toggle"
+                   onclick="$('#moreinfo-${item.id}').toggle();">更多>></a>
 
                 <ul id="moreinfo-${item.id}" class="moreinfo" style="display:none">
                     <li><label>被举报人ID:</label>${item.reportUserId}</li>
@@ -244,11 +247,11 @@
             <td class="action">
 
                 <c:if test="${item.reportObject != null}">
-                <a href="javascript:void(0)"
-                   onclick="deleteReportObject('${item.reportObjectType.name}', '${item.reportObject.id}', this);">删除${item.reportObjectType.name}</a>
+                    <a href="javascript:void(0)"
+                       onclick="deleteReportObject('${item.reportObjectType.name}', '${item.id}', this);">删除${item.reportObjectType.name}</a>
                 </c:if>
 
-                <a href="javascript:void(0)"
+                <a class="processed-toggle" href="javascript:void(0)"
                    onclick="setProcessed('${item.id}', this);">${item.processed ? '标记为未处理' : '标记为已处理'}</a>
 
                 <a href="javascript:void(0)" onclick="deleteReportSpam('${item.id}', this);">删除举报</a>
@@ -272,11 +275,6 @@
             type: 'POST',
             success: function (data) {
                 if (data == 'ok') {
-                    processed ?
-                            $(btn).html('标记为未处理')
-                            :
-                            $(btn).html('标记为已处理');
-
                     updateTrCss($(btn).parents('tr'), processed);
                 }
             }
@@ -301,34 +299,30 @@
     }
 
     function deleteReportObject(type, id, btn) {
-        if (confirm('确定删除'+ type +'吗?')) {
-
-            var url;
-            switch (type) {
-                case '帖子':
-                    url = '${ctx}/admin/post/delete/' + id;
-                    break;
-                case '评论':
-                    url = '${ctx}/admin/comment/delete/' + id;
-                    break;
-                default:
-                    return;
-            }
+        if (confirm('确定删除' + type + '吗?')) {
 
             $.ajax({
-                url: url,
+                url: '${ctx}/admin/report-spam/deleteReportObject',
                 type: 'POST',
+                data: {id: id},
                 success: function (data) {
                     if (data == 'ok') {
                         updateTrCss($(btn).parents('tr'), true);
+                        $(btn).remove();
                     }
                 }
             });
         }
     }
 
-    function updateTrCss(tr, processed){
-        processed ? $(tr).addClass('processed') : $(tr).removeClass('processed');
+    function updateTrCss(tr, processed) {
+        if (processed) {
+            $(tr).addClass('processed');
+            tr.find('.processed-toggle').html('标记为未处理');
+        } else {
+            $(tr).removeClass('processed');
+            tr.find('.processed-toggle').html('标记为已处理');
+        }
     }
 </script>
 

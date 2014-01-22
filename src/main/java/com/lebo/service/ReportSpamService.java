@@ -58,11 +58,11 @@ public class ReportSpamService extends AbstractMongoService {
             query.addCriteria(new Criteria(ReportSpam.REPORT_OBJECT_TYPE_KEY).is(reportObjectType));
         }
 
-        if(StringUtils.isNotBlank(reportUserId)){
+        if (StringUtils.isNotBlank(reportUserId)) {
             query.addCriteria(new Criteria(ReportSpam.REPORT_USER_ID_KEY).is(reportUserId));
         }
 
-        if(StringUtils.isNotBlank(informerUserId)){
+        if (StringUtils.isNotBlank(informerUserId)) {
             query.addCriteria(new Criteria(ReportSpam.INFORMER_USER_ID_KEY).is(informerUserId));
         }
 
@@ -81,6 +81,12 @@ public class ReportSpamService extends AbstractMongoService {
                 new Criteria(ReportSpam.INFORMER_USER_ID_KEY).is(informerUserId)
                         .and(ReportSpam.REPORT_OBJECT_TYPE_KEY).is(reportObjectType)
                         .and(ReportSpam.REPORT_OBJECT_ID_KEY).is(reportObjectId)),
+                ReportSpam.class);
+    }
+
+    public ReportSpam get(String id) {
+        return mongoTemplate.findOne(
+                new Query(new Criteria(ReportSpam.ID_KEY).is(new ObjectId(id))),
                 ReportSpam.class);
     }
 }

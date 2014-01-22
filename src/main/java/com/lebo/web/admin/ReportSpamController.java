@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.lebo.entity.Comment;
 import com.lebo.entity.Post;
 import com.lebo.entity.ReportSpam;
+import com.lebo.rest.dto.ErrorDto;
 import com.lebo.service.CommentService;
 import com.lebo.service.ReportSpamService;
 import com.lebo.service.StatusService;
@@ -74,7 +75,7 @@ public class ReportSpamController {
         model.addAttribute("list", detailList);
         model.addAttribute("spentSeconds", (System.currentTimeMillis() - beginTime) / 1000);
 
-        return "admin/reportSpam";
+        return "admin/reportSpamList";
     }
 
     @RequestMapping(value = "setProcessed", method = RequestMethod.POST)
@@ -92,6 +93,30 @@ public class ReportSpamController {
     public Object delete(@RequestParam("id") String id) {
 
         reportSpamService.delete(id);
+
+        return ControllerUtils.AJAX_OK;
+    }
+
+    @RequestMapping(value = "deleteReportObject", method = RequestMethod.POST)
+    @ResponseBody
+    public Object deleteReportObject(@RequestParam("id") String id) {
+
+        ReportSpam reportSpam = reportSpamService.get(id);
+
+        if (reportSpam != null) {
+            switch (reportSpam.getReportObjectType()) {
+                case POST:
+                    statusService.destroyPost(reportSpam.getReportObjectId());
+                    break;
+                case COMMENT:
+                    commentService.deleteComment(commentService.getComment(reportSpam.getReportObjectId()));
+                    break;
+                default:
+                    return ErrorDto.badRequest("未知类型 " + reportSpam.getReportObjectType());
+            }
+
+            reportSpamService.setProcessed(id, true, accountService.getCurrentUserId());
+        }
 
         return ControllerUtils.AJAX_OK;
     }
