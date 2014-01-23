@@ -22,12 +22,20 @@
             OAuth登录，返回当前用户信息。
         </td>
     </tr>
-    <tr class="disabled" title="未用到">
+    <%--<tr class="disabled" title="未用到">
         <td class="td1">
             <tags:link url="${ctx}/docs/api/1/post/login" text="POST login"/>
         </td>
         <td>
             本地登录，返回当前用户信息。
+        </td>
+    </tr>--%>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1/post/guestLogin" text="POST guestLogin"/>
+        </td>
+        <td>
+            游客登录，返回游客用户信息。
         </td>
     </tr>
     <tr>
@@ -119,7 +127,7 @@
             <tags:link url="${ctx}/docs/api/1/get/statuses/channelTimeline" text="GET statuses/channelTimeline"/>
         </td>
         <td>
-            返回id参数指定的频道的视频列表。
+            返回name参数指定的频道的视频列表。
         </td>
     </tr>
     <tr class="disabled">
@@ -172,6 +180,14 @@
         </td>
         <td>
             返回作品榜视频列表。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/statuses/channel" text="GET statuses/channel v1.1"/>
+        </td>
+        <td>
+            返回name参数指定的频道的视频列表。
         </td>
     </tr>
     <%--未用到 而且这个接口排序有问题 <tr>
@@ -623,6 +639,14 @@
     </tr>
     <tr>
         <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/vg/inAppPurchase" text="POST vg/inAppPurchase"/>
+        </td>
+        <td>
+            In-App Purchase交付金币，返回购买的商品和数量。
+        </td>
+    </tr>
+    <tr>
+        <td class="td1">
             <tags:link url="${ctx}/docs/api/1.1/post/vg/buyGold" text="POST vg/buyGold"/>
         </td>
         <td>
@@ -659,6 +683,18 @@
         </td>
         <td>
             送礼者排名，返回送礼者列表和送礼者中当前用户信息。
+        </td>
+    </tr>
+</table>
+
+<strong>举报</strong>
+<table class="table table-hover">
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/post/reportSpam" text="POST reportSpam"/>
+        </td>
+        <td>
+            举报，返回ReportSpam对象。
         </td>
     </tr>
 </table>

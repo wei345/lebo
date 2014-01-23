@@ -298,6 +298,8 @@ public class StatusService extends AbstractMongoService {
         }
         dto.setDigest(post.getDigest());
         dto.setPvt(post.getPvt());
+        dto.setLastCommentCreatedAt(post.getLastCommentCreatedAt());
+        dto.setPopularity(post.getPopularity());
         return dto;
     }
 
@@ -483,6 +485,493 @@ public class StatusService extends AbstractMongoService {
         return posts;
     }
 
+    /* 不使用这种算法
+    /**
+     * 刷新热门帖子列表:最近2天被收藏的帖子按2天内的收藏数排序
+     public void refreshHotPosts() {
+     Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
+     String mapFunction = String.format("function(){ emit(this.%s, 1); }", Favorite.POST_ID_KEY);
+     String reduceFunction = "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }";
+
+     //因为不需要返回结果，所有不用mongoTemplate#mapReduce
+     DBObject dbObject = new BasicDBObject();
+     dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
+     dbObject.put("map", mapFunction);
+     dbObject.put("reduce", reduceFunction);
+     dbObject.put("out", mongoTemplate.getCollectionName(HotPost.class));
+     dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(daysAgo).get());
+     dbObject.put("verbose", true);
+
+     logger.debug("正在刷新热门帖子: {}", dbObject);
+
+     CommandResult result = mongoTemplate.executeCommand(dbObject);
+     result.throwOnError();
+
+     logger.debug("完成刷新热门帖子，result: {}", result);
+     }
+     */
+
+    private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
+
+    public LinkedHashSet<String> mentionUserIds(List<Post.UserMention> userMentions) {
+        LinkedHashSet<String> userIds = new LinkedHashSet<String>();
+        for (Post.UserMention userMention : userMentions) {
+            userIds.add(userMention.getUserId());
+        }
+        return userIds;
+    }
+
+    public List<Post.UserMention> findUserMentions(String text) {
+        if (StringUtils.isBlank(text)) {
+            return new ArrayList<Post.UserMention>(1);
+        }
+
+        List<Post.UserMention> userMentions = new ArrayList<Post.UserMention>(5);
+
+        Matcher m = mentionPattern.matcher(text);
+        while (m.find()) {
+            Post.UserMention userMention = new Post.UserMention();
+            userMention.setIndices(Arrays.asList(m.start(1), m.end(1)));
+            userMention.setScreenName(m.group(1));
+            User user = userDao.findByScreenName(userMention.getScreenName());
+            if (user != null) {
+                userMention.setUserId(user.getId());
+                userMentions.add(userMention);
+            }
+        }
+        return userMentions;
+    }
+
+    private Pattern tagPattern = Pattern.compile("#([^#@\\s]+)#");
+
+    public LinkedHashSet<String> findHashtags(String text, boolean strip) {
+        if (StringUtils.isBlank(text)) {
+            return new LinkedHashSet<String>(1);
+        }
+        Matcher m = tagPattern.matcher(text);
+        LinkedHashSet<String> tags = new LinkedHashSet<String>();
+        while (m.find()) {
+            if (strip) {
+                tags.add(m.group(1));
+            } else {
+                tags.add(m.group(0));
+            }
+
+        }
+        return tags;
+    }
+
+    private Pattern hashtagOrAtSomeonePattern = Pattern.compile("^#([^#@\\s]+)#|@([^@#\\s]+)$");
+
+    public boolean isHashtagOrAtSomeone(String text) {
+        return hashtagOrAtSomeonePattern.matcher(text).matches();
+    }
+
+    public LinkedHashSet<String> buildSearchTerms(Post post) {
+        LinkedHashSet<String> words = new LinkedHashSet<String>();
+        words.addAll(findHashtags(post.getText(), false));
+        for (Post.UserMention userMention : post.getUserMentions()) {
+            words.add("@" + userMention.getScreenName());
+        }
+        words.addAll(segmentation.findWords(post.getText()));
+        return words;
+    }
+
+    /**
+     * 指定用户是否转发了指定post.
+     *
+     * @param userId
+     * @param post
+     * @return
+     */
+    public boolean isReposted(String userId, Post post) {
+        String id = (post.getOriginPostId() == null ? post.getId() : post.getOriginPostId());
+
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(id));
+        return mongoTemplate.count(query, Post.class) > 0;
+    }
+
+    public Post getRepost(String userId, Post post) {
+        String id = (post.getOriginPostId() == null ? post.getId() : post.getOriginPostId());
+
+        return getRepost(userId, id);
+    }
+
+    public Post getRepost(String userId, String postId) {
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId));
+        return mongoTemplate.findOne(query, Post.class);
+    }
+
+    /**
+     * 增长浏览数
+     */
+    public void increaseViewCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
+                new Update().inc(Post.VIEW_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    /**
+     * 批量增长浏览数
+     */
+    public void increaseViewCount(List<String> ids) {
+        mongoTemplate.updateMulti(new Query(new Criteria("_id").in(ids)),
+                new Update().inc(Post.VIEW_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    /**
+     * 分享次数+1
+     */
+    public void increaseShareCount(String postId) {
+        Query query = new Query(new Criteria(Post.ID_KEY).is(postId));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null)); //确保是原帖，不给转发贴计数
+
+        mongoTemplate.updateFirst(query,
+                new Update().inc(Post.SHARE_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    public void increaseFavoritesCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
+                new Update().inc(Post.FAVOURITES_COUNT_KEY, 1),
+                Post.class);
+    }
+
+    public void decreaseFavoritesCount(String id) {
+        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
+                new Update().inc(Post.FAVOURITES_COUNT_KEY, -1),
+                Post.class);
+    }
+
+    /**
+     * 查找某频道的Posts，按ID降序排序，按ID分页。
+     */
+    public List<Post> getChannelPosts(String name, PaginationParam paginationParam) {
+
+        return getChannelPosts(name, paginationParam, null);
+    }
+
+    public List<Post> getChannelPosts(String name, PageRequest pageRequest) {
+        return getChannelPosts(name, null, pageRequest);
+    }
+
+    public List<Post> getChannelPosts(String name, PaginationParam paginationParam, PageRequest pageRequest) {
+
+        Channel channel = settingService.getChannelByName(name);
+
+        Criteria queryCriteria = parseChannelFollowAndTrack(name, channel);
+
+        Query query = new Query(queryCriteria);
+
+        addAclPublicCriteria(query);
+
+        //按id分页
+        if (paginationParam != null) {
+
+            paginationById(query, paginationParam);
+
+            //带有置顶视频
+            if (channel != null
+                    && StringUtils.isNotBlank(channel.getTopPostId())                         //该频道有置顶视频
+                    && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
+
+                return getChannelPostsWithTopPost(query, channel, paginationParam.getCount());
+            }
+        }
+        //按pageNumber和pageSize分页
+        else if (pageRequest != null) {
+
+            query.with(pageRequest);
+
+            //带有置顶视频
+            if (channel != null
+                    && StringUtils.isNotBlank(channel.getTopPostId())                         //该频道有置顶视频
+                    && pageRequest.getPage() == 0) {                                          //第一页
+
+                return getChannelPostsWithTopPost(query, channel, pageRequest.getPageSize());
+            }
+        } else {
+            throw new IllegalArgumentException("paginationParam和pageRequest不能都为null");
+        }
+
+        //e.g. : find using query: { "$and" : [ { "searchTerms" : { "$all" : [ "#小编制作#"]}} , { "originPostId" :  null } , { "_id" : { "$ne" : { "$oid" : "5285b9c01a884fbe3e165681"}}}] , "_id" : { "$lt" : { "$oid" : "5285b9c01a884fbe3e165681"}} , "acl" :  null }
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    /**
+     * @return queryCriteria, 最外层不可有"_id"key，否则会和com.lebo.service.AbstractMongoService#paginationById冲突
+     */
+    private Criteria parseChannelFollowAndTrack(String name, Channel channel) {
+        //-- 解析follow和track begin --//
+        String follow = null;
+        String track;
+        //未配置的频道，返回含有hashtag的内容
+        if (channel == null) {
+            track = "#" + name + "#";
+        }
+        //配置过的频道
+        else {
+            follow = channel.getFollow();
+            track = channel.getTrack();
+        }
+
+        List<Criteria> criteriaList = new ArrayList<Criteria>(5);
+
+        //解析follow条件
+        Criteria followCriteria = null;
+        if (StringUtils.isNotBlank(follow)) {
+            String[] userIds = follow.split(Constants.COMMA_SEPARATOR);
+            //用户ID之间or关系
+            followCriteria = new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds));
+        }
+
+        //解析track条件
+        Criteria trackCriteria = null;
+        if (StringUtils.isNotBlank(track)) {
+            String[] phrases = track.split(Constants.COMMA_SEPARATOR);
+            List<Criteria> criterias = new ArrayList<Criteria>(phrases.length);
+            for (String phrase : phrases) {
+                String[] keywords = phrase.split("\\s+");
+                List<String> keywordList = new ArrayList<String>(keywords.length);
+                for (String keyword : keywords) {
+                    keywordList.add(
+                            isHashtagOrAtSomeone(keyword) ? keyword : keyword.toLowerCase());
+                }
+                //短语中关键词之间是and关系
+                criterias.add(new Criteria(Post.SEARCH_TERMS_KEY).all(keywordList));
+            }
+            //短语之间是or关系
+            if (criterias.size() > 1) {
+                trackCriteria = orOperator(criterias);
+            } else if (criterias.size() == 1) {
+                trackCriteria = criterias.get(0);
+            }
+        }
+
+        //follow + track --> 查询条件，or关系
+        if (followCriteria != null && trackCriteria != null) {
+            criteriaList.add(orOperator(Arrays.asList(followCriteria, trackCriteria)));
+        } else {
+            if (followCriteria != null) {
+                criteriaList.add(followCriteria);
+            }
+            if (trackCriteria != null) {
+                criteriaList.add(trackCriteria);
+            }
+        }
+        //-- 解析follow和track end --//
+
+        //频道不含转发贴
+        criteriaList.add(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+
+        //排除置顶视频
+        if (channel != null && StringUtils.isNotBlank(channel.getTopPostId())) {
+            criteriaList.add(new Criteria(Post.ID_KEY).ne(new ObjectId(channel.getTopPostId())));
+        }
+
+        //各条件间是and关系
+        Criteria queryCriteria = null;
+        if (criteriaList.size() > 1) {
+            queryCriteria = andOperator(criteriaList);
+        } else if (criteriaList.size() == 1) {
+            queryCriteria = criteriaList.get(0);
+        }
+
+        Assert.notNull(queryCriteria);
+        return queryCriteria;
+    }
+
+    private List<Post> getChannelPostsWithTopPost(Query query, Channel channel, int count) {
+        Post post = getPost(channel.getTopPostId());
+        if (post != null) {
+            query.limit(count - 1); //少查一项，给置顶留位置
+            List<Post> posts = mongoTemplate.find(query, Post.class);
+
+            if (posts.size() < count) { //在顶部插入置顶视频
+                posts.add(0, post);
+            }
+
+            return posts;
+        }
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    public List<Post> findDigest(PaginationParam paginationParam) {
+
+        Setting setting = settingService.getSetting();
+
+        Query query = new Query();
+
+        //精华贴
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
+
+        //排除置顶帖子
+        @SuppressWarnings("unchecked") List<String> topPostIdList = StringUtils.isBlank(setting.getDigestTopPostId())
+                ?
+                Collections.EMPTY_LIST
+                :
+                Arrays.asList(setting.getDigestTopPostId().split(Constants.COMMA_SEPARATOR));
+
+        topPostIdList.removeAll(Arrays.asList(""));
+
+        if (topPostIdList.size() > 0) {
+            query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).nin(topPostIdList));
+        }
+
+        //分页
+        paginationById(query, paginationParam);
+
+        //权限条件
+        addAclPublicCriteria(query);
+
+        //-- 添加置顶视频 begin --//
+        if (topPostIdList.size() > 0
+                && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
+
+            List<Post> topPostList = getPostsWithOrder(toObjectIds(topPostIdList));
+
+            if (topPostList.size() > 0) {
+
+                int queryCount = Math.max(0, paginationParam.getCount() - topPostList.size());
+
+                if (queryCount == 0) {
+                    return topPostList.subList(0, paginationParam.getCount());
+                }
+
+                query.limit(queryCount);
+
+                List<Post> posts = mongoTemplate.find(query, Post.class);
+
+                posts.addAll(0, topPostList);
+
+                return posts;
+            }
+        }
+        //-- 添加置顶视频 end --//
+
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    public List<Post> findUserDigest(String userId, PaginationParam paginationParam) {
+        Setting setting = settingService.getSetting();
+
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
+        paginationById(query, paginationParam);
+        addAclPublicCriteria(query);
+
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    public int countUserDigest(String userId) {
+        Setting setting = settingService.getSetting();
+        Query query = new Query();
+        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
+        return ((Long) mongoTemplate.count(query, Post.class)).intValue();
+    }
+
+    /**
+     * 作品榜
+     */
+    public List<Post> rankingPosts(int page, int size) {
+        Query query = new Query();
+        //排除转发贴，因为转发贴不计收藏数(喜欢数)
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        //时间范围
+        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getRankingPostsDays() * -1);
+        query.addCriteria(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
+        //按收藏数(喜欢数)降序排序
+        query.with(new PageRequest(page, size, new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY)));
+
+        addAclPublicCriteria(query);
+
+        return mongoTemplate.find(query, Post.class);
+    }
+
+    public void addPopularity(String postId, int amount) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(Post.ID_KEY).is(postId)),
+                new Update()
+                        .inc(Post.POPULARITY_KEY, amount)
+                        .inc(Post.FAVORITES_COUNT_ADD_POPULARITY_KEY, amount),
+                Post.class
+        );
+    }
+
+    private List<ObjectId> toObjectIds(List<String> ids) {
+
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>(ids.size());
+
+        for (String id : ids) {
+            objectIdList.add(new ObjectId(id));
+        }
+
+        return objectIdList;
+    }
+
+    //-- 帖子管理 --//
+
+    /**
+     * 查找指定用户的帖子(不包含转发), 如果userId为null，则忽略该条件
+     */
+    public Page<Post> findOriginPosts(String userId, String track, String postId, PageRequest pageRequest, Date startDate, Date endDate) {
+        Query query = new Query();
+        //原帖
+        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+
+        //帖子ID
+        if (StringUtils.isNotBlank(postId)) {
+            query.addCriteria(new Criteria(Post.ID_KEY).is(postId));
+        }
+
+        //指定用户
+        if (StringUtils.isNotBlank(userId)) {
+            query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
+        }
+
+        //搜索文字内容
+        if (StringUtils.isNotBlank(track)) {
+            query.addCriteria(new Criteria(Post.SEARCH_TERMS_KEY).is(track));
+        }
+
+        //日期范围
+        if (startDate != null || endDate != null) {
+            Criteria dateCriteria = new Criteria(Post.CREATED_AT_KEY);
+            if (startDate != null) {
+                dateCriteria.gte(startDate);
+            }
+            if (endDate != null) {
+                dateCriteria.lt(endDate);
+            }
+            query.addCriteria(dateCriteria);
+        }
+
+        //分页、排序
+        query.with(pageRequest);
+
+        Page<Post> page = new PageImpl<Post>(mongoTemplate.find(query, Post.class),
+                pageRequest,
+                mongoTemplate.count(query, Post.class));
+
+        //查找
+        return page;
+    }
+
+    public void updateRating(String postId, int rating) {
+        mongoTemplate.updateFirst(new Query(new Criteria(Post.ID_KEY).is(postId)),
+                new Update().set(Post.RATING_KEY, rating),
+                Post.class);
+    }
+
+    //---- JMX ----//
+
     /**
      * 刷新热门帖子列表:最近2天的帖子按红心数降序排序
      * 为避免刷屏，每用户只可上榜2条
@@ -666,461 +1155,125 @@ public class StatusService extends AbstractMongoService {
         logger.debug("{}完成, 共 {}, 用时 {} ms", prefix, totalCount, System.currentTimeMillis() - beginTime);
     }
 
-    /* 不使用这种算法
-    /**
-     * 刷新热门帖子列表:最近2天被收藏的帖子按2天内的收藏数排序
-     public void refreshHotPosts() {
-     Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getHotDays() * -1);
-     String mapFunction = String.format("function(){ emit(this.%s, 1); }", Favorite.POST_ID_KEY);
-     String reduceFunction = "function(key, emits){ var total = 0; for(var i = 0; i < emits.length; i++){ total += emits[i]; } return total; }";
+    @ManagedOperation(description = "添加字段:Post.lastCommentCreatedAt")
+    public void addPostFieldLastCommentCreatedAt() {
 
-     //因为不需要返回结果，所有不用mongoTemplate#mapReduce
-     DBObject dbObject = new BasicDBObject();
-     dbObject.put("mapreduce", mongoTemplate.getCollectionName(Favorite.class));
-     dbObject.put("map", mapFunction);
-     dbObject.put("reduce", reduceFunction);
-     dbObject.put("out", mongoTemplate.getCollectionName(HotPost.class));
-     dbObject.put("query", QueryBuilder.start().put(Favorite.CREATED_AT_KEY).greaterThan(daysAgo).get());
-     dbObject.put("verbose", true);
-
-     logger.debug("正在刷新热门帖子: {}", dbObject);
-
-     CommandResult result = mongoTemplate.executeCommand(dbObject);
-     result.throwOnError();
-
-     logger.debug("完成刷新热门帖子，result: {}", result);
-     }
-     */
-
-    private Pattern mentionPattern = Pattern.compile("@([^@#\\s]+)");
-
-    public LinkedHashSet<String> mentionUserIds(List<Post.UserMention> userMentions) {
-        LinkedHashSet<String> userIds = new LinkedHashSet<String>();
-        for (Post.UserMention userMention : userMentions) {
-            userIds.add(userMention.getUserId());
-        }
-        return userIds;
-    }
-
-    public List<Post.UserMention> findUserMentions(String text) {
-        if (StringUtils.isBlank(text)) {
-            return new ArrayList<Post.UserMention>(1);
-        }
-
-        List<Post.UserMention> userMentions = new ArrayList<Post.UserMention>(5);
-
-        Matcher m = mentionPattern.matcher(text);
-        while (m.find()) {
-            Post.UserMention userMention = new Post.UserMention();
-            userMention.setIndices(Arrays.asList(m.start(1), m.end(1)));
-            userMention.setScreenName(m.group(1));
-            User user = userDao.findByScreenName(userMention.getScreenName());
-            if (user != null) {
-                userMention.setUserId(user.getId());
-                userMentions.add(userMention);
-            }
-        }
-        return userMentions;
-    }
-
-    private Pattern tagPattern = Pattern.compile("#([^#@\\s]+)#");
-
-    public LinkedHashSet<String> findHashtags(String text, boolean strip) {
-        if (StringUtils.isBlank(text)) {
-            return new LinkedHashSet<String>(1);
-        }
-        Matcher m = tagPattern.matcher(text);
-        LinkedHashSet<String> tags = new LinkedHashSet<String>();
-        while (m.find()) {
-            if (strip) {
-                tags.add(m.group(1));
-            } else {
-                tags.add(m.group(0));
+        class Q {
+            List<Post> find(String maxId) {
+                Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+                query.addCriteria(new Criteria(Post.LAST_COMMENT_CREATED_AT_KEY).is(null));
+                query.addCriteria(new Criteria(Post.ID_KEY).lt(new ObjectId(maxId)));
+                query.with(new Sort(Sort.Direction.DESC, Post.ID_KEY));
+                query.limit(2000);
+                query.fields().include(Post.ID_KEY);
+                return mongoTemplate.find(query, Post.class);
             }
 
-        }
-        return tags;
-    }
+            Date getLastCommentCreatedAt(Post post) {
+                Query query = new Query(new Criteria(Comment.POST_ID_KEY).is(post.getId()));
+                query.with(new Sort(Sort.Direction.DESC, Comment.ID_KEY));
+                query.fields().include(Comment.CREATED_AT_KEY);
 
-    private Pattern hashtagOrAtSomeonePattern = Pattern.compile("^#([^#@\\s]+)#|@([^@#\\s]+)$");
+                Comment comment = mongoTemplate.findOne(query, Comment.class);
 
-    public boolean isHashtagOrAtSomeone(String text) {
-        return hashtagOrAtSomeonePattern.matcher(text).matches();
-    }
-
-    public LinkedHashSet<String> buildSearchTerms(Post post) {
-        LinkedHashSet<String> words = new LinkedHashSet<String>();
-        words.addAll(findHashtags(post.getText(), false));
-        for (Post.UserMention userMention : post.getUserMentions()) {
-            words.add("@" + userMention.getScreenName());
-        }
-        words.addAll(segmentation.findWords(post.getText()));
-        return words;
-    }
-
-    /**
-     * 指定用户是否转发了指定post.
-     *
-     * @param userId
-     * @param post
-     * @return
-     */
-    public boolean isReposted(String userId, Post post) {
-        String id = (post.getOriginPostId() == null ? post.getId() : post.getOriginPostId());
-
-        Query query = new Query();
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(id));
-        return mongoTemplate.count(query, Post.class) > 0;
-    }
-
-    public Post getRepost(String userId, Post post) {
-        String id = (post.getOriginPostId() == null ? post.getId() : post.getOriginPostId());
-
-        return getRepost(userId, id);
-    }
-
-    public Post getRepost(String userId, String postId) {
-        Query query = new Query();
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(postId));
-        return mongoTemplate.findOne(query, Post.class);
-    }
-
-    /**
-     * 增长浏览数
-     */
-    public void increaseViewCount(String id) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
-                new Update().inc(Post.VIEW_COUNT_KEY, 1),
-                Post.class);
-    }
-
-    /**
-     * 批量增长浏览数
-     */
-    public void increaseViewCount(List<String> ids) {
-        mongoTemplate.updateMulti(new Query(new Criteria("_id").in(ids)),
-                new Update().inc(Post.VIEW_COUNT_KEY, 1),
-                Post.class);
-    }
-
-    /**
-     * 分享次数+1
-     */
-    public void increaseShareCount(String postId) {
-        Query query = new Query(new Criteria(Post.ID_KEY).is(postId));
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null)); //确保是原帖，不给转发贴计数
-
-        mongoTemplate.updateFirst(query,
-                new Update().inc(Post.SHARE_COUNT_KEY, 1),
-                Post.class);
-    }
-
-    public void increaseFavoritesCount(String id) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
-                new Update().inc(Post.FAVOURITES_COUNT_KEY, 1),
-                Post.class);
-    }
-
-    public void decreaseFavoritesCount(String id) {
-        mongoTemplate.updateFirst(new Query(new Criteria("_id").is(id)),
-                new Update().inc(Post.FAVOURITES_COUNT_KEY, -1),
-                Post.class);
-    }
-
-    /**
-     * 查找某频道的Posts，按ID降序排序，按ID分页。
-     */
-    //TODO 精简代码
-    //(follow || track) && page
-    public List<Post> getChannelPosts(String name, PaginationParam paginationParam) {
-        //-- 解析follow和track begin --//
-        //查找配置中的channel
-        Channel channel = null;
-        List<Channel> channels = settingService.getAllChannels();
-        for (Channel c : channels) {
-            if (name.equals(c.getName())) {
-                channel = c;
-                break;
+                return comment == null ?
+                        null
+                        :
+                        comment.getCreatedAt();
             }
         }
 
-        String follow = null;
-        String track = null;
-        //未配置的频道，返回含有hashtag的内容
-        if (channel == null) {
-            track = "#" + name + "#";
-        }
-        //配置过的频道
-        else {
-            follow = channel.getFollow();
-            track = channel.getTrack();
-        }
+        long beginTime = System.currentTimeMillis();
+        String prefix = "添加字段:Post.lastCommentCreatedAt : ";
+        int count = 0;
 
-        List<Criteria> criteriaList = new ArrayList<Criteria>(5);
+        Q q = new Q();
+        List<Post> posts;
+        String maxId = MongoConstant.MONGO_ID_MAX_VALUE;
 
-        //解析follow条件
-        Criteria followCriteria = null;
-        if (StringUtils.isNotBlank(follow)) {
-            String[] userIds = follow.split(Constants.COMMA_SEPARATOR);
-            //用户ID之间or关系
-            followCriteria = new Criteria(Post.USER_ID_KEY).in(Arrays.asList(userIds));
-        }
+        logger.debug("{}开始", prefix);
 
-        //解析track条件
-        Criteria trackCriteria = null;
-        if (StringUtils.isNotBlank(track)) {
-            String[] phrases = track.split(Constants.COMMA_SEPARATOR);
-            List<Criteria> criterias = new ArrayList<Criteria>(phrases.length);
-            for (String phrase : phrases) {
-                String[] keywords = phrase.split("\\s+");
-                List<String> keywordList = new ArrayList<String>(keywords.length);
-                for (String keyword : keywords) {
-                    keywordList.add(
-                            isHashtagOrAtSomeone(keyword) ? keyword : keyword.toLowerCase());
+        while ((posts = q.find(maxId)).size() > 0) {
+            for (Post post : posts) {
+
+                Date commentCreatedAt = q.getLastCommentCreatedAt(post);
+
+                if (commentCreatedAt != null) {
+
+                    mongoTemplate.updateFirst(
+                            new Query(new Criteria(Post.ID_KEY).is(post.getId())),
+                            new Update().set(Post.LAST_COMMENT_CREATED_AT_KEY, commentCreatedAt),
+                            Post.class);
                 }
-                //短语中关键词之间是and关系
-                criterias.add(new Criteria(Post.SEARCH_TERMS_KEY).all(keywordList));
             }
-            //短语之间是or关系
-            if (criterias.size() > 1) {
-                trackCriteria = orOperator(criterias);
-            } else if (criterias.size() == 1) {
-                trackCriteria = criterias.get(0);
+
+            maxId = posts.get(posts.size() - 1).getId();
+
+            count += posts.size();
+
+            logger.debug("{}完成 {}", prefix, count);
+        }
+
+        logger.debug("{}完成 {} ms", prefix, System.currentTimeMillis() - beginTime);
+    }
+
+    @ManagedOperation(description = "添加字段:Post.favoritesCountAddPopularity")
+    public void addPostFieldFavoritesCountAddPopularity() {
+
+        class Q {
+
+            String field = Post.FAVORITES_COUNT_ADD_POPULARITY_KEY;
+
+            List<Post> find(String maxId) {
+                Query query = new Query(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+                query.addCriteria(new Criteria(field).is(null));
+                if (maxId != null) {
+                    query.addCriteria(new Criteria(Post.ID_KEY).lt(new ObjectId(maxId)));
+                }
+                query.with(new Sort(Sort.Direction.DESC, Post.ID_KEY));
+                query.limit(2000);
+                query.fields().include(Post.FAVOURITES_COUNT_KEY).include(Post.POPULARITY_KEY);
+                return mongoTemplate.find(query, Post.class);
             }
         }
 
-        //follow + track --> 查询条件，or关系
-        if (followCriteria != null && trackCriteria != null) {
-            criteriaList.add(orOperator(Arrays.asList(followCriteria, trackCriteria)));
-        } else {
-            if (followCriteria != null) {
-                criteriaList.add(followCriteria);
-            }
-            if (trackCriteria != null) {
-                criteriaList.add(trackCriteria);
-            }
-        }
-        //-- 解析follow和track end --//
+        long beginTime = System.currentTimeMillis();
+        String prefix = "添加字段 Post." + new Q().field + " : ";
+        int count = 0;
 
-        //频道不含转发贴
-        criteriaList.add(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
+        Q q = new Q();
+        List<Post> posts;
+        String maxId = null;
 
-        //排除置顶视频
-        if (channel != null && StringUtils.isNotBlank(channel.getTopPostId())) {
-            criteriaList.add(new Criteria(Post.ID_KEY).ne(new ObjectId(channel.getTopPostId())));
-        }
+        logger.debug("{}开始", prefix);
 
-        //分页
-        if (!paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) {
-            criteriaList.add(new Criteria(Post.ID_KEY).lt(new ObjectId(paginationParam.getMaxId())));
-        }
-        if (!paginationParam.getSinceId().equals(MongoConstant.MONGO_ID_MIN_VALUE)) {
-            criteriaList.add(new Criteria(Post.ID_KEY).gt(new ObjectId(paginationParam.getSinceId())));
-        }
+        while ((posts = q.find(maxId)).size() > 0) {
+            for (Post post : posts) {
 
-        //各条件间是and关系
-        Criteria queryCriteria = null;
-        if (criteriaList.size() > 1) {
-            queryCriteria = andOperator(criteriaList);
-        } else if (criteriaList.size() == 1) {
-            queryCriteria = criteriaList.get(0);
-        }
+                Integer popularity = post.getPopularity();
 
-        //根据条件执行查询
-        Query query = new Query();
-        if (queryCriteria != null) {
-            query.addCriteria(queryCriteria);
-        }
-        query.with(PaginationParam.ID_DESC_SORT).limit(paginationParam.getCount());
+                Update update = new Update();
 
-        //-- 添加置顶视频 begin --//
-        if (channel != null && StringUtils.isNotBlank(channel.getTopPostId()) && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
-
-            Post post = getPost(channel.getTopPostId());
-            if (post != null) {
-                query.limit(paginationParam.getCount() - 1); //少查一项，给置顶留位置
-                List<Post> posts = mongoTemplate.find(query, Post.class);
-
-                if (posts.size() < paginationParam.getCount()) { //在顶部插入置顶视频
-                    posts.add(0, post);
+                if (popularity == null) {
+                    popularity = 0;
+                    update.set(Post.POPULARITY_KEY, 0);
                 }
 
-                return posts;
+                update.set(Post.FAVORITES_COUNT_ADD_POPULARITY_KEY, post.getFavoritesCount() + popularity);
+
+                mongoTemplate.updateFirst(
+                        new Query(new Criteria(Post.ID_KEY).is(post.getId())),
+                        update,
+                        Post.class);
             }
-        }
-        //-- 添加置顶视频 end --//
 
-        addAclPublicCriteria(query);
+            maxId = posts.get(posts.size() - 1).getId();
 
-        return mongoTemplate.find(query, Post.class);
-    }
+            count += posts.size();
 
-    public List<Post> findDigest(PaginationParam paginationParam) {
-
-        Setting setting = settingService.getSetting();
-
-        Query query = new Query();
-
-        //精华贴
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
-
-        //排除置顶帖子
-        @SuppressWarnings("unchecked") List<String> topPostIdList = StringUtils.isBlank(setting.getDigestTopPostId())
-                ?
-                Collections.EMPTY_LIST
-                :
-                Arrays.asList(setting.getDigestTopPostId().split(Constants.COMMA_SEPARATOR));
-
-        topPostIdList.removeAll(Arrays.asList(""));
-
-        if (topPostIdList.size() > 0) {
-            query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).nin(topPostIdList));
+            logger.debug("{}完成 {}", prefix, count);
         }
 
-        //分页
-        paginationById(query, paginationParam);
-
-        //权限条件
-        addAclPublicCriteria(query);
-
-        //-- 添加置顶视频 begin --//
-        if (topPostIdList.size() > 0
-                && paginationParam.getMaxId().equals(MongoConstant.MONGO_ID_MAX_VALUE)) { //第一页
-
-            List<Post> topPostList = getPostsWithOrder(toObjectIds(topPostIdList));
-
-            if (topPostList.size() > 0) {
-
-                int queryCount = Math.max(0, paginationParam.getCount() - topPostList.size());
-
-                if (queryCount == 0) {
-                    return topPostList.subList(0, paginationParam.getCount());
-                }
-
-                query.limit(queryCount);
-
-                List<Post> posts = mongoTemplate.find(query, Post.class);
-
-                posts.addAll(0, topPostList);
-
-                return posts;
-            }
-        }
-        //-- 添加置顶视频 end --//
-
-        return mongoTemplate.find(query, Post.class);
-    }
-
-    public List<Post> findUserDigest(String userId, PaginationParam paginationParam) {
-        Setting setting = settingService.getSetting();
-
-        Query query = new Query();
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
-        paginationById(query, paginationParam);
-        addAclPublicCriteria(query);
-
-        return mongoTemplate.find(query, Post.class);
-    }
-
-    public int countUserDigest(String userId) {
-        Setting setting = settingService.getSetting();
-        Query query = new Query();
-        query.addCriteria(new Criteria(Post.USER_ID_KEY).is(setting.getDigestAccountId()));
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_USER_ID_KEY).is(userId));
-        return ((Long) mongoTemplate.count(query, Post.class)).intValue();
-    }
-
-    /**
-     * 作品榜
-     */
-    public List<Post> rankingPosts(int page, int size) {
-        Query query = new Query();
-        //排除转发贴，因为转发贴不计收藏数(喜欢数)
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
-        //时间范围
-        Date daysAgo = DateUtils.addDays(dateProvider.getDate(), settingService.getSetting().getRankingPostsDays() * -1);
-        query.addCriteria(new Criteria(Post.CREATED_AT_KEY).gt(daysAgo));
-        //按收藏数(喜欢数)降序排序
-        query.with(new PageRequest(page, size, new Sort(Sort.Direction.DESC, Post.FAVOURITES_COUNT_KEY)));
-
-        addAclPublicCriteria(query);
-
-        return mongoTemplate.find(query, Post.class);
-    }
-
-    public void addPopularity(String postId, int amount) {
-        mongoTemplate.updateFirst(
-                new Query(new Criteria(Post.ID_KEY).is(postId)),
-                new Update().inc(Post.POPULARITY_KEY, amount),
-                Post.class
-        );
-    }
-
-    private List<ObjectId> toObjectIds(List<String> ids) {
-
-        List<ObjectId> objectIdList = new ArrayList<ObjectId>(ids.size());
-
-        for (String id : ids) {
-            objectIdList.add(new ObjectId(id));
-        }
-
-        return objectIdList;
-    }
-
-    //-- 帖子管理 --//
-
-    /**
-     * 查找指定用户的帖子(不包含转发), 如果userId为null，则忽略该条件
-     */
-    public Page<Post> findOriginPosts(String userId, String track, String postId, PageRequest pageRequest, Date startDate, Date endDate) {
-        Query query = new Query();
-        //原帖
-        query.addCriteria(new Criteria(Post.ORIGIN_POST_ID_KEY).is(null));
-
-        //帖子ID
-        if (StringUtils.isNotBlank(postId)) {
-            query.addCriteria(new Criteria(Post.ID_KEY).is(postId));
-        }
-
-        //指定用户
-        if (StringUtils.isNotBlank(userId)) {
-            query.addCriteria(new Criteria(Post.USER_ID_KEY).is(userId));
-        }
-
-        //搜索文字内容
-        if (StringUtils.isNotBlank(track)) {
-            query.addCriteria(new Criteria(Post.SEARCH_TERMS_KEY).is(track));
-        }
-
-        //日期范围
-        if (startDate != null || endDate != null) {
-            Criteria dateCriteria = new Criteria(Post.CREATED_AT_KEY);
-            if (startDate != null) {
-                dateCriteria.gte(startDate);
-            }
-            if (endDate != null) {
-                dateCriteria.lt(endDate);
-            }
-            query.addCriteria(dateCriteria);
-        }
-
-        //分页、排序
-        query.with(pageRequest);
-
-        Page<Post> page = new PageImpl<Post>(mongoTemplate.find(query, Post.class),
-                pageRequest,
-                mongoTemplate.count(query, Post.class));
-
-        //查找
-        return page;
-    }
-
-    public void updateRating(String postId, int rating) {
-        mongoTemplate.updateFirst(new Query(new Criteria(Post.ID_KEY).is(postId)),
-                new Update().set(Post.RATING_KEY, rating),
-                Post.class);
+        logger.debug("{}完成 {} ms", prefix, System.currentTimeMillis() - beginTime);
     }
 }

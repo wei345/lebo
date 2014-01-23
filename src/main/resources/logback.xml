@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <jmxConfigurator />
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 在IDE中运行, 控制台输出全部日志, 打包时level被portable-config-maven-plugin插件改为OFF, 控制台不输出日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>logs/lebo.log</File>
+        <!-- 按每小时滚动文件，如果一个小时内达到10M也会滚动文件, 滚动文件将会压缩成zip格式, 最多保留672个滚动文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/lebo-%d{yyyy-MM-dd_HH}.%i.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>672</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="Redis" class="com.cwbase.logback.RedisAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <host>localhost</host>
+        <port>6379</port>
+        <key>logstash</key>
+    </appender>
+
+    <logger name="com.lebo" level="DEBUG"/>
+    <logger name="com.lebo.aop.RequestTimeLogger" level="INFO"/>
+    <logger name="com.lebo.filter.RequestResponseLoggingFilter" level="DEBUG"/>
+
+    <logger name="org.springframework.data" level="INFO"/>
+    <logger name="com.mongodb" level="INFO"/>
+
+    <logger name="java.sql" level="INFO"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+    <logger name="org.apache.ibatis" level="INFO"/>
+    <logger name="org.mybatis" level="INFO"/>
+
+    <logger name="org.springframework.web.client" level="INFO"/>
+    <logger name="org.springframework.http" level="INFO"/>
+
+    <root level="WARN">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Redis"/>
+    </root>
+
+</configuration>

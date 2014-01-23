@@ -53,9 +53,20 @@ public class FavoritesCountRecorder {
     }
 
     private void updatePostFavoritesCount(String postId) {
-        int count = favoriteService.countPostFavorites(postId);
+        int favoritesCount = favoriteService.countPostFavorites(postId);
+
+        Query query = new Query(new Criteria(Post.ID_KEY).is(postId));
+        query.fields().include(Post.POPULARITY_KEY);
+
+        Integer popularity = mongoTemplate.findOne(query, Post.class).getPopularity();
+        if(popularity == null){
+            popularity = 0;
+        }
+
         mongoTemplate.updateFirst(new Query(new Criteria(Post.ID_KEY).is(postId)),
-                new Update().set(Post.FAVOURITES_COUNT_KEY, count),
+                new Update()
+                        .set(Post.FAVOURITES_COUNT_KEY, favoritesCount)
+                        .set(Post.FAVORITES_COUNT_ADD_POPULARITY_KEY, favoritesCount + popularity),
                 Post.class);
     }
 }

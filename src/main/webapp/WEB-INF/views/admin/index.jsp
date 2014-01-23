@@ -18,6 +18,7 @@
     <li><a href="${ctx}/admin/user">用户管理</a>, <a href="${ctx}/admin/robot/group">机器人组</a>, <a href="${ctx}/admin/robot/saying">机器人语库</a></li>
     <li><a href="${ctx}/admin/post/list">帖子管理</a>, <a href="${ctx}/admin/post/hot">热门帖子</a></li>
     <li><a href="${ctx}/admin/comment/list">评论管理</a></li>
+    <li><a href="${ctx}/admin/report-spam?processed=false">举报管理</a></li>
 </ul>
 
 <h2>发布</h2>

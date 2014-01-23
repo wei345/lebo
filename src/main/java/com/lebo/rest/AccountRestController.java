@@ -48,27 +48,21 @@ public class AccountRestController {
         User user = accountService.getUser(accountService.getCurrentUserId());
 
         if (StringUtils.isNotBlank(screenName)) {
-            if (!accountService.isScreenNameValid(screenName)) {
-                return ErrorDto.badRequest(String.format("screenName[%s] 无效，合法screenName为2-24个字符，支持中文、英文、数字、\"-\"、\"_\"", screenName));
-            }
-            if (!accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {
-                return ErrorDto.badRequest(String.format("%s 已被占用", screenName));
-            }
             user.setScreenName(screenName);
+            accountService.updateScreenName(user.getId(), screenName);
         }
 
         if (StringUtils.isNotBlank(description)) {
             user.setDescription(description);
+            accountService.updateDescription(user.getId(), description);
         }
 
         if (image != null && image.getSize() > 0) {
             try {
-                accountService.updateUserWithProfileImage(user, image.getInputStream());
+                accountService.updateProfileImage(user, image.getInputStream());
             } catch (IOException e) {
                 return ErrorDto.badRequest(NestedExceptionUtils.buildMessage("更新用户失败", e));
             }
-        } else {
-            accountService.saveUser(user);
         }
 
         //更新ShiroUser
@@ -136,17 +130,13 @@ public class AccountRestController {
         User user = accountService.getUser(accountService.getCurrentUserId());
 
         if (StringUtils.isNotBlank(screenName)) {
-            if (!accountService.isScreenNameValid(screenName)) {
-                return ErrorDto.badRequest(String.format("screenName[%s] 无效，合法screenName为2-24个字符，支持中文、英文、数字、\"-\"、\"_\"", screenName));
-            }
-            if (!accountService.isScreenNameAvailable(screenName, accountService.getCurrentUserId())) {
-                return ErrorDto.badRequest(String.format("%s 已被占用", screenName));
-            }
             user.setScreenName(screenName);
+            accountService.updateScreenName(user.getId(), screenName);
         }
 
         if (StringUtils.isNotBlank(description)) {
             user.setDescription(description);
+            accountService.updateDescription(user.getId(), description);
         }
 
         FileInfo image = aLiYunStorageService.get(aLiYunStorageService.getKeyFromUrl(imageUrl));
@@ -157,12 +147,10 @@ public class AccountRestController {
             }
 
             try {
-                accountService.updateUserWithProfileImage(user, image.getContent());
+                accountService.updateProfileImage(user, image.getContent());
             } catch (IOException e) {
                 return ErrorDto.badRequest(NestedExceptionUtils.buildMessage("更新用户失败", e));
             }
-        } else {
-            accountService.saveUser(user);
         }
 
         //更新ShiroUser

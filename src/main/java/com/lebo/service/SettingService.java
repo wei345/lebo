@@ -95,6 +95,12 @@ public class SettingService extends AbstractMongoService {
         return channelDao.findOne(id);
     }
 
+    public Channel getChannelByName(String name) {
+        return mongoTemplate.findOne(
+                new Query(new Criteria(Channel.NAME_KEY).is(name)),
+                Channel.class);
+    }
+
     public ChannelDto toChannelDto(Channel channel) {
         return BeanMapper.map(channel, ChannelDto.class);
     }

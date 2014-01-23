@@ -19,6 +19,7 @@ public class GoldProduct {
     private BigDecimal discount;
     private String image;
     private Integer gold;
+    private Boolean active;
 
     public static enum PriceUnit {
         CNY
@@ -88,12 +89,20 @@ public class GoldProduct {
         this.gold = gold;
     }
 
-    public String  getImageUrl(){
-        if(image == null){
+    public String getImageUrl() {
+        if (image == null) {
             return null;
         }
 
         return FileContentUrlUtils.getContentUrl(image);
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     /**
@@ -107,5 +116,9 @@ public class GoldProduct {
             return price.add(discount);
         }
         return price;
+    }
+
+    public String getInAppPurchaseId() {
+        return "gold_product_" + id;
     }
 }

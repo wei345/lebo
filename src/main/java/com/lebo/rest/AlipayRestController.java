@@ -1,7 +1,6 @@
 package com.lebo.rest;
 
 import com.lebo.service.AlipayService;
-import com.lebo.service.VgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,6 @@ public class AlipayRestController {
 
     @Autowired
     private AlipayService alipayService;
-    @Autowired
-    private VgService vgService;
 
     private Logger logger = LoggerFactory.getLogger(AlipayRestController.class);
 
@@ -44,7 +41,7 @@ public class AlipayRestController {
                                @RequestParam("notify_id") String notifyId,
                                @RequestParam("sign_type") String signType,
                                @RequestParam("sign") String sign,
-                               @RequestParam(value = "out_trade_no", required = false) Long outTradeNo,
+                               @RequestParam(value = "out_trade_no", required = false) String outTradeNo,
                                @RequestParam(value = "subject", required = false) String subject,
                                @RequestParam(value = "payment_type", required = false) String paymentType,
                                @RequestParam(value = "trade_no", required = false) String tradeNo,
@@ -93,7 +90,7 @@ public class AlipayRestController {
 
         try {
 
-            vgService.handleAlipayNotify(outTradeNo, AlipayService.AlipayStatus.valueOf(tradeStatus), notifyId);
+            alipayService.handleNotify(outTradeNo, AlipayService.AlipayStatus.valueOf(tradeStatus), notifyId);
             logger.debug("处理支付宝通知完成");
 
             return "success";

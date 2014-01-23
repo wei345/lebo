@@ -18,6 +18,7 @@ public class GoldProductDto {
     private BigDecimal discount;
     private BigDecimal cost;
     private String imageUrl;
+    private String inAppPurchaseId;
 
     public Long getId() {
         return id;
@@ -81,5 +82,13 @@ public class GoldProductDto {
 
     public void setCost(BigDecimal cost) {
         this.cost = cost;
+    }
+
+    public String getInAppPurchaseId() {
+        return inAppPurchaseId;
+    }
+
+    public void setInAppPurchaseId(String inAppPurchaseId) {
+        this.inAppPurchaseId = inAppPurchaseId;
     }
 }

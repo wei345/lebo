@@ -10,7 +10,7 @@ import com.lebo.repository.MyBatisRepository;
  */
 @MyBatisRepository
 public interface GoldOrderDao {
-    GoldOrder get(Long id);
+    GoldOrder get(String id);
 
     void insert(GoldOrder goldOrder);
 

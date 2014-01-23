@@ -202,4 +202,9 @@ public class StatusServiceTest extends SpringContextTestCase {
         statusService.addPopularity("525540df1a880aa92b6f6e17", 1);
     }
 
+    @Test
+    public void addPostFieldLastCommentCreatedAt(){
+        statusService.addPostFieldLastCommentCreatedAt();
+    }
+
 }

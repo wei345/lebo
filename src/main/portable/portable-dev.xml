@@ -8,11 +8,14 @@
         <replace xpath="//value[@type='com.fasterxml.jackson.annotation.JsonInclude.Include']">ALWAYS</replace>
     </config-file>-->
 
-    <config-file path="WEB-INF/classes/log4j.properties">
-        <replace key="log4j.rootLogger">WARN, RollingFile</replace>
+    <!-- logback.xml -->
+    <config-file path="WEB-INF/classes/logback.xml">
+        <replace xpath="//appender[@class='ch.qos.logback.core.ConsoleAppender']/filter[@class='ch.qos.logback.classic.filter.ThresholdFilter']/level">OFF</replace>
+        <replace xpath="//appender[@class='com.cwbase.logback.RedisAppender']/filter[@class='ch.qos.logback.classic.filter.ThresholdFilter']/level">OFF</replace>
     </config-file>
 
     <config-file path="WEB-INF/classes/application.properties">
+
         <!-- mongodb settings -->
         <replace key="mongo.host">localhost</replace>
 
@@ -42,10 +45,12 @@
 
         <!-- alipay -->
         <replace key="alipay.notify_url">http://app.dev.lebooo.com:8080/api/1/alipay/notify</replace>
+
     </config-file>
 
     <!-- quartz-cluster.properties -->
     <config-file path="WEB-INF/classes/schedule/quartz-cluster.properties">
         <replace key="org.quartz.jobStore.addresses">localhost</replace>
     </config-file>
+
 </portable-config>

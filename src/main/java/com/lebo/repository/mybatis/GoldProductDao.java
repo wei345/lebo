@@ -15,4 +15,6 @@ public interface GoldProductDao {
     GoldProduct get(Long id);
 
     List<GoldProduct> getAll();
+
+    List<GoldProduct> getActive();
 }

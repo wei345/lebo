@@ -3,10 +3,9 @@ package com.lebo;
 import org.springside.modules.utils.Encodes;
 
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static com.mongodb.util.MyAsserts.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author: Wei Liu
@@ -35,8 +34,14 @@ public class Test {
     @org.junit.Test
     public void format() throws InterruptedException {
         System.out.println(Thread.currentThread().getId());
-
     }
+
+    @org.junit.Test
+    public void test2() {
+        assertFalse(null instanceof Boolean);
+        assertTrue(Boolean.TRUE == true);
+    }
+
 }
 
 class Base62 {

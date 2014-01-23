@@ -1,6 +1,5 @@
 package com.lebo.entity;
 
-import com.lebo.service.AlipayService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -14,7 +13,7 @@ import java.util.Date;
  * Time: PM3:03
  */
 public class GoldOrder {
-    private Long id;
+    private String id;
     private String userId;
     private GoldProduct goldProduct;
     private Integer quantity;
@@ -25,36 +24,28 @@ public class GoldOrder {
     private Date orderDate;
     private Status status;
     private PaymentMethod paymentMethod;
-    private AlipayService.AlipayStatus alipayStatus;
-    private String alipayNotifyId;
+    private String paymentStatus;
+    private String paymentDetail;
 
     public static enum Status {
-        PAID("已支付"),
-        UNPAID("未支付"),
-        OBSOLETE("已作废");
-
-        Status(String description) {
-        }
+        PAID,        //已支付
+        UNPAID,      //未支付
+        OBSOLETE;    //已作废
     }
 
     public static enum PaymentMethod {
-        ALIPAY("支付宝");
-
-        private String name;
-
-        PaymentMethod(String name) {
-            this.name = name;
-        }
+        ALIPAY,
+        IN_APP_PURCHASE
     }
 
     public GoldOrder() {
     }
 
-    public GoldOrder(long id){
+    public GoldOrder(String id) {
         this.id = id;
     }
 
-    public GoldOrder(long id, String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
+    public GoldOrder(String id, String userId, BigDecimal discount, Status status, PaymentMethod paymentMethod) {
         this.id = id;
         this.userId = userId;
         this.discount = discount;
@@ -63,11 +54,11 @@ public class GoldOrder {
         this.paymentMethod = paymentMethod;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -133,20 +124,12 @@ public class GoldOrder {
         return StringUtils.substring(subject, 0, 128);
     }
 
-    public AlipayService.AlipayStatus getAlipayStatus() {
-        return alipayStatus;
+    public String getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setAlipayStatus(AlipayService.AlipayStatus alipayStatus) {
-        this.alipayStatus = alipayStatus;
-    }
-
-    public String getAlipayNotifyId() {
-        return alipayNotifyId;
-    }
-
-    public void setAlipayNotifyId(String alipayNotifyId) {
-        this.alipayNotifyId = alipayNotifyId;
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -179,5 +162,13 @@ public class GoldOrder {
 
     public Integer getGold() {
         return gold;
+    }
+
+    public String getPaymentDetail() {
+        return paymentDetail;
+    }
+
+    public void setPaymentDetail(String paymentDetail) {
+        this.paymentDetail = paymentDetail;
     }
 }

@@ -1,7 +1,6 @@
 package com.lebo.service;
 
 /**
- * 订单.
  *
  * @author: Wei Liu
  * Date: 13-10-29
@@ -19,22 +18,17 @@ import com.lebo.rest.dto.GoldOrderDto;
 import com.lebo.rest.dto.GoldProductDto;
 import com.lebo.rest.dto.GoodsDto;
 import com.lebo.service.param.PageRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springside.modules.mapper.BeanMapper;
-import org.springside.modules.utils.Encodes;
+import org.springside.modules.mapper.JsonMapper;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static com.lebo.service.AlipayService.AlipayStatus;
-import static com.lebo.service.AlipayService.AlipayStatus.WAIT_BUYER_PAY;
 
 @Service
 @Transactional
@@ -44,8 +38,6 @@ public class VgService {
     private GoldProductDao goldProductDao;
     @Autowired
     private GoldOrderDao goldOrderDao;
-    @Autowired
-    private AlipayService alipayService;
     @Autowired
     private UserInfoDao userInfoDao;
     @Autowired
@@ -78,14 +70,44 @@ public class VgService {
     @Value("${alipay.seller_id}")
     public String alipaySellerId;
 
-    private Logger logger = LoggerFactory.getLogger(VgService.class);
+    private JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
 
+    //-- 金币产品 --//
+
+    public List<GoldProduct> findAllGoldProducts() {
+        return goldProductDao.getActive();
+    }
+
+    public GoldProduct getGoldProduct(long id){
+        return goldProductDao.get(id);
+    }
+
+    public GoldProductDto toProductDto(GoldProduct goldProduct) {
+        return BeanMapper.map(goldProduct, GoldProductDto.class);
+    }
+
+    public List<GoldProductDto> toProductDtos(List<GoldProduct> goldProducts) {
+        ArrayList<GoldProductDto> dtos = new ArrayList<GoldProductDto>(goldProducts.size());
+        for (GoldProduct goldProduct : goldProducts) {
+            dtos.add(toProductDto(goldProduct));
+        }
+        return dtos;
+    }
+
+    //-- 订单 --//
     public GoldOrder createOrder(Long goldProductId, String userId, GoldOrder.PaymentMethod paymentMethod) {
+        return createOrder(nextOrderId(), goldProductId, 1, userId, paymentMethod);
+    }
+
+    public GoldOrder createOrder(String orderId,
+                                 Long goldProductId,
+                                 int quantity,
+                                 String userId,
+                                 GoldOrder.PaymentMethod paymentMethod) {
 
         BigDecimal discount = BigDecimal.ZERO;
-        int quantity = 1;
 
-        GoldOrder goldOrder = new GoldOrder(nextOrderId(), userId, discount, GoldOrder.Status.UNPAID, paymentMethod);
+        GoldOrder goldOrder = new GoldOrder(orderId, userId, discount, GoldOrder.Status.UNPAID, paymentMethod);
 
         GoldProduct goldProduct = goldProductDao.get(goldProductId);
         Assert.notNull(goldProduct);
@@ -103,165 +125,57 @@ public class VgService {
         return goldOrder;
     }
 
-    public List<GoldProduct> findAllGoldProducts() {
-        return goldProductDao.getAll();
+    String nextOrderId() {
+        return IdWorker.nextId();
     }
 
-    public GoldOrder getOrderWithDetail(Long orderId) {
+    private static class IdWorker {
+
+        private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //17位
+
+        public static synchronized String nextId() {
+
+            int n = (int) Thread.currentThread().getId() % 100;
+
+            return sdf.format(new Date())
+                            + (n < 10 ? "0" + n : n);
+        }
+    }
+
+    public GoldOrder getOrderWithDetail(String orderId) {
         GoldOrder goldOrder = goldOrderDao.get(orderId);
         goldOrder.setGoldProduct(goldProductDao.get(goldOrder.getGoldProduct().getId()));
         return goldOrder;
     }
 
-    public String getAlipayParams(String userId, Long productId, String service, String paymentType) {
-
-        GoldOrder goldOrder = createOrder(productId, userId, GoldOrder.PaymentMethod.ALIPAY);
-
-        Map<String, String> params = new HashMap<String, String>(10);
-        //基本参数，不可空
-        params.put("service", service);
-        params.put("partner", alipayPartnerId);
-        params.put("_input_charset", "utf-8");
-        //业务参数，不可空
-        params.put("out_trade_no", goldOrder.getId().toString());
-        params.put("subject", "购买" + goldOrder.getAlipaySubject());
-        params.put("payment_type", paymentType);
-        params.put("seller_id", alipaySellerId);
-        params.put("total_fee", goldOrder.getTotalCost().setScale(2).toString());
-        params.put("body", goldOrder.getAlipayBody());
-        params.put("notify_url", Encodes.urlEncode(alipayNotifyUrl));
-
-        //值带双引号
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            entry.setValue("\"" + entry.getValue() + "\"");
-        }
-
-        String signContent = alipayService.getSignContent(params);
-        String sign = alipayService.sign(signContent);
-
-        return new StringBuilder(signContent)
-                .append("&sign=").append("\"" + Encodes.urlEncode(sign) + "\"")
-                .append("&sign_type=\"RSA\"")
-                .toString();
-    }
-
-    public GoldProductDto toProductDto(GoldProduct goldProduct) {
-        return BeanMapper.map(goldProduct, GoldProductDto.class);
-    }
-
-    public List<GoldProductDto> toProductDtos(List<GoldProduct> goldProducts) {
-        ArrayList<GoldProductDto> dtos = new ArrayList<GoldProductDto>(goldProducts.size());
-        for (GoldProduct goldProduct : goldProducts) {
-            dtos.add(toProductDto(goldProduct));
-        }
-        return dtos;
+    public GoldOrder getOrder(String orderId) {
+        return goldOrderDao.get(orderId);
     }
 
     public GoldOrderDto toGoldOrderDto(GoldOrder goldOrder) {
         return BeanMapper.map(goldOrder, GoldOrderDto.class);
     }
 
-    public void handleAlipayNotify(long outTradeNo, AlipayStatus alipayStatus, String alipayNotifyId) {
 
-        if (!alipayService.checkNotifyId(alipayNotifyId)) {
-            logger.debug("alipayNotifyId '{}' 已处理过", alipayNotifyId);
-            return;
-        }
+    public static interface PaymentDetail {
 
-        updateOrderStatus(outTradeNo, alipayStatus, alipayNotifyId);
-
-        alipayService.doneNotifyId(alipayNotifyId);
     }
 
-    public void updateOrderStatus(long outTradeNo, AlipayStatus alipayStatus, String alipayNotifyId) {
+    public void updateOrderStatus(String orderId, GoldOrder.Status status, String paymentStatus, PaymentDetail paymentDetail) {
+        GoldOrder goldOrder = new GoldOrder(orderId);
 
-        GoldOrder goldOrder = goldOrderDao.get(outTradeNo);
+        goldOrder.setStatus(status);
+        goldOrder.setPaymentStatus(paymentStatus);
+        goldOrder.setPaymentDetail(jsonMapper.toJson(paymentDetail));
 
-        AlipayStatus currentAlipayStatus = goldOrder.getAlipayStatus();
-
-        if (currentAlipayStatus == null || currentAlipayStatus.canChangeTo(alipayStatus)) {
-
-            logger.debug("正在更新订单状态: {} -> {}", currentAlipayStatus, alipayStatus);
-
-            switch (alipayStatus) {
-                //null -> WAIT_BUYER_PAY
-                case WAIT_BUYER_PAY:
-                    updateTradeStatus(outTradeNo, GoldOrder.Status.UNPAID, alipayStatus, alipayNotifyId);
-                    logger.debug("未支付 : 支付宝等待用户支付");
-                    break;
-
-                case TRADE_SUCCESS:
-                    //null -> TRADE_SUCCESS, WAIT_BUYER_PAY -> TRADE_SUCCESS
-                    tradeSuccess(outTradeNo, alipayStatus, alipayNotifyId);
-                    logger.debug("已支付 : 支付宝交易完成，用户金币已增加");
-                    break;
-
-                case TRADE_FINISHED:
-                    //null -> TRADE_FINISHED, WAIT_BUYER_PAY -> TRADE_FINISHED
-                    if (currentAlipayStatus == null || currentAlipayStatus == WAIT_BUYER_PAY) {
-                        tradeSuccess(outTradeNo, alipayStatus, alipayNotifyId);
-                        logger.debug("已支付 : 支付宝交易完成，用户金币已增加");
-                    }
-                    //TRADE_SUCCESS -> TRADE_FINISHED, 不会出现这种情况吧
-                    else {
-                        throw new ServiceException("不知如何处理订单状态变化: " + currentAlipayStatus + " -> " + alipayStatus);
-                    }
-                    break;
-
-                case TRADE_CLOSED:
-                    //null -> TRADE_CLOSED, WAIT_BUYER_PAY -> TRADE_CLOSED
-                    if (currentAlipayStatus == null || currentAlipayStatus == WAIT_BUYER_PAY) {
-                        updateTradeStatus(outTradeNo, GoldOrder.Status.OBSOLETE, alipayStatus, alipayNotifyId);
-                        logger.debug("订单作废 : 支付宝交易关闭");
-                    }
-                    //TRADE_SUCCESS -> TRADE_CLOSED? 退款？
-                    else {
-                        throw new ServiceException("不知如何处理订单状态变化: " + currentAlipayStatus + " -> " + alipayStatus);
-                    }
-                    break;
-
-                default:
-                    throw new ServiceException("未知的订单类型: " + alipayStatus);
-            }
-        } else {
-            logger.debug("订单状态变化不符合支付宝规则，{} -> {}, 不做处理", currentAlipayStatus, alipayStatus);
-        }
+        goldOrderDao.updateStatus(goldOrder);
     }
 
-    /**
-     * 购买金币，支付宝支付成功.
-     */
-    public void tradeSuccess(Long orderId, AlipayStatus alipayStatus, String alipayNotifyId) {
-        //更新订单状态
-        updateTradeStatus(orderId, GoldOrder.Status.PAID, alipayStatus, alipayNotifyId);
-
-        //更新用户金币数
-        GoldOrder goldOrder = goldOrderDao.get(orderId);
+    public void delivery(GoldOrder goldOrder) {
         addUserGold(goldOrder.getUserId(), goldOrder.getGold(), goldOrder.getTotalCost());
     }
 
-    private void addUserGold(String userId, Integer gold, BigDecimal recharge) {
-        UserInfo userInfo = userInfoDao.get(userId);
-        if (userInfo == null) {
-            userInfo = new UserInfo(userId);
-            userInfo.setGold(gold);
-            userInfo.setRecharge(recharge);
-            userInfoDao.insert(userInfo);
-        } else {
-            UserInfo up = new UserInfo(userId); //只更新需要更新的字段
-            up.setGold(userInfo.getGold() + gold);
-            up.setRecharge(userInfo.getRecharge().add(recharge));
-            userInfoDao.update(up);
-        }
-    }
-
-    public void updateTradeStatus(Long orderId, GoldOrder.Status status, AlipayStatus alipayStatus, String alipayNotifyId) {
-        GoldOrder goldOrder = new GoldOrder(orderId);
-        goldOrder.setStatus(status);
-        goldOrder.setAlipayStatus(alipayStatus);
-        goldOrder.setAlipayNotifyId(alipayNotifyId);
-        goldOrderDao.updateStatus(goldOrder);
-    }
+    //-- UserInfo --//
 
     public UserInfo getUserInfoNullToDefault(String userId) {
         UserInfo userInfo = userInfoDao.get(userId);
@@ -278,9 +192,35 @@ public class VgService {
         return userInfo;
     }
 
-    public List<UserGoods> getUserGoodsByUserId(String userId) {
-        return userGoodsDao.getByUserId(userId);
+    private void addUserGold(String userId, Integer gold, BigDecimal cost) {
+        UserInfo userInfo = userInfoDao.get(userId);
+        if (userInfo == null) {
+            userInfo = new UserInfo(userId);
+            userInfo.setGold(gold);
+            userInfo.setRecharge(cost);
+            userInfoDao.insert(userInfo);
+        } else {
+            UserInfo up = new UserInfo(userId); //只更新需要更新的字段
+            up.setGold(userInfo.getGold() + gold);
+            up.setRecharge(userInfo.getRecharge().add(cost));
+            userInfoDao.update(up);
+        }
     }
+
+    private void addUserPopularity(String userId, int popularity) {
+        UserInfo userInfo = userInfoDao.get(userId);
+        if (userInfo == null) {
+            userInfo = new UserInfo(userId);
+            userInfo.setPopularity(popularity);
+            userInfoDao.insert(userInfo);
+        } else {
+            UserInfo up = new UserInfo(userId);
+            up.setPopularity(userInfo.getPopularity() + popularity);
+            userInfoDao.update(up);
+        }
+    }
+
+    //-- Goods --//
 
     public Goods getGoodsById(Integer goodsId) {
         return goodsDao.get(goodsId);
@@ -301,6 +241,8 @@ public class VgService {
         }
         return goodsDtos;
     }
+
+    //-- 赠送礼物 --//
 
     public void giveGoods(String fromUserId, String toUserId, String postId, Integer goodsId, Integer quantity) {
         Assert.isTrue(quantity > 0);
@@ -346,7 +288,7 @@ public class VgService {
         giveGoodsDao.insert(giveGoods);
 
         //更新排名数据
-        addGiveValue(toUserId, fromUserId, totalPrice);
+        addOrUpdateGiverValue(toUserId, fromUserId, totalPrice);
 
         //增长帖子人气
         statusService.addPopularity(postId, totalPrice);
@@ -384,20 +326,7 @@ public class VgService {
         }
     }
 
-    private void addUserPopularity(String userId, int popularity) {
-        UserInfo userInfo = userInfoDao.get(userId);
-        if (userInfo == null) {
-            userInfo = new UserInfo(userId);
-            userInfo.setPopularity(popularity);
-            userInfoDao.insert(userInfo);
-        } else {
-            UserInfo up = new UserInfo(userId);
-            up.setPopularity(userInfo.getPopularity() + popularity);
-            userInfoDao.update(up);
-        }
-    }
-
-    private void addGiveValue(String userId, String giverId, int giveValue) {
+    private void addOrUpdateGiverValue(String userId, String giverId, int giveValue) {
 
         GiverValue giverValue = giverValueDao.get(new GiverValue(userId, giverId));
 
@@ -411,30 +340,16 @@ public class VgService {
         }
     }
 
+    public List<UserGoods> getUserGoodsByUserId(String userId) {
+        return userGoodsDao.getByUserId(userId);
+    }
+
     public GiverValue getGiverValue(String userId, String giverId) {
         return giverValueDao.get(new GiverValue(userId, giverId));
     }
 
     public int getGiverRank(GiverValue giverValue) {
         return giverValueDao.countBefore(giverValue) + 1;
-    }
-
-    long nextOrderId() {
-        return IdWorker.nextId();
-    }
-
-    private static class IdWorker {
-
-        private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //17位
-
-        public static synchronized long nextId() {
-
-            int n = (int) Thread.currentThread().getId() % 100;
-
-            return Long.parseLong(
-                    sdf.format(new Date())
-                            + (n < 10 ? "0" + n : n));
-        }
     }
 
 }

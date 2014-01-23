@@ -17,7 +17,7 @@ import java.io.PrintWriter;
  * Date: 13-6-28
  * Time: PM7:08
  */
-public class ShiroApiRolesAuthorizationFilter extends RolesAuthorizationFilter {
+public class ApiRolesAuthorizationFilter extends RolesAuthorizationFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
         Subject subject = getSubject(request, response);

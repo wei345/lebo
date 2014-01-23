@@ -83,6 +83,15 @@
             padding-left: 30px;
         }
 
+        td.preview {
+            width: 100px;
+        }
+
+        td.preview img {
+            width: 100px;
+            display: block;
+        }
+
         .preview a {
             position: relative;
             display: block;
@@ -102,6 +111,12 @@
         .moreinfo-title {
             margin-left: 1em;
         }
+
+        .icon-remove {
+            cursor: pointer;
+            margin-left: -2em;
+            margin-right: 2em;
+        }
     </style>
 </head>
 <body>
@@ -112,35 +127,29 @@
         <input type="search" class="input-medium search-query" id="screenName" name="screenName"
                value="${param.screenName}"
                placeholder="用户名字">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=screenName]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=screenName]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="userId" name="userId" value="${param.userId}"
                placeholder="用户ID">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=userId]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=userId]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="track" name="track" value="${param.track}"
                placeholder="关键词">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=track]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=track]').val('')" title="清除输入内容"></span>
 
         <input type="search" class="input-medium search-query" id="postId" name="postId" value="${param.postId}"
                placeholder="帖子ID">
-        <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-              onclick="$('input[name=postId]').val('')" title="清除输入内容"></span>
+        <span class="icon-remove" onclick="$('input[name=postId]').val('')" title="清除输入内容"></span>
 
         <div style="padding-top: 15px;">
             从
             <input type="text" id="startDate" name="startDate" class="input-medium search-query" value="${startDate}"
                    class="form-inline" placeholder="起始日期"/>
-            <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-                  onclick="$('input[name=startDate]').val('')" title="清除输入内容"></span>
+            <span class="icon-remove" onclick="$('input[name=startDate]').val('')" title="清除输入内容"></span>
             到
             <input type="text" id="endDate" name="endDate" class="input-medium search-query" value="${endDate}"
                    placeholder="结束日期"/>
-            <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
-                  onclick="$('input[name=endDate]').val('')" title="清除输入内容"></span>
+            <span class="icon-remove" onclick="$('input[name=endDate]').val('')" title="清除输入内容"></span>
         </div>
 
         <div style="padding-top: 15px;">
@@ -177,7 +186,7 @@
         <th style="width:20px;">
             #
         </th>
-        <th style="width: 100px;">
+        <th>
             视频
         </th>
         <th>
@@ -196,7 +205,7 @@
             <td></td>
 
             <td class="preview">
-                <a href="${item.videoUrl}" target="_blank">
+                <a href="${item.videoUrl}">
                     <img src="${item.videoFirstFrameUrl}"/>
                     <c:if test="${item.duration != null}">
                         <span class="badge badge-important">${item.duration}''</span>
@@ -207,7 +216,7 @@
             <td class="detail">
 
                 <div class="authorDisplayName">
-                    <a href="${ctx}/admin/user/update/${item.userId}">
+                    <a href="${ctx}/admin/user?userId=${item.userId}">
                         <img class="authorPhoto" src="${item.profileImageUrl}" title="作者头像"/>
                         <span>${item.screenName}</span>
                     </a>
@@ -247,7 +256,9 @@
 
             <td>
                 <a href="${ctx}/admin/comment/list?postId=${item.id}" target="_blank">查看评论</a><br/>
-                <a href="${ctx}/admin/robot/comment?postId=${item.id}" target="_blank">机器人评论</a>
+                <c:if test="${!item.pvt}">
+                    <a href="${ctx}/admin/robot/comment?postId=${item.id}" target="_blank">机器人评论</a>
+                </c:if>
                 <input type="button" value="删除" class="btn btn-link" onclick="deletePost('${item.id}', this)"/>
             </td>
 

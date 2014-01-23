@@ -78,7 +78,7 @@
                     ${item.createdAt}
             </td>
             <td>
-                <input type="button" value="删除" class="btn btn-link" onclick="deletePost('${item.id}', this)"/>
+                <input type="button" value="删除" class="btn btn-link" onclick="deleteComment('${item.id}', this)"/>
             </td>
         </tr>
     </c:forEach>
@@ -97,7 +97,7 @@
 
     });
 
-    function deletePost(id, btn) {
+    function deleteComment(id, btn) {
         if (confirm('确定删除吗?')) {
             $.ajax({
                 url: '${ctx}/admin/comment/delete/' + id,

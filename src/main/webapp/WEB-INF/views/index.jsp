@@ -10,7 +10,10 @@
 
 <body>
 <ul>
-    <li><tags:link url="${ctx}/docs/api/1" text="REST API v1"/></li>
+    <shiro:user>
+        <li><tags:link url="${ctx}/docs/api/1" text="REST API v1"/></li>
+    </shiro:user>
+
     <shiro:hasRole name="admin">
         <li><tags:link url="${ctx}/admin" text="后台"/></li>
     </shiro:hasRole>

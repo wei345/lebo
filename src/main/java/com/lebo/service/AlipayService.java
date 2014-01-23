@@ -2,15 +2,22 @@ package com.lebo.service;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.lebo.entity.GoldOrder;
 import com.lebo.redis.RedisKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springside.modules.nosql.redis.JedisTemplate;
+import org.springside.modules.utils.Encodes;
 import redis.clients.jedis.Jedis;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import static com.lebo.service.AlipayService.AlipayStatus.WAIT_BUYER_PAY;
 
 /**
  * @author: Wei Liu
@@ -36,6 +43,11 @@ public class AlipayService {
     private JedisTemplate jedisTemplate;
 
     private RestTemplate restTemplate = new RestTemplate();
+
+    private Logger logger = LoggerFactory.getLogger(AlipayService.class);
+
+    @Autowired
+    private VgService vgService;
 
     /**
      * 《移动快捷支付应用集成接入包 支付接口 -- 版本号:1.1》 7.4 服务器异步通知参数获取:
@@ -99,6 +111,42 @@ public class AlipayService {
 
     }
 
+    //-- 支付请求参数 --//
+
+    public String getAlipayParams(String userId, Long productId, String service, String paymentType) {
+
+        GoldOrder goldOrder = vgService.createOrder(productId, userId, GoldOrder.PaymentMethod.ALIPAY);
+
+        Map<String, String> params = new HashMap<String, String>(10);
+        //基本参数，不可空
+        params.put("service", service);
+        params.put("partner", alipayPartnerId);
+        params.put("_input_charset", "utf-8");
+        //业务参数，不可空
+        params.put("out_trade_no", goldOrder.getId().toString());
+        params.put("subject", "购买" + goldOrder.getAlipaySubject());
+        params.put("payment_type", paymentType);
+        params.put("seller_id", alipaySellerId);
+        params.put("total_fee", goldOrder.getTotalCost().setScale(2).toString());
+        params.put("body", goldOrder.getAlipayBody());
+        params.put("notify_url", Encodes.urlEncode(alipayNotifyUrl));
+
+        //值带双引号
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            entry.setValue("\"" + entry.getValue() + "\"");
+        }
+
+        String signContent = getSignContent(params);
+        String sign = sign(signContent);
+
+        return new StringBuilder(signContent)
+                .append("&sign=").append("\"" + Encodes.urlEncode(sign) + "\"")
+                .append("&sign_type=\"RSA\"")
+                .toString();
+    }
+
+    //-- 支付宝异步通知 --//
+
     public boolean checkNotifyId(final String notifyId) {
 
         return jedisTemplate.execute(new JedisTemplate.JedisAction<Boolean>() {
@@ -130,6 +178,105 @@ public class AlipayService {
                 return false;
             }
             return anotherStatus.value > this.value;
+        }
+    }
+
+    public void handleNotify(String outTradeNo, AlipayStatus alipayStatus, String alipayNotifyId) {
+
+        if (!checkNotifyId(alipayNotifyId)) {
+            logger.debug("alipayNotifyId '{}' 已处理过", alipayNotifyId);
+            return;
+        }
+
+        updateOrderStatus(outTradeNo, alipayStatus, alipayNotifyId);
+
+        doneNotifyId(alipayNotifyId);
+    }
+
+    public void updateOrderStatus(String orderId, AlipayStatus alipayStatus, String alipayNotifyId) {
+
+        GoldOrder goldOrder = vgService.getOrder(orderId);
+
+        AlipayStatus currentAlipayStatus = AlipayStatus.valueOf(goldOrder.getPaymentStatus());
+
+        if (currentAlipayStatus == null || currentAlipayStatus.canChangeTo(alipayStatus)) {
+
+            logger.debug("正在更新订单状态: {} -> {}", currentAlipayStatus, alipayStatus);
+
+            VgService.PaymentDetail paymentDetail = new AlipayPaymentDetail(alipayNotifyId);
+
+            switch (alipayStatus) {
+                //null -> WAIT_BUYER_PAY
+                case WAIT_BUYER_PAY:
+                    vgService.updateOrderStatus(orderId, GoldOrder.Status.UNPAID, alipayStatus.name(), paymentDetail);
+                    logger.debug("未支付 : 支付宝等待用户支付");
+                    break;
+
+                case TRADE_SUCCESS:
+                    //null -> TRADE_SUCCESS, WAIT_BUYER_PAY -> TRADE_SUCCESS
+                    tradeSuccess(goldOrder, alipayStatus, alipayNotifyId);
+                    logger.debug("已支付 : 支付宝交易完成，用户金币已增加");
+                    break;
+
+                case TRADE_FINISHED:
+                    //null -> TRADE_FINISHED, WAIT_BUYER_PAY -> TRADE_FINISHED
+                    if (currentAlipayStatus == null || currentAlipayStatus == WAIT_BUYER_PAY) {
+                        tradeSuccess(goldOrder, alipayStatus, alipayNotifyId);
+                        logger.debug("已支付 : 支付宝交易完成，用户金币已增加");
+                    }
+                    //TRADE_SUCCESS -> TRADE_FINISHED, 不会出现这种情况吧
+                    else {
+                        throw new ServiceException("不知如何处理订单状态变化: " + currentAlipayStatus + " -> " + alipayStatus);
+                    }
+                    break;
+
+                case TRADE_CLOSED:
+                    //null -> TRADE_CLOSED, WAIT_BUYER_PAY -> TRADE_CLOSED
+                    if (currentAlipayStatus == null || currentAlipayStatus == WAIT_BUYER_PAY) {
+                        vgService.updateOrderStatus(orderId, GoldOrder.Status.OBSOLETE, alipayStatus.name(), paymentDetail);
+                        logger.debug("订单作废 : 支付宝交易关闭");
+                    }
+                    //TRADE_SUCCESS -> TRADE_CLOSED? 退款？
+                    else {
+                        throw new ServiceException("不知如何处理订单状态变化: " + currentAlipayStatus + " -> " + alipayStatus);
+                    }
+                    break;
+
+                default:
+                    throw new ServiceException("未知的订单类型: " + alipayStatus);
+            }
+        } else {
+            logger.debug("订单状态变化不符合支付宝规则，{} -> {}, 不做处理", currentAlipayStatus, alipayStatus);
+        }
+    }
+
+    public void tradeSuccess(GoldOrder goldOrder, AlipayStatus alipayStatus, String alipayNotifyId) {
+
+        vgService.updateOrderStatus(goldOrder.getId(),
+                GoldOrder.Status.PAID,
+                alipayStatus.name(),
+                new AlipayPaymentDetail(alipayNotifyId));
+
+        vgService.delivery(goldOrder);
+    }
+
+    public static class AlipayPaymentDetail implements VgService.PaymentDetail {
+
+        private String notifyId;
+
+        public AlipayPaymentDetail() {
+        }
+
+        public AlipayPaymentDetail(String notifyId) {
+            this.notifyId = notifyId;
+        }
+
+        public String getNotifyId() {
+            return notifyId;
+        }
+
+        public void setNotifyId(String notifyId) {
+            this.notifyId = notifyId;
         }
     }
 }

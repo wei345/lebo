@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.lebo.service.AlipayService.AlipayStatus.TRADE_FINISHED;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -20,6 +21,8 @@ public class AlipayServiceTest extends SpringContextTestCase {
 
     @Autowired
     private AlipayService alipayService;
+    @Autowired
+    private VgService vgService;
 
     @Test
     public void rsaCheckContent() throws Exception {
@@ -77,16 +80,31 @@ public class AlipayServiceTest extends SpringContextTestCase {
     }
 
     @Test
-    public void alipayStatus(){
+    public void getAlipayParams() {
+        String signedParams = alipayService.getAlipayParams("5216d0dc1a8829c4ae1bbec3", 1L, "mobile.securitypay.pay", "1");
+        System.out.println(signedParams);
+    }
+
+    @Test
+    public void alipayStatus() {
         assertTrue(AlipayService.AlipayStatus.TRADE_SUCCESS == AlipayService.AlipayStatus.valueOf("TRADE_SUCCESS"));
     }
 
     @Test
-    public void checkNotifyId(){
+    public void checkNotifyId() {
         String key = "123";
         assertTrue(alipayService.checkNotifyId(key));
         alipayService.doneNotifyId(key);
         assertFalse(alipayService.checkNotifyId(key));
     }
 
+    @Test
+    public void handleAlipayNotify() {
+        alipayService.handleNotify("2013121312071706588", TRADE_FINISHED, "test-12345678");
+    }
+
+    @Test
+    public void tradeSuccess() {
+        alipayService.tradeSuccess(vgService.getOrder("1"), AlipayService.AlipayStatus.TRADE_SUCCESS, "test-123456");
+    }
 }

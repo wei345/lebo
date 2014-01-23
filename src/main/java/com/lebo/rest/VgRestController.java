@@ -1,10 +1,8 @@
 package com.lebo.rest;
 
 import com.lebo.entity.*;
-import com.lebo.rest.dto.ErrorDto;
-import com.lebo.rest.dto.GiverRankingDto;
-import com.lebo.rest.dto.UserGoodsDto;
-import com.lebo.rest.dto.UserVgDto;
+import com.lebo.rest.dto.*;
+import com.lebo.service.InAppPurchaseService;
 import com.lebo.service.StatusService;
 import com.lebo.service.VgService;
 import com.lebo.service.account.AccountService;
@@ -35,6 +33,8 @@ public class VgRestController {
     private AccountService accountService;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private InAppPurchaseService inAppPurchaseService;
 
     private static final String API_1_1_VG = "/api/1.1/vg/";
 
@@ -56,7 +56,7 @@ public class VgRestController {
 
         /*if (GoldOrder.PaymentMethod.ALIPAY == paymentMethod) {
 
-            String params = vgService.getAlipayParams(
+            String params = alipayService.getAlipayParams(
                     accountService.getCurrentUserId(),
                     productId,
                     alipayService,
@@ -72,9 +72,35 @@ public class VgRestController {
 
     }
 
+    @RequestMapping(value = API_1_1_VG + "inAppPurchase.json", method = RequestMethod.POST)
+    @ResponseBody
+    public Object inAppPurchase(@RequestParam("receiptData") String receiptData,
+                                @RequestParam("userId") String userId) {
+
+        InAppPurchaseService.VerifyReceiptResult verifyReceiptResult = inAppPurchaseService.verifyReceipt(receiptData);
+
+        if (verifyReceiptResult.getStatus() != 0) {
+            return ErrorDto.badRequest("收据验证失败, status " + verifyReceiptResult.getStatus());
+        }
+
+        //创建订单, 交付金币, 记录receiptData
+        inAppPurchaseService.delivery(verifyReceiptResult, receiptData, userId);
+
+        //返回购买的商品和数量
+        InAppPurchaseService.Receipt receipt = verifyReceiptResult.getReceipt();
+
+        GoldProductWithQuantityDto dto = BeanMapper.map(
+                vgService.getGoldProduct(receipt.getGoldProductId()),
+                GoldProductWithQuantityDto.class);
+
+        dto.setQuantity(receipt.getQuantity());
+
+        return dto;
+    }
+
     @RequestMapping(value = API_1_1_VG + "goldOrders/detail.json", method = RequestMethod.GET)
     @ResponseBody
-    public Object goldOrdersDetail(@RequestParam("orderId") Long orderId) {
+    public Object goldOrdersDetail(@RequestParam("orderId") String orderId) {
 
         return vgService.toGoldOrderDto(vgService.getOrderWithDetail(orderId));
     }

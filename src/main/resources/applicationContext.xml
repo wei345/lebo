@@ -147,9 +147,11 @@
 
     <!-- properties -->
     <context:property-placeholder location="classpath*:/application.properties"/>
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver"/>
 
 
     <!-- Components -->
+    <import resource="security/applicationContext-shiro.xml"/>
     <import resource="schedule/applicationContext-quartz-timer-cluster.xml"/>
     <import resource="jms/applicationContext-jms.xml"/>
     <import resource="jmx/applicationContext-jmx.xml"/>

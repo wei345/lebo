@@ -77,6 +77,10 @@ public class Post extends IdEntity {
     private Integer shareCount;
     public static final String SHARE_COUNT_KEY = "shareCount";
 
+    @Indexed(direction = IndexDirection.DESCENDING)
+    private Date lastCommentCreatedAt;
+    public static final String LAST_COMMENT_CREATED_AT_KEY = "lastCommentCreatedAt";
+
     // 是否精品
     private boolean digest;
     public static final String DIGEST_KEY = "digest";
@@ -117,6 +121,10 @@ public class Post extends IdEntity {
 
     private Integer popularity; //人气
     public static final String POPULARITY_KEY = "popularity";
+
+    @Indexed(direction = IndexDirection.DESCENDING)
+    private Integer favoritesCountAddPopularity; //favoritesCount + popularity
+    public static final String FAVORITES_COUNT_ADD_POPULARITY_KEY = "favoritesCountAddPopularity";
 
     public static class UserMention {
         private String userId;
@@ -170,6 +178,8 @@ public class Post extends IdEntity {
         repostsCount = 0;
         commentsCount = 0;
         shareCount = 0;
+        popularity = 0;
+        favoritesCountAddPopularity = 0;
         return this;
     }
 
@@ -402,5 +412,21 @@ public class Post extends IdEntity {
 
     public boolean isOriginPost() {
         return originPostId == null;
+    }
+
+    public Date getLastCommentCreatedAt() {
+        return lastCommentCreatedAt;
+    }
+
+    public void setLastCommentCreatedAt(Date lastCommentCreatedAt) {
+        this.lastCommentCreatedAt = lastCommentCreatedAt;
+    }
+
+    public Integer getFavoritesCountAddPopularity() {
+        return favoritesCountAddPopularity;
+    }
+
+    public void setFavoritesCountAddPopularity(Integer favoritesCountAddPopularity) {
+        this.favoritesCountAddPopularity = favoritesCountAddPopularity;
     }
 }

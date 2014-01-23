@@ -14,6 +14,7 @@ public class RedisKeys {
     //http://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
     public static final String ROBOT_GROUP_SPEL = "'robot.groups'";
     public static final String ROBOT_SAYING_TAG_SPEL = "'robot.saying.tags'";
+    public static final String USER_BANNED_SPEL = "'user.' + #id + '.banned'";
 
     public static final String CACHE_NAME_DEFAULT = "cache";
 

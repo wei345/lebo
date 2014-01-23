@@ -1,19 +1,21 @@
-## 开发环境
+## 环境
 
-* Java 1.6 以上。 - [JDK 1.6u45下载](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR)
-* Maven 3.0.3 以上。 - [Maven 3.0.5下载](http://apache.etoak.com/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.zip)
-* MongoDB 2.4.4。 - [MongoDB下载](http://www.mongodb.org/downloads)
-* Memcached 1.4.5 - [Memcached安装](https://code.google.com/p/memcached/wiki/NewInstallFromPackage)
+* Java 1.6+, [JDK 1.6u45下载](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR)
+* [Maven](http://maven.apache.org/) 3.0.3+
+* [MongoDB](http://www.mongodb.org) 2.4.4
+* [MySQL](http://dev.mysql.com/downloads/) 5.5
+* [Redis](http://redis.io/) 2.6.14
+* [ActiveMQ](http://activemq.apache.org/) 5.7
+* 阿里云OSS
+* [Tomcat](http://tomcat.apache.org/) 7
 
-注意：Maven仓库路径不能有空格，否则会导致build失败。可在`$MAVEN_HOME/conf/settings.xml`中设置：
+host,port配置`src/main/resources/application.properties`
 
-    <localRepository>/path/to/local/repo</localRepository>
+特定环境配置`src/main/portable/portable-xxx.xml`
 
-## 第一次build
+## 依赖
 
-### SpringSide
-
-执行下面命令从源码构建并安装SpringSide4，初次执行需要下载不少依赖，耐心等待。
+### SpringSide4
 
     git clone https://github.com/springside/springside4.git
     cd springside4
@@ -22,8 +24,6 @@
     mvn clean install -Dmaven.test.skip=true
     mvn source:jar install
 
-看到“BUILD SUCCESS”，说明SpringSide4安装成功。
-
 ### IK Analyzer
 
     git clone https://github.com/wks/ik-analyzer.git
@@ -31,57 +31,41 @@
     mvn clean install -Dmaven.test.skip=true
     mvn source:jar install
 
-### Lebo
+### Logback Redis Appender
 
-执行下面命令克隆lebo --> 下载依赖 --> 编译 --> 启动，lebo启动时会连接MongoDB 127.0.0.1:27017、Memcached 127.0.0.1:11211，连不上会报错。
+    git clone https://github.com/kmtong/logback-redis-appender
+    cd logback-redis-appender
+    mvn install
+    mvn source:jar install
 
-    git clone https://git.oschina.net/weiliu/lebo.git
-    cd lebo
-    mvn jetty:run
+### Alipay SDK
 
-启动完成会看到：
+[下载Alipay SDK](https://openhome.alipay.com/doc/docIndex.htm#goto=https://openhome.alipay.com/doc/toSdk.htm)
 
-    2013-07-01 23:54:42.427:INFO:oejs.AbstractConnector:Started SelectChannelConnector@0.0.0.0:8080
-    [INFO] Started Jetty Server
+    mvn install:install-file -Dfile=alipay-sdk-java20131029120045.jar \
+                             -Dsources=alipay-sdk-java20131029120045-source.jar \
+                             -DgroupId=com.alipay \
+                             -DartifactId=alipay-sdk \
+                             -Dversion=20131029120045 \
+                             -Dpackaging=jar \
+                             -DgeneratePom=true \
+                             -DcreateChecksum=true
 
-浏览器访问http://localhost:8080/api.json，会看到
+## 源码
 
-    {"error":{"message":"Unauthorized","code":10401}}
+下载依赖源码：
 
-用HTTP客户端工具，如火狐扩展HttpRequester，发送：
+    mvn dependency:sources
 
-    POST http://localhost:8080/api/v1/login.json?provider=weibo&uid=1774156407&token=2.00vHLEwBz7QwTCbafc736d580QUCCY
+阿里云SDK没有源码，下载JavaDoc:
 
-会看到：
+    mvn dependency:resolve -Dclassifier=javadoc -DincludeArtifactIds=aliyun-openservices
 
-    {"screenName":"法图_麦","name":"法图_麦","profileImageUrl":"http://tp4.sinaimg.cn/1774156407/50/5657962784/0","provider":"weibo","uid":"1774156407","token":"2.00vHLEwBz7QwTCbafc736d580QUCCY"}
+## Getting Started
 
-发送：
+### IntelliJ IDEA
 
-    GET http://localhost:8080/api.json
-
-会看到：
-
-    It works
-
-进入MongoDB shell，
-
-    use test
-    db.openUser.count()    #输出 1
-    db.openUser.findOne()  #输出 {..."uid" : "1774156407"...}
-    db.user.findOne()      #输出 {..."screenName" : "法图_麦"...}
-
-微博登录成功。
-
-要停止lebo，按Ctrl + C。
-
-上面演示了在命令行中快速启动。开发时通常在IDE中启动，方便调试。
-
-## IDE
-
-### IDEA
-
-IDEA对Maven支持良好，选中pom.xml导入。
+IDEA对Maven支持很好，选中pom.xml导入。
 
 ### Eclispe
 
@@ -94,18 +78,6 @@ IDEA对Maven支持良好，选中pom.xml导入。
 
 ### 启动
 
-在IDE中，运行启动类com.lebo.QuickStartServer，也可以以debug方式运行。
+在IDE中，运行com.lebo.QuickStartServer，调试时可以以debug方式运行。
 
-### 代码
 
-* 不格式化/src/main/webapp/static
-
-## 依赖包源码 & JavaDoc
-
-执行以下命令下载源码：
-
-    mvn dependency:sources
-
-阿里云SDK没有源码，执行下面命令下载JavaDoc:
-
-    mvn dependency:resolve -Dclassifier=javadoc -DincludeArtifactIds=aliyun-openservices

@@ -21,11 +21,13 @@ import org.springside.modules.mapper.JsonMapper;
  * Time: PM6:14
  */
 public class ErrorDto {
-    private static final int UNAUTHORIZED_CODE = 10403;
+    private static final int FORBIDDEN_CODE = 10403;
     private static final int NOT_FOUND_CODE = 10404;
+    private static final int UNAUTHORIZED_CODE = 10401;
     public static final ErrorDto BAD_REQUEST = new ErrorDto("Bad Request", 10400, HttpStatus.BAD_REQUEST);
-    public static final ErrorDto UNAUTHORIZED = new ErrorDto("Unauthorized", 10401, HttpStatus.UNAUTHORIZED);
-    public static final ErrorDto FORBIDDEN = new ErrorDto("Forbidden", UNAUTHORIZED_CODE, HttpStatus.FORBIDDEN);
+    public static final ErrorDto UNAUTHORIZED = new ErrorDto("Unauthorized", UNAUTHORIZED_CODE, HttpStatus.UNAUTHORIZED);
+    public static final ErrorDto BANNED = new ErrorDto("Banned", UNAUTHORIZED_CODE, HttpStatus.UNAUTHORIZED);
+    public static final ErrorDto FORBIDDEN = new ErrorDto("Forbidden", FORBIDDEN_CODE, HttpStatus.FORBIDDEN);
     public static final ErrorDto NOT_FOUND = new ErrorDto("Not Found", 10404, HttpStatus.NOT_FOUND);
     public static final ErrorDto DUPLICATE = new ErrorDto("Duplicate", 10427, HttpStatus.BAD_REQUEST);
     public static final ErrorDto CAN_NOT_FOLLOW_BECAUSE_BLOCKED = new ErrorDto("不能关注该用户，因为你在对方的黑名单中", 10428, HttpStatus.BAD_REQUEST);
@@ -62,51 +64,61 @@ public class ErrorDto {
     }
 
     public static ResponseEntity<ErrorDto> badRequest(String message) {
-        return new ResponseEntity<ErrorDto>(newBadRequestError(message), HttpStatus.BAD_REQUEST);
+        return toResponseEntity(newBadRequestError(message));
     }
 
     public static ResponseEntity<ErrorDto> badRequest(ServiceException e) {
         if (e.getErrorDto() != null) {
-            return new ResponseEntity<ErrorDto>(e.getErrorDto(), e.getErrorDto().httpStatus);
+            return toResponseEntity(e.getErrorDto());
         } else {
-            return new ResponseEntity<ErrorDto>(newBadRequestError(e.getMessage()), HttpStatus.BAD_REQUEST);
+            return toResponseEntity(newBadRequestError(e.getMessage()));
         }
     }
 
     public static ResponseEntity<ErrorDto> badRequest(Exception e) {
-        return new ResponseEntity<ErrorDto>(newBadRequestError(NestedExceptionUtils.buildMessage(e.getMessage(), e.getCause())), HttpStatus.BAD_REQUEST);
+        return toResponseEntity(
+                newBadRequestError(
+                        NestedExceptionUtils.buildMessage(e.getMessage(), e.getCause())));
     }
 
     public static ResponseEntity<ErrorDto> internalServerError(String message) {
-        return new ResponseEntity<ErrorDto>(newInternalServerError(message), HttpStatus.INTERNAL_SERVER_ERROR);
+        return toResponseEntity(newInternalServerError(message));
     }
 
     public static ResponseEntity<ErrorDto> internalServerError(Exception e) {
-        return new ResponseEntity<ErrorDto>(newInternalServerError(NestedExceptionUtils.buildMessage(e.getMessage(), e.getCause())), HttpStatus.BAD_REQUEST);
+        return toResponseEntity(
+                newInternalServerError(
+                        NestedExceptionUtils.buildMessage(e.getMessage(), e.getCause())));
     }
 
     public static ResponseEntity<ErrorDto> notFound() {
-        return new ResponseEntity<ErrorDto>(ErrorDto.NOT_FOUND, HttpStatus.NOT_FOUND);
+        return toResponseEntity(ErrorDto.NOT_FOUND);
     }
 
     public static ResponseEntity<ErrorDto> notFound(String message) {
-        return new ResponseEntity<ErrorDto>(new ErrorDto(message, NOT_FOUND_CODE, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+        return toResponseEntity(
+                new ErrorDto(message, NOT_FOUND_CODE, HttpStatus.NOT_FOUND));
     }
 
     public static ResponseEntity<ErrorDto> unauthorized() {
-        return new ResponseEntity<ErrorDto>(ErrorDto.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+        return toResponseEntity(ErrorDto.UNAUTHORIZED);
     }
 
     public static ResponseEntity<ErrorDto> forbidden() {
-        return new ResponseEntity<ErrorDto>(ErrorDto.FORBIDDEN, HttpStatus.FORBIDDEN);
+        return toResponseEntity(ErrorDto.FORBIDDEN);
     }
 
-    public static ResponseEntity<ErrorDto> unauthorized(String message) {
-        return new ResponseEntity<ErrorDto>(new ErrorDto(message, UNAUTHORIZED_CODE, HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+    public static ResponseEntity<ErrorDto> forbidden(String message) {
+        return toResponseEntity(
+                new ErrorDto(message, FORBIDDEN_CODE, HttpStatus.FORBIDDEN));
     }
 
     public static ResponseEntity<ErrorDto> duplicate() {
-        return new ResponseEntity<ErrorDto>(ErrorDto.DUPLICATE, HttpStatus.BAD_REQUEST);
+        return toResponseEntity(ErrorDto.DUPLICATE);
+    }
+
+    public static ResponseEntity<ErrorDto> toResponseEntity(ErrorDto errorDto) {
+        return new ResponseEntity<ErrorDto>(errorDto, errorDto.getHttpStatus());
     }
 
     public Error getError() {

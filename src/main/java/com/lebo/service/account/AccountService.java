@@ -6,6 +6,7 @@ import com.lebo.event.ApplicationEventBus;
 import com.lebo.redis.RedisKeys;
 import com.lebo.repository.UserDao;
 import com.lebo.rest.dto.AccountSettingDto;
+import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.*;
 import com.lebo.service.param.SearchParam;
@@ -22,6 +23,8 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -118,7 +121,7 @@ public class AccountService extends AbstractMongoService {
         return userDao.findOne(id);
     }
 
-    public User saveUser(User user) {
+    private User saveUser(User user) {
         if (StringUtils.isNotBlank(user.getPlainPassword())) {
             entryptPassword(user);
             user.setPlainPassword(null);
@@ -396,7 +399,7 @@ public class AccountService extends AbstractMongoService {
      * @param profileImage InputStream of user's profile image
      * @throws IOException
      */
-    public void updateUserWithProfileImage(User user, InputStream profileImage) throws IOException {
+    public void updateProfileImage(User user, InputStream profileImage) throws IOException {
         BufferedImage originImage = ImageIO.read(profileImage);
         ByteArrayOutputStream outputStream;
         FileInfo fileInfo;
@@ -449,6 +452,73 @@ public class AccountService extends AbstractMongoService {
                 new Update().set(User.PROFILE_IMAGE_NORMAL_KEY, user.getProfileImageNormal())
                         .set(User.PROFILE_IMAGE_BIGGER_KEY, user.getProfileImageBigger())
                         .set(User.PROFILE_IMAGE_ORIGIN_KEY, user.getProfileImageOriginal()),
+                User.class);
+    }
+
+    public void updateScreenName(String id, String screenName) {
+
+        if (!isScreenNameValid(screenName)) {
+            throw new ServiceException(
+                    ErrorDto.newBadRequestError(
+                            "screenName[" + screenName + "] 无效，合法screenName为2-24个字符，支持中文、英文、数字、\"-\"、\"_\""));
+
+        }
+        if (!isScreenNameAvailable(screenName, id)) {
+            throw new ServiceException(
+                    ErrorDto.newBadRequestError(
+                            screenName + " 已被占用"));
+        }
+
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id))),
+                new Update().set(User.SCREEN_NAME_KEY, screenName),
+                User.class);
+    }
+
+    public void updateDescription(String id, String description) {
+
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id))),
+                new Update().set(User.DESCRIPTION_KEY, description),
+                User.class);
+    }
+
+    public void updateFindFriendWeiboToken(String id, String token, String uid) {
+
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id))),
+                new Update()
+                        .set(User.FIND_FRIEND_WEIBO_TOKEN_KEY, token)
+                        .set(User.FIND_FRIEND_WEIBO_UID_KEY, uid),
+                User.class);
+    }
+
+    public void updatePassword(String id, String plainPassword) {
+
+        User user = new User();
+        user.setPlainPassword(plainPassword);
+
+        entryptPassword(user);
+
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id))),
+                new Update()
+                        .set(User.PASSWORD_KEY, user.getPassword())
+                        .set(User.SALT_KEY, user.getSalt()),
+                User.class);
+    }
+
+    public void updateName(String id, String name) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id))),
+                new Update().set(User.NAME_KEY, name),
+                User.class);
+    }
+
+    public void updateEmail(String id, String email) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id))),
+                new Update().set(User.EMAIL_KEY, email),
                 User.class);
     }
 
@@ -792,4 +862,18 @@ public class AccountService extends AbstractMongoService {
                 mongoTemplate.count(query, User.class));
     }
 
+    @CacheEvict(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.USER_BANNED_SPEL)
+    public void updateBanned(String id, Boolean banned) {
+        mongoTemplate.updateFirst(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id))),
+                new Update().set(User.BANNED_KEY, banned),
+                User.class);
+    }
+
+    @Cacheable(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.USER_BANNED_SPEL)
+    public boolean isBanned(String id) {
+        return mongoTemplate.count(
+                new Query(new Criteria(User.ID_KEY).is(new ObjectId(id)).and(User.BANNED_KEY).is(true)),
+                User.class) == 1;
+    }
 }

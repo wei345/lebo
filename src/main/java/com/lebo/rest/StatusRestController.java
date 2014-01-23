@@ -303,7 +303,7 @@ public class StatusRestController {
         Post post = statusService.getPost(id);
 
         if (!post.getUserId().equals(accountService.getCurrentUserId())) {
-            return ErrorDto.unauthorized("你不是作者，没有权限删除");
+            return ErrorDto.forbidden("你不是作者，没有权限删除");
         }
 
         StatusDto dto = statusService.toStatusDto(post);
@@ -443,6 +443,46 @@ public class StatusRestController {
     public Object increaseShareCount(@RequestParam(value = "postId") String postId) {
         statusService.increaseShareCount(postId);
         return ErrorDto.OK;
+    }
+
+    /**
+     * 返回指定频道的post
+     */
+    @RequestMapping(value = API_1_1_PREFIX + "channel.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object channel_v1_1(@RequestParam(value = "name") String name,
+                               @RequestParam(value = "orderBy") String orderBy,
+                               PageRequest pageRequest) {
+
+        if (StringUtils.isBlank(name)) {
+            return ErrorDto.badRequest("name参数不能为空");
+        }
+
+        Sort sort;
+
+        if (Post.CREATED_AT_KEY.equals(orderBy)) {
+
+            sort = new Sort(Sort.Direction.DESC, orderBy);
+
+        } else if (Post.LAST_COMMENT_CREATED_AT_KEY.equals(orderBy)
+                || Post.FAVOURITES_COUNT_KEY.equals(orderBy)) {
+
+            sort = new Sort(Sort.Direction.DESC, orderBy, Post.ID_KEY);
+
+        } else if ("hot".equals(orderBy)) {
+
+            sort = new Sort(Sort.Direction.DESC, Post.FAVORITES_COUNT_ADD_POPULARITY_KEY, Post.ID_KEY);
+
+        } else {
+
+            return ErrorDto.badRequest("不支持的orderBy [" + orderBy + "]");
+        }
+
+        pageRequest.setSort(sort);
+
+        List<Post> posts = statusService.getChannelPosts(name, pageRequest);
+
+        return statusService.toStatusDtos(posts);
     }
 
 }

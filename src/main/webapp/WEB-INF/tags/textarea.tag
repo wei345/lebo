@@ -4,6 +4,7 @@
 <%@ attribute name="optional" type="java.lang.Boolean" required="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <% if (optional == null) optional = false; %>
+<% if (value == null) value = ""; %>
 <div class="control-group" ${optional ? "title='这个参数是可选的'" : ""}>
     <label class="control-label" for="<%=name%>">
         <c:if test="${optional}">
@@ -14,7 +15,7 @@
     </label>
 
     <div class="controls">
-        <textarea type="text" id="<%=name%>" name="<%=name%>" placeholder="Type something…" maxlength="140" cols="80"
+        <textarea type="text" id="<%=name%>" name="<%=name%>" placeholder="Type something…" cols="80"
                   rows="4" <%=optional ? "disabled='disabled'" : ""%>><%=value%>
         </textarea>
     </div>
