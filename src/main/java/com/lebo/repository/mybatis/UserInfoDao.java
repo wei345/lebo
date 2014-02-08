@@ -2,6 +2,9 @@ package com.lebo.repository.mybatis;
 
 import com.lebo.entity.UserInfo;
 import com.lebo.repository.MyBatisRepository;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * @author: Wei Liu
@@ -15,4 +18,6 @@ public interface UserInfoDao {
     void update(UserInfo userInfo);
 
     void insert(UserInfo userInfo);
+
+    List<UserInfo> getOrderByConsumeGoldDesc(Pageable pageable);
 }

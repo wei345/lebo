@@ -5,9 +5,11 @@ import com.lebo.event.AfterUserCreateEvent;
 import com.lebo.event.ApplicationEventBus;
 import com.lebo.redis.RedisKeys;
 import com.lebo.repository.UserDao;
+import com.lebo.repository.mybatis.UserInfoDao;
 import com.lebo.rest.dto.AccountSettingDto;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.UserDto;
+import com.lebo.rest.dto.UserVgDto;
 import com.lebo.service.*;
 import com.lebo.service.param.SearchParam;
 import com.lebo.util.ImageUtils;
@@ -87,6 +89,8 @@ public class AccountService extends AbstractMongoService {
     private JedisTemplate jedisTemplate;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private UserInfoDao userInfoDao;
 
     @PostConstruct
     public void ensureIndex() {
@@ -210,6 +214,17 @@ public class AccountService extends AbstractMongoService {
         dtoSetFavoritesCount(dto);
 
         return dto;
+    }
+
+    public UserVgDto toUserVgDto(User user){
+
+        UserVgDto userVgDto = new UserVgDto();
+        userVgDto.setUserId(user.getId());
+        userVgDto.setScreenName(user.getScreenName());
+        userVgDto.setProfileImageUrl(user.getProfileImageUrl());
+        userVgDto.setProfileImageBiggerUrl(user.getProfileImageBiggerUrl());
+        userVgDto.setProfileImageOriginalUrl(user.getProfileImageOriginalUrl());
+        return userVgDto;
     }
 
     public void dtoSetFollowing(UserDto dto) {
@@ -811,6 +826,10 @@ public class AccountService extends AbstractMongoService {
 
         //返回一个mongoId作为用户名
         return new ObjectId().toString();    //长度24
+    }
+
+    public List<UserInfo> getByConsumeGoldDesc(Pageable pageable){
+        return userInfoDao.getOrderByConsumeGoldDesc(pageable);
     }
 
     //---- JMX ----

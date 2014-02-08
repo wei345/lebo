@@ -73,4 +73,16 @@
         )
     </insert>
 
+    <resultMap id="getOrderByConsumeGoldDescResultMap" type="UserInfo">
+        <id property="userId" column="user_id"/>
+        <result property="consumeGold" column="consume_gold"/>
+    </resultMap>
+
+    <select id="getOrderByConsumeGoldDesc" parameterType="map" resultMap="getOrderByConsumeGoldDescResultMap">
+        select user_id, consume_gold
+        from vg_user_info
+        order by consume_gold desc
+        limit #{offset}, #{pageSize}
+    </select>
+
 </mapper>

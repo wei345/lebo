@@ -404,6 +404,14 @@
             返回Top50用户列表。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/users/richList" text="GET users/richList v1.1"/>
+        </td>
+        <td>
+            富豪排行榜，返回按消费的金币数排序的用户列表。
+        </td>
+    </tr>
 </table>
 
 <strong>关系</strong>
