@@ -412,6 +412,14 @@
             富豪排行榜，返回按消费的金币数排序的用户列表。
         </td>
     </tr>
+    <tr>
+        <td class="td1">
+            <tags:link url="${ctx}/docs/api/1.1/get/users/popularityList" text="GET users/popularityList v1.1"/>
+        </td>
+        <td>
+            人气排行榜，返回按人气(等于用户收到的礼物总价值)排序的用户列表。
+        </td>
+    </tr>
 </table>
 
 <strong>关系</strong>

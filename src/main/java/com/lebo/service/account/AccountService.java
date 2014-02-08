@@ -832,6 +832,10 @@ public class AccountService extends AbstractMongoService {
         return userInfoDao.getOrderByConsumeGoldDesc(pageable);
     }
 
+    public List<UserInfo> getByPopularityDesc(Pageable pageable){
+        return userInfoDao.getOrderByPopularityDesc(pageable);
+    }
+
     //---- JMX ----
     @ManagedOperation
     public void updateAllUserFriendsCount() {

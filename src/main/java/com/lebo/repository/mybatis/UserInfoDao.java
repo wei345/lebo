@@ -20,4 +20,6 @@ public interface UserInfoDao {
     void insert(UserInfo userInfo);
 
     List<UserInfo> getOrderByConsumeGoldDesc(Pageable pageable);
+
+    List<UserInfo> getOrderByPopularityDesc(Pageable pageable);
 }

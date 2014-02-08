@@ -85,4 +85,16 @@
         limit #{offset}, #{pageSize}
     </select>
 
+    <resultMap id="getOrderByPopularityDescResultMap" type="UserInfo">
+        <id property="userId" column="user_id"/>
+        <result property="popularity" column="popularity"/>
+    </resultMap>
+
+    <select id="getOrderByPopularityDesc" parameterType="map" resultMap="getOrderByPopularityDescResultMap">
+        select user_id, popularity
+        from vg_user_info
+        order by popularity desc
+        limit #{offset}, #{pageSize}
+    </select>
+
 </mapper>

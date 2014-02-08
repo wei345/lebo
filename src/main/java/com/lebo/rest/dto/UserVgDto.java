@@ -16,8 +16,9 @@ public class UserVgDto {
     private String profileImageOriginalUrl;
     private Integer gold;
     private Integer consumeGold;
-    private List<UserGoodsDto> goods = new ArrayList<UserGoodsDto>();
+    private List<UserGoodsDto> goods;
     private Integer goodsTotalPrice;
+    private Integer popularity; //人气
 
     public String getUserId() {
         return userId;
@@ -89,5 +90,13 @@ public class UserVgDto {
 
     public void setConsumeGold(Integer consumeGold) {
         this.consumeGold = consumeGold;
+    }
+
+    public Integer getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
     }
 }

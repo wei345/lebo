@@ -8,6 +8,6 @@
 <p><%=method%> <%=url%>
 </p>
 响应:
-<pre><code class="json">
+<pre><code class="json javascript">
     <jsp:doBody/>
 </code></pre>

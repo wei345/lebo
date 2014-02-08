@@ -172,4 +172,28 @@ public class UserRestController {
 
         return userVgDtoList;
     }
+
+    /**
+     * 人气排行榜
+     */
+    @RequestMapping(value = PREFIX_API_1_1_USERS + "popularityList.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object popularityList(PageRequest pageRequest) {
+
+        List<UserInfo> userInfoList = accountService.getByPopularityDesc(pageRequest);
+
+        List<UserVgDto> userVgDtoList = new ArrayList<UserVgDto>(userInfoList.size());
+
+        for (UserInfo userInfo : userInfoList) {
+
+            UserVgDto userVgDto = accountService.toUserVgDto(
+                    accountService.getUser(
+                            userInfo.getUserId()));
+            userVgDto.setPopularity(userInfo.getPopularity());
+
+            userVgDtoList.add(userVgDto);
+        }
+
+        return userVgDtoList;
+    }
 }
