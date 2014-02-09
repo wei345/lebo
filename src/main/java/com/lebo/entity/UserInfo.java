@@ -22,6 +22,15 @@ public class UserInfo {
         this.userId = userId;
     }
 
+    public static UserInfo newUserInfoWithDefaultValue(String userId){
+        UserInfo userInfo = new UserInfo(userId);
+        userInfo.gold = 0;
+        userInfo.consumeGold = 0;
+        userInfo.recharge = BigDecimal.ZERO;
+        userInfo.popularity = 0;
+        return userInfo;
+    }
+
     public String getUserId() {
         return userId;
     }

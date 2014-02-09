@@ -9,7 +9,8 @@ package com.lebo.service;
 
 import com.google.common.eventbus.EventBus;
 import com.lebo.entity.*;
-import com.lebo.event.AfterGiveGoodsEvent;
+import com.lebo.event.GiveGoodsNotificationEvent;
+import com.lebo.redis.RedisKeys;
 import com.lebo.repository.PostDao;
 import com.lebo.repository.UserDao;
 import com.lebo.repository.mybatis.*;
@@ -20,6 +21,7 @@ import com.lebo.rest.dto.GoodsDto;
 import com.lebo.service.param.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -58,6 +60,8 @@ public class VgService {
     private GiverValueDao giverValueDao;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private SettingService settingService;
 
     @Value("${alipay.alipay_public_key}")
     private String alipayPublicKey;
@@ -78,7 +82,7 @@ public class VgService {
         return goldProductDao.getActive();
     }
 
-    public GoldProduct getGoldProduct(long id){
+    public GoldProduct getGoldProduct(long id) {
         return goldProductDao.get(id);
     }
 
@@ -138,7 +142,7 @@ public class VgService {
             int n = (int) Thread.currentThread().getId() % 100;
 
             return sdf.format(new Date())
-                            + (n < 10 ? "0" + n : n);
+                    + (n < 10 ? "0" + n : n);
         }
     }
 
@@ -193,31 +197,20 @@ public class VgService {
     }
 
     private void addUserGold(String userId, Integer gold, BigDecimal cost) {
-        UserInfo userInfo = userInfoDao.get(userId);
-        if (userInfo == null) {
-            userInfo = new UserInfo(userId);
-            userInfo.setGold(gold);
-            userInfo.setRecharge(cost);
-            userInfoDao.insert(userInfo);
-        } else {
-            UserInfo up = new UserInfo(userId); //只更新需要更新的字段
-            up.setGold(userInfo.getGold() + gold);
-            up.setRecharge(userInfo.getRecharge().add(cost));
-            userInfoDao.update(up);
-        }
+        UserInfo userInfo = getUserInfoByIdOrCreateIfNotExist(userId);
+
+        UserInfo update = new UserInfo(userId); //只更新需要更新的字段
+        update.setGold(userInfo.getGold() + gold);
+        update.setRecharge(userInfo.getRecharge().add(cost));
+        userInfoDao.update(update);
     }
 
     private void addUserPopularity(String userId, int popularity) {
-        UserInfo userInfo = userInfoDao.get(userId);
-        if (userInfo == null) {
-            userInfo = new UserInfo(userId);
-            userInfo.setPopularity(popularity);
-            userInfoDao.insert(userInfo);
-        } else {
-            UserInfo up = new UserInfo(userId);
-            up.setPopularity(userInfo.getPopularity() + popularity);
-            userInfoDao.update(up);
-        }
+        UserInfo userInfo = getUserInfoByIdOrCreateIfNotExist(userId);
+
+        UserInfo update = new UserInfo(userId);
+        update.setPopularity(userInfo.getPopularity() + popularity);
+        userInfoDao.update(update);
     }
 
     //-- Goods --//
@@ -243,8 +236,29 @@ public class VgService {
     }
 
     //-- 赠送礼物 --//
-
     public void giveGoods(String fromUserId, String toUserId, String postId, Integer goodsId, Integer quantity) {
+        GiveGoods giveGoods = giveGoodsInternal(fromUserId, toUserId, postId, goodsId, quantity, true);
+        eventBus.post(new GiveGoodsNotificationEvent(giveGoods));
+    }
+
+    /**
+     * 帖子加精，赠送用户一朵玫瑰
+     */
+    public void giveGoodsWhenDigest(String toUserId, String postId) {
+        giveGoodsInternal(settingService.getSetting().getDigestAccountId(),
+                toUserId,
+                postId,
+                getGoodsIdByName("玫瑰"),
+                1,
+                false);
+    }
+
+    @Cacheable(value = RedisKeys.CACHE_NAME_DEFAULT, key = RedisKeys.GOODS_ID_SPEL)
+    private Integer getGoodsIdByName(String name) {
+        return goodsDao.getIdByName(name);
+    }
+
+    private GiveGoods giveGoodsInternal(String fromUserId, String toUserId, String postId, Integer goodsId, Integer quantity, boolean checkGold) {
         Assert.isTrue(quantity > 0);
         Assert.isTrue(userDao.exists(fromUserId));
         Assert.isTrue(userDao.exists(toUserId));
@@ -255,18 +269,20 @@ public class VgService {
 
         Integer totalPrice = goods.getPrice() * quantity;
 
-        UserInfo fromUserInfo = userInfoDao.get(fromUserId);
+        UserInfo fromUserInfo = getUserInfoByIdOrCreateIfNotExist(fromUserId);
 
         //检查金币余额
-        if (fromUserInfo == null || fromUserInfo.getGold() < totalPrice) {
-            throw new ServiceException(ErrorDto.INSUFFICIENT_GOLD);
+        if (checkGold) {
+            if (fromUserInfo == null || fromUserInfo.getGold() < totalPrice) {
+                throw new ServiceException(ErrorDto.INSUFFICIENT_GOLD);
+            }
         }
 
         //支付金币
-        UserInfo up = new UserInfo(fromUserId);
-        up.setGold(fromUserInfo.getGold() - totalPrice);
-        up.setConsumeGold(fromUserInfo.getConsumeGold() + totalPrice);
-        userInfoDao.update(up);
+        UserInfo update = new UserInfo(fromUserId);
+        update.setGold(fromUserInfo.getGold() - totalPrice);
+        update.setConsumeGold(fromUserInfo.getConsumeGold() + totalPrice);
+        userInfoDao.update(update);
 
         //增加用户物品
         addUserGoodsQuantity(toUserId, goodsId, quantity);
@@ -274,7 +290,7 @@ public class VgService {
         //增加帖子物品
         addPostGoodsQuantity(postId, goodsId, quantity);
 
-        //增加人气
+        //增加用户人气
         addUserPopularity(toUserId, totalPrice);
 
         //记录历史
@@ -290,10 +306,21 @@ public class VgService {
         //更新排名数据
         addOrUpdateGiverValue(toUserId, fromUserId, totalPrice);
 
-        //增长帖子人气
+        //增加帖子人气
         statusService.addPopularity(postId, totalPrice);
 
-        eventBus.post(new AfterGiveGoodsEvent(giveGoods));
+        return giveGoods;
+    }
+
+    private UserInfo getUserInfoByIdOrCreateIfNotExist(String userId) {
+        UserInfo userInfo = userInfoDao.get(userId);
+
+        if (userInfo == null) {
+            userInfo = UserInfo.newUserInfoWithDefaultValue(userId);
+            userInfoDao.insert(userInfo);
+        }
+
+        return userInfo;
     }
 
     public List<GiverValue> getGiverRanking(String userId, PageRequest pageRequest) {
