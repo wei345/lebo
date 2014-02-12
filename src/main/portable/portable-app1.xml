@@ -60,4 +60,9 @@
         <replace key="org.quartz.jobStore.addresses">10.160.8.62</replace>
     </config-file>
 
+    <!-- applicationContext-quartz-timer-cluster.xml -->
+    <config-file path="WEB-INF/classes/schedule/applicationContext-quartz-timer-cluster.xml">
+        <replace xpath="//bean[@id='clusterQuartzScheduler']/property[@name='autoStartup']/@value">false</replace>
+    </config-file>
+
 </portable-config>

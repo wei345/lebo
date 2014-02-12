@@ -40,10 +40,6 @@ public class FavoriteRestController {
     public Object create(@RequestParam("id") String id) {
         String userId = accountService.getCurrentUserId();
 
-        if (favoriteService.isFavorited(userId, id)) {
-            return ErrorDto.badRequest("你已经收藏了");
-        }
-
         favoriteService.create(userId, id);
         Post post = statusService.getPost(id);
         return statusService.toStatusDto(post);

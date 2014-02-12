@@ -24,4 +24,9 @@ public class RobotServiceTest extends SpringContextTestCase {
     public void renameGroup(){
         robotService.renameGroup("b", "bb");
     }
+
+    @Test
+    public void getRobotsByGroup(){
+        System.out.println(robotService.getRobotsByGroup("aa").size());
+    }
 }

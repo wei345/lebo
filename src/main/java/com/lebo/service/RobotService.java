@@ -49,6 +49,17 @@ public class RobotService extends AbstractMongoService {
         return mongoTemplate.find(query, User.class);
     }
 
+    public List<User> getRobotsByGroup(String groupName){
+        Query query = new Query(new Criteria(User.ROBOT_GROUPS_KEY).is(groupName));
+        query.fields().include(User.ROBOT_KEY).include(User.SCREEN_NAME_KEY);
+
+        return mongoTemplate.find(query, User.class);
+    }
+
+    public int countRobots(){
+        return (int)mongoTemplate.count(new Query(new Criteria(User.ROBOT_KEY).ne(null)), User.class);
+    }
+
     //-- 机器人分组 --//
 
 

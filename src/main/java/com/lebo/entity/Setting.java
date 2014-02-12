@@ -35,17 +35,17 @@ public class Setting extends IdEntity {
     private String appStoreLeboUrl = "https://itunes.apple.com/cn/app/le-bo-6miao-shi-pin/id598266288?mt=8";
     private String leboAppAndroidDownloadUrl = "http://www.lebooo.com/lebo_1.1_20130802.apk";
 
-    //红人榜 -> 粉丝最多
+    //红人榜.粉丝最多
     private String hotuser_button1_backgroundColor = "#7E5CDA";
     private String hotuser_button1_imageKey = "images/hotuser/btn1.png";
     private String hotuser_button1_text = "粉丝最多";
 
-    //红人榜 -> 最受喜欢
+    //红人榜.最受喜欢
     private String hotuser_button2_backgroundColor = "#D67E89";
     private String hotuser_button2_imageKey = "images/hotuser/btn2.png";
     private String hotuser_button2_text = "最受喜欢";
 
-    //红人榜 -> 导演排行
+    //红人榜.导演排行
     private String hotuser_button3_backgroundColor = "#30B5F0";
     private String hotuser_button3_imageKey = "images/hotuser/btn3.png";
     private String hotuser_button3_text = "导演排行";
@@ -53,6 +53,14 @@ public class Setting extends IdEntity {
     private boolean adsHotExpanded = true;
 
     private Integer imPollingIntervalSeconds = 180;
+
+    //机器人自动喜欢帖子
+    private Boolean robotAutoFavoriteEnable = false;
+    private String robotAutoFavoriteRobotGroup;
+    private Integer robotAutoFavoriteRobotCountFrom= 5;
+    private Integer robotAutoFavoriteRobotCountTo = 10;
+    private Integer robotAutoFavoriteTimeInMinuteFrom = 60;
+    private Integer robotAutoFavoriteTimeInMinuteTo = 240;
 
     //小应用:每天笑十次
     private String everyday10AccountId;
@@ -279,5 +287,53 @@ public class Setting extends IdEntity {
 
     public void setEveryday10AccountId(String everyday10AccountId) {
         this.everyday10AccountId = everyday10AccountId;
+    }
+
+    public Boolean getRobotAutoFavoriteEnable() {
+        return robotAutoFavoriteEnable;
+    }
+
+    public void setRobotAutoFavoriteEnable(Boolean robotAutoFavoriteEnable) {
+        this.robotAutoFavoriteEnable = robotAutoFavoriteEnable;
+    }
+
+    public String getRobotAutoFavoriteRobotGroup() {
+        return robotAutoFavoriteRobotGroup;
+    }
+
+    public void setRobotAutoFavoriteRobotGroup(String robotAutoFavoriteRobotGroup) {
+        this.robotAutoFavoriteRobotGroup = robotAutoFavoriteRobotGroup;
+    }
+
+    public Integer getRobotAutoFavoriteRobotCountFrom() {
+        return robotAutoFavoriteRobotCountFrom;
+    }
+
+    public void setRobotAutoFavoriteRobotCountFrom(Integer robotAutoFavoriteRobotCountFrom) {
+        this.robotAutoFavoriteRobotCountFrom = robotAutoFavoriteRobotCountFrom;
+    }
+
+    public Integer getRobotAutoFavoriteRobotCountTo() {
+        return robotAutoFavoriteRobotCountTo;
+    }
+
+    public void setRobotAutoFavoriteRobotCountTo(Integer robotAutoFavoriteRobotCountTo) {
+        this.robotAutoFavoriteRobotCountTo = robotAutoFavoriteRobotCountTo;
+    }
+
+    public Integer getRobotAutoFavoriteTimeInMinuteFrom() {
+        return robotAutoFavoriteTimeInMinuteFrom;
+    }
+
+    public void setRobotAutoFavoriteTimeInMinuteFrom(Integer robotAutoFavoriteTimeInMinuteFrom) {
+        this.robotAutoFavoriteTimeInMinuteFrom = robotAutoFavoriteTimeInMinuteFrom;
+    }
+
+    public Integer getRobotAutoFavoriteTimeInMinuteTo() {
+        return robotAutoFavoriteTimeInMinuteTo;
+    }
+
+    public void setRobotAutoFavoriteTimeInMinuteTo(Integer robotAutoFavoriteTimeInMinuteTo) {
+        this.robotAutoFavoriteTimeInMinuteTo = robotAutoFavoriteTimeInMinuteTo;
     }
 }
