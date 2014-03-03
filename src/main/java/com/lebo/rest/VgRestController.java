@@ -118,12 +118,7 @@ public class VgRestController {
         }
 
         //用户名字、头像
-        UserVgDto userVgDto = new UserVgDto();
-        userVgDto.setUserId(user.getId());
-        userVgDto.setScreenName(user.getScreenName());
-        userVgDto.setProfileImageUrl(user.getProfileImageUrl());
-        userVgDto.setProfileImageBiggerUrl(user.getProfileImageBiggerUrl());
-        userVgDto.setProfileImageOriginalUrl(user.getProfileImageOriginalUrl());
+        UserVgDto userVgDto = accountService.toUserVgDto(user);
 
         //用户金币数
         UserInfo userInfo = vgService.getUserInfoNullToDefault(userId);

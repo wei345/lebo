@@ -1,8 +1,10 @@
 package com.lebo.web.admin;
 
 import com.lebo.entity.RobotSaying;
+import com.lebo.entity.Setting;
 import com.lebo.entity.Task;
 import com.lebo.service.RobotService;
+import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.TaskService;
 import com.lebo.service.param.PageRequest;
@@ -34,12 +36,12 @@ public class RobotController {
 
     @Autowired
     private RobotService robotService;
-
     @Autowired
     private TaskService taskService;
-
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private SettingService settingService;
 
     public static JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
 
@@ -208,7 +210,37 @@ public class RobotController {
         }
 
         redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_SUCCESS_KEY, "机器人评论提交成功");
-
         return "redirect:/admin/robot/comment";
     }
+
+    @RequestMapping(value = "auto-favorite", method = RequestMethod.GET)
+    public String autoFavorite(Model model) {
+        model.addAttribute("robotTotalCount", robotService.countRobots());
+        model.addAttribute("groups", robotService.getGroups());
+        model.addAttribute("setting", settingService.getSetting());
+        return "admin/robot/autoFavorite";
+    }
+
+    @RequestMapping(value = "auto-favorite", method = RequestMethod.POST)
+    public String autoFavorite(@RequestParam(value = "robotAutoFavoriteEnable", defaultValue = "false") Boolean robotAutoFavoriteEnable,
+                               @RequestParam(value = "robotAutoFavoriteRobotGroup") String robotAutoFavoriteRobotGroup,
+                               @RequestParam(value = "robotAutoFavoriteRobotCountFrom") Integer robotAutoFavoriteRobotCountFrom,
+                               @RequestParam(value = "robotAutoFavoriteRobotCountTo") Integer robotAutoFavoriteRobotCountTo,
+                               @RequestParam(value = "robotAutoFavoriteTimeInMinuteFrom") Integer robotAutoFavoriteTimeInMinuteFrom,
+                               @RequestParam(value = "robotAutoFavoriteTimeInMinuteTo") Integer robotAutoFavoriteTimeInMinuteTo,
+                               RedirectAttributes redirectAttributes) {
+
+        Setting setting = settingService.getSetting();
+        setting.setRobotAutoFavoriteEnable(robotAutoFavoriteEnable);
+        setting.setRobotAutoFavoriteRobotGroup(robotAutoFavoriteRobotGroup);
+        setting.setRobotAutoFavoriteRobotCountFrom(robotAutoFavoriteRobotCountFrom);
+        setting.setRobotAutoFavoriteRobotCountTo(robotAutoFavoriteRobotCountTo);
+        setting.setRobotAutoFavoriteTimeInMinuteFrom(robotAutoFavoriteTimeInMinuteFrom);
+        setting.setRobotAutoFavoriteTimeInMinuteTo(robotAutoFavoriteTimeInMinuteTo);
+        settingService.saveSetting(setting);
+
+        redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_SUCCESS_KEY, "保存成功");
+        return "redirect:/admin/robot/auto-favorite";
+    }
+
 }

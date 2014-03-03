@@ -36,4 +36,10 @@
         quantity_unit
         from vg_goods
     </select>
+
+    <select id="getIdByName" parameterType="string" resultType="int">
+        select id
+        from vg_goods
+        where name = #{name}
+    </select>
 </mapper>

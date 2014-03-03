@@ -1,12 +1,10 @@
 package com.lebo.rest;
 
-import com.lebo.entity.FastestRisingUser;
-import com.lebo.entity.Setting;
-import com.lebo.entity.Top50User;
-import com.lebo.entity.User;
+import com.lebo.entity.*;
 import com.lebo.rest.dto.ErrorDto;
 import com.lebo.rest.dto.HotUserListDto;
 import com.lebo.rest.dto.UserDto;
+import com.lebo.rest.dto.UserVgDto;
 import com.lebo.service.SettingService;
 import com.lebo.service.StatusService;
 import com.lebo.service.account.AccountService;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springside.modules.mapper.BeanMapper;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -151,5 +150,50 @@ public class UserRestController {
     public Object top50(@Valid PageRequest pageRequest) {
         pageRequest.setSort(TOP50_SORT);
         return accountService.toUserDtos(accountService.findTop50Users(pageRequest));
+    }
+
+    @RequestMapping(value = PREFIX_API_1_1_USERS + "richList.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object richList(PageRequest pageRequest) {
+
+        List<UserInfo> userInfoList = accountService.getByConsumeGoldDesc(pageRequest);
+
+        List<UserVgDto> userVgDtoList = new ArrayList<UserVgDto>(userInfoList.size());
+
+        for (UserInfo userInfo : userInfoList) {
+
+            UserVgDto userVgDto = accountService.toUserVgDto(
+                    accountService.getUser(
+                            userInfo.getUserId()));
+            userVgDto.setConsumeGold(userInfo.getConsumeGold());
+
+            userVgDtoList.add(userVgDto);
+        }
+
+        return userVgDtoList;
+    }
+
+    /**
+     * 人气排行榜
+     */
+    @RequestMapping(value = PREFIX_API_1_1_USERS + "popularityList.json", method = RequestMethod.GET)
+    @ResponseBody
+    public Object popularityList(PageRequest pageRequest) {
+
+        List<UserInfo> userInfoList = accountService.getByPopularityDesc(pageRequest);
+
+        List<UserVgDto> userVgDtoList = new ArrayList<UserVgDto>(userInfoList.size());
+
+        for (UserInfo userInfo : userInfoList) {
+
+            UserVgDto userVgDto = accountService.toUserVgDto(
+                    accountService.getUser(
+                            userInfo.getUserId()));
+            userVgDto.setPopularity(userInfo.getPopularity());
+
+            userVgDtoList.add(userVgDto);
+        }
+
+        return userVgDtoList;
     }
 }

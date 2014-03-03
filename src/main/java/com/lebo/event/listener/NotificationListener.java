@@ -4,10 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import com.lebo.entity.*;
 import com.lebo.event.*;
 import com.lebo.jms.ApnsMessageProducer;
-import com.lebo.service.BlockService;
-import com.lebo.service.NotificationService;
-import com.lebo.service.StatusService;
-import com.lebo.service.VgService;
+import com.lebo.service.*;
 import com.lebo.service.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,6 +35,8 @@ public class NotificationListener {
     private VgService vgService;
     @Autowired
     private BlockService blockService;
+    @Autowired
+    private SettingService settingService;
 
     private Logger logger = LoggerFactory.getLogger(NotificationListener.class);
 
@@ -74,7 +73,24 @@ public class NotificationListener {
     public void afterPostCreate(AfterPostCreateEvent event) {
         //转发
         if (event.getPost().getOriginPostId() != null) {
-            if (!event.getPost().getOriginPostUserId().equals(event.getPost().getUserId())) { //转发自己的帖子不发通知
+            //加精，赠送玫瑰并发通知
+            if (event.getPost().getUserId().equals(settingService.getSetting().getDigestAccountId())) {// 加精
+
+                vgService.giveGoodsWhenDigest(event.getPost().getOriginPostUserId(), event.getPost().getOriginPostId());
+
+                Notification notification = createNotification(
+                        Notification.ACTIVITY_TYPE_DIGEST,
+                        event.getPost().getOriginPostUserId(),
+                        event.getPost().getUserId(),
+                        Notification.OBJECT_TYPE_POST,
+                        event.getPost().getOriginPostId(),
+                        "恭喜你, 你导演的视频被加为精华!获得1朵玫瑰(价值10金币)奖励!快去分享给你的小伙伴们吧!(点击系统消息,会出现“分享”按钮,点击后可以将该视频分享到微信朋友圈、微信、QQ、新浪微博、人人网、QQ 空间等平台)");
+
+                sendNotificationQueue(notification, notification.getText());
+
+            }
+            //发送转发通知
+            else if (!event.getPost().getOriginPostUserId().equals(event.getPost().getUserId())) { //非转发自己的帖子
                 Notification notification = createNotification(Notification.ACTIVITY_TYPE_REPOST,
                         event.getPost().getOriginPostUserId(), event.getPost().getUserId(),
                         Notification.OBJECT_TYPE_POST, event.getPost().getOriginPostId(), null);
@@ -164,7 +180,7 @@ public class NotificationListener {
     }
 
     @Subscribe
-    public void afterGiveGoods(AfterGiveGoodsEvent event) {
+    public void afterGiveGoods(GiveGoodsNotificationEvent event) {
 
         GiveGoods giveGoods = event.getGiveGoods();
 

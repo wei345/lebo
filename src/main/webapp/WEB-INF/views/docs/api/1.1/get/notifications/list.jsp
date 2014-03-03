@@ -256,6 +256,17 @@
         <td>在哪个视频发起的送礼操作</td>
         <td>无</td>
     </tr>
+    <tr>
+        <td>
+            用户帖子被加精
+        </td>
+        <td>
+            <%=Notification.ACTIVITY_TYPE_DIGEST%>
+        </td>
+        <td>谁加精的</td>
+        <td>被加精的视频</td>
+        <td>无</td>
+    </tr>
 </table>
 
 <p>

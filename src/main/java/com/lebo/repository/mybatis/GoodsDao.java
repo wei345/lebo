@@ -14,4 +14,5 @@ import java.util.List;
 public interface GoodsDao {
     Goods get(Integer id);
     List<Goods> getAll();
+    Integer getIdByName(String name);
 }

@@ -7,10 +7,10 @@ import com.lebo.entity.GiveGoods;
  * Date: 13-12-3
  * Time: PM3:53
  */
-public class AfterGiveGoodsEvent {
+public class GiveGoodsNotificationEvent {
     private GiveGoods giveGoods;
 
-    public AfterGiveGoodsEvent(GiveGoods giveGoods) {
+    public GiveGoodsNotificationEvent(GiveGoods giveGoods) {
         this.giveGoods = giveGoods;
     }
 
