@@ -1,5 +1,6 @@
 package com.lebo.web.admin;
 
+import com.lebo.entity.Setting;
 import com.lebo.entity.User;
 import com.lebo.service.RobotService;
 import com.lebo.service.account.AccountService;
@@ -7,19 +8,22 @@ import com.lebo.service.account.ShiroUser;
 import com.lebo.service.param.PageRequest;
 import com.lebo.service.param.PaginationParam;
 import com.lebo.web.ControllerUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.mapper.JsonMapper;
 import org.springside.modules.utils.Collections3;
 
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -92,7 +96,7 @@ public class UserAdminController {
 
         if (StringUtils.isNotBlank(name) && !name.equals(user.getName())) {
             accountService.updateName(user.getId(), name);
-            if(id.equals(accountService.getCurrentUserId())){
+            if (id.equals(accountService.getCurrentUserId())) {
                 updateCurrentUserName(name);
             }
         }
@@ -101,12 +105,51 @@ public class UserAdminController {
             accountService.updatePassword(user.getId(), plainPassword);
         }
 
-        if(banned != null && banned != user.getBanned()){
+        if (banned != null && banned != user.getBanned()) {
             accountService.updateBanned(user.getId(), banned);
         }
 
         redirectAttributes.addFlashAttribute("success", "更新 " + user.getScreenName() + " 成功");
         return "redirect:/admin/user";
+    }
+
+    @RequestMapping(value = "updateProfileImage/{id}", method = RequestMethod.GET)
+    public String profileImageForm(@PathVariable(value = "id") String id, Model model) {
+        model.addAttribute("user", accountService.getUser(id));
+        return "admin/user/profileImageForm";
+    }
+
+    @RequestMapping(value = "updateProfileImage/{id}", method = RequestMethod.POST)
+    public String updateProfileImage(@PathVariable(value = "id") String id,
+                                     @RequestParam(value = "profileImage") MultipartFile profileImage,
+                                     RedirectAttributes redirectAttributes) {
+
+        User user = accountService.getUser(id);
+
+        String userDetail = "redirect:/admin/user/update/" + id;
+
+        if (user != null && profileImage != null && profileImage.getSize() > 0) {
+            if (profileImage.getSize() > Setting.MAX_USER_PROFILE_IMAGE_LENGTH_BYTES) {
+                redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY,
+                        "图片大小不能超过 " + FileUtils.byteCountToDisplaySize(Setting.MAX_USER_PROFILE_IMAGE_LENGTH_BYTES));
+                return userDetail;
+            }
+
+            try {
+                accountService.updateProfileImage(user, profileImage.getInputStream());
+            } catch (IOException e) {
+                redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY,
+                        NestedExceptionUtils.buildMessage("修改头像失败", e));
+                return userDetail;
+            }
+
+            redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_SUCCESS_KEY, "修改头像成功");
+            return userDetail;
+
+        } else {
+            redirectAttributes.addFlashAttribute(ControllerUtils.MODEL_ERROR_KEY, "用户或头像不存在");
+            return userDetail;
+        }
     }
 
     /**
