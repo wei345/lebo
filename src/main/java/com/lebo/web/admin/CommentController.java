@@ -5,16 +5,16 @@ import com.lebo.entity.User;
 import com.lebo.service.CommentService;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
+import com.lebo.service.param.PageRequest;
 import com.lebo.web.ControllerSetup;
 import com.lebo.web.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,12 +36,15 @@ public class CommentController {
     private AccountService accountService;
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public String list(CommentListParam commentListParam, Model model) {
+    public String list(@RequestParam(value = "userId", required = false) String userId,
+                       @RequestParam(value = "postId", required = false) String postId,
+                       @Valid PageRequest pageRequest,
+                       Model model) {
 
-        List<Comment> comments = commentService.list(commentListParam);
+        Page<Comment> page = commentService.list(userId, postId, pageRequest);
 
-        List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(comments.size());
-        for (Comment comment : comments) {
+        List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>(page.getNumber());
+        for (Comment comment : page.getContent()) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", comment.getId());
 
@@ -71,10 +74,8 @@ public class CommentController {
             maps.add(map);
         }
 
-        model.addAttribute("count", commentListParam.getCount());
-        model.addAttribute("postId", commentListParam.getPostId());
-        model.addAttribute("userId", commentListParam.getUserId());
         model.addAttribute("comments", maps);
+        model.addAttribute("page", page);
 
         return "admin/comment/list";
     }
@@ -85,4 +86,5 @@ public class CommentController {
         commentService.deleteComment(commentService.getComment(id));
         return ControllerUtils.AJAX_OK;
     }
+
 }

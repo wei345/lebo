@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <html>
@@ -24,16 +25,16 @@
 <body>
 
 <form id="searchForm" class="form-search pull-left" method="GET" action="">
-    <input type="search" class="input-large search-query" id="postId" name="postId" value="${postId}"
+    <input type="search" class="input-large search-query" id="postId" name="postId" value="${param.postId}"
            placeholder="帖子ID">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;"
           onclick="$('input[name=postId]').val('')"></span>
 
-    <input type="search" class="input-large search-query" id="userId" name="userId" value="${userId}" placeholder="用户ID">
+    <input type="search" class="input-large search-query" id="userId" name="userId" value="${param.userId}" placeholder="用户ID">
     <span class="icon-remove" style="cursor: pointer; margin-left:-2em; margin-right: 2em;" onclick="$('input[name=userId]').val('')"></span>
 
-    <input type="text" class="input-mini" name="count" value="${count}">条
-    <button type="submit" class="btn" style="margin-left: 2em;">提交</button>
+    <input type="text" class="input-mini" name="size" value="${page.size}">条/页
+    <button type="submit" class="btn" style="margin-left: 2em;">查询</button>
 </form>
 
 <table id="contentTable" class="table table-hover">
@@ -83,6 +84,8 @@
         </tr>
     </c:forEach>
 </table>
+
+<tags:pagination-normal page="${page}" paginationSize="5"/>
 
 <c:if test="${empty comments}">
     <div style="font-style: italic; text-align: center">没有了</div>

@@ -2,6 +2,7 @@ package com.lebo.service;
 
 import com.lebo.entity.Comment;
 import com.lebo.entity.FileInfo;
+import com.lebo.entity.Post;
 import com.lebo.entity.User;
 import com.lebo.event.AfterCommentCreateEvent;
 import com.lebo.event.AfterCommentDestroyEvent;
@@ -11,8 +12,11 @@ import com.lebo.rest.dto.CommentDto;
 import com.lebo.rest.dto.UserDto;
 import com.lebo.service.account.AccountService;
 import com.lebo.service.param.CommentListParam;
+import com.lebo.service.param.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -89,9 +93,6 @@ public class CommentService extends AbstractMongoService {
         Query query = new Query();
         if (StringUtils.isNotBlank(param.getPostId())) {
             query.addCriteria(new Criteria(Comment.POST_ID_KEY).is(param.getPostId()));
-        }
-        if (StringUtils.isNotBlank(param.getUserId())) {
-            query.addCriteria(new Criteria(Comment.USER_ID_KEY).is(param.getUserId()));
         }
         if (param.getHasVideo() != null) {
             query.addCriteria(new Criteria(Comment.HAS_VIDEO_KEY).is(param.getHasVideo()));
@@ -183,5 +184,29 @@ public class CommentService extends AbstractMongoService {
         }
         commentDao.delete(comment);
         eventBus.post(new AfterCommentDestroyEvent(comment));
+    }
+
+    //---- 后台管理 ----//
+
+    public Page<Comment> list(String userId,
+                              String postId,
+                              PageRequest pageRequest) {
+
+        Query query = new Query();
+        if (StringUtils.isNotBlank(postId)) {
+            query.addCriteria(new Criteria(Comment.POST_ID_KEY).is(postId));
+        }
+        if (StringUtils.isNotBlank(userId)) {
+            query.addCriteria(new Criteria(Comment.USER_ID_KEY).is(userId));
+        }
+
+        query.with(pageRequest);
+
+        Page<Comment> page = new PageImpl<Comment>(mongoTemplate.find(query, Comment.class),
+                pageRequest,
+                mongoTemplate.count(query, Comment.class));
+
+        //查找
+        return page;
     }
 }
