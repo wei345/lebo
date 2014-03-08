@@ -20,6 +20,10 @@
         #contentTable .text {
             width: 400px;
         }
+
+        .replyTo {
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +40,10 @@
     <input type="text" class="input-mini" name="size" value="${page.size}">条/页
     <button type="submit" class="btn" style="margin-left: 2em;">查询</button>
 </form>
+
+<c:if test="${param.postId != null}">
+    <a class="pull-right" href="${ctx}/admin/comment/create?postId=${param.postId}">回复帖子</a>
+</c:if>
 
 <table id="contentTable" class="table table-hover">
     <tr>
@@ -70,6 +78,9 @@
                 </a>
             </td>
             <td class="text">
+                <c:if test="${item.replyTo != null}">
+                    <span class="replyTo">回复 ${item.replyTo}: </span>
+                </c:if>
                     ${item.text}
             </td>
             <td class="screenName">
@@ -79,6 +90,7 @@
                     ${item.createdAt}
             </td>
             <td>
+                <a href="${ctx}/admin/comment/create?replyCommentId=${item.id}">回复</a>
                 <input type="button" value="删除" class="btn btn-link" onclick="deleteComment('${item.id}', this)"/>
             </td>
         </tr>
