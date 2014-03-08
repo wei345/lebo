@@ -2,7 +2,6 @@ package com.lebo.service.param;
 
 public class CommentListParam extends PaginationParam {
     private String postId;
-    private String userId;
     private Boolean hasVideo;
 
     public String getPostId() {
@@ -21,11 +20,4 @@ public class CommentListParam extends PaginationParam {
         this.hasVideo = hasVideo;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }
